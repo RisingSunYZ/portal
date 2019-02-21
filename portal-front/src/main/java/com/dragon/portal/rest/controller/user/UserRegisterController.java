@@ -1,4 +1,4 @@
-package com.dragon.portal.web.controller.user;
+package com.dragon.portal.rest.controller.user;
 
 import com.dragon.portal.web.controller.BaseController;
 import org.springframework.stereotype.Controller;
