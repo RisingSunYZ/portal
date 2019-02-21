@@ -1,0 +1,314 @@
+body
+{
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+}
+#jsMainLayout{
+    background:#f2f5f7
+}
+#jsMainLayout .mini-layout-region{
+    border:none;
+}
+#jsSystemIndex{position:relative;top:4px;}
+#jsMainLayout .mini-layout-region-north{
+    border:none;
+}
+#jsMainLayout #north .mini-layout .mini-layout-border{
+    border:none;
+}
+
+#jsMainSys{height:59px;}
+#jsMainSys .mini-tabs-header{
+    height:60px;
+}
+#jsMainSys .mini-tabs-header .mini-tab{
+	padding-top:4px;
+}
+div#jsMainSys .mini-tab-text {
+    min-width: 52px;
+}
+
+.main-sys-header{
+    height:40px;
+}
+.logo{
+    width:100%;height:59px;overflow:hidden;
+}
+.logo img{
+    width:150px;height:60px;
+}
+.user-box{display:inline-block;color:white;float:right;margin-top:5px;margin-right:10px;}
+.user-box img{
+    width:40px;height:40px;margin:0;padding:0;overflow:hidden;border-radius:50%;
+}
+a.main-top-m{float:right;color:white;font-size:20px;text-decoration:none;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 1px solid red;
+    text-align:center;
+    line-height: 31px;
+    margin-right: 10px;
+    margin-top: 9px;
+    border-radius: 4px;
+    border:1px solid #555;
+    background: rgba(255,255,255,0.2);
+}
+#tabsMenu .mini-menuitem{line-height:18px;}
+a.main-top-m:hover{
+	background: rgba(255,255,255,0.5);
+	border:1px solid #555;
+}
+.user-box span#jsLoginUserName {
+    top:5px;left:8px;
+}
+.user-box span {
+    position: relative;display:inline-block;top:-5px;
+}
+
+
+/* menubutton */
+.logo .menubtn
+{
+    color:#fff;
+    font-family:"微软雅黑";
+    font-size:16px;
+    position:absolute;
+    left:160px;
+    top: 18px;
+}
+.menubtn .mini-menubutton
+{
+    background:transparent;
+    border-color:transparent;
+}
+.menubtn .mini-menubutton:hover
+{
+    background:transparent;
+    border-color:transparent;
+}
+.menubtn .mini-button-text
+{
+    color:#fff;
+    font-family:"微软雅黑";
+    font-size:16px;
+}
+.menubtn .mini-button-menu
+{
+    background:url(../img/main/menubtn_arrow.png) no-repeat 0 0;
+}
+
+body .menu .mini-button-pressed, body .menu a:hover.mini-button-pressed,
+body .menu .mini-button-checked, body .menu a:hover.mini-button-checked,
+body .menu a.mini-button-popup, body .menu a:hover.mini-button-popup
+{
+    background: #e34c40;
+    border:0;
+    color:#fff;
+}
+
+body .mini-button.mini-button-iconTop  {
+    padding-top:27px!important;
+    padding-left:3px!important;
+}
+.mini-button-iconTop .mini-button-icon {
+    top:10px;
+}
+
+.menubtn .mini-button-allow
+{
+    width: 10px;
+    height: 4px;
+    margin-top: 9px;
+}
+.menubtn_text
+{
+    position:relative;
+    top:1px;
+}
+.mini-menu
+{
+    border-radius:6px;
+}
+
+.mini-menu-border
+{
+    border-color:transparent;
+    border-radius:6px;
+}
+.mini-menuitem-hover
+{
+    background:#eee;
+    border-color:transparent;
+}
+.mini-separator
+{
+    margin-left:8px;
+    margin-right:8px;
+    border-color:#ddd;
+}
+#popupMenu .mini-menuitem
+{
+    line-height:44px;
+}
+.mini-menuitem-text
+{
+    font-family:"微软雅黑";
+    font-size:12px;
+    color:#333;
+}
+/* menu  button */
+
+/* leftTree */
+#leftTree .mini-tree-nodetitle{margin-top:5px;}
+
+
+
+#jsMainLayout.mini-layout .mini-layout-split.mini-layout-split-west{background:#f2f5f7}
+#jsMainLayout .mini-layout-spliticon{background:transparent;}
+
+#jsMainSys.mini-tabs .mini-tab{border-radius:0;border:none;color:white;background:#333;}
+#jsMainSys.mini-tabs .mini-tab.mini-tab-active{    background: rgb(227, 76, 64);  }
+#jsMainSys.mini-tabs .mini-tabs-space2,#jsMainSys.mini-tabs .mini-tabs-space{border:none;width:0;}
+#jsMainSys.mini-tabs .mini-tabs-space2 div{width:0;height:0;}
+#jsMainSys.mini-tabs-position-top .mini-tabs-plain .mini-tabs-header{background:#333;}
+#jsMainSys.mini-tabs .mini-tabs-plain .mini-tabs-scrollCt{background:#333;border:none;}
+#jsMainSys.mini-tabs .mini-tabs-leftButton, #jsMainSys.mini-tabs .mini-tabs-rightButton{color:white;display:inline-block;margin-top:0;height:60px;line-height:60px;}
+#jsMainSys.mini-tabs .mini-tabs-nav{top:0;}
+#jsMainSys.mini-tabs .mini-tab-hover{background:#555;}
+#jsMainSys.mini-tabs a:hover.mini-tabs-leftButton, #jsMainSys.mini-tabs a:hover.mini-tabs-rightButton{background:#555}
+
+
+#jsMenuTabs.mini-tabs .mini-tab{border-radius:0}
+
+#jsMainLayout>.mini-layout-border>#west .mini-layout-region-header{height:37px;font-weight:normal;}
+#jsMainLayout>.mini-layout-border>#west .mini-layout-region-header .mini-layout-region-title{line-height:37px;}
+#jsMainLayout>.mini-layout-border>#west .mini-layout-region-header .mini-tools{top:10px;}
+#jsMainLayout>.mini-layout-border>#west.mini-layout-region{border-right:solid 1px #aed0ea;}
+
+
+#jsMenuTabs.mini-tabs{border:none;height:100%;}
+.mini-tab-close{
+    margin-top:4px;
+}
+.mini-tab-text{padding:4px 6px 4px 6px;}
+
+.main-home-btn{position:relative;top:12px;}
+
+
+/* 系统菜单 */
+#jsChangeCompany.mini-required .mini-textbox-border, #jsChangeCompany.mini-required .mini-buttonedit-border{
+    background:transparent;
+}
+#jsChangeCompany .mini-buttonedit-border{border:none;border-radius:0;}
+#jsChangeCompany .mini-buttonedit-input{color:white;}
+
+
+/* Menu start */
+.menu {
+	height: 30px;
+	width: 80px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin:0px;padding:0px;
+	position:relative;top:8px;
+	display:inline-block;
+}
+.menu li {
+	position: relative;
+	list-style: none;
+	float: left;
+	display: block;
+    width: 80px;
+    text-align: left;
+}
+.menu li a {
+	display: block;
+	line-height: 34px;
+	text-decoration: none;
+	font-size: 13px;
+	color: white;
+	-webkit-transition: color .2s ease-in-out;
+	-moz-transition: color .2s ease-in-out;
+	-o-transition: color .2s ease-in-out;
+	-ms-transition: color .2s ease-in-out;
+	transition: color .2s ease-in-out;
+}
+.menu li:hover > a {
+	color: #8fde62;
+}
+/* Sub Menu */
+
+.menu ul {
+	position: fixed;
+	top: 40px;
+	width:80px;
+	text-align:center;
+	right: 10px;
+	opacity: 0;
+	margin:0;padding:0;
+	background: #1f2024;
+	-webkit-border-radius: 0 0 5px 5px;
+	-moz-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+	-webkit-transition: opacity .25s ease .1s;
+	-moz-transition: opacity .25s ease .1s;
+	-o-transition: opacity .25s ease .1s;
+	-ms-transition: opacity .25s ease .1s;
+	transition: opacity .25s ease .1s;
+}
+.menu li:hover > ul {
+	opacity: 1;
+	margin:0;padding:0;
+	z-index:99;
+}
+.menu ul li {
+	height: 0;
+	overflow: hidden;
+	padding: 0;
+	float:left;
+	-webkit-transition: height .25s ease .1s;
+	-moz-transition: height .25s ease .1s;
+	-o-transition: height .25s ease .1s;
+	-ms-transition: height .25s ease .1s;
+	transition: height .25s ease .1s;
+}
+.menu li:hover > ul li {
+	height: 36px;
+}
+.menu ul li a {
+	width: 80px;
+	margin: 0;
+	border: none;
+	border-bottom: 1px solid #353539;
+}
+.menu ul li:last-child a {
+	border: none;
+}
+/* Icons */
+.menu a i {
+	background: url(../img/main/main-icons.png);
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    top: 5px;
+}
+.menu>li>a{text-align:center;}
+.menu a i.user-info {
+	background-position: 0 0;
+}
+.menu a i.setting {
+	background-position: 0 -40px;
+}
+.menu a i.logout {
+	background-position: 0 -20px;
+}
+
+.mini-layout-split.mini-layout-split-west{width:auto;}
+#jsMainLayout>.mini-layout-border{
+    border:none;
+}

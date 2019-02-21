@@ -1,0 +1,397 @@
+[
+  {
+    "expanded": true,
+    "id": "6",
+    "isLeaf": false,
+    "moduleSn": "operation",
+    "pid": null,
+    "text": "流程表单管理",
+    "url": null
+  },
+  {
+    "expanded": true,
+    "id": "601",
+    "isLeaf": true,
+    "moduleSn": "process_def",
+    "pid": "6",
+    "text": "自定义流程",
+    "url": "/flow/form/form_info/list"
+  },
+  {
+    "expanded": true,
+    "id": "602",
+    "isLeaf": true,
+    "moduleSn": "process_def",
+    "pid": "6",
+    "text": "业务流程",
+    "url": "/flow/form/form_info/bizList"
+  },
+
+
+
+
+  {
+    "expanded": true,
+    "id": "3",
+    "isLeaf": false,
+    "moduleSn": "operation",
+    "pid": null,
+    "text": "流程运维管理",
+    "url": null
+  },
+  {
+    "expanded": true,
+    "id": "301",
+    "isLeaf": true,
+    "moduleSn": "extend_model",
+    "pid": "3",
+    "text": "模型管理",
+    "url": "/flow/operation/extend_model/list"
+  },
+  {
+    "expanded": true,
+    "id": "302",
+    "isLeaf": true,
+    "moduleSn": "process_def",
+    "pid": "3",
+    "text": "定义管理",
+    "url": "/flow/operation/process_def/list"
+  },
+  {
+    "expanded": true,
+    "id": "303",
+    "isLeaf": true,
+    "moduleSn": "process_inst",
+    "pid": "3",
+    "text": "实例管理",
+    "url": "/flow/operation/process_inst/list"
+  },
+  {
+    "expanded": true,
+    "id": "304",
+    "isLeaf": true,
+    "moduleSn": "process_task",
+    "pid": "3",
+    "text": "任务管理",
+    "url": "/flow/operation/process_task/list"
+  },
+  {
+    "expanded": true,
+    "id": "305",
+    "isLeaf": true,
+    "moduleSn": "process_exception",
+    "pid": "3",
+    "text": "异常管理",
+    "url": "/flow/operation/process_exception/list"
+  },
+
+
+  {
+    "expanded": true,
+    "id": "5",
+    "isLeaf": false,
+    "moduleSn": "auth_info_manager",
+    "pid": null,
+    "text": "流程授权管理",
+    "url": null
+  },
+  {
+    "expanded": true,
+    "id": "501",
+    "isLeaf": true,
+    "moduleSn": "auth_info",
+    "pid": "5",
+    "text": "流程授权",
+    "url": "/flow/privilege/auth_info/list"
+  },
+  {
+    "expanded": true,
+    "id": "503",
+    "isLeaf": true,
+    "moduleSn": "auth_model",
+    "pid": "5",
+    "text": "模板授权",
+    "url": "/flow/operation/extend_model/authList"
+  },
+  {
+    "expanded": true,
+    "id": "502",
+    "isLeaf": true,
+    "moduleSn": "auth_point",
+    "pid": "5",
+    "text": "功能点管理",
+    "url": "/flow/privilege/auth_point/list"
+  },
+
+
+
+
+  {
+    "expanded": true,
+    "id": "8",
+    "isLeaf": false,
+    "moduleSn": "mongodb",
+    "pid": null,
+    "text": "历史数据管理",
+    "url": null
+  },
+  {
+    "expanded": true,
+    "id": "801",
+    "isLeaf": true,
+    "moduleSn": "mongodb",
+    "pid": "8",
+    "text": "历史纪录",
+    "url": "/mongodb/flow_dump/list"
+  },
+  {
+    "expanded": true,
+    "id": "802",
+    "isLeaf": true,
+    "moduleSn": "mongodb",
+    "pid": "8",
+    "text": "流程维护",
+    "url": "/mongodb/mongodb_manager/list"
+  },
+
+
+  {
+    "expanded": false,
+    "icon": "fa fa-save",
+    "id": "7",
+    "isLeaf": false,
+    "moduleSn": "org",
+    "pid": null,
+    "text": "组织信息管理",
+    "url": null
+  },
+
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "707",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "7",
+    "text": "菜单管理",
+    "url": "/org/flowExtendPriv/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "701",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "7",
+    "text": "用户管理",
+    "url": "/org/userVo/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "702",
+    "isLeaf": true,
+    "moduleSn": "org",
+    "pid": "7",
+    "text": "组管理",
+    "url": "/org/groupVo/list"
+  },
+  {
+    "expanded": false,
+    "icon": "fa fa-save",
+    "id": "703",
+    "isLeaf": true,
+    "moduleSn": "org",
+    "pid": "7",
+    "text": "公司管理",
+    "url": "/org/company/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "704",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "7",
+    "text": "部门管理",
+    "url": "/org/department/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "705",
+    "isLeaf": true,
+    "moduleSn": "org",
+    "pid": "7",
+    "text": "岗级管理",
+    "url": "/org/position_level/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "706",
+    "isLeaf": true,
+    "moduleSn": "org",
+    "pid": "7",
+    "text": "职级管理",
+    "url": "/org/user_position/list"
+  },
+
+
+
+  {
+    "expanded": false,
+    "icon": "fa fa-save",
+    "id": "1",
+    "isLeaf": false,
+    "moduleSn": "basedata",
+    "pid": null,
+    "text": "基础数据管理",
+    "url": null
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "109",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "1",
+    "text": "底表管理",
+    "url": "/basedata/wf_flow_level/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "106",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "1",
+    "text": "系统管理",
+    "url": "/basedata/flow_system/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "103",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "1",
+    "text": "分类管理",
+    "url": "/basedata/flow_category/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "110",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "1",
+    "text": "字典类型管理",
+    "url": "/basedata/dic_type/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "111",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "1",
+    "text": "数据字典管理",
+    "url": "/basedata/dictionary/list"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "112",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "1",
+    "text": "区域管理",
+    "url": "/flow/basedata/area/list"
+  },
+  {
+    "expanded": false,
+    "icon": "fa fa-save",
+    "id": "9",
+    "isLeaf": false,
+    "moduleSn": "basedata",
+    "pid": null,
+    "text": "数据同步管理",
+    "url": null
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "901",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "9",
+    "text": "项目信息控件",
+    "url": "/projectInfo/tableList"
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "901",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "9",
+    "text": "流程数据拷贝",
+    "url": "/flow/operation/prodDataSync/index"
+  },
+
+
+
+  {
+    "expanded": false,
+    "icon": "fa fa-save",
+    "id": "10",
+    "isLeaf": false,
+    "moduleSn": "basedata",
+    "pid": null,
+    "text": "数据统计管理",
+    "url": null
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "1001",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "10",
+    "text": "节点统计",
+    "url": "/flow/count/nodes_count/list"
+  },
+
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "1002",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "10",
+    "text": "流程清单",
+    "url": "/flow/count/model_count/list"
+  },
+
+  {
+    "expanded": false,
+    "icon": "fa fa-save",
+    "id": "60",
+    "isLeaf": false,
+    "moduleSn": "basedata",
+    "pid": null,
+    "text": "数据修复管理",
+    "url": null
+  },
+  {
+    "expanded": true,
+    "icon": "fa fa-save",
+    "id": "601",
+    "isLeaf": true,
+    "moduleSn": "basedata",
+    "pid": "60",
+    "text": "消息回调",
+    "url": "/flow/msg/msg_callback/list"
+  }
+]

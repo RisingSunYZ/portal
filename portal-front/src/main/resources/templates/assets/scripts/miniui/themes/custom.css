@@ -1,0 +1,430 @@
+﻿html,body
+{
+  width:100%;
+  height:100%;
+  border:0;
+  margin:0;
+  padding:0;
+  overflow:visible;
+}
+*{font-family:'微软雅黑'}
+
+.flex-layout {
+  display: flex;flex-direction: row;justify-content: space-between;align-items: center;
+}
+.mini-footer{
+  text-align:center; height:40px; line-height: 40px;
+}
+.dialog>div.mini-fit{
+  padding:0px 20px 0;
+}
+
+/* 列表搜索框 start */
+.search-box{
+  position: relative;
+  padding: 15px 15px 0 15px;border:1px solid #D5DDE9;border-top:none;margin-bottom:10px;
+}
+.search-box .search-field{margin-bottom:8px;}
+.search-box .search-field{
+  min-width:200px;
+  display:inline-block;
+  margin-right:10px;
+}
+.search-box .mini-splitter-border{
+  border:none;
+}
+.search-box .fold-btn {
+  position: absolute;
+  right:0;
+  bottom: -1px;
+  width: 80%;
+  height: 16px;
+  line-height: 16px;
+  text-decoration: none;
+  border: 1px solid #D5DDE9;
+  text-align: center;
+  cursor: pointer;
+  color: #007AFF;
+  border-radius: 18px 18px 0 0;
+}
+.search-box #jsSearchPanel{
+  height:80px;
+}
+.search-box #jsSearchPanel.search-inline {
+  height:40px;
+}
+.search-box .fold-btn{
+  display: none;
+}
+.search-box .show-more-btn .fold-btn{
+  display:block;
+}
+.search-box .s-btn-box .s-btn-group{
+  text-align:right;
+}
+.search-box .search-item{
+  height: 30px;
+  line-height: 30px;
+  border:1px solid #D5DDE9;
+}
+/*search搜索框*/
+.
+
+.search-box .search-item .mini-textbox-border, .search-box .search-item .mini-buttonedit-border {
+  border: none;
+  background: #fff;
+}
+.search-box .mini-radiobuttonlist-item {
+  margin: 0 15px 0 0;
+}
+.search-box .mini-radiobuttonlist-item label {
+  background: #fff!important;
+  border: none!important;
+}
+.search-box .search-item label{
+  display: inline-block;
+  width:auto;
+  height: 28px;
+  line-height:28px;
+  border-right:1px solid #D5DDE9;
+  padding:0 6px;
+  color: #707D90;
+  background:#F5F6FA;
+  vertical-align: top;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: keep-all;
+}
+.search-box .search-item .mini-checkbox label {
+  border: none;
+  padding: 0;
+}
+.search-box .search-item .mini-textbox-border,.search-box .mini-buttonedit-focus .mini-buttonedit-border,
+.search-box .mini-buttonedit-border{
+  border: none;
+}
+.search-box form{
+  margin-bottom:0px;
+}
+.search-box .mini-checkbox label {
+  background: #fff;
+}
+
+/* 列表搜索框 end */
+
+.tb-opt-btn{margin-right:5px;}
+.cred{color:red;}
+.cyellow{color:#ffd52b}
+.corange{color:orange}
+.cgreen{color:green;}
+i.cred{color:red;
+  font-style: normal;font-weight: bold;letter-spacing: 3px}
+.cust-panel>.mini-panel-border{border:none;}
+.mini-messagebox-info,.mini-messagebox-warning,.mini-messagebox-error,.mini-messagebox-question{min-height:70px;}
+.mini-messagebox-content{line-height:normal;}
+.mini-toolbar{min-height:36px;line-height: 34px;padding: 0 4px;}
+.mini-toolbar>a.mini-button{
+  margin:3px 0;
+}
+.mini-toolbar table{width:100%;}
+.hide{display:none;}
+
+
+/* 表格操作项,删除关键字 */
+.tb-list-itm{
+  display: inline-block;
+  position:relative;
+  margin: 2px 4px 2px 0px;
+  /*border: 1px solid green;*/
+  height: 22px;
+  line-height: 22px;
+  border-radius:6px;
+  overflow:hidden;
+}
+.tb-list-itm span{display: inline-block;padding: 0 20px 0 4px;}
+.tb-list-itm .mini-tab-close{
+  visibility: hidden;
+  cursor: pointer;
+  color: red;
+  font-size: 120%;
+  display: inline-block;
+  position: absolute;
+  margin: 0;
+  width: 22px;
+  height: 100%;
+  line-height: 22px;
+  right: 0;
+  text-align: center;
+  opacity: .9;
+  border: none;
+}
+.tb-list-itm:hover>a.mini-tab-close{
+  visibility:visible;
+}
+
+
+/* 表格内部操作按钮样式 start */
+.tbl-more-opt{position:relative;display: block;text-align:center;}
+.tbl-more-opt .tbl-more-btn{
+  display:block;height:32px;
+  font-size: 16px;
+  letter-spacing:1px;
+  font-weight: bold;
+}
+.tbl-columns-opt, .tbl-columns-opt>div{overflow:visible!important;}
+
+/* 操作按钮默认显示两个，超过两个时超出的显示 ... */
+.tbl-opts{
+  text-indent:-1px;
+  z-index: 99999;
+}
+.tbl-opts:hover .tbl-opts-more{
+  display: none;
+}
+.tbl-opts:hover li.more{
+  display: block;
+}
+.tbl-columns-opt .tbl-opts{
+  width:100%;overflow:hidden;text-overflow:ellipsis
+}
+.tbl-opts{
+  color:#666666;
+}
+.tbl-opts .more{
+  display:none;
+}
+.tbl-opts a.show-more{
+  padding:0 4px;
+}
+.tbl-opts a{
+  padding:0 10px;
+  height:28px;
+  line-height:28px;
+  text-decoration: none;
+  border:1px solid transparent;
+  color:#007AFF;
+}
+.tbl-opts .separator{
+  margin-left:0;
+  margin-right:0;
+}
+.mini-grid-row-selected .tbl-opts a{
+  color:white;
+}
+.tbl-opts a:hover{
+  color:#007AFF;
+  border:1px solid #007AFF;
+}
+
+.tbl-columns-opt:hover .tbl-opts a{
+  color:#007AFF!important;
+}
+.tbl-columns-opt:hover .tbl-opts{
+  width:fit-content;
+  white-space:nowrap;
+  position: relative;
+  background:white;
+  -webkit-box-shadow: 0 0 4px 0 #cccccc;
+  -moz-box-shadow: 0 0 4px 0 #cccccc;
+  box-shadow: 0 0 4px 0 #cccccc;
+  color:#666666;
+}
+
+.tbl-opts:hover .more{
+  display:inline-block;
+}
+.tbl-opts:hover a.show-more{
+  display:none;
+}
+.tbl-opts:hover a{
+  background:white;
+  color:#007AFF;
+}
+
+
+/* 表格内部操作按钮样式 end */
+
+/* 表单样式 */
+fieldset{overflow-x:hidden;}
+fieldset .remark{
+  font-size:12px;color:rgba(112,125,144,1); line-height:18px;margin:-6px auto 10px
+}
+.m-form .row label .remark{
+  display: inline-block;font-size:12px;color:rgba(112,125,144,0.65);margin: auto auto auto 5px;
+}
+.m-form{
+  margin-top:16px;
+}
+@media (min-width: 700px) {
+  .m-form{
+    width:100%;
+  }
+}
+@media (min-width: 1200px) {
+  .m-form{
+    width:90%;
+  }
+}
+@media (min-width: 1500px) {
+  .m-form{
+    width:90%;
+  }
+}
+
+.m-form fieldset{
+  border:none;
+}
+.m-form fieldset legend{
+  font-size:14px;color:#000000;
+  border-left:4px solid #007AFF;
+  font-weight: bold;
+  text-indent: 6px;
+  margin-bottom:6px;
+  position: relative;
+  left:-8px;
+}
+
+/* 输入页面附件上传功能样式 start */
+ul.f-list{
+  padding:0;
+  margin:0;
+}
+.f-list li.f-item .ctrl-opt{
+  position:absolute;
+  top:30px;
+  left:30px;
+  width:186px;
+}
+.f-list li.f-item .ctrl-opt a{
+  display:inline-block;
+  width:93px;
+  float:left;
+  height:30px;
+  line-height:30px;
+  cursor: pointer;
+  text-align:center;
+}
+.f-list li.f-item .ctrl-opt.can-del a{
+  width:62px;
+}
+.f-list li.f-item .ctrl-opt a:hover{
+  color:#1890FF;
+  background:rgba(0, 0, 0,.2)
+}
+.mini-grid-cell .f-list li.f-item{
+  margin:2px;
+}
+.f-list li.f-item{
+  float:left;
+  list-style:none;
+  width:216px;
+  height:30px;
+  line-height: 30px;
+  position:relative;
+  background:rgba(200, 200, 200, 0.1);
+  overflow:hidden;
+  margin-right:10px;
+  margin-top:6px;
+  text-align:left;
+}
+.f-list li.f-item .f-text{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  height:30px;
+  word-break:break-all;
+}
+.f-list li.f-item .f-text span{
+  display:inline-block;
+  width:186px;
+  text-indent:6px;
+  word-break:break-all;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  height:30px;
+}
+.f-list li.f-item .f-text .f-icon{
+  display:inline-block;
+  width:30px;
+  height:30px;
+  background:#597EF7;
+  float:left;
+  line-height:30px;
+  text-align:center;
+  font-size:20px;
+  border-radius: 4px;
+  color:white;
+}
+.f-list li.f-item:hover{
+  box-shadow: 0px 0px 10px #aaa;
+}
+.f-list li.f-item:hover .ctrl-opt{
+  top:0px;
+  background:rgba(255,255,255,0.9);
+  color:#362b36;
+  width:100%;
+}
+
+.upload-progress{
+  width:200px;
+  margin-top:8px;
+  position:absolute;margin-left:10px;display:inline-block;background:#eee;
+  height:6px;
+  top:12px;
+  border-radius: 3px;
+}
+.upload-progress div{
+  width:0;height:100%;background:#007AFF;display: inline-block;
+  top:0;
+  position: absolute;
+  border-radius: 3px;
+}
+.upload-progress i{
+  color:rgba(112,125,144,0.65);
+  position: absolute;
+  top: -15px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  height: 100%;
+  font-size:12px;
+}
+/* 输入页面附件上传功能样式 end */
+
+
+/* 详情页面 */
+.m-detail{
+  width:90%;
+  border-collapse: collapse;
+}
+.m-detail th, .m-detail td{
+  border:1px solid #D5DDE9;
+  padding:0 8px 0 8px;
+  color:#1A3050;
+}
+.m-detail th{
+  background:#F5F6FA;
+  text-align:left;
+  font-style:normal;
+  font-weight:normal;
+  height:30px;
+}
+
+
+/* 选择器样式start */
+.mini-buttonedit-icon{background:none;}
+.mini-buttonedit-icon:before{
+  background:transparent;
+  font-size:14px;
+  content:"\f141";
+  color:#707D90;
+}
+.mini-buttonedit-icon:hover{
+  color:#007AFF;
+}
+
+/* 选择器样式end */
+
+
+div#tabsMenu{
+  z-index: 9999999;
+}
