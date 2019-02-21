@@ -34,8 +34,8 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/templates/page/");
         registry.addResourceHandler("/a/**")
                 .addResourceLocations("classpath:/templates/assets/");
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/");
+//        registry.addResourceHandler("/**")
+//                .addResourceLocations("classpath:/static/");
     }
 
 }
