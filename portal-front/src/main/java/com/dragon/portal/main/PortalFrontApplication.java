@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * @Description:
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan("com.dragon.*.dao.*")
 @EnableTransactionManagement
 @EnableAutoConfiguration
+@EnableSwagger2             //启动swagger注解
 public class PortalFrontApplication {
 
     public static void main(String[] args) {
