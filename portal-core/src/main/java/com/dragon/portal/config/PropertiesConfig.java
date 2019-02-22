@@ -12,20 +12,19 @@ import org.springframework.context.annotation.Configuration;
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
 @Configuration
-@ConfigurationProperties
 public class PropertiesConfig {
 
     /**
-     * 接口路径
+     * 开发环境使用,默认账号
      */
-    @Value("${dic.base-list-code}")
-    private String baseListCode;
+    @Value("${dic.developer.no}")
+    private String developerNo;
 
-    public String getBaseListCode() {
-        return baseListCode;
+    public String getDeveloperNo() {
+        return developerNo;
     }
 
-    public void setBaseListCode(String baseListCode) {
-        this.baseListCode = baseListCode;
+    public void setDeveloperNo(String developerNo) {
+        this.developerNo = developerNo;
     }
 }
