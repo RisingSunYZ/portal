@@ -1,6 +1,5 @@
 package com.dragon.portal.rest.controller.process;
 
-import com.dragon.flow.api.ICusFlowApi;
 import com.dragon.flow.api.IFlowApi;
 import com.dragon.flow.constant.FlowConstant;
 import com.dragon.flow.enm.flowable.run.ProcessStatusEnum;
@@ -10,31 +9,26 @@ import com.dragon.flow.vo.flowable.task.TaskVo;
 import com.dragon.flow.vo.mongdb.QueryTaskVo;
 import com.dragon.flow.vo.mongdb.SearchExecutionVo;
 import com.dragon.flow.vo.mongdb.SearchTaskVo;
-import com.dragon.portal.service.basedata.IDicItemService;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.web.controller.BaseController;
-import com.dragon.tools.common.ReturnCode;
+import com.dragon.tools.common.JsonUtils;
+import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
-import com.ys.assets.constant.AssetsConstant;
-import com.ys.tools.common.JsonUtils;
-import com.ys.tools.pager.ORDERBY;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,8 +49,6 @@ public class ProcessListController extends BaseController {
 
     @Autowired
     private IFlowApi flowApi;
-    @Autowired
-    private ICusFlowApi cusFlowApi;
     @Resource
     IPersonnelApi personnelApi;
 
@@ -82,8 +74,8 @@ public class ProcessListController extends BaseController {
         UserSessionInfo user=getUserSessionInfo(request,response);
         try {
             if(user!=null && StringUtils.isNotBlank(user.getNo())){
-                com.ys.tools.vo.ReturnVo<PersonnelApiVo> pvo=personnelApi.getPersonnelApiVoByNo(user.getNo());
-                if(pvo!=null && pvo.getCode()== AssetsConstant.SUCCESS && pvo.getData()!=null){
+                com.ys.tools.vo.ReturnVo<PersonnelApiVo> pvo = personnelApi.getPersonnelApiVoByNo(user.getNo());
+                if(pvo!=null && pvo.getCode().toString().equals( PortalConstant.SUCCESS ) && pvo.getData()!=null){
                     param.setUserCode(pvo.getData().getNo());
                     vo=flowApi.getAppingTasksPagerModel(param,query);
                     if (FlowConstant.SUCCESS.equals(vo.getCode())) {

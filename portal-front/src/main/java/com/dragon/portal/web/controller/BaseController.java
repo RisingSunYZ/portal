@@ -1,11 +1,9 @@
 package com.dragon.portal.web.controller;
 
 import com.dragon.portal.config.PropertiesConfig;
-import com.dragon.portal.constant.YsportalConstant;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.utils.Cookies;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.mhome.tools.common.JsonUtils;
-import com.ys.ucenter.model.vo.LeaderDepartmentVo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * @Description:
@@ -62,12 +58,14 @@ public class BaseController {
                     userInfo = getPersonInfo(request, response);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    logger.error( "获取当前登录信息失败！" );
                 }
             }
         }
         return userInfo;
     }
 
+    // 暂未逻辑处理
     /**
      * 从用户会话信息中获取登录用户的信息
      * @param request
@@ -174,8 +172,8 @@ public class BaseController {
      */
     private void setPersonInfoCookies(UserSessionInfo u, HttpServletRequest request, HttpServletResponse response, Integer autoLogin) throws Exception {
         if(null==u) return ;
-        String usid = Cookies.get(request, YsportalConstant.COOKIE_USER_SESSION_ID);
-        Cookies.crossDomainPut(response, YsportalConstant.COOKIE_USER_SESSION_ID, usid, YsportalConstant.COOKIE_TITLE_MONTH);
+        String usid = Cookies.get(request, PortalConstant.COOKIE_USER_SESSION_ID);
+        Cookies.crossDomainPut(response, PortalConstant.COOKIE_USER_SESSION_ID, usid, PortalConstant.COOKIE_TITLE_MONTH);
     }
 
     /**
