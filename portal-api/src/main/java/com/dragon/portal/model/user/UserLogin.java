@@ -1,5 +1,7 @@
 package com.dragon.portal.model.user;
 
+import com.dragon.tools.common.BaseModel;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,7 +13,7 @@ import java.util.Date;
  * @Version: 1.1.0
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
-public class UserLogin implements Serializable{
+public class UserLogin extends BaseModel implements Serializable{
 
     private String id;
 

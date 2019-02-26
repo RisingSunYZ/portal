@@ -43,6 +43,15 @@ public class CommonProperties {
     // ############################# 数据字典 配置信息 end #############################
 
 
+    // ############################# 短信 配置信息 start #############################
+    /**
+     * (是否走流程底表的数据字典) 请求数据字典code
+     */
+    @Value("${sms.mobile.code}")
+    private String smsMobileCode;
+
+    // ############################# 短信 配置信息 end #############################
+
 
 
     public String getIp() {
@@ -75,5 +84,9 @@ public class CommonProperties {
 
     public String getFlowBaseListCode() {
         return flowBaseListCode;
+    }
+
+    public String getSmsMobileCode() {
+        return smsMobileCode;
     }
 }
