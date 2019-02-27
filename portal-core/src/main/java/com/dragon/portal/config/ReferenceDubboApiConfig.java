@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.dragon.flow.api.ICusFlowApi;
 import com.dragon.flow.api.IFlowApi;
 import com.ecnice.privilege.api.privilege.IPrivilegeApi;
+import com.mhome.se.api.ISendSmsApi;
 import com.ys.mis.api.IMisApi;
 import com.ys.mqpms.api.IMqPmsApi;
 import com.ys.pms.api.IPmsApi;
@@ -45,6 +46,9 @@ public class ReferenceDubboApiConfig {
     @Reference(version = "1.0")
     private IPrivilegeApi privilegeApi;
 
+    @Reference(version = "1.0")
+    private ISendSmsApi sendSmsApi;
+
 
     @Bean
     public IMisApi misApi() {
@@ -83,4 +87,10 @@ public class ReferenceDubboApiConfig {
     public ICusFlowApi cusFlowApi(){
         return cusFlowApi;
     }
+
+    @Bean
+    public ISendSmsApi sendSmsApi(){
+        return sendSmsApi;
+    }
+
 }

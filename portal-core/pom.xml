@@ -148,6 +148,18 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.1.10</version>
         </dependency>
+        <!-- 短信配置 -->
+        <dependency>
+            <groupId>com.mhome</groupId>
+            <artifactId>se-api</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
+        <!--redis-->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>flow-core</finalName>
