@@ -41,10 +41,20 @@ public interface IUserLoginService{
 
 
     /**
-     * 修改密码
+     * 忘记密码-》修改密码
      * @param password
      * @return
      * @throws Exception
      */
-    public ReturnVo updatePwd(String password, HttpSession session) throws Exception;
+    public ReturnVo updatePwdBeforeLogin(String password, HttpSession session) throws Exception;
+
+    /**
+     * 登录后-》修改密码
+     * @param password
+     * @param session
+     * @return
+     * @throws Exception
+     */
+    public ReturnVo updatePwdAfterLogin(String password, HttpSession session) throws Exception;
+
 }

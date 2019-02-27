@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
  */
 @RestController
 @RequestMapping("/portal/user/userLogin")
-@Api(value="用户登录", description = "用户登录", tags={"用户登录 / /portal/user/userLogin"})
+@Api(value="用户登录", description = "用户登录", tags={"用户登录 /portal/user/userLogin"})
 public class UserLoginController extends BaseController{
 
     private static Logger logger = LoggerFactory.getLogger(UserLoginController.class);
@@ -96,7 +96,7 @@ public class UserLoginController extends BaseController{
         } catch (Exception e) {
             logger.error("UserLoginController-out:", e);
             e.printStackTrace();
-            returnVo.setMsg("注销失败！" + e.getMessage());
+            returnVo.setMsg("服务器异常！" + e.getMessage());
         }
         return returnVo;
     }
@@ -141,28 +141,53 @@ public class UserLoginController extends BaseController{
     }
 
     /**
-     * 修改密码
+     * 忘记密码->修改密码
      * @return
      */
-    @PostMapping("/updatePwd")
-    @ApiOperation("修改密码")
+    @PostMapping("/updatePwdBeforeLogin")
+    @ApiOperation("忘记密码->修改密码")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "password", value = "密码", paramType = "form", required = true, dataType = "String")
     })
-    public ReturnVo updatePwd(@RequestParam String password,HttpServletRequest request) {
+    public ReturnVo updatePwdBeforeLogin(@RequestParam String password,HttpServletRequest request) {
         HttpSession session = request.getSession();
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败！");
         try {
             if(StringUtils.isNotEmpty(password)){
-                returnVo = userLoginService.updatePwd(password,session);
+                returnVo = userLoginService.updatePwdBeforeLogin(password,session);
             }
         } catch (Exception e) {
-            logger.error("UserLoginController-updatePwd:", e);
+            logger.error("UserLoginController-updatePwdBeforeLogin:", e);
             e.printStackTrace();
             returnVo.setMsg("修改失败！" + e.getMessage());
         }
         return returnVo;
     }
+
+    /**
+     * 登录后->修改密码
+     * @return
+     */
+    @PostMapping("/updatePwdAfterLogin")
+    @ApiOperation("登录后->修改密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "password", value = "密码", paramType = "form", required = true, dataType = "String")
+    })
+    public ReturnVo updatePwdAfterLogin(@RequestParam String password,HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败！");
+        try {
+            if(StringUtils.isNotEmpty(password)){
+                returnVo = userLoginService.updatePwdAfterLogin(password,session);
+            }
+        } catch (Exception e) {
+            logger.error("UserLoginController-updatePwdAfterLogin:", e);
+            e.printStackTrace();
+            returnVo.setMsg("修改失败！" + e.getMessage());
+        }
+        return returnVo;
+    }
+
 
 
 }
