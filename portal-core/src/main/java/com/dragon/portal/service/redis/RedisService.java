@@ -1,6 +1,7 @@
 package com.dragon.portal.service.redis;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
@@ -211,5 +212,18 @@ public class RedisService {
     public Set<Object> rangeByScore(String key, double scoure, double scoure1) {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         return zset.rangeByScore(key, scoure, scoure1);
+    }
+
+    /**
+     * 模糊查询key
+     * @param key
+     * @return
+     */
+    public Set<String> getKeysSet(String key) {
+        if (StringUtils.isNotBlank(key)) {
+            return this.redisTemplate.keys(key);
+        }else{
+            return null;
+        }
     }
 }
