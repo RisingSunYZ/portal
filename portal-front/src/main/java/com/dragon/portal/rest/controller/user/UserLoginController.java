@@ -171,14 +171,15 @@ public class UserLoginController extends BaseController{
     @PostMapping("/updatePwdAfterLogin")
     @ApiOperation("登录后->修改密码")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "oldPassword", value = "原始密码", paramType = "form", required = true, dataType = "String"),
             @ApiImplicitParam(name = "password", value = "密码", paramType = "form", required = true, dataType = "String")
     })
-    public ReturnVo updatePwdAfterLogin(@RequestParam String password,HttpServletRequest request) {
+    public ReturnVo updatePwdAfterLogin(@RequestParam String oldPassword,@RequestParam String password,HttpServletRequest request) {
         HttpSession session = request.getSession();
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败！");
         try {
             if(StringUtils.isNotEmpty(password)){
-                returnVo = userLoginService.updatePwdAfterLogin(password,session);
+                returnVo = userLoginService.updatePwdAfterLogin(oldPassword,password,session);
             }
         } catch (Exception e) {
             logger.error("UserLoginController-updatePwdAfterLogin:", e);

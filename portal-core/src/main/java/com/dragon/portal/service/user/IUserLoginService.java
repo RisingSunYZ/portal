@@ -50,11 +50,12 @@ public interface IUserLoginService{
 
     /**
      * 登录后-》修改密码
+     * @param oldPassword
      * @param password
      * @param session
      * @return
      * @throws Exception
      */
-    public ReturnVo updatePwdAfterLogin(String password, HttpSession session) throws Exception;
+    public ReturnVo updatePwdAfterLogin(String oldPassword,String password, HttpSession session) throws Exception;
 
 }
