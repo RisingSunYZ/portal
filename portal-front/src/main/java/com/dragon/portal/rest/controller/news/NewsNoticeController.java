@@ -96,6 +96,45 @@ public class NewsNoticeController extends BaseController {
 		return pm;
 	}
 
+    /**
+     * 工作台 >>公司动态>>更多--列表数据查询
+     * @param notice
+     * @param query
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/ajaxCompanyNewsList")
+    @ApiOperation("工作台 >>公司动态>>更多--列表数据查询")
+    @ApiImplicitParams({})
+    public PagerModel<NewsNotice> ajaxCompanyNewsList(String source,String typeSn, NewsNotice notice, Query query,
+                                                      @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
+        PagerModel<NewsNotice> pm = new PagerModel<NewsNotice>();
+        Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
+        sqlOrderBy.put("publish_time", ORDERBY.DESC);
+        query.setSqlOrderBy(sqlOrderBy);
+        if (StringUtils.isBlank(source) || !source.equals("loginPage")) {
+            UserSessionInfo userSessionInfo = getUserSessionInfo(request, response);
+            String no = userSessionInfo.getNo();
+            ReturnVo<PersonnelApiVo> ReturnVo = personnelApi.getPersonnelApiVoByNo(no);
+            PersonnelApiVo PersonnelApiVo = ReturnVo.getDatas().get(0);
+            notice.setRangeDeftId(getRangeDeftId(PersonnelApiVo.getDeptId()));
+        }
+        try {
+            NewsType newsType = newsTypeService.queryNewsTypeBySn(typeSn);
+            if (null == newsType){
+				notice.setTypeId(newsType.getId());
+				pm = this.newsNoticeService.getPagerModelByQueryOfRange(notice, query,"");
+			}
+        } catch (Exception e) {
+            logger.error("NewsNoticeController-ajaxCompanyNewsList:" + e);
+            e.printStackTrace();
+        }
+
+        return pm;
+    }
+
+
 	/**
 	 *
 	 * @param deptId

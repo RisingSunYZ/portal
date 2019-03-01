@@ -12,10 +12,13 @@ import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.ys.tools.vo.ReturnVo;
 import com.ys.ucenter.api.IOrgApi;
+import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.company.Company;
 import com.ys.ucenter.model.user.Department;
+import com.ys.ucenter.model.vo.PersonnelApiVo;
 import com.ys.yahu.enm.NewsNoticeEnum;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
@@ -24,6 +27,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +54,8 @@ public class NewsIndexController extends BaseController {
 	private static Logger logger = Logger.getLogger(NewsIndexController.class);
 
 	@Resource
+	private IPersonnelApi personnelApi;
+	@Resource
 	private IOrgApi orgApi ;
 	@Resource
 	private INewsTypeService newsTypeService;
@@ -65,6 +71,8 @@ public class NewsIndexController extends BaseController {
 	private INewsFileService newsFileService;
 	@Resource
 	private INewsNoticeProcessService newsNoticeProcessService;
+	@Resource
+	private INewsSignRecordService newsSignRecordService;
 
 	/**
 	 * 通用获取新闻资讯信息
@@ -201,6 +209,165 @@ public class NewsIndexController extends BaseController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return resultMap;
+	}
+
+	/**
+	 * 通用获取详情页面数据
+	 * @param request
+	 * @param response
+	 * @param id
+	 * @return
+	 * @Description:
+	 * @author v-zhaohaishan 2017年7月14日 上午10:23:19
+	 */
+	@GetMapping("/getNewsNoticePage")
+	@ApiOperation("通用获取详情页面数据")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name="id", value = "id", dataType = "String", paramType = "query"),
+	})
+	public Map<String, Object> getNewsNoticePage(String id, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response){
+
+		NewsNotice noticeById;
+		try {
+			noticeById = newsNoticeService.getNoticeById(id);
+			String typeId = StringUtils.isNotBlank(noticeById.getTypeId())?noticeById.getTypeId():noticeById.getTypeIdArray().split(",")[0];
+			NewsType newsTypeById = newsTypeService.getNewsTypeById(typeId);
+			String sn = newsTypeById.getSn();
+			if(sn.indexOf("notice") > 0){
+				return this.noticeDetail(id, null, request, response);
+			}else if(sn.equals("company_news")||sn.equals("itrend_news")
+					||sn.equals("finance_info")||sn.equals("finance_pro")
+					||sn.equals("finance_expense")||sn.equals("rszd")){
+				return this.newsDetail(id,null, request, response);
+			}else if(sn.equals("special_events")){
+				return this.activityDetail(id, request, response);
+			}else if(sn.equals("industry_news")){
+				return this.industryDetail(id, request, response);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error( "NewsIndexController-getNewsNoticePage:" + e );
+		}
+		return null;
+	}
+
+	/**
+	 * 专题活动详情
+	 * @param id
+	 * @param request
+	 * @param response
+	 * @return
+	 * @Description:
+	 * @author v-zhaohaishan 2017年7月14日 上午9:45:15
+	 */
+	@GetMapping("/activityDetail")
+	@ApiOperation("专题活动详情")
+	@ApiImplicitParams({})
+	public Map<String, Object> activityDetail(String id, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response){
+		Map<String, Object> resultMap = new HashMap<>();
+		UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
+		try {
+			NewsNotice news = newsNoticeService.getFullById(id,userSessionInfo.getNo(),userSessionInfo.getDepId());
+			newsNoticeVisitLogService.insertNewsNoticeVisitLog(userSessionInfo, CommUtils.getRealRemoteIP(request),id, NewsNoticeEnum.NEWS);
+			NewsSignRecord newsSignRecord = new NewsSignRecord();
+			newsSignRecord.setNewsId(id);
+			newsSignRecord.setUserNo(userSessionInfo.getNo());
+			List<NewsSignRecord> all = newsSignRecordService.getAll(newsSignRecord);
+			if(CollectionUtils.isNotEmpty(all)){
+				resultMap.put("already", 1);
+			}
+			if (news.getStartTime()==null||news.getEndTime()==null||news.getStartTime().getTime() > new Date().getTime()
+					|| news.getEndTime().getTime() < new Date().getTime()) {
+				resultMap.put("available", 0);
+			}else{
+				resultMap.put("available", 1);
+			}
+			resultMap.put("news", news);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error( "NewsIndexController-activityDetail:" + e );
+		}
+		return resultMap;
+	}
+
+
+	/**
+	 * 	动态详情
+	 * @param id
+	 * @param request
+	 * @param response
+	 * @return
+	 * @Description:
+	 * @author v-zhaohaishan 2017年7月13日 上午8:59:53
+	 */
+	@GetMapping("newsDetail")
+	@ApiOperation("动态详情")
+	@ApiImplicitParams({})
+	public Map<String, Object> newsDetail(String id, String source, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response){
+		Map<String, Object> resultMap = new HashMap<>(  );
+		try {
+			UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
+			if(StringUtils.isNotBlank(source)&&source.equals("loginPage")||userSessionInfo==null){
+				NewsNotice news = newsNoticeService.getFullById(id);
+				resultMap.put("news", news);
+				resultMap.put("flag", 0);//0 来自不需要登录请求的标示
+			}else{
+				String no = userSessionInfo.getNo();
+				ReturnVo<PersonnelApiVo> ReturnVo = personnelApi.getPersonnelApiVoByNo(no);
+				PersonnelApiVo PersonnelApiVo = ReturnVo.getDatas().get(0);
+				List<String> rangeDeftId = getRangeDeftId(PersonnelApiVo.getDeptId());
+				NewsNotice news = newsNoticeService.getFullById(id,userSessionInfo.getNo(),userSessionInfo.getDepId());
+				if(news!=null){
+					newsNoticeVisitLogService.insertNewsNoticeVisitLog(userSessionInfo, CommUtils.getRealRemoteIP(request),id, NewsNoticeEnum.NEWS);
+					List<NewsNotice> newsByKeyword = newsNoticeService.getNewsByKeyword(news.getTypeId(),news.getKeyword(),rangeDeftId,id);
+					NewsType newsType = newsTypeService.getNewsTypeById(news.getTypeId());
+					resultMap.put("news", news);
+					resultMap.put("newsByKeyword", newsByKeyword);
+					resultMap.put("newsType",newsType);
+					resultMap.put("flag", 1);//1需要登录请求的标示
+				}
+			}
+			NewsFile newsFile = new NewsFile();
+			newsFile.setRefId(id);
+			List<NewsFile> files = newsFileService.getAll(newsFile);
+			resultMap.put("files", files);//附件
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error( "NewsIndexController-newsDetail:" + e );
+		}
+		return resultMap;
+	}
+
+	@GetMapping("/industryDetail")
+	public Map<String, Object> industryDetail(String id,HttpServletRequest request, HttpServletResponse response){
+		Map<String, Object> resultMap = new HashMap<>();
+		UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
+		String no = userSessionInfo.getNo();
+		ReturnVo<PersonnelApiVo> ReturnVo = personnelApi.getPersonnelApiVoByNo(no);
+		PersonnelApiVo PersonnelApiVo = ReturnVo.getDatas().get(0);
+		List<String> rangeDeftId = getRangeDeftId(PersonnelApiVo.getDeptId());
+		try {
+			NewsNotice news = newsNoticeService.getFullById(id,userSessionInfo.getNo(),userSessionInfo.getDepId());
+			if(news!=null){
+				newsNoticeVisitLogService.insertNewsNoticeVisitLog(userSessionInfo, CommUtils.getRealRemoteIP(request),id, NewsNoticeEnum.NEWS);
+				//热门文章------开始
+				Query query = new Query(5);
+				Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
+				sqlOrderBy.put("visit_count", ORDERBY.DESC);
+				query.setSqlOrderBy(sqlOrderBy);
+				NewsNotice notice = new NewsNotice();
+				notice.setTypeId(news.getTypeId());
+				notice.setRangeDeftId(rangeDeftId);
+				PagerModel<NewsNotice> pagerModelByQueryOfRange = newsNoticeService.getPagerModelByQueryOfRange(notice, query,no);
+				//------------结束
+				resultMap.put("news", news);
+				resultMap.put("hotter", pagerModelByQueryOfRange.getRows());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error( "NewsIndexController-industryDetail:" + e );
 		}
 		return resultMap;
 	}
