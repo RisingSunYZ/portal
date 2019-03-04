@@ -11,8 +11,7 @@ import com.dragon.flow.vo.mongdb.SearchExecutionVo;
 import com.dragon.flow.vo.mongdb.SearchTaskVo;
 import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.web.controller.BaseController;
-import com.dragon.tools.common.JsonUtils;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
@@ -49,7 +48,7 @@ public class ProcessListController extends BaseController {
 
     @Autowired
     private IFlowApi flowApi;
-    @Resource
+    @Autowired
     IPersonnelApi personnelApi;
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
