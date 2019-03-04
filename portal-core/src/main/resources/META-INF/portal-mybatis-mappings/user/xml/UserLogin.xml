@@ -92,6 +92,13 @@
         from TBL_PORTAL_USER_LOGIN_INFO t
         where USER_NAME = #{username} or MOBILE=#{username} or USER_NO=#{username} or EMAIL=#{username}
     </select>
+
+    <select id="getUserByNameAndPwd" resultMap="UserLoginResultMap" parameterType="com.dragon.portal.model.user.UserLogin" >
+        select
+        <include refid="Base_Column_List" />
+        from TBL_PORTAL_USER_LOGIN_INFO t
+        where (USER_NAME = #{username} or MOBILE=#{username} or USER_NO=#{username} or EMAIL=#{username}) and password={password}
+    </select>
     
     <select id="getAll" parameterType="com.dragon.portal.model.user.UserLogin" resultMap="UserLoginResultMap">
         select * from TBL_PORTAL_USER_LOGIN_INFO t where 1=1

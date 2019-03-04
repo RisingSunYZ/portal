@@ -57,29 +57,24 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	 */
 	public ReturnVo updateCheckLogin(String username , String password, HttpSession session)throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"用户或密码错误！");
-		//查询用户id
-		List<UserLogin> list = userLoginDao.getUserLoginByUserName(username);
+		UserLogin userLogin = new UserLogin();
+		userLogin.setUserName(username);
+		userLogin.setPassword(MD5Util.getMD5String(password));
+		List<UserLogin> list = userLoginDao.getUserByNameAndPwd(userLogin);
 		if(CollectionUtils.isNotEmpty(list)) {
 			UserLogin user = list.get(0);
-			//对比不加密密码
-			boolean check = MD5Util.checkPassword(password, user.getPassword());
-			if(!check){//对比加密密码
-				check= password.equals(user.getPassword());
-			}
-			if (check) {
-				//记录上次登录时间
-				user.setLastLoginTime(new Date());
-				userLoginDao.updateUserLogin(user);
+			//记录上次登录时间
+			user.setLastLoginTime(new Date());
+			userLoginDao.updateUserLogin(user);
 
-				//返回结果
-				returnVo = new ReturnVo(ReturnCode.SUCCESS,"登录成功！");
-				user.setPassword(null);
-				returnVo.setData(user);
+			//返回结果
+			returnVo = new ReturnVo(ReturnCode.SUCCESS,"登录成功！");
+			user.setPassword(null);
+			returnVo.setData(user);
 
-				//保存session
-				session.setAttribute(FormConstant.USER_UID, user.getUserName());
-				session.setAttribute(FormConstant.SYS_USER, user);
-			}
+			//保存session
+			session.setAttribute(FormConstant.USER_UID, user.getUserName());
+			session.setAttribute(FormConstant.SYS_USER, user);
 		}
 		return returnVo;
 	}

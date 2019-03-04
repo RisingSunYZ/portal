@@ -1,6 +1,8 @@
 package com.dragon.portal.model.user;
 
 import com.dragon.tools.common.BaseModel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,24 +15,25 @@ import java.util.Date;
  * @Version: 1.1.0
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
+@ApiModel(value="用户登录 UserLogin",description="用户登录UserLogin")
 public class UserLogin extends BaseModel implements Serializable{
 
     private String id;
-
+    @ApiModelProperty(value="用户名",name="userName")
     private String userName;
-
+    @ApiModelProperty(value="真实姓名",name="realName")
     private String realName;
-
+    @ApiModelProperty(value="工号",name="userNo")
     private String userNo;
-
+    @ApiModelProperty(value="邮箱",name="email")
     private String email;
-
+    @ApiModelProperty(value="手机号",name="mobile")
     private String mobile;
-
+    @ApiModelProperty(value="密码",name="password")
     private String password;
-
+    @ApiModelProperty(value="上次登录时间",name="lastLoginTime")
     private Date lastLoginTime;
-
+    @ApiModelProperty(value="状态",name="status")
     private Integer status;
 
     public String getId() {

@@ -1,5 +1,7 @@
 package com.dragon.portal.rest.controller.user;
 
+import com.dragon.portal.component.ApiJsonObject;
+import com.dragon.portal.component.ApiJsonProperty;
 import com.dragon.portal.constant.FormConstant;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.service.user.IUserLoginService;
@@ -35,26 +37,6 @@ public class UserLoginController extends BaseController{
 
     @Resource
     private IUserLoginService userLoginService;
-//    /**
-//     * Test
-//     * @param id
-//     * @return
-//     */
-//    @GetMapping("/getById/{id}")
-//    @ApiOperation("通过ID获取数据")
-//    @ApiImplicitParam(name = "id", value = "ID", paramType = "path", required = true, dataType = "String")
-//    public ReturnVo getById(@PathVariable String id) {
-//        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败！");
-//        try {
-//
-//            returnVo.setMsg("查询数据成功！");
-//        } catch (Exception e) {
-//            logger.error("UserLoginController-getById:", e);
-//            e.printStackTrace();
-//            returnVo.setMsg("通过ID：【"+id+"】查询数据异常！" + e.getMessage());
-//        }
-//        return returnVo;
-//    }
 
     /**
      * 登录
@@ -62,18 +44,15 @@ public class UserLoginController extends BaseController{
      */
     @PostMapping("/login")
     @ApiOperation("登录")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", paramType = "form", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "password", value = "密码", paramType = "form", required = true, dataType = "String")
-    })
-    public ReturnVo login(@RequestBody UserLogin userLogin,HttpServletRequest request) {
+    public ReturnVo<String> login(@ApiJsonObject ({
+            @ApiJsonProperty(key="username",description = "用户名"),
+            @ApiJsonProperty(key="password",description = "密码")}
+    )@RequestBody UserLogin userLogin, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
-        ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败！");
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败！");
         try {
-            if(StringUtils.isNotEmpty(userLogin.getUserName())&&StringUtils.isNotEmpty(userLogin.getPassword())){
-                returnVo = userLoginService.updateCheckLogin(userLogin.getUserName(),userLogin.getPassword(),session);
-            }
+            returnVo = userLoginService.updateCheckLogin(userLogin.getUserName(),userLogin.getPassword(),session);
         } catch (Exception e) {
             logger.error("UserLoginController-login:", e);
             e.printStackTrace();
