@@ -21,28 +21,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ReferenceDubboApiConfig {
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IFlowApi flowApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private ICusFlowApi cusFlowApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IMisApi misApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IMqPmsApi iMqPmsApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IPmsApi iPmsApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IPersonnelApi personnelApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IOrgApi orgApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IPrivilegeApi privilegeApi;
 
 

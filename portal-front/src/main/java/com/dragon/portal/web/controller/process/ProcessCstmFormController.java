@@ -8,8 +8,8 @@ import com.dragon.flow.model.form.FormInfo;
 import com.dragon.flow.model.form.FormItem;
 import com.dragon.flow.vo.form.FormDesInfoVo;
 import com.dragon.portal.service.basedata.IDicItemService;
-import com.dragon.portal.vo.process.BaseFormVo;
 import com.dragon.portal.vo.process.ProcessMainVo;
+import com.dragon.portal.vo.process.BaseFormVo;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.web.controller.BaseController;
 import com.ys.tools.common.DateUtil;
@@ -22,7 +22,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -68,7 +67,7 @@ public class ProcessCstmFormController extends BaseController {
 			// 设置流程发起者
 //			processMainVo = processMainComponent.setProcessSenderNo(processMainVo, loginUser);
 
-			com.dragon.tools.vo.ReturnVo<FormDesInfoVo> rVo = cusFlowApi.getFormDesInfoVo(processMainVo.getModelKey(), processMainVo.getBizId());
+			com.dragon.tools.vo.ReturnVo<FormDesInfoVo> rVo = null;//cusFlowApi.getFormDesInfoVo(processMainVo.getModelKey(), processMainVo.getBizId());
 			if(FlowConstant.SUCCESS.equals(rVo.getCode())){
 				FormDesInfoVo formDesInfoVo = rVo.getData();
 				FormInfo formInfo = formDesInfoVo.getFormInfo();
