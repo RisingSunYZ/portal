@@ -1,6 +1,7 @@
 
 package com.dragon.portal.service.user.impl;
 
+import com.dragon.portal.constant.FormConstant;
 import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.dao.user.IUserLoginDao;
 import com.dragon.portal.model.user.UserLogin;
@@ -60,8 +61,11 @@ public class UserLoginServiceImpl implements IUserLoginService {
 		List<UserLogin> list = userLoginDao.getUserLoginByUserName(username);
 		if(CollectionUtils.isNotEmpty(list)) {
 			UserLogin user = list.get(0);
-			//登录
+			//对比不加密密码
 			boolean check = MD5Util.checkPassword(password, user.getPassword());
+			if(!check){//对比加密密码
+				check= password.equals(user.getPassword());
+			}
 			if (check) {
 				//记录上次登录时间
 				user.setLastLoginTime(new Date());
@@ -73,8 +77,8 @@ public class UserLoginServiceImpl implements IUserLoginService {
 				returnVo.setData(user);
 
 				//保存session
-				session.setAttribute("uid", user.getUserName());
-				session.setAttribute("user", user);
+				session.setAttribute(FormConstant.USER_UID, user.getUserName());
+				session.setAttribute(FormConstant.SYS_USER, user);
 			}
 		}
 		return returnVo;
@@ -96,10 +100,10 @@ public class UserLoginServiceImpl implements IUserLoginService {
 			String mobile = user.getMobile();
 			String code = String.valueOf((int)((Math.random()*9+1)*100000));
 
-			session.setAttribute("verificationCode", code);
-			session.setAttribute("temporaryUserNo",userNo);//记录工号，后续验证时使用
+			session.setAttribute(FormConstant.VERIFICATION_CODE, code);
+			session.setAttribute(FormConstant.TEMPORARY_USER_UID,userNo);//记录工号，后续验证时使用
 			//将生成的验证码 存入redis 10分钟过期
-			redisService.set(userNo+"-sendVerificationCode", code,900l);
+			redisService.set(userNo+"-"+FormConstant.VERIFICATION_CODE, code,900l);
 			//发短信
 			SmsInfo smsInfo = new SmsInfo(commonProperties.getSmsMobileCode());
 			smsInfo.setType(SmsModeTypeEnum.PROMPT.getType());
@@ -126,15 +130,14 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	 */
 	public ReturnVo getVerificationCodeCheck(String code, HttpSession session) throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"短信验证码不正确!");
-		String userNo = (String)session.getAttribute("temporaryUserNo");
+		//临时用户
+		String userNo = (String)session.getAttribute(FormConstant.TEMPORARY_USER_UID);
 		if(StringUtils.isNotEmpty(userNo)) {
-			String verificationCode = (String) redisService.get(userNo + "-sendVerificationCode");
+			String verificationCode = (String) redisService.get(userNo + "-"+FormConstant.VERIFICATION_CODE);
 			if (StringUtils.isNotEmpty(code) && StringUtils.trim(code).equals(verificationCode)) {
 				//记录当前用户已通过手机短信校验
-				redisService.set(userNo+"-checkCodeFlag",PortalConstant.SUCCESS,900l);//
+				redisService.set(userNo+"-"+FormConstant.CHECK_CODE_FLAG,PortalConstant.SUCCESS,900l);//
 				returnVo = new ReturnVo(ReturnCode.SUCCESS, "验证码成功！");
-			}else{
-
 			}
 		}
 		return returnVo;
@@ -150,10 +153,10 @@ public class UserLoginServiceImpl implements IUserLoginService {
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"修改失败！");
 
 		//手机验证时记录的工号
-		String userNo = (String)session.getAttribute("temporaryUserNo");
+		String userNo = (String)session.getAttribute(FormConstant.TEMPORARY_USER_UID);
 		if(StringUtils.isNotEmpty(userNo)) {
 			//获取手机验证码校验记录
-			String checkCodeFlag = (String) redisService.get(userNo + "-checkCodeFlag");
+			String checkCodeFlag = (String) redisService.get(userNo + "-"+FormConstant.CHECK_CODE_FLAG);
 			List<UserLogin> userLoginList = userLoginDao.getUserLoginByUserName(userNo);
 			if (CollectionUtils.isNotEmpty(userLoginList) && PortalConstant.SUCCESS.equals(checkCodeFlag)) {
                 UserLogin user = userLoginList.get(0);
@@ -178,7 +181,7 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	public ReturnVo updatePwdAfterLogin(String oldPassword,String password, HttpSession session) throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"修改失败！");
 		//获取登录后的工号
-		String userNo = (String)session.getAttribute("uid");
+		String userNo = (String)session.getAttribute(FormConstant.USER_UID);
 		if(StringUtils.isNotEmpty(userNo)) {
 			List<UserLogin> userLoginList = userLoginDao.getUserLoginByUserName(userNo);
 			if (CollectionUtils.isNotEmpty(userLoginList)) {

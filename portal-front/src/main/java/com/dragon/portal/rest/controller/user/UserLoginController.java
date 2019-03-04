@@ -1,5 +1,6 @@
 package com.dragon.portal.rest.controller.user;
 
+import com.dragon.portal.constant.FormConstant;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.service.user.IUserLoginService;
 import com.dragon.portal.web.controller.BaseController;
@@ -68,10 +69,11 @@ public class UserLoginController extends BaseController{
     public ReturnVo login(@RequestParam String username ,@RequestParam String password,HttpServletRequest request) {
 
         HttpSession session = request.getSession();
-        ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败！");
+        ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "登录失败！");
         try {
-            String a = (String)session.getAttribute("uid");
-            returnVo = userLoginService.updateCheckLogin(username,password,session);
+            if(StringUtils.isNotEmpty(username)&&StringUtils.isNotEmpty(password)){
+                returnVo = userLoginService.updateCheckLogin(username,password,session);
+            }
         } catch (Exception e) {
             logger.error("UserLoginController-login:", e);
             e.printStackTrace();
@@ -90,8 +92,8 @@ public class UserLoginController extends BaseController{
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "注销失败！");
         try {
             HttpSession session = request.getSession();
-            session.setAttribute("uid",null);
-            session.setAttribute("user",null);
+            session.setAttribute(FormConstant.USER_UID,null);
+            session.setAttribute(FormConstant.SYS_USER,null);
             returnVo = new ReturnVo(ReturnCode.SUCCESS, "注销成功！");
         } catch (Exception e) {
             logger.error("UserLoginController-out:", e);
