@@ -3399,7 +3399,7 @@ define("moxie/core/utils/Mime", [
 		"image/jpeg,jpg jpeg jpe," +
 		"image/photoshop,psd," +
 		"image/png,png," +
-		"image/svg+xml,svg svgz," +
+		"image/svg+cstm1.xml,svg svgz," +
 		"image/tiff,tiff tif," +
 		"text/plain,asc txt text diff log," +
 		"text/html,htm html xhtml," +
