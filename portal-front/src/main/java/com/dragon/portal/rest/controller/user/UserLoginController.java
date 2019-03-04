@@ -66,13 +66,13 @@ public class UserLoginController extends BaseController{
             @ApiImplicitParam(name = "username", value = "用户名", paramType = "form", required = true, dataType = "String"),
             @ApiImplicitParam(name = "password", value = "密码", paramType = "form", required = true, dataType = "String")
     })
-    public ReturnVo login(@RequestParam String username ,@RequestParam String password,HttpServletRequest request) {
+    public ReturnVo login(@RequestBody UserLogin userLogin,HttpServletRequest request) {
 
         HttpSession session = request.getSession();
-        ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "登录失败！");
+        ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败！");
         try {
-            if(StringUtils.isNotEmpty(username)&&StringUtils.isNotEmpty(password)){
-                returnVo = userLoginService.updateCheckLogin(username,password,session);
+            if(StringUtils.isNotEmpty(userLogin.getUserName())&&StringUtils.isNotEmpty(userLogin.getPassword())){
+                returnVo = userLoginService.updateCheckLogin(userLogin.getUserName(),userLogin.getPassword(),session);
             }
         } catch (Exception e) {
             logger.error("UserLoginController-login:", e);
