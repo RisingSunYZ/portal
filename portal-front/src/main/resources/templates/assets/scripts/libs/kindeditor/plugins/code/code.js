@@ -28,7 +28,7 @@ KindEditor.plugin('code', function(K) {
 				'<option value="vb">ASP/VB</option>',
 				'<option value="cpp">C/C++</option>',
 				'<option value="cs">C#</option>',
-				'<option value="xml">XML</option>',
+				'<option value="cstm1.xml">XML</option>',
 				'<option value="bsh">Shell</option>',
 				'<option value="">Other</option>',
 				'</select>',

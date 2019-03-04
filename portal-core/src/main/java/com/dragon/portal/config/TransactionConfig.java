@@ -2,6 +2,7 @@ package com.dragon.portal.config;
 
 import com.dragon.tools.common.SpringContextHolder;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -18,7 +19,7 @@ import java.util.Properties;
  */
 @Configuration
 public class TransactionConfig {
-    @Resource
+    @Autowired
     private DataSourceTransactionManager transactionManager;
 
     @Bean(name = "txAdvice")

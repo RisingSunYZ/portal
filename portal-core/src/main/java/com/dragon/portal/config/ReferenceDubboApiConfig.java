@@ -1,6 +1,5 @@
 package com.dragon.portal.config;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.dragon.flow.api.ICusFlowApi;
 import com.dragon.flow.api.IFlowApi;
 import com.ecnice.privilege.api.privilege.IPrivilegeApi;
@@ -10,6 +9,7 @@ import com.ys.mqpms.api.IMqPmsApi;
 import com.ys.pms.api.IPmsApi;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,28 +22,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ReferenceDubboApiConfig {
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IFlowApi flowApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private ICusFlowApi cusFlowApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IMisApi misApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IMqPmsApi iMqPmsApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IPmsApi iPmsApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IPersonnelApi personnelApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IOrgApi orgApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private IPrivilegeApi privilegeApi;
 
     @Reference(version = "1.0")
