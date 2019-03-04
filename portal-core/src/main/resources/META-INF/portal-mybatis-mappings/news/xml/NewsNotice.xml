@@ -1,0 +1,942 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.news.INewsNoticeDao" >
+    <resultMap id="NewsNoticeMap" type="com.dragon.portal.model.news.NewsNotice" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        
+        <result column="type_id" property="typeId" jdbcType="VARCHAR" />
+
+        <result column="type_id_array" property="typeIdArray" jdbcType="VARCHAR" />
+
+        <result column="owner_id" property="ownerId" jdbcType="VARCHAR" />
+
+        <result column="owner_name" property="ownerName" jdbcType="VARCHAR" />
+
+        <result column="category_id" property="categoryId" jdbcType="VARCHAR" />
+
+        <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+
+        <result column="signatory" property="signatory" jdbcType="VARCHAR" />
+
+        <result column="signatory_no" property="signatoryNo" jdbcType="VARCHAR" />
+        
+        <result column="approve_remark" property="approveRemark" jdbcType="VARCHAR" />
+
+        <result column="content" property="content" jdbcType="LONGVARCHAR" />
+        
+        <result column="publish_status" property="publishStatus" jdbcType="INTEGER" />
+        
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+
+        <result column="writing_time" property="writingTime" jdbcType="TIMESTAMP" />
+
+        <result column="thumb_img" property="thumbImg" jdbcType="VARCHAR" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+        
+        <result column="visit_count" property="visitCount" jdbcType="INTEGER" />
+        
+        <result column="sign_count" property="signCount" jdbcType="INTEGER" />
+        
+        <result column="article_no" property="articleNo" jdbcType="VARCHAR" />
+        
+        <result column="keyword" property="keyword" jdbcType="VARCHAR" />
+        
+        <result column="must_read" property="mustRead" jdbcType="INTEGER" />
+        
+        <result column="source_title" property="sourceTitle" jdbcType="VARCHAR" />
+        
+        <result column="source_url" property="sourceUrl" jdbcType="VARCHAR" />
+        
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        
+        <result column="is_sign" property="isSign" jdbcType="INTEGER" />
+        
+        <result column="photo" property="photo" jdbcType="VARCHAR" />
+        
+        <result column="range_name" property="rangeName" jdbcType="VARCHAR" />
+        
+        <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+        
+        <result column="create_company_id" property="createCompanyId" jdbcType="VARCHAR" />
+        
+        <result column="create_company_name" property="createCompanyName" jdbcType="VARCHAR" />
+
+        <result column="create_deptment_id" property="createDeptmentId" jdbcType="VARCHAR" />
+
+        <result column="create_deptment_name" property="createDeptmentName" jdbcType="VARCHAR" />
+
+        <result column="already_read" property="alreadyRead" jdbcType="INTEGER" />
+        
+        <result column="thumbs_up" property="thumbsUp" jdbcType="INTEGER" />
+        
+        <result column="comment_count" property="commentCount" jdbcType="INTEGER" />
+        
+     	<result column="has_attachment" property="hasAttachment" jdbcType="INTEGER" />
+
+        <result column="no" property="no" jdbcType="VARCHAR" />
+
+        <result column="username" property="username" jdbcType="VARCHAR" />
+
+        <result column="code" property="code" jdbcType="VARCHAR" />
+
+        <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    
+    <sql id="Base_Column_List" >
+        id,
+        title,
+        type_id,
+        type_id_array,
+        owner_id,
+        owner_name,
+        category_id,
+        category_name,
+        signatory,
+        signatory_no,
+        approve_remark,
+        content,
+        publish_status,
+        publish_time,
+        writing_time,
+        thumb_img,
+        sort_no,
+        status,
+        remark,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag,
+        visit_count,
+        thumbs_up,
+        comment_count,
+        article_no,
+        keyword,
+        must_read,
+        source_title,
+        source_url,
+       	start_time,
+        end_time,
+        is_sign,
+        create_company_id,
+        create_company_name,
+        create_deptment_id,
+        create_deptment_name
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="title!=null and title!=''">
+        and title = #{title,jdbcType=VARCHAR}
+        </if>
+        <if test="typeId!=null and typeId!=''">
+        and type_id = #{typeId,jdbcType=VARCHAR}
+        </if>
+        <if test="content!=null and content!=''">
+        and content = #{content,jdbcType=LONGVARCHAR}
+        </if>
+        <if test="publishStatus!=null">
+        and publish_status = #{publishStatus,jdbcType=INTEGER}
+        </if>
+        <if test="publishTime!=null and publishTime!=''">
+        and publish_time = #{publishTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="writingTime!=null and writingTime!=''">
+        and writing_time = #{writingTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="thumbImg!=null and thumbImg!=''">
+        and thumb_img = #{thumbImg,jdbcType=VARCHAR}
+        </if>
+        <if test="sortNo!=null">
+        and sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="remark!=null and remark!=''">
+        and remark = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+        <if test="ownerId!=null and ownerId!=''">
+        and owner_id = #{ownerId,jdbcType=VARCHAR}
+        </if>
+        <if test="categoryId!=null and categoryId!=''">
+        and category_id = #{categoryId,jdbcType=VARCHAR}
+        </if>
+        <if test="approveRemark!=null and approveRemark!=''">
+        and approve_remark = #{approveRemark,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    
+    <sql id="noticeAll">
+    	SELECT n.*,f.photo,c.range_name,d.creator_name<if test="userNo!=null and userNo!=''">,CASE WHEN (v.ref_id is not null) THEN 1 ELSE 0 END already_read,</if> 
+		CASE WHEN (ff.file_num > 0) THEN 1 ELSE 0 END has_attachment FROM tbl_pt_news_notice n
+		LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_deft_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 2 GROUP BY news_notice_id) a ON a.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_company_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 1 GROUP BY news_notice_id) b ON b.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_name) range_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 GROUP BY news_notice_id) c ON c.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_name) creator_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 1 GROUP BY news_notice_id) d ON d.news_notice_id = n.id
+		left join 
+		(select file_path photo,ref_id from (
+		select * from tbl_pt_news_file where del_flag = 1 and file_type = 5 order by sort_no desc ) s GROUP BY ref_id) f 
+		on n.id = f.ref_id
+		<if test="userNo!=null and userNo!=''">
+		LEFT JOIN (SELECT ref_id from tbl_pt_news_notice_visitlog where visitor = #{userNo,jdbcType=VARCHAR} GROUP BY ref_id) v on v.ref_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(user_no) pp_user_no,type_id from tbl_pt_news_permission where state = 1 and del_flag = 1 GROUP BY type_id) pp
+            on (pp.type_id = n.type_id or type_id_array like CONCAT('%',pp.type_id,'%'))
+		</if>
+		LEFT JOIN (select COUNT(*) file_num,ref_id from tbl_pt_news_file where del_flag = 1 GROUP BY ref_id) ff on ff.ref_id = n.id
+        where 1=1 
+        and (n.type_id = #{typeId,jdbcType=VARCHAR} or n.type_id_array like CONCAT('%',#{typeId,jdbcType=VARCHAR},'%'))
+        and (end_time is null  or end_time &gt;= now())
+	    and (start_time is null  or start_time &lt;= now())
+        <if test="title!=null and title!=''">
+        and title like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+        </if>
+        and publish_status = 1
+        and publish_time &lt;= now() 
+        and del_flag = 1
+        and        	
+        <if test="userNo!=null and userNo!=''">
+       	(pp.pp_user_no like CONCAT('%',#{userNo,jdbcType=VARCHAR},'%') or
+        </if>
+        (b.range_company_id is not null <if test="rangeDeftId!=null">or
+        <foreach item="item" index="index" collection="rangeDeftId" open="" separator="or" close="">
+		 	a.range_deft_id LIKE CONCAT('%',#{item},'%')
+		</foreach></if>
+		)
+	 	<if test="userNo!=null and userNo!=''">
+	 	)
+	 	</if>
+        GROUP BY id
+		order by create_time desc
+    </sql>
+    
+    <select id="getPagerModelByQueryOfRangeApi" parameterType="com.dragon.portal.model.news.NewsNotice" resultMap="NewsNoticeMap">
+		SELECT n.* FROM ( <include refid="noticeAll" /> ) n
+		ORDER BY IF(n.publish_time &lt; '2018-01-08 00:00:00',1,n.already_read),n.publish_time DESC
+    </select>
+    
+    <select id="getNoticeById" resultMap="NewsNoticeMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_news_notice
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getFullById" parameterType="java.util.Map" resultMap="NewsNoticeMap">
+		SELECT n.*,f.photo,c.range_name,d.creator_name FROM tbl_pt_news_notice n
+		LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_deft_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 2 GROUP BY news_notice_id) a ON a.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_company_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 1 GROUP BY news_notice_id) b ON b.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_name) range_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 GROUP BY news_notice_id) c ON c.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_name) creator_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 1 GROUP BY news_notice_id) d ON d.news_notice_id = n.id
+		left join 
+		(select file_path photo,ref_id from (
+		select * from tbl_pt_news_file where del_flag = 1 and file_type = 5 order by sort_no desc ) s GROUP BY ref_id) f 
+		on n.id = f.ref_id
+		<if test="userNo!=null and userNo!=''">
+		LEFT JOIN (SELECT GROUP_CONCAT(user_no) pp_user_no,type_id from tbl_pt_news_permission where state = 1 and del_flag = 1 GROUP BY type_id) pp
+            on (pp.type_id = n.type_id or type_id_array like CONCAT('%',pp.type_id,'%'))
+	 	</if>
+        where id = #{id,jdbcType=VARCHAR}
+        <if test="userNo!=null and userNo!=''">
+        and (pp.pp_user_no like CONCAT('%',#{userNo,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="rangeDeftId!=null and rangeDeftId.size > 0">
+            or (b.range_company_id is not null or
+                <foreach item="item" index="index" collection="rangeDeftId" open="" separator="or" close="">
+                    a.range_deft_id LIKE CONCAT('%',#{item},'%')
+                </foreach>
+            )
+        </if>
+        <if test="userNo!=null and userNo!=''">
+            )
+        </if>
+        GROUP BY id
+    </select>
+    
+    <select id="getNewsByKeyword" resultMap="NewsNoticeMap" parameterType="java.util.Map" >
+    	SELECT n.*,f.photo,c.range_name,d.creator_name FROM tbl_pt_news_notice n
+		LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_deft_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 2 GROUP BY news_notice_id) a ON a.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_company_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 1 GROUP BY news_notice_id) b ON b.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_name) range_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 GROUP BY news_notice_id) c ON c.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_name) creator_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 1 GROUP BY news_notice_id) d ON d.news_notice_id = n.id
+		left join 
+		(select file_path photo,ref_id from (
+		select * from tbl_pt_news_file where del_flag = 1 and file_type = 5 order by sort_no desc ) s GROUP BY ref_id) f 
+		on n.id = f.ref_id
+        where 1=1 
+        and publish_status = 1
+        and publish_time &lt;= now() 
+        and del_flag = 1
+        and type_id = #{typeId,jdbcType=VARCHAR}
+        and (b.range_company_id is not null or
+        <foreach item="item" index="index" collection="rangeDeftId" open="" separator="or" close="">
+		 	a.range_deft_id LIKE CONCAT('%',#{item},'%')
+		</foreach>
+		)
+        and
+        <foreach item="item" index="index" collection="keywords" open="(" separator="or" close=")">
+		 	keyword LIKE CONCAT('%',#{item},'%')
+		</foreach>
+		and n.id != #{id,jdbcType=VARCHAR}
+        order by publish_time desc limit #{max,jdbcType=INTEGER}
+    </select>
+    
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.news.NewsNotice" resultMap="NewsNoticeMap">
+        select * from tbl_pt_news_notice where 1=1 
+        <include refid="where" />
+    </select>
+
+    <select id="getExportData" parameterType="com.dragon.portal.model.news.NewsNotice" resultMap="NewsNoticeMap">
+        select n.*,s.sign_count,p.no as no ,p.username as username from tbl_pt_news_notice n LEFT JOIN
+        (SELECT COUNT(*) sign_count ,news_id FROM `tbl_pt_news_sign_record` GROUP BY news_id) s
+        on s.news_id = n.id
+        LEFT JOIN tbl_pt_news_notice_process  p ON n.id = p.new_notice_id
+        where 1=1 and publish_status in('1','-1')
+        <if test="typeId!=null and typeId!=''">
+            and (type_id = #{typeId,jdbcType=VARCHAR} or type_id_array like CONCAT('%',#{typeId,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="title!=null and title!=''">
+            and (title like CONCAT('%',#{title,jdbcType=VARCHAR},'%') or article_no like CONCAT('%',#{title,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="createCompanyId!=null and createCompanyId!=''">
+            and create_company_id = #{createCompanyId,jdbcType=VARCHAR}
+        </if>
+        <if test="createDeptmentId!=null and createDeptmentId!=''">
+            and create_deptment_id = #{createDeptmentId,jdbcType=VARCHAR}
+        </if>
+        <if test="categoryId!=null and categoryId!=''">
+            and category_id = #{categoryId,jdbcType=VARCHAR}
+        </if>
+        <if test="ownerId!=null and ownerId!=''">
+            and owner_id = #{ownerId,jdbcType=VARCHAR}
+        </if>
+        <if test="articleNo!=null and articleNo!=''">
+            and (article_no like CONCAT('%',#{articleNo,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="publishStatus!=null">
+            and publish_status = #{publishStatus,jdbcType=INTEGER}
+        </if>
+        <if test="no!=null and no!=''">
+            and p.no = #{no,jdbcType=VARCHAR}
+        </if>
+
+        <if test="beginWritingTime!=null and beginWritingTime!=''">
+            and writing_time <![CDATA[ >= ]]> #{beginWritingTime,jdbcType=VARCHAR}
+        </if>
+        <if test="endWritingTime!=null and endWritingTime!=''">
+            and writing_time <![CDATA[ <= ]]> #{endWritingTime,jdbcType=VARCHAR}
+        </if>
+
+        <if test="createCompanyName!=null and createCompanyName!=''">
+            and create_company_name LIKE CONCAT('%',#{createCompanyName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="createDeptmentName!=null and createDeptmentName!=''">
+            and create_deptment_name LIKE CONCAT('%',#{createDeptmentName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="username!=null and username!=''">
+            and p.username LIKE CONCAT('%',#{username,jdbcType=VARCHAR},'%')
+        </if>
+
+        and n.del_flag = 1
+        order by n.publish_time desc
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.news.NewsNotice" resultMap="NewsNoticeMap">
+        select n.*,s.sign_count,p.no as no ,p.username as username,p.code,p.task_id as taskId from tbl_pt_news_notice n LEFT JOIN
+        (SELECT COUNT(*) sign_count ,news_id FROM `tbl_pt_news_sign_record` GROUP BY news_id) s 
+        on s.news_id = n.id
+        LEFT JOIN tbl_pt_news_notice_process  p ON n.id = p.new_notice_id
+        where 1=1
+        <if test="typeId!=null and typeId!=''">
+        and (type_id = #{typeId,jdbcType=VARCHAR} or type_id_array like CONCAT('%',#{typeId,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="title!=null and title!=''">
+        and (title like CONCAT('%',#{title,jdbcType=VARCHAR},'%') or article_no like CONCAT('%',#{title,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="createCompanyId!=null and createCompanyId!=''">
+        and create_company_id = #{createCompanyId,jdbcType=VARCHAR}
+        </if>
+        <if test="createDeptmentId!=null and createDeptmentId!=''">
+        and create_deptment_id = #{createDeptmentId,jdbcType=VARCHAR}
+        </if>
+        <if test="categoryId!=null and categoryId!=''">
+        and category_id = #{categoryId,jdbcType=VARCHAR}
+        </if>
+        <if test="ownerId!=null and ownerId!=''">
+        and owner_id = #{ownerId,jdbcType=VARCHAR}
+        </if>
+        <if test="articleNo!=null and articleNo!=''">
+        and (article_no like CONCAT('%',#{articleNo,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="publishStatus!=null">
+            <choose>
+                <when test="publishStatus==1">
+                  AND publish_status=1 and publish_time &lt; sysdate()
+                </when>
+                <when test="publishStatus==2">
+                  AND publish_status=1 and publish_time &gt; sysdate()
+                </when>
+                <otherwise>
+                    and publish_status = #{publishStatus,jdbcType=INTEGER}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="no!=null and no!=''">
+        and p.no = #{no,jdbcType=VARCHAR}
+        </if>
+
+        <if test="beginWritingTime!=null and beginWritingTime!=''">
+            and writing_time <![CDATA[ >= ]]> #{beginWritingTime,jdbcType=VARCHAR}
+        </if>
+        <if test="endWritingTime!=null and endWritingTime!=''">
+            and writing_time <![CDATA[ <= ]]> #{endWritingTime,jdbcType=VARCHAR}
+        </if>
+        and n.del_flag = 1
+		order by n.create_time desc
+    </select>
+
+    <select id="getPagerModelByQueryForAll" parameterType="com.dragon.portal.model.news.NewsNotice" resultMap="NewsNoticeMap">
+        select n.*,s.sign_count,p.no as no ,p.username as username,p.code,p.task_id as taskId from tbl_pt_news_notice n LEFT JOIN
+        (SELECT COUNT(*) sign_count ,news_id FROM `tbl_pt_news_sign_record` GROUP BY news_id) s
+        on s.news_id = n.id
+        LEFT JOIN tbl_pt_news_notice_process  p ON n.id = p.new_notice_id
+        left join tbl_pt_news_type nt on nt.id=n.type_id
+        where 1=1 and publish_status in('1','-1')
+        <if test="typeId!=null and typeId!=''">
+            and (type_id = #{typeId,jdbcType=VARCHAR} or type_id_array like CONCAT('%',#{typeId,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="newsNoticeType!=null and newsNoticeType!=''">
+            and news_temp = #{newsNoticeType,jdbcType=VARCHAR}
+        </if>
+        <if test="title!=null and title!=''">
+            and (title like CONCAT('%',#{title,jdbcType=VARCHAR},'%') or article_no like CONCAT('%',#{title,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="createCompanyId!=null and createCompanyId!=''">
+            and create_company_id = #{createCompanyId,jdbcType=VARCHAR}
+        </if>
+        <if test="createDeptmentId!=null and createDeptmentId!=''">
+            and create_deptment_id = #{createDeptmentId,jdbcType=VARCHAR}
+        </if>
+        <if test="categoryId!=null and categoryId!=''">
+            and category_id = #{categoryId,jdbcType=VARCHAR}
+        </if>
+        <if test="ownerId!=null and ownerId!=''">
+            and owner_id = #{ownerId,jdbcType=VARCHAR}
+        </if>
+        <if test="articleNo!=null and articleNo!=''">
+            and (article_no like CONCAT('%',#{articleNo,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="publishStatus!=null">
+            <choose>
+                <when test="publishStatus==1">
+                    AND publish_status=1 and publish_time &lt; sysdate()
+                </when>
+                <when test="publishStatus==2">
+                    AND publish_status=1 and publish_time &gt; sysdate()
+                </when>
+                <otherwise>
+                    and publish_status = #{publishStatus,jdbcType=INTEGER}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="no!=null and no!=''">
+            and p.no = #{no,jdbcType=VARCHAR}
+        </if>
+
+        <if test="beginWritingTime!=null and beginWritingTime!=''">
+            and writing_time <![CDATA[ >= ]]> #{beginWritingTime,jdbcType=VARCHAR}
+        </if>
+        <if test="endWritingTime!=null and endWritingTime!=''">
+            and writing_time <![CDATA[ <= ]]> #{endWritingTime,jdbcType=VARCHAR}
+        </if>
+
+
+        <if test="createCompanyName!=null and createCompanyName!=''">
+            and create_company_name LIKE CONCAT('%',#{createCompanyName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="createDeptmentName!=null and createDeptmentName!=''">
+            and create_deptment_name LIKE CONCAT('%',#{createDeptmentName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="username!=null and username!=''">
+            and p.username LIKE CONCAT('%',#{username,jdbcType=VARCHAR},'%')
+        </if>
+
+        and n.del_flag = 1
+        order by n.publish_time desc
+    </select>
+    
+    <select id="getPagerModelByQueryOfImage" parameterType="com.dragon.portal.model.news.NewsNotice" resultMap="NewsNoticeMap">
+		SELECT * from tbl_pt_news_notice n left join 
+		(select file_path photo,ref_id from (
+		select * from tbl_pt_news_file where del_flag = 1 and file_type = 5 order by sort_no desc ) s GROUP BY ref_id) f 
+		on n.id = f.ref_id
+        where type_id = #{typeId,jdbcType=VARCHAR}
+        <if test="title!=null and title!=''">
+        and (title like CONCAT('%',#{title,jdbcType=VARCHAR},'%') or article_no like CONCAT('%',#{title,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="publishStatus!=null">
+        and publish_status = #{publishStatus,jdbcType=INTEGER}
+        </if>
+        <if test="createCompanyId!=null and createCompanyId!=''">
+        and create_company_id = #{createCompanyId,jdbcType=VARCHAR}
+        </if>
+        and del_flag = 1
+		order by create_time desc
+    </select>
+    
+    <select id="getPagerModelByQueryOfRange" parameterType="com.dragon.portal.model.news.NewsNotice" resultMap="NewsNoticeMap">
+        SELECT n.id,n.title,n.remark,n.thumb_Img,n.publish_Time,n.source_Url,n.owner_Name,n.visit_Count,n.sort_no,f.photo,c.range_name,d.creator_name<if test="userNo!=null and userNo!=''">,CASE WHEN (v.ref_id is not null) THEN 1 ELSE 0 END already_read</if> FROM tbl_pt_news_notice n
+        LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_deft_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 2 GROUP BY news_notice_id) a ON a.news_notice_id = n.id
+        LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_company_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 1 GROUP BY news_notice_id) b ON b.news_notice_id = n.id
+        LEFT JOIN (SELECT GROUP_CONCAT(org_name) range_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 GROUP BY news_notice_id) c ON c.news_notice_id = n.id
+        LEFT JOIN (SELECT GROUP_CONCAT(org_name) creator_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 1 GROUP BY news_notice_id) d ON d.news_notice_id = n.id
+        left join
+        (select file_path photo,ref_id from (
+        select ref_id,file_path  from tbl_pt_news_file where del_flag = 1 and file_type = 5 order by sort_no desc ) s GROUP BY ref_id) f
+        on n.id = f.ref_id
+        <if test="userNo!=null and userNo!=''">
+            LEFT JOIN (SELECT ref_id from tbl_pt_news_notice_visitlog where visitor = #{userNo,jdbcType=VARCHAR} GROUP BY ref_id) v on v.ref_id = n.id
+            LEFT JOIN (SELECT GROUP_CONCAT(user_no) pp_user_no,type_id from tbl_pt_news_permission where state = 1 and del_flag = 1 GROUP BY type_id) pp
+            on (pp.type_id = n.type_id or type_id_array like CONCAT('%',pp.type_id,'%'))
+        </if>
+        where  (n.type_id = #{typeId,jdbcType=VARCHAR} or n.type_id_array like CONCAT('%',#{typeId,jdbcType=VARCHAR},'%'))
+        and (end_time is null  or end_time &gt;= now())
+        and (start_time is null  or start_time &lt;= now())
+        <if test="title!=null and title!=''">
+            and (title like CONCAT('%',#{title,jdbcType=VARCHAR},'%') or article_no like CONCAT('%',#{title,jdbcType=VARCHAR},'%') or content like CONCAT('%',#{title,jdbcType=VARCHAR},'%'))
+        </if>
+        and publish_status = 1
+        and publish_time &lt;= now()
+        and del_flag = 1
+        and
+        <if test="userNo!=null and userNo!=''">
+            (pp.pp_user_no like CONCAT('%',#{userNo,jdbcType=VARCHAR},'%') or
+        </if>
+        (b.range_company_id is not null
+           <if test="rangeDeftId!=null and rangeDeftId.size > 0">or
+            <foreach item="item" index="index" collection="rangeDeftId" open="" separator="or" close="">
+                a.range_deft_id LIKE CONCAT('%',#{item},'%')
+            </foreach>
+           </if>
+        )
+        <if test="userNo!=null and userNo!=''">
+            )
+        </if>
+        GROUP BY id
+        order by create_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.news.NewsNotice" resultType="int">
+        select count(1) from tbl_pt_news_notice where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertNotice" parameterType="com.dragon.portal.model.news.NewsNotice"  >
+        insert into tbl_pt_news_notice (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{title,jdbcType=VARCHAR},
+        #{typeId,jdbcType=VARCHAR},
+        #{typeIdArray,jdbcType=VARCHAR},
+        #{ownerId,jdbcType=VARCHAR},
+        #{ownerName,jdbcType=VARCHAR},
+        #{categoryId,jdbcType=VARCHAR},
+        #{categoryName,jdbcType=VARCHAR},
+        #{signatory,jdbcType=VARCHAR},
+        #{signatoryNo,jdbcType=VARCHAR},
+        #{approveRemark,jdbcType=VARCHAR},
+        #{content,jdbcType=LONGVARCHAR},
+        #{publishStatus,jdbcType=INTEGER},
+        #{publishTime,jdbcType=TIMESTAMP},
+        #{writingTime,jdbcType=TIMESTAMP},
+        #{thumbImg,jdbcType=VARCHAR},
+        #{sortNo,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{remark,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER},
+        #{visitCount,jdbcType=INTEGER},
+        #{thumbsUp,jdbcType=INTEGER},
+        #{commentCount,jdbcType=INTEGER},
+        #{articleNo,jdbcType=VARCHAR},
+        #{keyword,jdbcType=VARCHAR},
+        #{mustRead,jdbcType=INTEGER},
+        #{sourceTitle,jdbcType=VARCHAR},
+        #{sourceUrl,jdbcType=VARCHAR},
+        #{startTime,jdbcType=TIMESTAMP},
+        #{endTime,jdbcType=TIMESTAMP},
+        #{isSign,jdbcType=INTEGER},
+        #{createCompanyId,jdbcType=VARCHAR},
+        #{createCompanyName,jdbcType=VARCHAR},
+        #{createDeptmentId,jdbcType=VARCHAR},
+        #{createDeptmentName,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="delNoticeById" parameterType="java.lang.String" >
+        delete from tbl_pt_news_notice
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delNoticeByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_news_notice
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateNotice" parameterType="com.dragon.portal.model.news.NewsNotice" >
+        update tbl_pt_news_notice
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null" >
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null" >
+                type_id = #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeIdArray != null" >
+                type_id_array = #{typeIdArray,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerId != null" >
+                owner_id = #{ownerId,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerName != null" >
+                owner_name = #{ownerName,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryId != null" >
+                category_id = #{categoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryName != null" >
+                category_name = #{categoryName,jdbcType=VARCHAR},
+            </if>
+            <if test="signatory != null" >
+                signatory = #{signatory,jdbcType=VARCHAR},
+            </if>
+            <if test="signatoryNo != null" >
+                signatory_no = #{signatoryNo,jdbcType=VARCHAR},
+            </if>
+            <if test="approveRemark != null" >
+                approve_remark = #{approveRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null" >
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="publishStatus != null" >
+                publish_status = #{publishStatus,jdbcType=INTEGER},
+            </if>
+            <if test="publishTime != null" >
+                publish_time = #{publishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="writingTime != null" >
+                writing_time = #{writingTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="thumbImg != null" >
+                thumb_img = #{thumbImg,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+			<if test="articleNo != null" >
+                article_no = #{articleNo,jdbcType=VARCHAR},
+            </if>
+			<if test="keyword != null" >
+                keyword = #{keyword,jdbcType=VARCHAR},
+            </if>
+			<if test="mustRead != null" >
+                must_read = #{mustRead,jdbcType=INTEGER},
+            </if>
+         	<if test="sourceTitle != null" >
+                source_title = #{sourceTitle,jdbcType=VARCHAR},
+            </if>
+			<if test="sourceUrl != null" >
+                source_url = #{sourceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null" >
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isSign != null" >
+                is_sign = #{isSign,jdbcType=INTEGER},
+            </if>
+            <if test="visitCount !=null">
+            	visit_count = #{visitCount,jdbcType=INTEGER},
+            </if>
+            <if test="commentCount !=null">
+            	comment_count = #{commentCount,jdbcType=INTEGER},
+            </if>
+           	<if test="thumbsUp !=null">
+            	thumbs_up = #{thumbsUp,jdbcType=INTEGER},
+            </if>
+            <if test="thumbsUp !=null">
+            	comment_count = #{commentCount,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateNoticeByIds" parameterType="java.util.Map">
+        update tbl_pt_news_notice
+        <set>
+            <if test="notice.id != null" >
+                id = #{notice.id,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.title != null" >
+                title = #{notice.title,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.typeId != null" >
+                type_id = #{notice.typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.typeIdArray != null" >
+                type_id_array = #{notice.typeIdArray,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.ownerId != null" >
+                owner_id = #{notice.ownerId,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.ownerName != null" >
+                owner_name = #{notice.ownerName,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.categoryId != null" >
+                category_id = #{notice.categoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.categoryName != null" >
+                category_name = #{notice.categoryName,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.signatory != null" >
+                signatory = #{notice.signatory,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.signatoryNo != null" >
+                signatory_no = #{notice.signatoryNo,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.approveRemark != null" >
+                approve_remark = #{notice.approveRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.content != null" >
+                content = #{notice.content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="notice.publishStatus != null" >
+                publish_status = #{notice.publishStatus,jdbcType=INTEGER},
+            </if>
+            <if test="notice.publishTime != null" >
+                publish_time = #{notice.publishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="notice.writingTime != null" >
+                writing_time = #{notice.writingTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="notice.thumbImg != null" >
+                thumb_img = #{notice.thumbImg,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.sortNo != null" >
+                sort_no = #{notice.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="notice.status != null" >
+                status = #{notice.status,jdbcType=INTEGER},
+            </if>
+            <if test="notice.remark != null" >
+                remark = #{notice.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.createTime != null" >
+                create_time = #{notice.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="notice.creator != null" >
+                creator = #{notice.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.updateTime != null" >
+                update_time = #{notice.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="notice.updator != null" >
+                updator = #{notice.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="notice.delFlag != null" >
+                del_flag = #{notice.delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="articleNo != null" >
+                article_no = #{articleNo,jdbcType=VARCHAR},
+            </if>
+			<if test="keyword != null" >
+                keyword = #{keyword,jdbcType=VARCHAR},
+            </if>
+			<if test="mustRead != null" >
+                must_read = #{mustRead,jdbcType=INTEGER},
+            </if>
+            <if test="sourceTitle != null" >
+                source_title = #{sourceTitle,jdbcType=VARCHAR},
+            </if>
+			<if test="sourceUrl != null" >
+                source_url = #{sourceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null" >
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isSign != null" >
+                is_sign = #{isSign,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 公告类型===》》》根据公告类型id查询多少公告应用该类型 -->
+    <select id="getNoticeByTypeId" parameterType="java.util.Map" resultType="int">
+        select count(1) from tbl_pt_news_notice 
+        where del_flag = 1 and type_id in (${ids})
+    </select>
+    
+    <!-- 公告类型===》》》根据公告类型id查询公告 -->
+    <select id="getNoticeByTypeSn" parameterType="java.util.Map" resultMap="NewsNoticeMap">
+        select * from tbl_pt_news_notice 
+        where del_flag = 1 and type_id =#{id} 
+        order by create_time desc limit ${count}
+    </select>
+    
+    <update id="incrementNoticeVisitCount" parameterType="com.dragon.portal.model.news.NewsNotice" >
+         update tbl_pt_news_notice set visit_count = visit_count +1 where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="incrementNoticeCommentCount" parameterType="com.dragon.portal.model.news.NewsNotice" >
+         update tbl_pt_news_notice set comment_count = comment_count +1 where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="addNoticeTumbsUp" parameterType="com.dragon.portal.model.news.NewsNotice" >
+         update tbl_pt_news_notice set thumbs_up = thumbs_up +1 where id = #{id,jdbcType=VARCHAR}
+    </update>
+   	<update id="subNoticeTumbsUp" parameterType="com.dragon.portal.model.news.NewsNotice" >
+         update tbl_pt_news_notice set thumbs_up = thumbs_up -1 where id = #{id,jdbcType=VARCHAR}
+    </update>
+    
+    
+    
+    <select id="getPagerModelByQueryOfRangeSearch" parameterType="com.dragon.portal.model.news.NewsNotice" resultMap="NewsNoticeMap">
+		SELECT n.*,f.photo,c.range_name,d.creator_name FROM tbl_pt_news_notice n
+		LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_deft_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 2 GROUP BY news_notice_id) a ON a.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_id) range_company_id,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 AND data_type = 1 GROUP BY news_notice_id) b ON b.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_name) range_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 2 GROUP BY news_notice_id) c ON c.news_notice_id = n.id
+		LEFT JOIN (SELECT GROUP_CONCAT(org_name) creator_name,news_notice_id FROM tbl_pt_news_publishrange WHERE type = 1 GROUP BY news_notice_id) d ON d.news_notice_id = n.id
+		left join 
+		(select file_path photo,ref_id from (
+		select * from tbl_pt_news_file where del_flag = 1 and file_type = 5 order by sort_no desc ) s GROUP BY ref_id) f 
+		on n.id = f.ref_id
+        where 1=1 
+        <if test="typeId != null and typeId != ''">
+            and (type_id = #{typeId,jdbcType=VARCHAR} or type_id_array like CONCAT('%',#{typeId,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="typeIds != null and typeIds.size > 0">
+            and
+        	<foreach item="item" index="index" collection="typeIds" open="(" separator="or" close=")">
+                (type_id = #{item} or LEFT(type_id_array,32) = #{item})
+		    </foreach>
+        </if>
+        <if test="title!=null and title!=''">
+        and (title like CONCAT('%',#{title,jdbcType=VARCHAR},'%') or article_no like CONCAT('%',#{title,jdbcType=VARCHAR},'%') or content like CONCAT('%',#{title,jdbcType=VARCHAR},'%'))
+        </if>
+        and publish_status = 1
+        and publish_time &lt;= now() 
+        <if test="start != null and start != ''">
+        	and publish_time &gt;= #{start,jdbcType=TIMESTAMP}
+        </if>
+        <if test="end != null and end != ''">
+        	and publish_time &lt;= #{end,jdbcType=TIMESTAMP}
+        </if>
+        and del_flag = 1
+        and (b.range_company_id is not null <if test="rangeDeftId!=null">or
+        <foreach item="item" index="index" collection="rangeDeftId" open="" separator="or" close="">
+		 	a.range_deft_id LIKE CONCAT('%',#{item},'%')
+		</foreach></if>
+		)
+		order by publish_time desc
+    </select>
+ 	<select id="getNoticeNo"  resultType="String">
+    	select CONCAT('亚厦股份[',b.nowYear,']',b.no,'号') no  from 
+		(
+			select 
+				t.nowYear,
+				case when length(t.noticeNo)=1 then CONCAT('000',t.noticeNo)
+				when length(t.noticeNo)=2 then CONCAT('00',t.noticeNo)
+				when length(t.noticeNo)=3 then CONCAT('0',t.noticeNo)
+				when length(t.noticeNo)=4 then t.noticeNo
+				end 'no'
+			from 
+			(
+			select 
+				(select SUBSTR(NOW(),1,4))nowYear,
+				CASE SUBSTR(article_no,6,4)  WHEN (select SUBSTR(NOW(),1,4)) 
+				THEN (SUBSTR(article_no,11,4)+1)  
+				ELSE '1' END 'noticeNo'  
+			from tbl_pt_news_notice notice ORDER BY article_no desc LIMIT 1
+			) t
+		)b
+    </select>
+    
+    
+    <select id="getNoticeNoByOwnId"  parameterType="java.lang.String" resultType="String" >
+    	select 
+    		CONCAT(SUBSTR(article_no,-9,4),SUBSTR(article_no,-4,3)) articleNo
+    	from 
+    		tbl_pt_news_notice 
+    	where owner_id =#{ownId,jdbcType=VARCHAR} ORDER BY SUBSTR(article_no,-9,4) DESC, SUBSTR(article_no,-4,3) desc LIMIT 1
+    </select>
+    
+</mapper>

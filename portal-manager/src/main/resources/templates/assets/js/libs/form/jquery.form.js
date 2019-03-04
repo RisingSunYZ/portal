@@ -811,7 +811,7 @@
                     doc.loadXML(s);
                 }
                 else {
-                    doc = (new DOMParser()).parseFromString(s, 'text/xml');
+                    doc = (new DOMParser()).parseFromString(s, 'text/cstm1.xml');
                 }
                 return (doc && doc.documentElement && doc.documentElement.nodeName != 'parsererror') ? doc : null;
             };

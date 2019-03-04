@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="NewsNoticeProcessXML" >
+    <resultMap id="NewsNoticeProcessMap" type="com.dragon.portal.model.news.NewsNoticeProcess" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+
+        <result column="new_notice_id" property="newNoticeId" jdbcType="VARCHAR" />
+        
+        <result column="code" property="code" jdbcType="VARCHAR" />
+        
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        
+        <result column="company" property="company" jdbcType="VARCHAR" />
+        
+        <result column="deptment_id" property="deptmentId" jdbcType="VARCHAR" />
+        
+        <result column="deptment" property="deptment" jdbcType="VARCHAR" />
+        
+        <result column="pre_deptment_id" property="preDeptmentId" jdbcType="VARCHAR" />
+        
+        <result column="pre_deptment" property="preDeptment" jdbcType="VARCHAR" />
+        
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        
+        <result column="no" property="no" jdbcType="VARCHAR" />
+        
+        <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+        
+        <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+        
+        <result column="job" property="job" jdbcType="VARCHAR" />
+        
+        <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        new_notice_id,
+        code,
+        company_id,
+        company,
+        deptment_id,
+        deptment,
+        pre_deptment_id,
+        pre_deptment,
+        username,
+        no,
+        mobile,
+        telephone,
+        job,
+        task_id,
+        status,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="newNoticeId!=null and newNoticeId!=''">
+        and new_notice_id = #{newNoticeId,jdbcType=VARCHAR}
+        </if>
+        <if test="code!=null and code!=''">
+        and code = #{code,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId!=null and companyId!=''">
+        and company_id = #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="company!=null and company!=''">
+        and company = #{company,jdbcType=VARCHAR}
+        </if>
+        <if test="deptmentId!=null and deptmentId!=''">
+        and deptment_id = #{deptmentId,jdbcType=VARCHAR}
+        </if>
+        <if test="deptment!=null and deptment!=''">
+        and deptment = #{deptment,jdbcType=VARCHAR}
+        </if>
+        <if test="preDeptmentId!=null and preDeptmentId!=''">
+        and pre_deptment_id = #{preDeptmentId,jdbcType=VARCHAR}
+        </if>
+        <if test="preDeptment!=null and preDeptment!=''">
+        and pre_deptment = #{preDeptment,jdbcType=VARCHAR}
+        </if>
+        <if test="username!=null and username!=''">
+        and username = #{username,jdbcType=VARCHAR}
+        </if>
+        <if test="no!=null and no!=''">
+        and no = #{no,jdbcType=VARCHAR}
+        </if>
+        <if test="mobile!=null and mobile!=''">
+        and mobile = #{mobile,jdbcType=VARCHAR}
+        </if>
+        <if test="telephone!=null and telephone!=''">
+        and telephone = #{telephone,jdbcType=VARCHAR}
+        </if>
+        <if test="job!=null and job!=''">
+        and job = #{job,jdbcType=VARCHAR}
+        </if>
+        <if test="taskId!=null and taskId!=''">
+        and task_id = #{taskId,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getNewsNoticeProcessById" resultMap="NewsNoticeProcessMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_news_notice_process
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" resultMap="NewsNoticeProcessMap">
+        select * from tbl_pt_news_notice_process where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" resultMap="NewsNoticeProcessMap">
+        select * from tbl_pt_news_notice_process where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" resultType="int">
+        select count(1) from tbl_pt_news_notice_process where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertNewsNoticeProcess" parameterType="com.dragon.portal.model.news.NewsNoticeProcess"  >
+        insert into tbl_pt_news_notice_process (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{newNoticeId,jdbcType=VARCHAR},
+        #{code,jdbcType=VARCHAR},
+        #{companyId,jdbcType=VARCHAR},
+        #{company,jdbcType=VARCHAR},
+        #{deptmentId,jdbcType=VARCHAR},
+        #{deptment,jdbcType=VARCHAR},
+        #{preDeptmentId,jdbcType=VARCHAR},
+        #{preDeptment,jdbcType=VARCHAR},
+        #{username,jdbcType=VARCHAR},
+        #{no,jdbcType=VARCHAR},
+        #{mobile,jdbcType=VARCHAR},
+        #{telephone,jdbcType=VARCHAR},
+        #{job,jdbcType=VARCHAR},
+        #{taskId,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delNewsNoticeProcessById" parameterType="java.lang.String" >
+        delete from tbl_pt_news_notice_process
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delNewsNoticeProcessByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_news_notice_process
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateNewsNoticeProcess" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" >
+        update tbl_pt_news_notice_process
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="newNoticeId != null" >
+                new_notice_id = #{newNoticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null" >
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null" >
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="company != null" >
+                company = #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="deptmentId != null" >
+                deptment_id = #{deptmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptment != null" >
+                deptment = #{deptment,jdbcType=VARCHAR},
+            </if>
+            <if test="preDeptmentId != null" >
+                pre_deptment_id = #{preDeptmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="preDeptment != null" >
+                pre_deptment = #{preDeptment,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null" >
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="no != null" >
+                no = #{no,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null" >
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null" >
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="job != null" >
+                job = #{job,jdbcType=VARCHAR},
+            </if>
+            <if test="taskId != null" >
+                task_id = #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+
+    <update id="updateNewsNoticeProcessByCode" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" >
+        update tbl_pt_news_notice_process
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="newNoticeId != null" >
+                new_notice_id = #{newNoticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null" >
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null" >
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="company != null" >
+                company = #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="deptmentId != null" >
+                deptment_id = #{deptmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptment != null" >
+                deptment = #{deptment,jdbcType=VARCHAR},
+            </if>
+            <if test="preDeptmentId != null" >
+                pre_deptment_id = #{preDeptmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="preDeptment != null" >
+                pre_deptment = #{preDeptment,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null" >
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="no != null" >
+                no = #{no,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null" >
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null" >
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="job != null" >
+                job = #{job,jdbcType=VARCHAR},
+            </if>
+            <if test="taskId != null" >
+                task_id = #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where code = #{code,jdbcType=VARCHAR}
+    </update>
+
+
+    <update id="updateNewsNoticeProcessByIds" parameterType="java.util.Map">
+        update tbl_pt_news_notice_process
+        <set>
+            <if test="newsNoticeProcess.id != null" >
+                id = #{newsNoticeProcess.id,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.newNoticeId != null" >
+                new_notice_id = #{newsNoticeProcess.newNoticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.code != null" >
+                code = #{newsNoticeProcess.code,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.companyId != null" >
+                company_id = #{newsNoticeProcess.companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.company != null" >
+                company = #{newsNoticeProcess.company,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.deptmentId != null" >
+                deptment_id = #{newsNoticeProcess.deptmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.deptment != null" >
+                deptment = #{newsNoticeProcess.deptment,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.preDeptmentId != null" >
+                pre_deptment_id = #{newsNoticeProcess.preDeptmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.preDeptment != null" >
+                pre_deptment = #{newsNoticeProcess.preDeptment,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.username != null" >
+                username = #{newsNoticeProcess.username,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.no != null" >
+                no = #{newsNoticeProcess.no,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.mobile != null" >
+                mobile = #{newsNoticeProcess.mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.telephone != null" >
+                telephone = #{newsNoticeProcess.telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.job != null" >
+                job = #{newsNoticeProcess.job,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.taskId != null" >
+                task_id = #{newsNoticeProcess.taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.status != null" >
+                status = #{newsNoticeProcess.status,jdbcType=INTEGER},
+            </if>
+            <if test="newsNoticeProcess.createTime != null" >
+                create_time = #{newsNoticeProcess.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newsNoticeProcess.creator != null" >
+                creator = #{newsNoticeProcess.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.updateTime != null" >
+                update_time = #{newsNoticeProcess.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newsNoticeProcess.updator != null" >
+                updator = #{newsNoticeProcess.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeProcess.delFlag != null" >
+                del_flag = #{newsNoticeProcess.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 获取生成编号 -->
+ 	<select id="getNoticeCode"  resultType="String">
+		SELECT CONCAT('XWGG',DATE_FORMAT(now(),'%Y%m%d'),t.code)code from 
+		(
+			SELECT 
+				case when LENGTH(SUBSTR(p.code,13,17)+1)=1 then CONCAT('000',(SUBSTR(p.code,13,17)+1))
+				when LENGTH(SUBSTR(p.code,13,17)+1)=2 then CONCAT('00',(SUBSTR(p.code,13,17)+1))
+				when LENGTH(SUBSTR(p.code,13,17)+1)=3 then CONCAT('0',(SUBSTR(p.code,13,17)+1))
+				when LENGTH(SUBSTR(p.code,13,17)+1)=4 then SUBSTR(p.code,13,17)+1
+				end 'code'
+			FROM tbl_pt_news_notice_process p
+			where p.create_time &gt; concat(DATE_FORMAT(now(),'%Y-%m-%d'), ' 00:00:00') and p.create_time &lt;= concat(DATE_FORMAT(now(),'%Y-%m-%d'), ' 23:59:59') 
+			order by code desc LIMIT 1
+		)t
+    </select>
+    
+</mapper>

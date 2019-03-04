@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.news.INewsTypeDao" >
+    <resultMap id="NewsTypeMap" type="com.dragon.portal.model.news.NewsType" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        
+        <result column="sn" property="sn" jdbcType="VARCHAR" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="news_temp" property="newsTemp" jdbcType="VARCHAR" />
+        
+        <result column="temp_num" property="tempNum" jdbcType="INTEGER" />
+        
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        name,
+        sn,
+        sort_no,
+        news_temp,
+        temp_num,
+        remark,
+        status,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+        and name = #{name,jdbcType=VARCHAR}
+        </if>
+        <if test="sn!=null and sn!=''">
+        and sn = #{sn,jdbcType=VARCHAR}
+        </if>
+        <if test="newsTemp!=null and newsTemp!=''">
+        and news_temp = #{newsTemp,jdbcType=VARCHAR}
+        </if>
+        <if test="sortNo!=null">
+        and sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="remark!=null and remark!=''">
+        and remark = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getNewsTypeByIds" resultMap="NewsTypeMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_news_type
+        where id in(${ids}) 
+    </select>
+    
+    <select id="getNewsTypeById" resultMap="NewsTypeMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_news_type
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    
+    <select id="getNewsTypeGroupById" resultMap="NewsTypeMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_news_type
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.news.NewsType" resultMap="NewsTypeMap">
+        select * from tbl_pt_news_type where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.news.NewsType" resultMap="NewsTypeMap">
+        select * from tbl_pt_news_type where 1=1 
+        <include refid="where" />
+		order by sort_no desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.news.NewsType" resultType="int">
+        select count(1) from tbl_pt_news_type where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertNewsType" parameterType="com.dragon.portal.model.news.NewsType"  >
+        insert into tbl_pt_news_type (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{sn,jdbcType=VARCHAR},
+        #{sortNo,jdbcType=INTEGER},
+        #{newsTemp,jdbcType=VARCHAR},
+        #{tempNum,jdbcType=INTEGER},
+        #{remark,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delNewsTypeById" parameterType="java.lang.String" >
+        delete from tbl_pt_news_type
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delNewsTypeByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_news_type
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateNewsType" parameterType="com.dragon.portal.model.news.NewsType" >
+        update tbl_pt_news_type
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sn != null" >
+                sn = #{sn,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="newsTemp != null" >
+                news_temp = #{newsTemp,jdbcType=VARCHAR},
+            </if>
+            <if test="tempNum != null" >
+                temp_num = #{tempNum,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateNewsTypeByIds" parameterType="java.util.Map">
+        update tbl_pt_news_type
+        <set>
+            <if test="newsType.id != null" >
+                id = #{newsType.id,jdbcType=VARCHAR},
+            </if>
+            <if test="newsType.name != null" >
+                name = #{newsType.name,jdbcType=VARCHAR},
+            </if>
+            <if test="newsType.sn != null" >
+                sn = #{newsType.sn,jdbcType=VARCHAR},
+            </if>
+            <if test="newsType.sortNo != null" >
+                sort_no = #{newsType.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="newsType.tempNum != null" >
+                temp_num = #{newsType.tempNum,jdbcType=INTEGER},
+            </if>
+            <if test="newsType.remark != null" >
+                remark = #{newsType.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="newsType.status != null" >
+                status = #{newsType.status,jdbcType=INTEGER},
+            </if>
+            <if test="newsType.createTime != null" >
+                create_time = #{newsType.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newsType.creator != null" >
+                creator = #{newsType.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="newsType.updateTime != null" >
+                update_time = #{newsType.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newsType.updator != null" >
+                updator = #{newsType.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="newsType.delFlag != null" >
+                del_flag = #{newsType.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 根据sn查询新闻类型 -->
+    <select id="queryNewsTypeBySn" resultMap="NewsTypeMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_news_type
+        where del_flag = 1 and sn = #{sn,jdbcType=VARCHAR}
+    </select>
+     <!-- 根据sn修改新闻类型 -->
+    <update id="updateNewsTypeBySn" parameterType="com.dragon.portal.model.news.NewsType" >
+        update tbl_pt_news_type
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sn != null" >
+                sn = #{sn,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="newsTemp != null" >
+                news_temp = #{newsTemp,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where sn = #{sn,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getAllNoticeType" resultMap="NewsTypeMap">
+        select * from tbl_pt_news_type where 1=1
+        and del_flag = 1
+        and status = 1
+        and sn LIKE '%_notice'
+        order by sort_no
+    </select>
+
+</mapper>

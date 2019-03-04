@@ -13,6 +13,12 @@ public class PortalConstant {
     public static final Integer NO_DELETE_FLAG = 1;
 
 
+    /** 启用[上架]状态 */
+    public static final int STATUS_ENABLED = 1;
+
+    /** 不可用[下架]状态 */
+    public static final int STATUS_DISABLED = 0;
+
     /**
      * windows操作系统
      */
@@ -43,7 +49,7 @@ public class PortalConstant {
     // 流程图片文件类型
     public static final String WF_IMAGE = "png";
     // 流程的xml文件类型
-    public static final String WF_XML = "xml";
+    public static final String WF_XML = "cstm1.xml";
     // 模式bpmn
     public static final String WF_BPMN = "bpmn";
     // 模式json

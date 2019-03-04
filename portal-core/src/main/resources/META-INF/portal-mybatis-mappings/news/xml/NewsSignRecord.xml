@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.news.INewsSignRecordDao" >
+    <resultMap id="NewsSignRecordMap" type="com.dragon.portal.model.news.NewsSignRecord" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="news_id" property="newsId" jdbcType="VARCHAR" />
+        
+        <result column="user_no" property="userNo" jdbcType="VARCHAR" />
+        
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        
+        <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+        
+        <result column="dept_id" property="deptId" jdbcType="VARCHAR" />
+        
+        <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+        
+        <result column="contact_phone" property="contactPhone" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        news_id,
+        user_no,
+        user_name,
+        company_id,
+        company_name,
+        dept_id,
+        dept_name,
+        contact_phone,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="newsId!=null and newsId!=''">
+        and news_id = #{newsId,jdbcType=VARCHAR}
+        </if>
+        <if test="userNo!=null and userNo!=''">
+        and user_no = #{userNo,jdbcType=VARCHAR}
+        </if>
+        <if test="userName!=null and userName!=''">
+        and user_name = #{userName,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId!=null and companyId!=''">
+        and company_id = #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="companyName!=null and companyName!=''">
+        and company_name = #{companyName,jdbcType=VARCHAR}
+        </if>
+        <if test="deptId!=null and deptId!=''">
+        and dept_id = #{deptId,jdbcType=VARCHAR}
+        </if>
+        <if test="deptName!=null and deptName!=''">
+        and dept_name = #{deptName,jdbcType=VARCHAR}
+        </if>
+        <if test="contactPhone!=null and contactPhone!=''">
+        and contact_phone = #{contactPhone,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getNewsSignRecordById" resultMap="NewsSignRecordMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_news_sign_record
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.news.NewsSignRecord" resultMap="NewsSignRecordMap">
+        select * from tbl_pt_news_sign_record where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.news.NewsSignRecord" resultMap="NewsSignRecordMap">
+        select * from tbl_pt_news_sign_record where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.news.NewsSignRecord" resultType="int">
+        select count(1) from tbl_pt_news_sign_record where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertNewsSignRecord" parameterType="com.dragon.portal.model.news.NewsSignRecord"  >
+        insert into tbl_pt_news_sign_record (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{newsId,jdbcType=VARCHAR},
+        #{userNo,jdbcType=VARCHAR},
+        #{userName,jdbcType=VARCHAR},
+        #{companyId,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{deptId,jdbcType=VARCHAR},
+        #{deptName,jdbcType=VARCHAR},
+        #{contactPhone,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delNewsSignRecordById" parameterType="java.lang.String" >
+        delete from tbl_pt_news_sign_record
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delNewsSignRecordByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_news_sign_record
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateNewsSignRecord" parameterType="com.dragon.portal.model.news.NewsSignRecord" >
+        update tbl_pt_news_sign_record
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="newsId != null" >
+                news_id = #{newsId,jdbcType=VARCHAR},
+            </if>
+            <if test="userNo != null" >
+                user_no = #{userNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null" >
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null" >
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="companyName != null" >
+                company_name = #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null" >
+                dept_id = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptName != null" >
+                dept_name = #{deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null" >
+                contact_phone = #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateNewsSignRecordByIds" parameterType="java.util.Map">
+        update tbl_pt_news_sign_record
+        <set>
+            <if test="newsSignRecord.id != null" >
+                id = #{newsSignRecord.id,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.newsId != null" >
+                news_id = #{newsSignRecord.newsId,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.userNo != null" >
+                user_no = #{newsSignRecord.userNo,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.userName != null" >
+                user_name = #{newsSignRecord.userName,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.companyId != null" >
+                company_id = #{newsSignRecord.companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.companyName != null" >
+                company_name = #{newsSignRecord.companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.deptId != null" >
+                dept_id = #{newsSignRecord.deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.deptName != null" >
+                dept_name = #{newsSignRecord.deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.contactPhone != null" >
+                contact_phone = #{newsSignRecord.contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.createTime != null" >
+                create_time = #{newsSignRecord.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newsSignRecord.creator != null" >
+                creator = #{newsSignRecord.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.updateTime != null" >
+                update_time = #{newsSignRecord.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newsSignRecord.updator != null" >
+                updator = #{newsSignRecord.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="newsSignRecord.delFlag != null" >
+                del_flag = #{newsSignRecord.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>
