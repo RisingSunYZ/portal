@@ -34,7 +34,7 @@ public class BaseController {
     public UserSessionInfo getLoginUser(HttpServletRequest request, HttpServletResponse response){
         UserSessionInfo userSessionInfo = new UserSessionInfo();
         userSessionInfo.setName("admin");
-        userSessionInfo.setNo("00000001");
+        userSessionInfo.setNo("00004907");
         return userSessionInfo;
     }
 

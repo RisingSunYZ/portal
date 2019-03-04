@@ -15,25 +15,14 @@ import java.util.Date;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
-public class ProcessMainVo implements Serializable{
+public class ProcessMainVo extends BaseProcessVo implements Serializable{
 
 	
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * 流程定义、模板Id
-	 */
-	private String modelId;
+
 	
-	/**
-	 * 流程定义、模板Key
-	 */
-	private String modelKey;
-	
-	/**
-	 * 业务表单ID
-	 */
-	private String bizId;
+
 	
 	/**
 	 * 流程发起方式：默认1、普通方式
@@ -41,54 +30,45 @@ public class ProcessMainVo implements Serializable{
 	 * 2、宽屏模式
 	 */
 	private Integer launchType = LaunchStyleEnum.DEFAULT.getStyle();
-	
-	/**
-	 * 任务ID
-	 */
-	private String taskId;
-	
+
 	/**
 	 * 任务类型
 	 */
 	private String taskType;
-	
-	/**
-	 * 流程实例ID
-	 */
-	private String processInstId;
-	
+
+
 	/**
 	 * 表单ID
 	 */
 	private String formId;
-	
+
 	/**
 	 * 业务表单编码
 	 */
 	private String bizFormSn;
-	
+
 	/**
 	 * 表单名称
 	 */
 	private String formName;
-	
+
 	/**
 	 * 发起人工号
 	 */
 	private String senderNo;
-	
+
 	/**
 	 * 当前登录用户工号
 	 */
 	private String currUserNo;
-	
+
 	/**
 	 * 当前系统时间
 	 */
 	private Date currDateTime;
-	
+
 	private String taskName;
-	
+
 	/**
 	 * 表单类型
 	 */
@@ -124,13 +104,6 @@ public class ProcessMainVo implements Serializable{
 		this.businessType = businessType;
 	}
 
-	public String getProcessInstId() {
-		return processInstId;
-	}
-
-	public void setProcessInstId(String processInstId) {
-		this.processInstId = processInstId;
-	}
 
 	public String getFormId() {
 		return formId;
@@ -140,37 +113,6 @@ public class ProcessMainVo implements Serializable{
 		this.formId = formId;
 	}
 
-	public String getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
-
-	public String getModelKey() {
-		return modelKey;
-	}
-
-	public void setModelKey(String modelKey) {
-		this.modelKey = modelKey;
-	}
-
-	public String getBizId() {
-		return bizId;
-	}
-
-	public void setBizId(String bizId) {
-		this.bizId = bizId;
-	}
-
-	public String getModelId() {
-		return modelId;
-	}
-
-	public void setModelId(String modelId) {
-		this.modelId = modelId;
-	}
 
 	public String getSenderNo() {
 		return senderNo;
@@ -222,7 +164,7 @@ public class ProcessMainVo implements Serializable{
 	public void setLaunchType(Integer launchType) {
 		this.launchType = launchType;
 	}
-	
+
 	public String getFormType() {
 		return formType;
 	}
@@ -238,7 +180,7 @@ public class ProcessMainVo implements Serializable{
 	public void setFormName(String formName) {
 		this.formName = formName;
 	}
-	
+
 	public String getBizFormSn() {
 		return bizFormSn;
 	}
@@ -247,13 +189,6 @@ public class ProcessMainVo implements Serializable{
 		this.bizFormSn = bizFormSn;
 	}
 
-	@Override
-	public String toString() {
-		return "ProcessMainVo [modelId=" + modelId + ", modelKey=" + modelKey + ", bizId=" + bizId + ", taskId="
-				+ taskId + ", taskType=" + taskType + ", processInstId=" + processInstId + ", formId=" + formId
-				+ ", senderNo=" + senderNo + ", currUserNo=" + currUserNo + ", currDateTime=" + currDateTime
-				+ ", taskName=" + taskName + "]";
-	}
 
-	
+
 }
