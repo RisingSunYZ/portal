@@ -1,7 +1,6 @@
 package com.dragon.portal.service.cstm.impl;
 
 
-import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.dragon.portal.dao.cstm.ISystemMenuDao;
 import com.dragon.portal.dao.cstm.ISystemMenuUserDao;
 import com.dragon.portal.model.cstm.SystemMenu;
@@ -12,6 +11,7 @@ import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,5 @@
 package com.dragon.portal.service.news.impl;
 
-import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.dragon.portal.dao.news.INewsNoticeDao;
 import com.dragon.portal.dao.news.INewsNoticeVisitLogDao;
 import com.dragon.portal.model.news.NewsNotice;
@@ -13,6 +12,7 @@ import com.dragon.tools.pager.Query;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.ys.yahu.enm.NewsNoticeEnum;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 

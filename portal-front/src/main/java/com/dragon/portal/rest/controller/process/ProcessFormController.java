@@ -1,6 +1,5 @@
 package com.dragon.portal.rest.controller.process;
 
-import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.dragon.flow.api.IFlowApi;
 import com.dragon.flow.constant.FlowConstant;
 import com.dragon.flow.enm.flowable.run.CommentTypeEnum;
@@ -32,6 +31,7 @@ import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
