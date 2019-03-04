@@ -67,7 +67,7 @@ var ProcessDef = {
                         // pms:2,
                         iconCls:'eye',
                         click:function(e){
-                            window.open(basePath+"/flow/operation/process_def/loadByDeployment?processDefinitionId="+e.record.id+"&resourceType=xml")
+                            window.open(basePath+"/flow/operation/process_def/loadByDeployment?processDefinitionId="+e.record.id+"&resourceType=cstm1.xml")
                         }
                     },
                     {

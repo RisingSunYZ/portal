@@ -66,7 +66,7 @@ public class ProcessListController extends BaseController {
     @GetMapping("/queryTodo")
     @ApiOperation("查询待办事项未办理")
     @ApiImplicitParams({})
-    public String queryTodo(@ApiIgnore ModelMap model, String sort, String page, Integer rows, String order, Query query,
+    public Map<String, Object> queryTodo(@ApiIgnore ModelMap model, String sort, String page, Integer rows, String order, Query query,
                             TaskQueryParamsVo param, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         PagerModel<TaskVo> pm = new PagerModel<TaskVo>();
         ReturnVo<PagerModel<TaskVo>> vo=new ReturnVo<>();
@@ -121,7 +121,7 @@ public class ProcessListController extends BaseController {
         pageMap.put("pageSize", query.getPageSize());
         pageMap.put("total", pm.getTotal());
         maps.put("pagination", pageMap);
-        return JsonUtils.toJson(maps);
+        return maps;
     }
 
     /**
@@ -134,7 +134,7 @@ public class ProcessListController extends BaseController {
     @GetMapping("/queryTodoCount")
     @ApiOperation("查询待办事项未办理数量")
     @ApiImplicitParams({})
-    public String queryTodoCount(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+    public ReturnVo<Integer> queryTodoCount(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
         TaskQueryParamsVo params=new TaskQueryParamsVo();
         ReturnVo<Integer> returnVo=new ReturnVo<Integer>(FlowConstant.ERROR,"查询失败");
         UserSessionInfo user=getUserSessionInfo(request,response);
@@ -149,7 +149,7 @@ public class ProcessListController extends BaseController {
             e.printStackTrace();
             logger.error("ApiProcessController-queryTodoCount",e);
         }
-        return JsonUtils.toJson(returnVo);
+        return returnVo;
     }
 
     /**
@@ -164,7 +164,7 @@ public class ProcessListController extends BaseController {
     @GetMapping("/queryAlreadyDo")
     @ApiOperation("查询待办事项未办理")
     @ApiImplicitParams({})
-    public String queryAlreadyDo(@ApiIgnore ModelMap model, String sort, String page , Integer rows, String order, Query query,
+    public Map<String, Object> queryAlreadyDo(@ApiIgnore ModelMap model, String sort, String page , Integer rows, String order, Query query,
                                  QueryTaskVo param, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         PagerModel<SearchTaskVo> pm = new PagerModel<SearchTaskVo>();
         ReturnVo<PagerModel<SearchTaskVo>> vo=new ReturnVo<PagerModel<SearchTaskVo>>(FlowConstant.ERROR,"查询失败");
@@ -212,7 +212,7 @@ public class ProcessListController extends BaseController {
         pageMap.put("pageSize", query.getPageSize());
         pageMap.put("total", pm.getTotal());
         maps.put("pagination", pageMap);
-        return JsonUtils.toJson(maps);
+        return maps;
     }
 
     /**
@@ -225,7 +225,7 @@ public class ProcessListController extends BaseController {
     @GetMapping("/getProcessEnums")
     @ApiOperation("得到状态及类型枚举数据")
     @ApiImplicitParams({})
-    public String getProcessStatus(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+    public Map<String, Object>  getProcessStatus(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
 
         try{
@@ -236,7 +236,7 @@ public class ProcessListController extends BaseController {
             logger.error("ApiProcessController-getProcessEnums",e);
         }
 
-        return JsonUtils.toJson(map);
+        return map;
     }
 
     /**
@@ -251,7 +251,7 @@ public class ProcessListController extends BaseController {
     @GetMapping("/getAlreadySend")
     @ApiOperation("查询我的已发起流程")
     @ApiImplicitParams({})
-    public String getAlreadySend(@ApiIgnore ModelMap model, String sort,String page,Integer rows, String order, Query query,
+    public Map<String, Object>  getAlreadySend(@ApiIgnore ModelMap model, String sort,String page,Integer rows, String order, Query query,
                                  QueryTaskVo param, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         PagerModel<SearchExecutionVo> pm = new PagerModel<SearchExecutionVo>();
         ReturnVo<PagerModel<SearchExecutionVo>> vo=new ReturnVo<PagerModel<SearchExecutionVo>>(FlowConstant.ERROR,"查询失败");
@@ -296,7 +296,7 @@ public class ProcessListController extends BaseController {
         pageMap.put("pageSize", query.getPageSize());
         pageMap.put("total", pm.getTotal());
         maps.put("pagination", pageMap);
-        return JsonUtils.toJson(maps);
+        return maps;
     }
 
     private void renderPageIndex(Query query, String page,Integer rows) {

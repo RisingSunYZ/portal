@@ -1,6 +1,7 @@
 package com.dragon.portal.service.redis;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
@@ -226,5 +227,18 @@ public class RedisService {
         RedisAtomicInteger redisAtomicInteger = new RedisAtomicInteger("UNIQUE_"+expireDate.toString(),redisTemplate.getConnectionFactory());
         redisAtomicInteger.expireAt(expireDate);
         return redisAtomicInteger.incrementAndGet();
+    }
+
+    /**
+     * 模糊查询key
+     * @param key
+     * @return
+     */
+    public Set<String> getKeysSet(String key) {
+        if (StringUtils.isNotBlank(key)) {
+            return this.redisTemplate.keys(key);
+        }else{
+            return null;
+        }
     }
 }

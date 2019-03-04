@@ -4,11 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
@@ -17,11 +13,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @Since:17:32 2019/1/9
  * 浙江亚厦 2018 ~ 2030 版权所有
  */
-@SpringBootApplication(scanBasePackages ="com.dragon", exclude = DataSourceAutoConfiguration.class)
-@ComponentScan(basePackages = { "com.dragon" })
+@SpringBootApplication(scanBasePackages = {"com.dragon", "com.ecnice", "org.apache.dubbo"})
 @MapperScan("com.dragon.*.dao.*")
-@EnableTransactionManagement
-@EnableAutoConfiguration
 @EnableSwagger2             //启动swagger注解
 public class PortalFrontApplication {
 

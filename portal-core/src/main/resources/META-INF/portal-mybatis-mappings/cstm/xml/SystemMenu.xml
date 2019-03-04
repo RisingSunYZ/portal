@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.cstm.ISystemMenuDao" >
+    <resultMap id="SystemMenuMap" type="com.dragon.portal.model.cstm.SystemMenu" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="sys_name" property="sysName" jdbcType="VARCHAR" />
+        
+        <result column="sys_sn" property="sysSn" jdbcType="VARCHAR" />
+        
+        <result column="sys_icon" property="sysIcon" jdbcType="VARCHAR" />
+        
+        <result column="link_url" property="linkUrl" jdbcType="VARCHAR" />
+        
+        <result column="sys_first_id" property="sysFirstId" jdbcType="VARCHAR" />
+        
+        <result column="sys_scd_id" property="sysScdId" jdbcType="VARCHAR" />
+        
+        <result column="sys_type" property="sysType" jdbcType="VARCHAR" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="is_common" property="isCommon" jdbcType="INTEGER" />
+        
+        <result column="is_idm_sys" property="isIdmSys" jdbcType="INTEGER" />
+        
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        sys_name,
+        sys_sn,
+        sys_icon,
+        link_url,
+        sys_first_id,
+        sys_scd_id,
+        sys_type,
+        sort_no,
+        status,
+        is_common,
+        is_idm_sys,
+        remark,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and menu.id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="sysName!=null and sysName!=''">
+        and menu.sys_name like CONCAT('%',#{sysName,jdbcType=VARCHAR},'%') 
+        </if>
+        <if test="sysSn!=null and sysSn!=''">
+        and menu.sys_sn = #{sysSn,jdbcType=VARCHAR}
+        </if>
+        <if test="sysIcon!=null and sysIcon!=''">
+        and menu.sys_icon = #{sysIcon,jdbcType=VARCHAR}
+        </if>
+        <if test="linkUrl!=null and linkUrl!=''">
+        and menu.link_url = #{linkUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="sysFirstId!=null and sysFirstId!=''">
+        and menu.sys_first_id = #{sysFirstId,jdbcType=VARCHAR}
+        </if>
+        <if test="sysScdId!=null and sysScdId!=''">
+        and menu.sys_scd_id = #{sysScdId,jdbcType=VARCHAR}
+        </if>
+        <if test="sysType!=null and sysType!=''">
+        and menu.sys_type = #{sysType,jdbcType=VARCHAR}
+        </if>
+        <if test="sortNo!=null">
+        and menu.sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="status!=null">
+        and menu.status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="isCommon!=null">
+        and menu.is_common = #{isCommon,jdbcType=INTEGER}
+        </if>
+        <if test="isIdmSys!=null">
+        and menu.is_idm_sys = #{isIdmSys,jdbcType=INTEGER}
+        </if>
+        <if test="remark!=null and remark!=''">
+        and menu.remark = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and menu.create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and menu.creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and menu.update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and menu.updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and menu.del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getSystemMenuById" resultMap="SystemMenuMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_cstm_system_menu as menu
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.cstm.SystemMenuUser" resultMap="SystemMenuMap">
+        select 
+			menu.*,type1.name sysFirstName,type2.name sysScdName,type3.name sysTypeName 
+		from 
+			tbl_cstm_system_menu menu 
+		LEFT JOIN tbl_cstm_system_menu_type type1 on menu.sys_first_id=type1.id
+		LEFT JOIN tbl_cstm_system_menu_type type2 on menu.sys_scd_id=type2.id
+		LEFT JOIN tbl_cstm_system_menu_type type3 on menu.sys_type=type3.id
+		where 1=1 
+		<include refid="where" />
+		order by menu.sort_no,menu.create_time 
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.cstm.SystemMenuUser" resultMap="SystemMenuMap">
+       select 
+			menu.*,type1.name sysFirstName,type2.name sysScdName,type3.name sysTypeName 
+		from 
+			tbl_cstm_system_menu menu 
+		LEFT JOIN tbl_cstm_system_menu_type type1 on menu.sys_first_id=type1.id
+		LEFT JOIN tbl_cstm_system_menu_type type2 on menu.sys_scd_id=type2.id
+		LEFT JOIN tbl_cstm_system_menu_type type3 on menu.sys_type=type3.id
+		where 1=1 
+		<include refid="where" />
+		order by menu.sort_no,menu.create_time 
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.cstm.SystemMenuUser" resultType="int">
+        select count(1) from tbl_cstm_system_menu as menu where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertSystemMenu" parameterType="com.dragon.portal.model.cstm.SystemMenuUser"  >
+        insert into tbl_cstm_system_menu (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{sysName,jdbcType=VARCHAR},
+        #{sysSn,jdbcType=VARCHAR},
+        #{sysIcon,jdbcType=VARCHAR},
+        #{linkUrl,jdbcType=VARCHAR},
+        #{sysFirstId,jdbcType=VARCHAR},
+        #{sysScdId,jdbcType=VARCHAR},
+        #{sysType,jdbcType=VARCHAR},
+        #{sortNo,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{isCommon,jdbcType=INTEGER},
+        #{isIdmSys,jdbcType=INTEGER},
+        #{remark,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delSystemMenuById" parameterType="java.lang.String" >
+        delete from tbl_cstm_system_menu
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delSystemMenuByIds" parameterType="java.lang.String" >
+        delete from tbl_cstm_system_menu
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateSystemMenu" parameterType="com.dragon.portal.model.cstm.SystemMenuUser" >
+        update tbl_cstm_system_menu
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sysName != null" >
+                sys_name = #{sysName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysSn != null" >
+                sys_sn = #{sysSn,jdbcType=VARCHAR},
+            </if>
+            <if test="sysIcon != null" >
+                sys_icon = #{sysIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="linkUrl != null" >
+                link_url = #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="sysFirstId != null" >
+                sys_first_id = #{sysFirstId,jdbcType=VARCHAR},
+            </if>
+             <if test="sysScdId != null" >
+                sys_scd_id = #{sysScdId,jdbcType=VARCHAR},
+            </if>
+             <if test="sysType != null" >
+                sys_type = #{sysType,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="isCommon != null" >
+                is_common = #{isCommon,jdbcType=INTEGER},
+            </if>
+            <if test="isIdmSys != null" >
+                is_idm_sys = #{isIdmSys,jdbcType=INTEGER},
+            </if>
+            <if test="sysIcon != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateSystemMenuByIds" parameterType="java.util.Map">
+        update tbl_cstm_system_menu
+        <set>
+            <if test="systemMenu.id != null" >
+                id = #{systemMenu.id,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.sysName != null" >
+                sys_name = #{systemMenu.sysName,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.sysSn != null" >
+                sys_sn = #{systemMenu.sysSn,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.sysIcon != null" >
+                sys_icon = #{systemMenu.sysIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.linkUrl != null" >
+                link_url = #{systemMenu.linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.sysFirstId != null" >
+                sys_first_id = #{systemMenu.sysFirstId,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.sysScdId != null" >
+                sys_scd_id = #{systemMenu.sysScdId,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.sysType != null" >
+                sys_type = #{systemMenu.sysType,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.sortNo != null" >
+                sort_no = #{systemMenu.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="systemMenu.status != null" >
+                status = #{systemMenu.status,jdbcType=INTEGER},
+            </if>
+            <if test="systemMenu.isCommon != null" >
+                is_common = #{systemMenu.isCommon,jdbcType=INTEGER},
+            </if>
+            <if test="systemMenu.isIdmSys != null" >
+                is_idm_sys = #{systemMenu.isIdmSys,jdbcType=INTEGER},
+            </if>
+            <if test="systemMenu.remark != null" >
+                remark = #{systemMenu.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.createTime != null" >
+                create_time = #{systemMenu.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="systemMenu.creator != null" >
+                creator = #{systemMenu.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.updateTime != null" >
+                update_time = #{systemMenu.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="systemMenu.updator != null" >
+                updator = #{systemMenu.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="systemMenu.delFlag != null" >
+                del_flag = #{systemMenu.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <select id="getSysCataList" parameterType="String" resultMap="SystemMenuMap">
+		select 
+			menu.* 
+		from 
+			tbl_cstm_system_menu_user user 
+		LEFT JOIN tbl_cstm_system_menu menu  on user.sys_id=menu.id 
+		where 
+			user.del_flag=1 and menu.del_flag=1 and user.user_no=#{userNo}
+    </select>
+    
+     <select id="getSystemMenuBySysSn" parameterType="com.dragon.portal.model.cstm.SystemMenuUser" resultMap="SystemMenuMap">
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_cstm_system_menu as menu
+        where menu.sys_sn = #{sysSn,jdbcType=VARCHAR}
+    </select>
+    
+     <select id="getAllByThirdId" parameterType="com.dragon.portal.model.cstm.SystemMenuUser" resultMap="SystemMenuMap">
+        select * from tbl_cstm_system_menu as menu  where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <!-- 根据工号查询关联表和菜单表对应的工号信息 -->
+    <select id="getAllByUserNo" parameterType="String" resultMap="SystemMenuMap">
+		select 
+			menu.id, menu.sys_name,menu.sys_sn,menu.sys_icon,menu.link_url,menu.is_idm_sys,
+			menu.remark, user.sort_no
+		from 
+			tbl_cstm_system_menu_user user 
+		LEFT JOIN tbl_cstm_system_menu menu  on user.sys_id=menu.id 
+		where 
+			user.del_flag=1 and menu.del_flag=1 and user.user_no=#{userNo}
+			ORDER BY user.sort_no
+    </select>
+    
+</mapper>
