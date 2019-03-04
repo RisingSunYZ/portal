@@ -90,14 +90,15 @@
         select
         <include refid="Base_Column_List" />
         from TBL_PORTAL_USER_LOGIN_INFO t
-        where USER_NAME = #{username} or MOBILE=#{username} or USER_NO=#{username} or EMAIL=#{username}
+        where USER_NAME = #{userName} or MOBILE=#{userName} or USER_NO=#{userName} or EMAIL=#{userName}
     </select>
 
     <select id="getUserByNameAndPwd" resultMap="UserLoginResultMap" parameterType="com.dragon.portal.model.user.UserLogin" >
         select
         <include refid="Base_Column_List" />
         from TBL_PORTAL_USER_LOGIN_INFO t
-        where (USER_NAME = #{username} or MOBILE=#{username} or USER_NO=#{username} or EMAIL=#{username}) and password={password}
+        where (USER_NAME = #{userName,jdbcType=VARCHAR} or MOBILE=#{userName,jdbcType=VARCHAR}
+        or USER_NO=#{userName,jdbcType=VARCHAR} or EMAIL=#{userName,jdbcType=VARCHAR}) and password=#{password,jdbcType=VARCHAR}
     </select>
     
     <select id="getAll" parameterType="com.dragon.portal.model.user.UserLogin" resultMap="UserLoginResultMap">

@@ -4,6 +4,8 @@ import com.dragon.portal.model.rscmgmt.Meeting;
 import com.dragon.portal.model.rscmgmt.MeetingFiles;
 import com.mhome.tools.pager.PagerModel;
 import com.mhome.tools.pager.Query;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,8 @@ import java.util.Map;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
  */
+@Mapper
+@Repository
 public interface IMeetingFilesDao {
 
 	/**
