@@ -181,12 +181,12 @@
             <groupId>com.ys</groupId>
             <artifactId>mis-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-           <!-- <exclusions>
-                <exclusion>
-                    <groupId>com.ys</groupId>
-                    <artifactId>base-tools</artifactId>
-                </exclusion>
-            </exclusions>-->
+            <!-- <exclusions>
+                 <exclusion>
+                     <groupId>com.ys</groupId>
+                     <artifactId>base-tools</artifactId>
+                 </exclusion>
+             </exclusions>-->
         </dependency>
         <!-- 数据源配置 -->
         <dependency>
@@ -222,8 +222,8 @@
             <version>1.10.19</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.htmlparser</groupId>-->
-            <!--<artifactId>htmlparser</artifactId>-->
+        <!--<groupId>org.htmlparser</groupId>-->
+        <!--<artifactId>htmlparser</artifactId>-->
         <!--</dependency>-->
         <dependency>
             <groupId>com.ys</groupId>
@@ -241,15 +241,6 @@
             <version>3.9.1</version>
         </dependency>
         <!-- Exchange End -->
-        <!--springboot-session-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session-data-redis</artifactId>
-        </dependency>
     </dependencies>
     <build>
         <finalName>flow-core</finalName>
