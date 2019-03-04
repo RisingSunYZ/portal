@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingroomConftoolsDao" >
+    <resultMap id="MeetingroomConftoolsMap" type="com.dragon.portal.model.rscmgmt.MeetingroomConftools" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="mettingroom_id" property="mettingroomId" jdbcType="VARCHAR" />
+        
+        <result column="tools_id" property="toolsId" jdbcType="VARCHAR" />
+        
+        <result column="other_confitem" property="otherConfitem" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        mettingroom_id,
+        tools_id,
+        other_confitem
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="mettingroomId!=null and mettingroomId!=''">
+        and mettingroom_id = #{mettingroomId,jdbcType=VARCHAR}
+        </if>
+        <if test="toolsId!=null and toolsId!=''">
+        and tools_id = #{toolsId,jdbcType=VARCHAR}
+        </if>
+        <if test="otherConfitem!=null and otherConfitem!=''">
+        and other_confitem = #{otherConfitem,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    
+    <select id="getMeetingroomConftoolsById" resultMap="MeetingroomConftoolsMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingroom_conftools
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getMeetingroomConftoolsByMettingroomId" resultMap="MeetingroomConftoolsMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingroom_conftools
+        where mettingroom_id = #{mettingroom_id,jdbcType=VARCHAR} AND other_confitem IS NOT NULL LIMIT 0,1
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomConftools" resultMap="MeetingroomConftoolsMap">
+        select * from tbl_mt_meetingroom_conftools where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomConftools" resultMap="MeetingroomConftoolsMap">
+        select * from tbl_mt_meetingroom_conftools where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomConftools" resultType="int">
+        select count(1) from tbl_mt_meetingroom_conftools where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingroomConftools" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomConftools"  >
+        insert into tbl_mt_meetingroom_conftools (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{mettingroomId,jdbcType=VARCHAR},
+        #{toolsId,jdbcType=VARCHAR},
+        #{otherConfitem,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+     <delete id="delMeetingroomConftoolsByMettingRoomId" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_conftools
+        where mettingroom_id = #{mettingroomId,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingroomConftoolsById" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_conftools
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingroomConftoolsByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_conftools
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeetingroomConftools" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomConftools" >
+        update tbl_mt_meetingroom_conftools
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="mettingroomId != null" >
+                mettingroom_id = #{mettingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="toolsId != null" >
+                tools_id = #{toolsId,jdbcType=VARCHAR},
+            </if>
+            <if test="otherConfitem != null" >
+                other_confitem = #{otherConfitem,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingroomConftoolsByIds" parameterType="java.util.Map">
+        update tbl_mt_meetingroom_conftools
+        <set>
+            <if test="meetingroomConftools.id != null" >
+                id = #{meetingroomConftools.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomConftools.mettingroomId != null" >
+                mettingroom_id = #{meetingroomConftools.mettingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomConftools.toolsId != null" >
+                tools_id = #{meetingroomConftools.toolsId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomConftools.otherConfitem != null" >
+                other_confitem = #{meetingroomConftools.otherConfitem,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>

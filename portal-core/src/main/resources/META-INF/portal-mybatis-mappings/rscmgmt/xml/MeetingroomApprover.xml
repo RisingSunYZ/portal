@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingroomApproverDao" >
+    <resultMap id="MeetingroomApproverMap" type="com.dragon.portal.model.rscmgmt.MeetingroomApprover" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="mettingroom_id" property="mettingroomId" jdbcType="VARCHAR" />
+        
+        <result column="approver_no" property="approverNo" jdbcType="VARCHAR" />
+        
+        <result column="approver_name" property="approverName" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        mettingroom_id,
+        approver_no,
+        approver_name
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="mettingroomId!=null and mettingroomId!=''">
+        and mettingroom_id = #{mettingroomId,jdbcType=VARCHAR}
+        </if>
+        <if test="approverNo!=null and approverNo!=''">
+        and approver_no = #{approverNo,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    
+    <select id="getMeetingroomApproverById" resultMap="MeetingroomApproverMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingroom_approver
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApprover" resultMap="MeetingroomApproverMap">
+        select * from tbl_mt_meetingroom_approver where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApprover" resultMap="MeetingroomApproverMap">
+        select * from tbl_mt_meetingroom_approver where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApprover" resultType="int">
+        select count(1) from tbl_mt_meetingroom_approver where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingroomApprover" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApprover"  >
+        insert into tbl_mt_meetingroom_approver (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{mettingroomId,jdbcType=VARCHAR},
+        #{approverNo,jdbcType=VARCHAR},
+        #{approverName,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="delMeetingroomApproverById" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_approver
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingroomApproverByMeetingRoomId" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_approver
+        where mettingroom_id = #{mettingroomId,jdbcType=VARCHAR}
+    </delete>
+    
+     
+    
+    <delete id="delMeetingroomApproverByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_approver
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeetingroomApprover" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApprover" >
+        update tbl_mt_meetingroom_approver
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="mettingroomId != null" >
+                mettingroom_id = #{mettingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="approverNo != null" >
+                approver_no = #{approverNo,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingroomApproverByIds" parameterType="java.util.Map">
+        update tbl_mt_meetingroom_approver
+        <set>
+            <if test="meetingroomApprover.id != null" >
+                id = #{meetingroomApprover.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApprover.mettingroomId != null" >
+                mettingroom_id = #{meetingroomApprover.mettingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApprover.approverNo != null" >
+                approver_no = #{meetingroomApprover.approverNo,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>
