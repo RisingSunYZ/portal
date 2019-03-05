@@ -2,9 +2,10 @@ package com.dragon.portal.config;
 
 import com.dragon.portal.customLabel.ApiJsonObject;
 import com.dragon.portal.customLabel.ApiJsonProperty;
+import com.dragon.portal.model.rscmgmt.Meeting;
+import com.dragon.portal.model.user.UserLogin;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Optional;
-import com.ys.mqpms.model.team_manage.LabourUser;
 import com.ys.tools.common.UUIDGenerator;
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
@@ -37,11 +38,20 @@ public class SwaggerParamsConfig implements ParameterBuilderPlugin {
     @Autowired
     private TypeResolver typeResolver;
 
+    //使用ApiJsonObject需要控制接口参数展示属性设置
+    private Class[] arr = {UserLogin.class,Meeting.class};
+
     @Override
     public void apply(ParameterContext parameterContext) {
         ResolvedMethodParameter methodParameter = parameterContext.resolvedMethodParameter();
-
-        if (methodParameter.getParameterType().canCreateSubtype(LabourUser.class)) { //判断是否需要修改对象ModelRef
+        boolean flag = false;
+        for(Class cls :arr){
+            if (methodParameter.getParameterType().canCreateSubtype(cls)){
+                flag = true;
+                break;
+            }
+        }
+        if (flag) { //判断是否需要修改对象ModelRef
             Optional<ApiJsonObject> optional = methodParameter.findAnnotation(ApiJsonObject.class);  //根据参数上的ApiJsonObject注解中的参数动态生成Class
             if (optional.isPresent()) {
                 String name = methodParameter.defaultName().get();
