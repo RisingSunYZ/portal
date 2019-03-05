@@ -241,10 +241,6 @@
             <version>3.9.1</version>
         </dependency>
         <!-- Exchange End -->
-        <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session-data-redis</artifactId>
-        </dependency>
     </dependencies>
     <build>
         <finalName>flow-core</finalName>
