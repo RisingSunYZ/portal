@@ -2,7 +2,7 @@ package com.dragon.portal.component.impl;
 
 import com.dragon.portal.component.IScheduleComponent;
 import com.dragon.portal.model.rscmgmt.AppointmentVO;
-import com.dragon.tools.common.ReadProperty;
+import com.dragon.portal.properties.CommonProperties;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import microsoft.exchange.webservices.data.core.ExchangeService;
@@ -41,10 +41,10 @@ import java.util.Date;
 public class ScheduleComponentImpl implements IScheduleComponent {
 
 	private static Logger logger = Logger.getLogger(ScheduleComponentImpl.class);
-//	@Resource
-//	private ReadProperty readProperty;
-	
+
 	private ExchangeService service = null;
+	@Resource
+	private CommonProperties commonProperties;
 	
 	public final int ERROR = 0;
 	public final int SUCCESS = 1;
@@ -52,13 +52,13 @@ public class ScheduleComponentImpl implements IScheduleComponent {
 		logger.info("开始创建ExchangeService...");
 		try {
 			service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
-//			String adminName = readProperty.getValue("exchange.admin.name");
-//			String adminPwd = readProperty.getValue("exchange.admin.password");
-//			String domain = readProperty.getValue("exchange.domain");
-//			String uri = readProperty.getValue("exchange.uri");
-//			ExchangeCredentials credentials = new WebCredentials(adminName, adminPwd, domain);
-//			service.setCredentials(credentials);
-//			service.setUrl(new URI(uri));
+			String adminName = commonProperties.getExchangeAdminName();
+			String adminPwd =commonProperties.getExchangeAdminPwd();
+			String domain = commonProperties.getExchangeDomain();
+			String uri = commonProperties.getExchangeUri();
+			ExchangeCredentials credentials = new WebCredentials(adminName, adminPwd, domain);
+			service.setCredentials(credentials);
+			service.setUrl(new URI(uri));
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("【创建ExchangeService异常】:"+e.getMessage());

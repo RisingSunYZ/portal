@@ -1,4 +1,4 @@
-package com.dragon.portal.component;
+package com.dragon.portal.customLabel;
 
 
 

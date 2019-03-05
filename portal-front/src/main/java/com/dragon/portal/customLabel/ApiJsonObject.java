@@ -1,4 +1,4 @@
-package com.dragon.portal.component;
+package com.dragon.portal.customLabel;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiJsonObject {
 
-    com.dragon.portal.component.ApiJsonProperty[] value(); //对象属性值
+    ApiJsonProperty[] value(); //对象属性值
 }

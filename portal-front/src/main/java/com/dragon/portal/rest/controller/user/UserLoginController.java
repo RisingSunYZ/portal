@@ -1,8 +1,8 @@
 package com.dragon.portal.rest.controller.user;
 
-import com.dragon.portal.component.ApiJsonObject;
-import com.dragon.portal.component.ApiJsonProperty;
 import com.dragon.portal.constant.FormConstant;
+import com.dragon.portal.customLabel.ApiJsonObject;
+import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.service.user.IUserLoginService;
 import com.dragon.portal.web.controller.BaseController;
@@ -44,7 +44,9 @@ public class UserLoginController extends BaseController{
      */
     @PostMapping("/login")
     @ApiOperation("登录")
-    public ReturnVo<String> login(@RequestBody UserLogin userLogin, HttpServletRequest request) {
+    public ReturnVo<String> login(@ApiJsonObject({
+            @ApiJsonProperty(key="username",description = "用户名"),
+            @ApiJsonProperty(key="password",description = "密码")})@RequestBody UserLogin userLogin, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败！");
