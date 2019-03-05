@@ -36,6 +36,9 @@ public class UserLogin extends BaseModel implements Serializable{
     @ApiModelProperty(value="状态",name="status")
     private Integer status;
 
+    @ApiModelProperty(value="原登录密码",name="oldPassword")
+    private String oldPassword;
+
     public String getId() {
         return id;
     }
@@ -106,5 +109,13 @@ public class UserLogin extends BaseModel implements Serializable{
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 }
