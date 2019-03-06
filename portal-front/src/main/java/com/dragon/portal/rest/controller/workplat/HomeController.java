@@ -39,7 +39,7 @@ public class HomeController extends BaseController {
 	private static Logger logger = Logger.getLogger(HomeController.class);
 	private static  List<String> limit_display = Arrays.asList("HRIT系统", "邮件系统", "YS-OA-NEWEIP");// 不显示的系统
 
-	//FIXME
+	//FIXME IDM暂未弄，可以了下面注释部分不掉
 //	@Autowired
 //	private AuthUtils authUtils;
 	@Autowired
@@ -61,8 +61,7 @@ public class HomeController extends BaseController {
 		params.put("userName", userSessionInfo.getNo());
 		String resultStr;
 		try {
-			//FIXME
-			// IDM暂未弄，可以了下面注释部分不掉
+			//FIXME IDM暂未弄，可以了下面注释部分不掉
 			resultStr = "";
 //			resultStr = authUtils.getResponseFromServer("/rest/user/get_ssoapp_byuser", params);
 			JSONObject jsonObject = JSONObject.parseObject(resultStr);

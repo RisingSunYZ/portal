@@ -442,13 +442,11 @@ public class NewsNoticeServiceImpl implements INewsNoticeService {
 
     @Override
     public int subNoticeTumbsUp(NewsNotice notice) throws Exception {
-        // TODO Auto-generated method stub
         return noticeDao.subNoticeTumbsUp(notice);
     }
 
     @Override
     public int addNoticeTumbsUp(NewsNotice notice) throws Exception {
-        // TODO Auto-generated method stub
         return noticeDao.addNoticeTumbsUp(notice);
     }
 
