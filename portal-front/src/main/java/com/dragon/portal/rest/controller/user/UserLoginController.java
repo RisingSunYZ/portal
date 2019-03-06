@@ -5,7 +5,7 @@ import com.dragon.portal.customLabel.ApiJsonObject;
 import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.service.user.IUserLoginService;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,7 +35,7 @@ public class UserLoginController extends BaseController{
 
     private static Logger logger = LoggerFactory.getLogger(UserLoginController.class);
 
-    @Resource
+    @Autowired
     private IUserLoginService userLoginService;
 
     /**

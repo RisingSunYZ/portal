@@ -5,11 +5,10 @@ import com.dragon.portal.model.news.NewsType;
 import com.dragon.portal.service.news.INewsNoticeService;
 import com.dragon.portal.service.news.INewsTypeService;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
-import com.mhome.tools.common.JsonUtils;
 import com.ys.tools.vo.ReturnVo;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
@@ -21,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,13 +49,13 @@ public class NewsNoticeController extends BaseController {
 	
 	private static Logger logger = Logger.getLogger(NewsNoticeController.class);
 
-	@Resource
+	@Autowired
 	private IPersonnelApi personnelApi;
-	@Resource
+	@Autowired
 	private INewsTypeService newsTypeService;
-	@Resource
+	@Autowired
 	private IOrgApi orgApi ;
-	@Resource
+	@Autowired
 	private INewsNoticeService newsNoticeService;
 
 	/**

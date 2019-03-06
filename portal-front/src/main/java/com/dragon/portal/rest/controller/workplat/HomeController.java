@@ -7,11 +7,12 @@ import com.dragon.portal.model.workplat.ThirdSystem;
 import com.dragon.portal.service.cstm.ISystemMenuService;
 import com.dragon.portal.service.cstm.ISystemMenuUserService;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,11 +40,11 @@ public class HomeController extends BaseController {
 	private static  List<String> limit_display = Arrays.asList("HRIT系统", "邮件系统", "YS-OA-NEWEIP");// 不显示的系统
 
 	//FIXME
-//	@Resource
+//	@Autowired
 //	private AuthUtils authUtils;
-	@Resource
+	@Autowired
 	private ISystemMenuService systemMenuService;
-	@Resource
+	@Autowired
 	private ISystemMenuUserService systemMenuUserService;
 
 

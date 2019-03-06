@@ -8,7 +8,7 @@ import com.dragon.portal.model.cstm.SystemMenuUser;
 import com.dragon.portal.service.cstm.ISystemMenuTypeService;
 import com.dragon.portal.service.cstm.ISystemMenuUserService;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.vo.ReturnVo;
 import com.google.gson.reflect.TypeToken;
 import com.ys.tools.common.JsonUtils;
@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,9 +37,9 @@ public class SystemMenuController extends BaseController {
 
 	private static Logger logger = Logger.getLogger(SystemMenuController.class);
 
-	@Resource
+	@Autowired
 	private ISystemMenuTypeService systemMenuTypeService;
-	@Resource
+	@Autowired
 	private ISystemMenuUserService systemMenuUserService;
 
 	@GetMapping("/getSystemByetId")
