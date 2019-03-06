@@ -186,10 +186,10 @@ public class ProcessFormController extends BaseController {
 					|| appliedRange==ModelAppliedRangeEnum.YWXTYW.getStatus()){
 				url=rVo.getData().getBusinessUrl();
 				if(url.indexOf("/portal/form/biz/index-")>-1){
-					url = "/portal/form/biz/index.jhtml";
+					url = "/flow/form/s/page/biz-form.html";
 				}
 			}else{
-				url="/portal/form/custom/index.jhtml";
+				url="/flow/form/s/page/custm-form.html";
 			}
 			if(StringUtils.isNotBlank(bizId) && !"0".equals(bizId)){
 				url= changeParam(url,"bizId",bizId);
