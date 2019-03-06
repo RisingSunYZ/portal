@@ -1,6 +1,6 @@
 package com.dragon.portal.rest.controller.user;
 
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
