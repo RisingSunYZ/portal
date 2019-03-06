@@ -4,23 +4,27 @@ import com.dragon.portal.component.IMeetingComponent;
 import com.dragon.portal.dao.rscmgmt.IMeetingDao;
 import com.dragon.portal.dao.rscmgmt.IMeetingFilesDao;
 import com.dragon.portal.dao.rscmgmt.IMeetingPersonnelDao;
+import com.dragon.portal.dao.schedule.IScheduleEventDao;
 import com.dragon.portal.enm.metting.MeetingFileType;
 import com.dragon.portal.enm.metting.MeetingPersonnelType;
 import com.dragon.portal.enm.metting.MeetingStatusEnum;
 import com.dragon.portal.model.rscmgmt.*;
+import com.dragon.portal.model.schedule.ScheduleEvent;
+import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.service.rscmgmt.*;
 import com.dragon.portal.util.DateUtils;
+import com.dragon.tools.common.ReturnCode;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.mhome.tools.common.UUIDGenerator;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
-import com.ys.tools.common.ReadProperty;
 import com.ys.tools.ftp.FtpTools;
-import com.ys.tools.vo.ReturnVo;
+import com.dragon.tools.vo.ReturnVo;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -50,8 +54,8 @@ public class MeetingServiceImpl implements IMeetingService {
 	private IMeetingPersonnelDao meetingPersonnelDao;
 	@Resource
 	private IMeetingFilesDao meetingFilesDao;
-	//@Resource
-	//private ReadProperty readProperty;
+	@Resource
+	private CommonProperties commonProperties;
 
 	@Resource
 	private IPersonnelApi personnelApi;
@@ -63,13 +67,11 @@ public class MeetingServiceImpl implements IMeetingService {
 	private IMeetingSummaryService meetingSummaryService;
 	@Resource
 	private IMeetingFilesService meetingFilesService;
-//	@Resource
-//	private FtpTools ftpTools;
 	@Resource
 	private IMeetingReplyService meetingReplyService;
 
-//	@Resource
-//	private IScheduleEventDao scheduleEventDao;
+	@Resource
+	private IScheduleEventDao scheduleEventDao;
 
 	@Override
 	public Meeting getMeetingById(String id) throws Exception {
@@ -342,292 +344,292 @@ public class MeetingServiceImpl implements IMeetingService {
 
 	@Override
 	public ReturnVo<String> addOrUpdateMeeting(Meeting meeting) throws Exception {
-//		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL,"修改失败！");
-//		if (null != meeting && StringUtils.isNotBlank(meeting.getUserNo())) {
-//			String userNo=meeting.getUserNo();
-//			//设置会议发起人邮箱地址
-//			AppointmentVO appointmentVO=new AppointmentVO();
-//
-//			ReturnVo<PersonnelApiVo> person = personnelApi.getPersonnelApiVoByNo(userNo);
-//			PersonnelApiVo personnelApiVo = person.getData();
-//			appointmentVO.setEmail(personnelApiVo.getEmail());
-//			logger.info("发起人邮箱===》》》"+personnelApiVo.getEmail());
-//
-//			//会议日程---获取日程信息及接收人
-//			List<ScheduleEvent> scheduleEventList = new ArrayList<ScheduleEvent>();
-//			ScheduleEvent sh = null;
-//			List<String> newNos = new ArrayList<String>();
-//
-//			//设置会议参与人---必选人员邮箱地址
-//			if(StringUtils.isNotBlank(meeting.getMandatoryPersonNo())){
-//				List<String> nos = new ArrayList<String>();
-//				List<String> mandatoryEmail = new ArrayList<String>();
-//				String[] personNO = meeting.getMandatoryPersonNo().split(",");
-//				for(String s : personNO){
-//					if(s.contains("@")){
-//						mandatoryEmail.add(s.trim());
-//						System.out.println("必选人员邮箱===》》》"+s);
-//					}else{
-//						nos.add(s.trim());
-//
-//						sh = new ScheduleEvent();
-//						sh.setReceiveNo(s.trim());
-//						scheduleEventList.add(sh);
-//						newNos.add(s.trim());
-//					}
-//				}
-//				if(nos.size()>0){
-//					ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(nos);
-//					List<PersonnelApiVo> personnelApiVos = returnVos.getDatas();
-//					if(personnelApiVos != null && personnelApiVos.size()>0){
-//						for(PersonnelApiVo p : personnelApiVos){
-//							mandatoryEmail.add(p.getEmail());
-//						}
-//					}
-//				}
-//				appointmentVO.setMandatoryEmail(mandatoryEmail);
-//			}
-//
-//			//设置会议参与人---可选人员邮箱地址
-//			List<String> optionalNos = new ArrayList<String>();
-//			List<String> optionalEmail = new ArrayList<String>();
-//			if(StringUtils.isNotBlank(meeting.getOptionalPersonNo())){
-//				String[] personNO = meeting.getOptionalPersonNo().split(",");
-//				for(String s : personNO){
-//					if(s.contains("@")){
-//						optionalEmail.add(s.trim());
-//						System.out.println("可选人员邮箱===》》》"+s);
-//					}else{
-//						optionalNos.add(s.trim());
-//
-//						sh = new ScheduleEvent();
-//						sh.setCreator(userNo);
-//						sh.setUpdator(userNo);
-//						sh.setReceiveNo(s.trim());
-//						scheduleEventList.add(sh);
-//						newNos.add(s.trim());
-//					}
-//				}
-//			}
-//			if(StringUtils.isNotBlank(meeting.getRecordPersonNo())){
-//				String[] personNO = meeting.getRecordPersonNo().split(",");
-//				for(String s : personNO){
-//					optionalNos.add(s.trim());
-//
-//					sh = new ScheduleEvent();
-//					sh.setReceiveNo(s.trim());
-//					scheduleEventList.add(sh);
-//					newNos.add(s.trim());
-//				}
-//			}
-//			if(optionalNos.size()>0){
-//				ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(optionalNos);
-//				List<PersonnelApiVo> optionalApiVos = returnVos.getDatas();
-//				if(optionalApiVos != null && optionalApiVos.size()>0){
-//					for(PersonnelApiVo p : optionalApiVos){
-//						optionalEmail.add(p.getEmail());
-//					}
-//				}
-//			}
-//			appointmentVO.setOptionalEmail(optionalEmail);
-//
-//			Map<String,Object> map=new HashMap<String,Object>();
-//			String start = meeting.getMeetingTime()+" "+meeting.getStart()+":00";
-//			String end = meeting.getMeetingTime()+" "+meeting.getEnd()+":00";
-//			appointmentVO.setAddress(meeting.getMeetingroomName());
-//			appointmentVO.setContent(meeting.getContent());
-//			appointmentVO.setTitle(meeting.getTheme());
-//			appointmentVO.setStart(start);
-//			appointmentVO.setAllDay(false);
-//			appointmentVO.setEnd(end);
-//
-//			//将附件添加到内容中
-//			String contentStr = meeting.getContent();
-//			if(StringUtils.isNotBlank(contentStr)){
-//				contentStr = contentStr +"<br/>";
-//			}
-//			String[] fileNames = meeting.getFileName().trim().split(",");
-//			String[] filePaths = meeting.getFilePath().trim().split(",");
-//			String path =readProperty.getValue("ftp.host");
-//			if(filePaths.length>0){
-//				for(int i =0;i<filePaths.length;i++){
-//					contentStr = contentStr +"<a href=\""+path+filePaths[i]+"\">"+fileNames[i]+"</a>&nbsp;&nbsp;";
-//				}
-//			}
-//			appointmentVO.setContent(contentStr);
-//			if(StringUtils.isBlank(meeting.getId())){
-//				meeting.setCreator(userNo);
-//				meeting.setUpdator(userNo);
-//				meeting.setStatus(MeetingStatusEnum.PENDIND.getCode());
-//				meeting.setDelFlag(1);
-//				System.out.println("必选人员邮箱"+appointmentVO.getMandatoryEmail());
-//				System.out.println("可选人员邮箱"+appointmentVO.getOptionalEmail());
-//				ReturnVo<AppointmentVO> returnVoApp = metingComponent.sendMeetingInvitation(appointmentVO);
-//				if(returnVoApp.getCode()== ReturnCode.SUCCESS){
-//					AppointmentVO vo = returnVoApp.getData();
-//					meeting.setChangeId(vo.getChangeId());
-//					meeting.setChangeKey(vo.getChangeKey());
-//					insertMeeting(meeting);
-//
-//					for(ScheduleEvent scheduleEvent : scheduleEventList){
-//						scheduleEvent.setId(UUIDGenerator.generate());
-//						scheduleEvent.setTitle(meeting.getTheme());
-//						scheduleEvent.setAddress(meeting.getMeetingroomName());
-//						scheduleEvent.setContent(meeting.getContent());
-//						scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
-//						scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
-//
-//						scheduleEvent.setCreator(userNo);
-//						scheduleEvent.setCreateTime(new Date());
-//						scheduleEvent.setUpdator(userNo);
-//						scheduleEvent.setUpdateTime(new Date());
-//
-//						scheduleEvent.setDelFlag(1);
-//						scheduleEvent.setType(2);
-//						scheduleEvent.setIsAllDay(0);
-//						scheduleEvent.setChangeId(vo.getChangeId());
-//						scheduleEvent.setChangeKey(vo.getChangeKey());
-//						scheduleEvent.setMeetingId(meeting.getId());
-//
-//					}
-//					this.scheduleEventDao.insertScheduleEvents(scheduleEventList);
-//					returnVo.setCode(ReturnCode.SUCCESS);
-//					returnVo.setMsg("发送成功！");
-//				}
-//			}else{
-//				Meeting mt = this.meetingDao.getMeetingById(meeting.getId());
-//				appointmentVO.setOldStart(DateUtils.dateToString(mt.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
-//				appointmentVO.setOldEnd(DateUtils.dateToString(mt.getEndTime(), "yyyy-MM-dd HH:mm:ss"));
-//				meeting.setCreator(userNo);
-//				meeting.setUpdator(userNo);
-////				meeting.setCreatorName(loginUser.getName());
-//				meeting.setStatus(MeetingStatusEnum.PENDIND.getCode());
-//				meeting.setDelFlag(1);
-//				if(mt.getChangeId() !=null && mt.getChangeKey() != null){
-//					appointmentVO.setChangeId(mt.getChangeId());
-//					appointmentVO.setChangeKey(mt.getChangeKey());
-//				}
-//				ReturnVo<AppointmentVO> returnVoApp = null;
-//
-//				if(mt.getStatus() == MeetingStatusEnum.MY_DRAFT.getCode()){
-//					returnVoApp = metingComponent.sendMeetingInvitation(appointmentVO);
-//					if(returnVoApp.getCode()== ReturnCode.SUCCESS){
-//						AppointmentVO vo = returnVoApp.getData();
-//						meeting.setChangeId(vo.getChangeId());
-//						meeting.setChangeKey(vo.getChangeKey());
-//					}
-//				}else{
-//					returnVoApp = metingComponent.editMeetingInvitation(appointmentVO);
-//				}
-//				if(returnVoApp != null){
-//					if(returnVoApp.getCode() == ReturnCode.SUCCESS){
-//						this.meetingDao.updateMeeting(meeting);
-//						//发送会议邀请或会议更新插入会让日程
-//						List addEvent =new ArrayList();
-//						String editEventId = "";
-//						String delEventId = "";
-//						if(mt.getStatus() == MeetingStatusEnum.MY_DRAFT.getCode()){
-//							System.out.println("changeId===>>>"+meeting.getChangeId());
-//							System.out.println("changeKey===>>>"+meeting.getChangeKey());
-//							for(ScheduleEvent scheduleEvent : scheduleEventList){
-//								scheduleEvent.setId(UUIDGenerator.generate());
-//								scheduleEvent.setTitle(meeting.getTheme());
-//								scheduleEvent.setAddress(meeting.getMeetingroomName());
-//								scheduleEvent.setContent(meeting.getContent());
-//								scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
-//								scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
-//
-//								scheduleEvent.setCreator(userNo);
-//								scheduleEvent.setCreateTime(new Date());
-//								scheduleEvent.setUpdator(userNo);
-//								scheduleEvent.setUpdateTime(new Date());
-//
-//								scheduleEvent.setDelFlag(1);
-//								scheduleEvent.setType(2);
-//								scheduleEvent.setIsAllDay(0);
-//								scheduleEvent.setChangeId(meeting.getChangeId());
-//								scheduleEvent.setChangeKey(meeting.getChangeKey());
-//								scheduleEvent.setMeetingId(meeting.getId());
-//							}
-//							this.scheduleEventDao.insertScheduleEvents(scheduleEventList);
-//							returnVo.setCode(ReturnCode.SUCCESS);
-//							returnVo.setMsg("发送成功！");
-//						}else{//发送会议更新时，根据所选人员添加、删除、修改日程
-//							List<ScheduleEvent> events = this.scheduleEventDao.getScheduleEventByMeetingId(meeting.getId());
-//							Map oldEvent = new HashMap();
-//							if(events.size()>0){
-//								for(int i=0;i<events.size();i++){
-//									oldEvent.put(events.get(i).getReceiveNo(), events.get(i));
-//								}
-//							}
-//							//日程修改的属性
-//							ScheduleEvent updateSchdule = new ScheduleEvent();
-//							updateSchdule.setAddress(meeting.getMeetingroomName());
-//							updateSchdule.setTitle(meeting.getTheme());
-//							updateSchdule.setContent(meeting.getContent());
-//							updateSchdule.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
-//							updateSchdule.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
-//							updateSchdule.setUpdator(userNo);
-//							updateSchdule.setUpdateTime(new Date());
-//
-//							for(int i=0;i<newNos.size();i++){
-//								if(oldEvent.get(newNos.get(i)) !=null){//需要修改的日程
-//									ScheduleEvent editSchedule = (ScheduleEvent)oldEvent.get(newNos.get(i));
-//									editEventId = editEventId + editSchedule.getId()+",";
-//									oldEvent.remove(newNos.get(i));
-//								}else{//需要添加的日程
-//									if(oldEvent.get(newNos.get(i)) == null){
-//										ScheduleEvent addSchedule = new ScheduleEvent();
-//										addSchedule.setId(UUIDGenerator.generate());
-//										addSchedule.setTitle(meeting.getTheme());
-//										addSchedule.setAddress(meeting.getMeetingroomName());
-//										addSchedule.setContent(meeting.getContent());
-//										addSchedule.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
-//										addSchedule.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
-//
-//										addSchedule.setCreator(userNo);
-//										addSchedule.setCreateTime(new Date());
-//										addSchedule.setUpdator(meeting.getCreatorName());
-//										addSchedule.setUpdateTime(new Date());
-//										addSchedule.setReceiveNo(newNos.get(i));
-//
-//										addSchedule.setDelFlag(1);
-//										addSchedule.setType(2);
-//										addSchedule.setIsAllDay(0);
-//										addSchedule.setChangeId(mt.getChangeId());
-//										addSchedule.setChangeKey(mt.getChangeKey());
-//										addSchedule.setMeetingId(meeting.getId());
-//										addEvent.add(addSchedule);
-//									}
-//								}
-//							}
-//							for (Object key : oldEvent.keySet()) {//要删除的日程id
-//								ScheduleEvent s = (ScheduleEvent)oldEvent.get(key);
-//								delEventId = delEventId + s.getId()+",";
-//							}
-//
-//							if(StringUtils.isNotBlank(delEventId)){
-//								this.scheduleEventDao.delScheduleEventByIds(delEventId.substring(0, delEventId.length()-1));
-//							}
-//							if(StringUtils.isNotBlank(editEventId)){
-//								this.scheduleEventDao.updateScheduleEventByIds(editEventId, updateSchdule);
-//							}
-//							if(addEvent.size()>0){
-//								this.scheduleEventDao.insertScheduleEvents(addEvent);
-//							}
-//							returnVo.setCode(ReturnCode.SUCCESS);
-//							returnVo.setMsg("发送成功！");
-//						}
-//					}
-//				}
-//			}
-//			System.out.println(JSONObject.fromObject(map).toString());
-//		}else{
-//			returnVo.setCode(ReturnCode.FAIL);
-//			returnVo.setMsg("用户信息获取失败，请重新登录");
-//		}
-//		return returnVo;
-		return null;
+		ReturnVo<String> returnVo = new ReturnVo<>(ReturnCode.FAIL,"修改失败！");
+		if (null != meeting && StringUtils.isNotBlank(meeting.getUserNo())) {
+			String userNo=meeting.getUserNo();
+			//设置会议发起人邮箱地址
+			AppointmentVO appointmentVO=new AppointmentVO();
+
+			com.ys.tools.vo.ReturnVo<PersonnelApiVo> person = personnelApi.getPersonnelApiVoByNo(userNo);
+			PersonnelApiVo personnelApiVo = person.getData();
+			appointmentVO.setEmail(personnelApiVo.getEmail());
+			logger.info("发起人邮箱===》》》"+personnelApiVo.getEmail());
+
+			//会议日程---获取日程信息及接收人
+			List<ScheduleEvent> scheduleEventList = new ArrayList<ScheduleEvent>();
+			ScheduleEvent sh = null;
+			List<String> newNos = new ArrayList<String>();
+
+			//设置会议参与人---必选人员邮箱地址
+			if(StringUtils.isNotBlank(meeting.getMandatoryPersonNo())){
+				List<String> nos = new ArrayList<String>();
+				List<String> mandatoryEmail = new ArrayList<String>();
+				String[] personNO = meeting.getMandatoryPersonNo().split(",");
+				for(String s : personNO){
+					if(s.contains("@")){
+						mandatoryEmail.add(s.trim());
+						System.out.println("必选人员邮箱===》》》"+s);
+					}else{
+						nos.add(s.trim());
+
+						sh = new ScheduleEvent();
+						sh.setReceiveNo(s.trim());
+						scheduleEventList.add(sh);
+						newNos.add(s.trim());
+					}
+				}
+				if(nos.size()>0){
+					com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(nos);
+					List<PersonnelApiVo> personnelApiVos = returnVos.getDatas();
+					if(personnelApiVos != null && personnelApiVos.size()>0){
+						for(PersonnelApiVo p : personnelApiVos){
+							mandatoryEmail.add(p.getEmail());
+						}
+					}
+				}
+				appointmentVO.setMandatoryEmail(mandatoryEmail);
+			}
+
+			//设置会议参与人---可选人员邮箱地址
+			List<String> optionalNos = new ArrayList<String>();
+			List<String> optionalEmail = new ArrayList<String>();
+			if(StringUtils.isNotBlank(meeting.getOptionalPersonNo())){
+				String[] personNO = meeting.getOptionalPersonNo().split(",");
+				for(String s : personNO){
+					if(s.contains("@")){
+						optionalEmail.add(s.trim());
+						System.out.println("可选人员邮箱===》》》"+s);
+					}else{
+						optionalNos.add(s.trim());
+
+						sh = new ScheduleEvent();
+						sh.setCreator(userNo);
+						sh.setUpdator(userNo);
+						sh.setReceiveNo(s.trim());
+						scheduleEventList.add(sh);
+						newNos.add(s.trim());
+					}
+				}
+			}
+			if(StringUtils.isNotBlank(meeting.getRecordPersonNo())){
+				String[] personNO = meeting.getRecordPersonNo().split(",");
+				for(String s : personNO){
+					optionalNos.add(s.trim());
+
+					sh = new ScheduleEvent();
+					sh.setReceiveNo(s.trim());
+					scheduleEventList.add(sh);
+					newNos.add(s.trim());
+				}
+			}
+			if(optionalNos.size()>0){
+				com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(optionalNos);
+				List<PersonnelApiVo> optionalApiVos = returnVos.getDatas();
+				if(optionalApiVos != null && optionalApiVos.size()>0){
+					for(PersonnelApiVo p : optionalApiVos){
+						optionalEmail.add(p.getEmail());
+					}
+				}
+			}
+			appointmentVO.setOptionalEmail(optionalEmail);
+
+			Map<String,Object> map=new HashMap<>();
+			String start = meeting.getMeetingTime()+" "+meeting.getStart()+":00";
+			String end = meeting.getMeetingTime()+" "+meeting.getEnd()+":00";
+			appointmentVO.setAddress(meeting.getMeetingroomName());
+			appointmentVO.setContent(meeting.getContent());
+			appointmentVO.setTitle(meeting.getTheme());
+			appointmentVO.setStart(start);
+			appointmentVO.setAllDay(false);
+			appointmentVO.setEnd(end);
+
+			//将附件添加到内容中
+			String contentStr = meeting.getContent();
+			if(StringUtils.isNotBlank(contentStr)){
+				contentStr = contentStr +"<br/>";
+			}
+			String[] fileNames = meeting.getFileName().trim().split(",");
+			String[] filePaths = meeting.getFilePath().trim().split(",");
+
+			String path =commonProperties.getFtpHost();
+			if(filePaths.length>0){
+				for(int i =0;i<filePaths.length;i++){
+					contentStr = contentStr +"<a href=\""+path+filePaths[i]+"\">"+fileNames[i]+"</a>&nbsp;&nbsp;";
+				}
+			}
+			appointmentVO.setContent(contentStr);
+			if(StringUtils.isBlank(meeting.getId())){
+				meeting.setCreator(userNo);
+				meeting.setUpdator(userNo);
+				meeting.setStatus(MeetingStatusEnum.PENDIND.getCode());
+				meeting.setDelFlag(1);
+				System.out.println("必选人员邮箱"+appointmentVO.getMandatoryEmail());
+				System.out.println("可选人员邮箱"+appointmentVO.getOptionalEmail());
+				ReturnVo<AppointmentVO> returnVoApp = metingComponent.sendMeetingInvitation(appointmentVO);
+				if(returnVoApp.getCode()== ReturnCode.SUCCESS){
+					AppointmentVO vo = returnVoApp.getData();
+					meeting.setChangeId(vo.getChangeId());
+					meeting.setChangeKey(vo.getChangeKey());
+					insertMeeting(meeting);
+
+					for(ScheduleEvent scheduleEvent : scheduleEventList){
+						scheduleEvent.setId(UUIDGenerator.generate());
+						scheduleEvent.setTitle(meeting.getTheme());
+						scheduleEvent.setAddress(meeting.getMeetingroomName());
+						scheduleEvent.setContent(meeting.getContent());
+						scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
+						scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
+
+						scheduleEvent.setCreator(userNo);
+						scheduleEvent.setCreateTime(new Date());
+						scheduleEvent.setUpdator(userNo);
+						scheduleEvent.setUpdateTime(new Date());
+
+						scheduleEvent.setDelFlag(1);
+						scheduleEvent.setType(2);
+						scheduleEvent.setIsAllDay(0);
+						scheduleEvent.setChangeId(vo.getChangeId());
+						scheduleEvent.setChangeKey(vo.getChangeKey());
+						scheduleEvent.setMeetingId(meeting.getId());
+
+					}
+					this.scheduleEventDao.insertScheduleEvents(scheduleEventList);
+					returnVo.setCode(ReturnCode.SUCCESS);
+					returnVo.setMsg("发送成功！");
+				}
+			}else{
+				Meeting mt = this.meetingDao.getMeetingById(meeting.getId());
+				appointmentVO.setOldStart(DateUtils.dateToString(mt.getStartTime(), "yyyy-MM-dd HH:mm:ss"));
+				appointmentVO.setOldEnd(DateUtils.dateToString(mt.getEndTime(), "yyyy-MM-dd HH:mm:ss"));
+				meeting.setCreator(userNo);
+				meeting.setUpdator(userNo);
+//				meeting.setCreatorName(loginUser.getName());
+				meeting.setStatus(MeetingStatusEnum.PENDIND.getCode());
+				meeting.setDelFlag(1);
+				if(mt.getChangeId() !=null && mt.getChangeKey() != null){
+					appointmentVO.setChangeId(mt.getChangeId());
+					appointmentVO.setChangeKey(mt.getChangeKey());
+				}
+				ReturnVo<AppointmentVO> returnVoApp = null;
+
+				if(mt.getStatus() == MeetingStatusEnum.MY_DRAFT.getCode()){
+					returnVoApp = metingComponent.sendMeetingInvitation(appointmentVO);
+					if(returnVoApp.getCode()== ReturnCode.SUCCESS){
+						AppointmentVO vo = returnVoApp.getData();
+						meeting.setChangeId(vo.getChangeId());
+						meeting.setChangeKey(vo.getChangeKey());
+					}
+				}else{
+					returnVoApp = metingComponent.editMeetingInvitation(appointmentVO);
+				}
+				if(returnVoApp != null){
+					if(returnVoApp.getCode() == ReturnCode.SUCCESS){
+						this.meetingDao.updateMeeting(meeting);
+						//发送会议邀请或会议更新插入会让日程
+						List addEvent =new ArrayList();
+						String editEventId = "";
+						String delEventId = "";
+						if(mt.getStatus() == MeetingStatusEnum.MY_DRAFT.getCode()){
+							System.out.println("changeId===>>>"+meeting.getChangeId());
+							System.out.println("changeKey===>>>"+meeting.getChangeKey());
+							for(ScheduleEvent scheduleEvent : scheduleEventList){
+								scheduleEvent.setId(UUIDGenerator.generate());
+								scheduleEvent.setTitle(meeting.getTheme());
+								scheduleEvent.setAddress(meeting.getMeetingroomName());
+								scheduleEvent.setContent(meeting.getContent());
+								scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
+								scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
+
+								scheduleEvent.setCreator(userNo);
+								scheduleEvent.setCreateTime(new Date());
+								scheduleEvent.setUpdator(userNo);
+								scheduleEvent.setUpdateTime(new Date());
+
+								scheduleEvent.setDelFlag(1);
+								scheduleEvent.setType(2);
+								scheduleEvent.setIsAllDay(0);
+								scheduleEvent.setChangeId(meeting.getChangeId());
+								scheduleEvent.setChangeKey(meeting.getChangeKey());
+								scheduleEvent.setMeetingId(meeting.getId());
+							}
+							this.scheduleEventDao.insertScheduleEvents(scheduleEventList);
+							returnVo.setCode(ReturnCode.SUCCESS);
+							returnVo.setMsg("发送成功！");
+						}else{//发送会议更新时，根据所选人员添加、删除、修改日程
+							List<ScheduleEvent> events = this.scheduleEventDao.getScheduleEventByMeetingId(meeting.getId());
+							Map oldEvent = new HashMap();
+							if(events.size()>0){
+								for(int i=0;i<events.size();i++){
+									oldEvent.put(events.get(i).getReceiveNo(), events.get(i));
+								}
+							}
+							//日程修改的属性
+							ScheduleEvent updateSchdule = new ScheduleEvent();
+							updateSchdule.setAddress(meeting.getMeetingroomName());
+							updateSchdule.setTitle(meeting.getTheme());
+							updateSchdule.setContent(meeting.getContent());
+							updateSchdule.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
+							updateSchdule.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
+							updateSchdule.setUpdator(userNo);
+							updateSchdule.setUpdateTime(new Date());
+
+							for(int i=0;i<newNos.size();i++){
+								if(oldEvent.get(newNos.get(i)) !=null){//需要修改的日程
+									ScheduleEvent editSchedule = (ScheduleEvent)oldEvent.get(newNos.get(i));
+									editEventId = editEventId + editSchedule.getId()+",";
+									oldEvent.remove(newNos.get(i));
+								}else{//需要添加的日程
+									if(oldEvent.get(newNos.get(i)) == null){
+										ScheduleEvent addSchedule = new ScheduleEvent();
+										addSchedule.setId(UUIDGenerator.generate());
+										addSchedule.setTitle(meeting.getTheme());
+										addSchedule.setAddress(meeting.getMeetingroomName());
+										addSchedule.setContent(meeting.getContent());
+										addSchedule.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
+										addSchedule.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
+
+										addSchedule.setCreator(userNo);
+										addSchedule.setCreateTime(new Date());
+										addSchedule.setUpdator(meeting.getCreatorName());
+										addSchedule.setUpdateTime(new Date());
+										addSchedule.setReceiveNo(newNos.get(i));
+
+										addSchedule.setDelFlag(1);
+										addSchedule.setType(2);
+										addSchedule.setIsAllDay(0);
+										addSchedule.setChangeId(mt.getChangeId());
+										addSchedule.setChangeKey(mt.getChangeKey());
+										addSchedule.setMeetingId(meeting.getId());
+										addEvent.add(addSchedule);
+									}
+								}
+							}
+							for (Object key : oldEvent.keySet()) {//要删除的日程id
+								ScheduleEvent s = (ScheduleEvent)oldEvent.get(key);
+								delEventId = delEventId + s.getId()+",";
+							}
+
+							if(StringUtils.isNotBlank(delEventId)){
+								this.scheduleEventDao.delScheduleEventByIds(delEventId.substring(0, delEventId.length()-1));
+							}
+							if(StringUtils.isNotBlank(editEventId)){
+								this.scheduleEventDao.updateScheduleEventByIds(editEventId, updateSchdule);
+							}
+							if(addEvent.size()>0){
+								this.scheduleEventDao.insertScheduleEvents(addEvent);
+							}
+							returnVo.setCode(ReturnCode.SUCCESS);
+							returnVo.setMsg("发送成功！");
+						}
+					}
+				}
+			}
+			System.out.println(JSONObject.fromObject(map).toString());
+		}else{
+			returnVo.setCode(ReturnCode.FAIL);
+			returnVo.setMsg("用户信息获取失败，请重新登录");
+		}
+		return returnVo;
 	}
 
 	/**
@@ -648,7 +650,7 @@ public class MeetingServiceImpl implements IMeetingService {
 				m.setUserNo(userNo);
 				nos.add(m.getCreator());
 			}
-			ReturnVo<PersonnelApiVo> returnVo = personnelApi.getPersonnelApiVoByNos(nos);
+			com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVo = personnelApi.getPersonnelApiVoByNos(nos);
 			if(UcenterConstant.SUCCESS == returnVo.getCode()){
 				List<PersonnelApiVo> personnelApiVos = returnVo.getDatas();
 				if(personnelApiVos.size() > 0){

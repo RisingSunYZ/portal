@@ -1,11 +1,11 @@
 package com.dragon.portal.component.impl;
 
-import com.dragon.tools.common.ReturnCode;
-import com.mhome.tools.common.JsonUtils;
 import com.dragon.portal.component.IMeetingComponent;
 import com.dragon.portal.model.rscmgmt.AppointmentVO;
-import com.dragon.tools.common.ReadProperty;
+import com.dragon.portal.properties.CommonProperties;
+import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
+import com.mhome.tools.common.JsonUtils;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.enumeration.misc.ConnectingIdType;
 import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
@@ -39,18 +39,18 @@ public class MeetingComponentImpl implements IMeetingComponent {
 
 	private static Logger logger = Logger.getLogger(MeetingComponentImpl.class);
 	
-//	@Resource
-//	private ReadProperty readProperty;
+	@Resource
+	private CommonProperties commonProperties;
 	
 	private ExchangeService service = null;
 	
 	private void initService() {
 		logger.info("开始创建ExchangeService...");
 		service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
-		String adminName = null;//readProperty.getValue("exchange.admin.name");
-	    String adminPwd = null;//readProperty.getValue("exchange.admin.password");
-	    String domain = null;//readProperty.getValue("exchange.domain");
-	    String uri = null;//readProperty.getValue("exchange.uri");
+		String adminName = commonProperties.getExchangeAdminName();
+	    String adminPwd = commonProperties.getExchangeAdminPwd();
+	    String domain = commonProperties.getExchangeDomain();
+	    String uri = commonProperties.getExchangeUri();
 		ExchangeCredentials credentials = new WebCredentials(adminName, adminPwd, domain);
 		service.setCredentials(credentials);
 		try {

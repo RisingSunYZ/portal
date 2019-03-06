@@ -1,7 +1,7 @@
 package com.dragon.portal.service.rscmgmt;
 
 import com.dragon.portal.model.rscmgmt.Meeting;
-import com.ys.tools.vo.ReturnVo;
+import com.dragon.tools.vo.ReturnVo;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 

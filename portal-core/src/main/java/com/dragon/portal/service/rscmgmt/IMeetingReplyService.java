@@ -89,7 +89,7 @@ public interface IMeetingReplyService {
 	
 	/**
 	 * 通过会议id和答复人工号会议答复MeetingReply
-	 * @param id
+	 * @param meetingId
 	 * @throws Exception
 	 * @Description:
 	 */
@@ -97,7 +97,7 @@ public interface IMeetingReplyService {
 	
 	/**
 	 * 会议详情页面加载会议答复内容
-	 * @param meeting_id
+	 * @param meetingReplys
 	 * @return 
 	 * @throws Exception
 	 * @Description:

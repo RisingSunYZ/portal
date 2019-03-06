@@ -27,6 +27,7 @@ public class MeetingReply extends BaseModel implements Serializable{
 	/**
      * id
      */
+    @ApiModelProperty(value="ID",name="ID")
     private String id;
     
     /**
