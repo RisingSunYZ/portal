@@ -4,9 +4,11 @@ package com.dragon.portal.service.redis;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -226,4 +228,18 @@ public class RedisService {
             return null;
         }
     }
+    /**
+     *  获取 唯一增长值 key UNIQUE_ expireDate.toString()
+     * @param expireDate 过期时间
+     * @return
+     * @Description:
+     * @author v-zhaohaishan 2017年6月5日 下午3:40:04
+     */
+
+    public int getAtomicInterger(Date expireDate){
+        RedisAtomicInteger redisAtomicInteger = new RedisAtomicInteger("UNIQUE_"+expireDate.toString(),redisTemplate.getConnectionFactory());
+        redisAtomicInteger.expireAt(expireDate);
+        return redisAtomicInteger.incrementAndGet();
+    }
+
 }

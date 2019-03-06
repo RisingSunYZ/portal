@@ -181,12 +181,12 @@
             <groupId>com.ys</groupId>
             <artifactId>mis-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-           <!-- <exclusions>
-                <exclusion>
-                    <groupId>com.ys</groupId>
-                    <artifactId>base-tools</artifactId>
-                </exclusion>
-            </exclusions>-->
+            <!-- <exclusions>
+                 <exclusion>
+                     <groupId>com.ys</groupId>
+                     <artifactId>base-tools</artifactId>
+                 </exclusion>
+             </exclusions>-->
         </dependency>
         <!-- 数据源配置 -->
         <dependency>
@@ -200,6 +200,47 @@
             <artifactId>se-api</artifactId>
             <version>0.0.2-SNAPSHOT</version>
         </dependency>
+        <!-- Exchange Start -->
+        <dependency>
+            <groupId>com.microsoft.ews-java-api</groupId>
+            <artifactId>ews-java-api</artifactId>
+            <version>2.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>httpclient</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>httpcore</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
+        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.htmlparser</groupId>-->
+        <!--<artifactId>htmlparser</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>com.ys</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ys</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.9.1</version>
+        </dependency>
+        <!-- Exchange End -->
     </dependencies>
     <build>
         <finalName>flow-core</finalName>
