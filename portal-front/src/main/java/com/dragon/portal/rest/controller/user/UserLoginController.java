@@ -44,7 +44,7 @@ public class UserLoginController extends BaseController{
     @PostMapping("/login")
     @ApiOperation("登录")
     public ReturnVo<String> login(@ApiJsonObject({
-            @ApiJsonProperty(key="username",description = "用户名"),
+            @ApiJsonProperty(key="userName",description = "用户名"),
             @ApiJsonProperty(key="password",description = "密码")})@RequestBody UserLogin userLogin, HttpServletRequest request) {
 
         HttpSession session = request.getSession();

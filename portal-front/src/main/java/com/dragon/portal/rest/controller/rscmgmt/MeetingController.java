@@ -12,7 +12,6 @@ import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.service.rscmgmt.*;
 import com.dragon.portal.service.schedule.IScheduleEventService;
 import com.dragon.portal.util.DateUtils;
-import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.FileUtils;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.ftp.FtpTools;
@@ -20,22 +19,17 @@ import com.dragon.tools.ftp.UploadUtils;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
-import com.ecnice.privilege.vo.SimpleReturnVo;
 import com.mhome.tools.common.JsonUtils;
 import com.mhome.tools.common.UUIDGenerator;
 import com.ys.ucenter.api.IPersonnelApi;
-import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,9 +41,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -141,10 +132,10 @@ public class MeetingController {
      */
     @GetMapping("/ajaxList")
     @ApiOperation("加载待开会议页面数据")
+    @ApiImplicitParam(name="theme",value = "主题名称",dataType = "String",paramType = "query")
     public ReturnVo<Meeting> ajaxList(
-            @ApiParam(name = "theme", value = "主题名称", type = "String") @RequestParam(required = false) String theme,
-            @ApiParam(name = "pageIndex", value = "页数",   required = true, type = "Integer")@RequestParam int pageIndex,
-            @ApiParam(name = "pageSize", value = "条数",   required = true, type = "Integer")@RequestParam int pageSize,
+            @ApiIgnore Meeting meeting,
+            Query query,
             HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
         PagerModel<Meeting> pm = null;
@@ -152,14 +143,9 @@ public class MeetingController {
             //获取登录用户信息
             UserLogin loginUser =  getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserNo())) {
-                Meeting meeting = new Meeting();
-                meeting.setTheme(theme);
                 meeting.setCreator(loginUser.getUserNo());
                 meeting.setStatus(MeetingStatusEnum.PENDIND.getCode());
                 meeting.setStartTime(new Date());
-                Query query = new Query();
-                query.setPageIndex(pageIndex);
-                query.setPageSize(pageSize);
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getRows();
                 meetingService.getInitList(meetings,loginUser.getUserNo());
@@ -175,14 +161,17 @@ public class MeetingController {
 
 
     /**
-     * @param meeting
-     * @param query
      * @param request
      * @Description:加载我的邀请页面数据
      */
     @GetMapping("/ajaxMyList")
     @ApiOperation("加载我的邀请页面数据")
-    public String ajaxMyList(@RequestBody Meeting meeting,  Query query,  HttpServletRequest request, HttpServletResponse response) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="theme",value = "主题名称",dataType = "String",paramType = "query"),
+    })
+    public ReturnVo<PagerModel<Meeting>> ajaxMyList(@ApiIgnore Meeting meeting,
+            Query query,HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
@@ -196,40 +185,47 @@ public class MeetingController {
                     meetings = meetingService.getInitList(meetings,loginUser.getUserName());
                 }
             }
+            returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+            returnVo.setData(pm);
         } catch (Exception e) {
             logger.error("MeetingController-ajaxMyList:"+e);
             e.printStackTrace();
         }
-        return JsonUtils.toJson(pm);
+        return returnVo;
     }
 
 
     /**
-     * @param meeting
      * @param query
      * @param request
      * @Description:加载历史会议页面数据
      */
     @GetMapping("/ajaxHistoryList")
     @ApiOperation("加载历史会议页面数据")
-    public String ajaxHistoryList(Meeting meeting, Query query, HttpServletRequest request, HttpServletResponse response) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="theme",value = "主题名称",dataType = "String",paramType = "query"),
+    })
+    public ReturnVo ajaxHistoryList(@ApiIgnore Meeting meeting, Query query, HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
             UserLogin loginUser =  getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
                 meeting.setCreator(loginUser.getUserName());
-                //meeting.setStatus(MeetingStatusEnum.ALREADY_HELD.getCode());
+//                meeting.setStatus(MeetingStatusEnum.ALREADY_HELD.getCode());
                 meeting.setEndTime(new Date());
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getRows();
                 meetings = meetingService.getInitList(meetings,loginUser.getUserName());
+                returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
             }
         } catch (Exception e) {
             logger.error("MeetingController-ajaxHistoryList:"+e);
             e.printStackTrace();
         }
-        return JsonUtils.toJson(pm);
+        returnVo.setData(pm);
+        return returnVo;
     }
 
     /**
@@ -240,7 +236,11 @@ public class MeetingController {
      */
     @GetMapping("/ajaxMyDraftList")
     @ApiOperation("加载我的草稿页面数据")
-    public String ajaxMyDraftList(@RequestBody Meeting meeting, Query query, HttpServletRequest request, HttpServletResponse response) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="theme",value = "主题名称",dataType = "String",paramType = "query"),
+    })
+    public ReturnVo ajaxMyDraftList(@ApiIgnore Meeting meeting, Query query, HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
@@ -251,12 +251,14 @@ public class MeetingController {
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getRows();
                 meetings = meetingService.getInitList(meetings,loginUser.getUserName());
+                returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
             }
         } catch (Exception e) {
             logger.error("MeetingController-ajaxHistoryList:"+e);
             e.printStackTrace();
         }
-        return JsonUtils.toJson(pm);
+        returnVo.setData(pm);
+        return returnVo;
     }
 
     /**
@@ -267,7 +269,10 @@ public class MeetingController {
      */
     @GetMapping("/reply")
     @ApiOperation("会议答复")
-    public ReturnVo reply(String id, String meetingId,HttpServletRequest request, HttpServletResponse response) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="meetingId",value = "会议id",dataType = "String",paramType = "query"),
+    })
+    public ReturnVo reply(@RequestParam String meetingId, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo<MeetingReply> returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
         UserLogin loginUser = getUserSessionInfo(request,response);
         MeetingReply meetingReply =new MeetingReply();
@@ -293,32 +298,33 @@ public class MeetingController {
      */
     @GetMapping("/saveReply")
     @ApiOperation("会议答复")
-    public ReturnVo saveReply(HttpServletRequest request, HttpServletResponse response) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="id",value = "答复id",dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name="meetingId",value = "会议id",dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name="replyStatus",value = "答复状态",dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name="content",value = "答复内容",dataType = "String",paramType = "query"),
+    })
+    public ReturnVo saveReply(String id,String meetingId,String replyStatus,String content,HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "答复失败");
         try {
             UserLogin loginUser = getUserSessionInfo(request,response);
-            String id =request.getParameter("id");
-            String meetingId = request.getParameter("meetingId");
-            String replyStatus = request.getParameter("replyStatus");
-            String content = request.getParameter("content");
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
                 if(StringUtils.isNotBlank(id)){
                     MeetingReply meetingReply =  meetingReplyService.getMeetingReplyByMeetingIdAndPersonNo(meetingId,loginUser.getUserName());
-                    meetingReply.setReplyStatus(Integer.parseInt(request.getParameter("replyStatus").toString()));
-                    meetingReply.setContent(request.getParameter("content"));
+                    meetingReply.setReplyStatus(Integer.parseInt(replyStatus));
+                    meetingReply.setContent(content);
                     meetingReply.setUpdator(loginUser.getUserName());
                     meetingReplyService.updateMeetingReply(meetingReply);
-                    returnVo = new ReturnVo(ReturnCode.SUCCESS, "答复成功");
                 }else{
                     MeetingReply meetingReply =new MeetingReply();
                     meetingReply.setMeetingId(request.getParameter("meetingId"));
                     meetingReply.setCreator(loginUser.getUserName());
-                    meetingReply.setReplyStatus(Integer.parseInt(request.getParameter("replyStatus").toString()));
-                    meetingReply.setContent(request.getParameter("content"));
+                    meetingReply.setReplyStatus(Integer.parseInt(replyStatus));
+                    meetingReply.setContent(content);
                     meetingReply.setReplyName(loginUser.getRealName());
                     meetingReplyService.insertMeetingReply(meetingReply);
-                    returnVo = new ReturnVo(ReturnCode.SUCCESS, "答复成功");
                 }
+                returnVo = new ReturnVo(ReturnCode.SUCCESS, "答复成功");
             } else {
                 returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
             }
@@ -328,25 +334,29 @@ public class MeetingController {
         }
         return returnVo;
     }
-    /**
-     * @param model
-     * @param id
-     * @param request
-     * @Description:编辑会议纪要
-     */
-    @GetMapping("/editSummaryMeeting")
-    @ApiOperation("编辑会议纪要")
-    public String editSummaryMeeting(ModelMap model,String id,HttpServletRequest request, HttpServletResponse response) {
-        try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
 
+    /**
+     * 根据id查询会议答复
+     * @return
+     * @Description:
+     */
+    @GetMapping("/getSummaryMeeting")
+    @ApiOperation("根据id查询会议答复")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="id",value = "会议答复id",dataType = "String",paramType = "query"),
+    })
+    public ReturnVo getSummaryMeeting(String id ,HttpServletRequest request,HttpServletResponse response){
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
+        try{
+            Map<String,Object>map = new HashMap<>();
+            UserLogin loginUser =  getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
                 MeetingSummary meetingSummary = this.meetingSummaryService.getMeetingSummaryByMeetingId(id);
                 if(meetingSummary!=null){
                     //设置编辑页面显示会议的附件
                     List<MeetingFiles> meetingSummaryFilesTmp = meetingFilesService.getMeetingFilesByMeetingId(id);
 
-                    List<MeetingFiles> meetingSummaryFiles = new ArrayList<MeetingFiles>();
+                    List<MeetingFiles> meetingSummaryFiles = new ArrayList<>();
                     String fileName="";
                     String filePath="";
                     if(meetingSummaryFilesTmp.size()>0){
@@ -364,25 +374,26 @@ public class MeetingController {
                             meetingSummary.setFilePath(filePath.substring(0, filePath.length()-1));
                         }
                     }
-                    model.addAttribute("meetingSummaryFiles", meetingSummaryFiles);
+                    map.put("meetingSummaryFiles", meetingSummaryFiles);
                 }else{
                     meetingSummary = new MeetingSummary();
                     meetingSummary.setMeetingId(id);
                 }
-                model.addAttribute("meetingSummary", meetingSummary);
+                map.put("meetingSummary", meetingSummary);
+                returnVo = new ReturnVo(ReturnCode.SUCCESS, "查询成功");
             }
-        } catch (Exception e) {
-            logger.error("MeetingController-summary:"+e);
-            e.printStackTrace();
+            returnVo.setData(map);
+        }catch (Exception e){
+            logger.error("MeetingController-getSummaryMeeting",e);
         }
-        return "/rscmgmt/meeting/meeting-summary";
+        return returnVo;
     }
 
     /**
      * @param request
      * @Description:新建、编辑会议纪要页面数据保存
      */
-    @GetMapping("/saveMeetingSummary")
+    @PostMapping("/saveMeetingSummary")
     @ApiOperation("新建、编辑会议纪要页面数据保存")
     public String saveMeetingSummary(@RequestBody MeetingSummary meetingSummary, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败");
