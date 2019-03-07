@@ -74,7 +74,9 @@ public class CommonProperties {
     @Value("${exchange.uri}")
     private String exchangeUri;
     // ############################# Exchange end #############################
-
+    // ############################# itsm Path start #############################
+    @Value("${itsm.path}")
+    private String itsmPath;
 
 
     public String getIp() {
@@ -127,5 +129,9 @@ public class CommonProperties {
 
     public String getExchangeUri() {
         return exchangeUri;
+    }
+
+    public String getItsmPath() {
+        return itsmPath;
     }
 }
