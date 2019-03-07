@@ -3,6 +3,8 @@ package com.dragon.portal.config;
 import com.dragon.portal.customLabel.ApiJsonObject;
 import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.model.rscmgmt.Meeting;
+import com.dragon.portal.model.rscmgmt.MeetingPersonnel;
+import com.dragon.portal.model.rscmgmt.MeetingReply;
 import com.dragon.portal.model.user.UserLogin;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Optional;
@@ -39,7 +41,7 @@ public class SwaggerParamsConfig implements ParameterBuilderPlugin {
     private TypeResolver typeResolver;
 
     //使用ApiJsonObject需要控制接口参数展示属性设置
-    private Class[] arr = {UserLogin.class,Meeting.class};
+    private Class[] arr = {UserLogin.class,Meeting.class,MeetingReply.class,MeetingPersonnel.class};
 
     @Override
     public void apply(ParameterContext parameterContext) {

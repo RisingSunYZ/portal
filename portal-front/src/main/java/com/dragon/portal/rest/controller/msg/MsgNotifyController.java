@@ -5,6 +5,7 @@ import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import com.ecnice.privilege.api.privilege.IPrivilegeApi;
+import com.ecnice.privilege.constant.PrivilegeConstant;
 import com.ys.mis.api.IMisApi;
 import com.ys.mis.constant.MisConstant;
 import com.ys.mis.enm.NoticeTypeEnum;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +41,7 @@ import java.util.Map;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
-@Controller
+@RestController
 @RequestMapping("/portal/msg")
 @Api(value="消息通知", description = "消息通知", tags={"消息通知 /portal/msg"})
 public class MsgNotifyController extends BaseController {
@@ -63,10 +65,13 @@ public class MsgNotifyController extends BaseController {
 		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		try {
 			com.ecnice.privilege.vo.ReturnVo rVo = privilegeApi.getAllSystem(null);
-			if (null != rVo.getDatas()) {
+			if (null != rVo.getDatas()&&PrivilegeConstant.SUCCESS_CODE==rVo.getStatus()) {
 				returnVo.setData(rVo.getDatas());
 				returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
-			}
+			}else{
+			    logger.info(rVo.getMessage());
+			    returnVo.setMsg(rVo.getMessage());
+            }
 		}catch (Exception e){
 			logger.error("MsgNotifyController-getAllSystem:",e);
 		}
@@ -138,12 +143,12 @@ public class MsgNotifyController extends BaseController {
 	 */
 	@GetMapping("/getMsgCount")
 	@ApiOperation("获取消息数量")
-	public ReturnVo<Map<String,Integer>> getMsgCount(HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo getMsgCount(HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<Map<String, Integer>> returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		try {
 			UserSessionInfo user = getUserSessionInfo(request, response);
 			if(user != null && StringUtils.isNotBlank(user.getNo())) {
-				com.ys.tools.vo.ReturnVo<Map<String, Integer>> rVo = misApi.getNotifyTypeAndNoReadNumberByNo(user.getNo());
+				com.ys.tools.vo.ReturnVo<Map<String, Integer>> rVo = misApi.getNotifyTypeAndNoReadNumberByNo("00008600");
 				if (!MisConstant.SUCCESS.equals(rVo.getCode())) {
 					logger.error("调用接口失败" + rVo.getMsg());
 				}else{

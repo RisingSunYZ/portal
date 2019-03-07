@@ -337,11 +337,11 @@ public class MeetingController {
      * @Description:
      */
     @GetMapping("/getSummaryMeeting")
-    @ApiOperation("根据id查询会议答复")
+    @ApiOperation("根据id查询会议纪要和附件")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="id",value = "会议答复id",dataType = "String",paramType = "query",required = true),
+            @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "query",required = true),
     })
-    public ReturnVo getSummaryMeeting(String id ,HttpServletRequest request,HttpServletResponse response){
+    public ReturnVo<Map<String,Object>> getSummaryMeeting(String id ,HttpServletRequest request,HttpServletResponse response){
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
         try{
             Map<String,Object>map = new HashMap<>();
@@ -510,7 +510,7 @@ public class MeetingController {
     @PostMapping("/sendInvitation")
     @ApiOperation("新建会议发送会议邀请(先保存会议再发送邮件日程)和发送会议更新")
     public ReturnVo sendInvitation(@RequestBody Meeting meeting,  HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
-        com.dragon.tools.vo.ReturnVo returnVo = new com.dragon.tools.vo.ReturnVo(ReturnCode.FAIL, "发送失败");
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "发送失败");
         try {
             UserLogin loginUser =  getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
@@ -822,10 +822,10 @@ public class MeetingController {
 
     //修改状态
     @GetMapping("/updateStatus")
-    @ApiOperation("修改状态")
+    @ApiOperation("修改会议状态")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="ids",value = "ids,多个逗号隔开",required = true,dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name="status",value = "状态",required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name="ids",value = "多个id逗号隔开",required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name="status",value = "状态",required = true,dataType = "int",paramType = "query"),
     })
     public String updateStatus(@RequestParam String ids,@RequestParam Integer status, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改状态失败");
@@ -853,9 +853,9 @@ public class MeetingController {
 
     //删除
     @GetMapping("/dels")
-    @ApiOperation("删除")
+    @ApiOperation("根据id删除会议")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="ids",value = "ids,多个逗号隔开",required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name="ids",value = "多个id逗号隔开",required = true,dataType = "String",paramType = "query"),
     })
     public String dels(@RequestParam String ids,HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "删除失败");
@@ -949,34 +949,26 @@ public class MeetingController {
     }
 
     /**
-     * @param id
+     * @param meetingPersonnel
      * @param request
      * @Description:新增记录人
      */
-    @GetMapping("/insertPersonnel")
+    @PostMapping("/insertPersonnel")
     @ApiOperation("设置记录人")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name="recordPersonNo",value = "参加会议人员工号",dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name="recordPersonName",value = "参加会议人员姓名",dataType = "String",paramType = "query"),
-    })
-    public String insertPersonnel(String id,HttpServletRequest request, HttpServletResponse response) {
+    public ReturnVo insertPersonnel(@ApiJsonObject({
+            @ApiJsonProperty(key="meetingId",description = "会议id"),
+            @ApiJsonProperty(key="personNo",description = "参加会议人员工号"),
+            @ApiJsonProperty(key="personName",description = "参加会议人员姓名"),
+    })@RequestBody MeetingPersonnel meetingPersonnel,HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "设置记录人失败");
         try {
             UserLogin loginUser =  getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
                 String userName=loginUser.getUserName();
-                String recordPersonNo = request.getParameter("recordPersonNo");
-                String recordPersonName = request.getParameter("recordPersonName");
-                if(StringUtils.isNotBlank(id)){
-                    MeetingPersonnel meetingPersonnel = new  MeetingPersonnel();
-                    meetingPersonnel.setMeetingId(id);
-                    meetingPersonnel.setPersonName(recordPersonName);
-                    meetingPersonnel.setPersonNo(recordPersonNo);
+                if(StringUtils.isNotBlank(meetingPersonnel.getMeetingId())){
                     meetingPersonnel.setPersonType(MeetingPersonnelType.RECORD.getCode());
                     meetingPersonnel.setCreator(userName);
                     meetingPersonnel.setUpdator(userName);
-
                     this.meetingPersonnelService.insertMeetingPersonnel(meetingPersonnel);
                 }
                 returnVo = new ReturnVo(ReturnCode.SUCCESS, "设置记录人成功");
@@ -987,7 +979,7 @@ public class MeetingController {
             logger.error("MeetingController-insertPersonnel:"+e);
             e.printStackTrace();
         }
-        return JsonUtils.toJson(returnVo);
+        return returnVo;
     }
 
     //获取参加会议人员
