@@ -52,6 +52,31 @@ public class CommonProperties {
 
     // ############################# 短信 配置信息 end #############################
 
+    // ############################# Exchange start #############################
+    /**
+     * Exchange 用户名
+     */
+    @Value("${exchange.admin.name}")
+    private String exchangeAdminName;
+    /**
+     * Exchange 密码
+     */
+    @Value("${exchange.admin.password}")
+    private String exchangeAdminPwd;
+    /**
+     * Exchange
+     */
+    @Value("${exchange.domain}")
+    private String exchangeDomain;
+    /**
+     * Exchange uri
+     */
+    @Value("${exchange.uri}")
+    private String exchangeUri;
+    // ############################# Exchange end #############################
+    // ############################# itsm Path start #############################
+    @Value("${itsm.path}")
+    private String itsmPath;
 
 
     public String getIp() {
@@ -88,5 +113,25 @@ public class CommonProperties {
 
     public String getSmsMobileCode() {
         return smsMobileCode;
+    }
+
+    public String getExchangeAdminName() {
+        return exchangeAdminName;
+    }
+
+    public String getExchangeAdminPwd() {
+        return exchangeAdminPwd;
+    }
+
+    public String getExchangeDomain() {
+        return exchangeDomain;
+    }
+
+    public String getExchangeUri() {
+        return exchangeUri;
+    }
+
+    public String getItsmPath() {
+        return itsmPath;
     }
 }

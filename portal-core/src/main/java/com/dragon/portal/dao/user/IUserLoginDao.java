@@ -44,9 +44,16 @@ public interface IUserLoginDao {
     /**
      * 根据账号获取用户信息
      * @param no
-     * @return
      * @throws Exception
      */
     public List<UserLogin>getUserLoginByUserName(String no) throws Exception;
+
+    /**
+     * 根据账号密码获取用户信息
+     * @param userLogin
+     * @throws Exception
+     */
+    public List<UserLogin>getUserByNameAndPwd(UserLogin userLogin) throws Exception;
+
     //------------api------------
 }
