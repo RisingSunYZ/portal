@@ -3,7 +3,7 @@ package com.dragon.portal.web.controller.process;
 import com.dragon.flow.api.IFlowApi;
 import com.dragon.portal.config.PropertiesConfig;
 import com.dragon.portal.service.basedata.IDicItemService;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

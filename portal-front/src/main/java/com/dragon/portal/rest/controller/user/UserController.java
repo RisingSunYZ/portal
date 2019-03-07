@@ -1,7 +1,7 @@
 package com.dragon.portal.rest.controller.user;
 
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
@@ -19,6 +19,7 @@ import io.swagger.annotations.ApiParam;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,9 +36,9 @@ import java.util.*;
 @Api(value="用户", description = "查询用户信息接口")
 public class UserController extends BaseController {
     private static Logger logger = Logger.getLogger(UserController.class);
-    @Resource
+    @Autowired
     IPersonnelApi personnelApi;
-    @Resource
+    @Autowired
     IOrgApi orgApi;
     /**
      * @param request
