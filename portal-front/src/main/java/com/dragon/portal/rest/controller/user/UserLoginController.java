@@ -1,6 +1,6 @@
 package com.dragon.portal.rest.controller.user;
 
-import com.dragon.portal.constant.FormConstant;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.customLabel.ApiJsonObject;
 import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.model.user.UserLogin;
@@ -73,8 +73,8 @@ public class UserLoginController extends BaseController{
             try {
 //                urid = CryptUtils.getCryPasswd("1");
 //                this..delKey(urid);
-                session.setAttribute(FormConstant.USER_UID,null);
-                session.setAttribute(FormConstant.SYS_USER,null);
+                session.setAttribute(PortalConstant.USER_UID,null);
+                session.setAttribute(PortalConstant.SYS_USER,null);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("清除Redis中保存的用户信息异常！" , e);
