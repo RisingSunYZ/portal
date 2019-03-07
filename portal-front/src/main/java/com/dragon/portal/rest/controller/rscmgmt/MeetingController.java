@@ -1,7 +1,9 @@
 package com.dragon.portal.rest.controller.rscmgmt;
 
 import com.dragon.portal.component.IMeetingComponent;
-import com.dragon.portal.constant.FormConstant;
+import com.dragon.portal.constant.PortalConstant;
+import com.dragon.portal.customLabel.ApiJsonObject;
+import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.enm.metting.MeetingFileType;
 import com.dragon.portal.enm.metting.MeetingPersonnelType;
 import com.dragon.portal.enm.metting.MeetingStatusEnum;
@@ -85,7 +87,7 @@ public class MeetingController {
      */
     private UserLogin getUserSessionInfo(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
-        return (UserLogin)session.getAttribute(FormConstant.SYS_USER);
+        return (UserLogin)session.getAttribute(PortalConstant.SYS_USER);
     }
     /**
      * @param request
@@ -263,7 +265,7 @@ public class MeetingController {
      * @author xietongjian 2017 上午10:52:14
      */
     @GetMapping("/reply")
-    @ApiOperation("会议答复")
+    @ApiOperation("根据会议id会议答复详情")
     @ApiImplicitParams({
             @ApiImplicitParam(name="meetingId",value = "会议id",dataType = "String",paramType = "query",required = true),
     })
@@ -291,31 +293,30 @@ public class MeetingController {
      * @Description:
      * @author xietongjian 2017 上午10:52:14
      */
-    @GetMapping("/saveReply")
-    @ApiOperation("会议答复")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="id",value = "答复id",dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name="meetingId",value = "会议id",dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name="replyStatus",value = "答复状态",dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name="content",value = "答复内容",dataType = "String",paramType = "query"),
-    })
-    public ReturnVo saveReply(String id,String meetingId,String replyStatus,String content,HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/saveReply")
+    @ApiOperation("保存会议答复")
+    public ReturnVo saveReply(@ApiJsonObject ({
+            @ApiJsonProperty(key="id",description = "答复id"),
+            @ApiJsonProperty(key="meetingId",description = "会议id"),
+            @ApiJsonProperty(key="replyStatus",description = "答复状态",type = "int"),
+            @ApiJsonProperty(key="content",description = "答复内容"),
+    })@RequestBody MeetingReply reply, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "答复失败");
         try {
             UserLogin loginUser = getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                if(StringUtils.isNotBlank(id)){
-                    MeetingReply meetingReply =  meetingReplyService.getMeetingReplyByMeetingIdAndPersonNo(meetingId,loginUser.getUserName());
-                    meetingReply.setReplyStatus(Integer.parseInt(replyStatus));
-                    meetingReply.setContent(content);
+                if(StringUtils.isNotBlank(reply.getId())){
+                    MeetingReply meetingReply =  meetingReplyService.getMeetingReplyByMeetingIdAndPersonNo(reply.getMeetingId(),loginUser.getUserName());
+                    meetingReply.setReplyStatus(reply.getReplyStatus());
+                    meetingReply.setContent(reply.getContent());
                     meetingReply.setUpdator(loginUser.getUserName());
                     meetingReplyService.updateMeetingReply(meetingReply);
                 }else{
                     MeetingReply meetingReply =new MeetingReply();
-                    meetingReply.setMeetingId(request.getParameter("meetingId"));
+                    meetingReply.setMeetingId(reply.getMeetingId());
                     meetingReply.setCreator(loginUser.getUserName());
-                    meetingReply.setReplyStatus(Integer.parseInt(replyStatus));
-                    meetingReply.setContent(content);
+                    meetingReply.setReplyStatus(reply.getReplyStatus());
+                    meetingReply.setContent(reply.getContent());
                     meetingReply.setReplyName(loginUser.getRealName());
                     meetingReplyService.insertMeetingReply(meetingReply);
                 }
@@ -324,7 +325,7 @@ public class MeetingController {
                 returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
             }
         } catch (Exception e) {
-            logger.error("MeetingController-update:" + e);
+            logger.error("MeetingController-saveReply:" + e);
             e.printStackTrace();
         }
         return returnVo;
@@ -865,7 +866,7 @@ public class MeetingController {
                 if(StringUtils.isNotBlank(ids)){
                     Meeting meeting = new  Meeting();
                     meeting.setUpdator(userName);
-                    meeting.setDelFlag(FormConstant.HAS_DELETE_FLAG);
+                    meeting.setDelFlag(PortalConstant.DEL_FLAG);
                     this.meetingService.updateMeetingByIds(ids,meeting);//逻辑删除
                     //this.meetingService.delMeetingByIds(ids); //物理删除
                 }

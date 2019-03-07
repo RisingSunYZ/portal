@@ -7,7 +7,7 @@ import com.dragon.flow.enm.flowable.run.ProcessStatusEnum;
 import com.dragon.flow.vo.flowable.api.CompleteTaskApiVo;
 import com.dragon.flow.vo.flowable.api.EndApiVo;
 import com.dragon.flow.vo.flowable.run.StartProcessInstanceVo;
-import com.dragon.portal.constant.FormConstant;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.dao.rscmgmt.IMeetingroomApplyDao;
 import com.dragon.portal.dao.rscmgmt.IMeetingroomApproverDao;
 import com.dragon.portal.enm.metting.MeetingApplyStatusEnum;
@@ -509,7 +509,7 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
                     meetingroomApply.setApplyNo(generateAppluNo());
                     MeetingroomApply oldMeetingroomApply = new MeetingroomApply();
                     oldMeetingroomApply.setId(meetingroomApply.getId());
-                    oldMeetingroomApply.setDelFlag(FormConstant.HAS_DELETE_FLAG);
+                    oldMeetingroomApply.setDelFlag(PortalConstant.DEL_FLAG);
                     this.updateMeetingroomApply(oldMeetingroomApply);
                     this.insertMeetingroomApply(meetingroomApply);
                 } else if (flag == 2) {
@@ -603,13 +603,13 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
             if (meetingroomApplyVo.getStatus() == MeetingApplyStatusEnum.NO_APPROVE.getCode() && StringUtils.isNotBlank(meetingroomApply.getOldId())) {
                 MeetingroomApply oldMeetingroomApply = new MeetingroomApply();
                 oldMeetingroomApply.setId(meetingroomApply.getOldId());
-                oldMeetingroomApply.setDelFlag(FormConstant.NO_DELETE_FLAG);
+                oldMeetingroomApply.setDelFlag(PortalConstant.NO_DELETE_FLAG);
                 this.updateMeetingroomApply(oldMeetingroomApply);
             } else if (meetingroomApplyVo.getStatus() == MeetingApplyStatusEnum.APPROVE.getCode() && StringUtils.isNotBlank(meetingroomApply.getOldId())) {
                 MeetingroomApply oldMeetingroomApply = new MeetingroomApply();
                 oldMeetingroomApply.setId(meetingroomApply.getOldId());
                 oldMeetingroomApply.setStatus(MeetingApplyStatusEnum.NO_APPROVE.getCode());
-                oldMeetingroomApply.setDelFlag(FormConstant.HAS_DELETE_FLAG);
+                oldMeetingroomApply.setDelFlag(PortalConstant.DEL_FLAG);
                 this.updateMeetingroomApply(oldMeetingroomApply);
             }
 
