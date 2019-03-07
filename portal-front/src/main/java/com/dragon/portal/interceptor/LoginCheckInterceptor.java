@@ -44,7 +44,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		//判断是否IDM登录
-		if("true".equals("")){
+		if("true".equals("true")){//现都不拦截，后续修改
 
 
 
