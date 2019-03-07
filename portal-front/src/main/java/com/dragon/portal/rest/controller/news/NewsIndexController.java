@@ -6,7 +6,7 @@ import com.dragon.portal.service.news.*;
 import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
@@ -27,7 +27,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.ui.ModelMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,25 +53,25 @@ public class NewsIndexController extends BaseController {
 	
 	private static Logger logger = Logger.getLogger(NewsIndexController.class);
 
-	@Resource
+	@Autowired
 	private IPersonnelApi personnelApi;
-	@Resource
+	@Autowired
 	private IOrgApi orgApi ;
-	@Resource
+	@Autowired
 	private INewsTypeService newsTypeService;
-	@Resource
+	@Autowired
 	private INewsNoticeService newsNoticeService;
-	@Resource
+	@Autowired
 	private RedisService redisService;
-	@Resource
+	@Autowired
 	private INewsPublishRangeService newsPublishRangeService;
-	@Resource
+	@Autowired
 	private INewsNoticeVisitLogService newsNoticeVisitLogService;
-	@Resource
+	@Autowired
 	private INewsFileService newsFileService;
-	@Resource
+	@Autowired
 	private INewsNoticeProcessService newsNoticeProcessService;
-	@Resource
+	@Autowired
 	private INewsSignRecordService newsSignRecordService;
 
 	/**

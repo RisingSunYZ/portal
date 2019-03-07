@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingDao">
+    <resultMap id="MeetingMap" type="com.dragon.portal.model.rscmgmt.Meeting" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+
+        <result column="theme" property="theme" jdbcType="VARCHAR" />
+        
+        <result column="meetingroom_id" property="meetingroomId" jdbcType="VARCHAR" />
+        
+        <result column="meetingroom_name" property="meetingroomName" jdbcType="VARCHAR" />
+        
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        
+        <result column="content" property="content" jdbcType="LONGVARCHAR" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+        
+        <result column="change_id" property="changeId" jdbcType="VARCHAR" />
+        
+        <result column="change_key" property="changeKey" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        theme,
+        meetingroom_id,
+        meetingroom_name,
+        start_time,
+        end_time,
+        content,
+        status,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag,
+        change_id,
+        change_key
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="theme!=null and theme!=''">
+        and theme = #{theme,jdbcType=VARCHAR}
+        </if>
+        <if test="meetingroomId!=null and meetingroomId!=''">
+        and meetingroom_id = #{meetingroomId,jdbcType=VARCHAR}
+        </if>
+        <if test="meetingroomName!=null and meetingroomName!=''">
+        and meetingroom_name = #{meetingroomName,jdbcType=VARCHAR}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+        and start_time = #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+        and end_time = #{endTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="content!=null and content!=''">
+        and content = #{content,jdbcType=LONGVARCHAR}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getMeetingById" resultMap="MeetingMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meeting
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.Meeting" resultMap="MeetingMap">
+        select * from tbl_mt_meeting where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.Meeting" resultMap="MeetingMap">
+        select * from tbl_mt_meeting 
+        <where>
+            <if test="status!=null">
+                 status = #{status,jdbcType=INTEGER}
+            </if>
+            <!-- 查询待开会议条件 -->
+            <if test="startTime!=null ">
+                <![CDATA[  
+                    and (TIMEDIFF(now(),start_time)<=0 or (TIMEDIFF(now(),start_time) >0 and TIMEDIFF(now(),end_time)<0))
+                 ]]>  
+            </if>
+            <!-- 快速搜索会议的条件 -->
+            <if test="theme!=null and theme!=''">
+                and theme like CONCAT('%',#{theme,jdbcType=VARCHAR},'%')
+            </if>
+            <!-- 查询历史会议条件 -->
+            <if test="endTime!=null ">
+                <![CDATA[  
+                    and status != 1 and TIMEDIFF(now(),end_time)>0
+                 ]]>  
+            </if>
+            <if test="creator!=null and creator!=''">
+                 and ( creator= #{creator,jdbcType=VARCHAR} or id in 
+                          (select meeting_id from tbl_mt_meeting_personnel where person_no = #{creator,jdbcType=VARCHAR})
+                     )
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+    
+    <select id="getMyDraftPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.Meeting" resultMap="MeetingMap">
+        select * from tbl_mt_meeting 
+        <where>
+            <if test="status!=null">
+                 status = #{status,jdbcType=INTEGER}
+            </if>
+            <!-- 快速搜索会议的条件 -->
+            <if test="theme!=null and theme!=''">
+                and theme like CONCAT('%',#{theme,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="creator!=null and creator!=''">
+                and creator = #{creator,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.Meeting" resultType="int">
+        select count(1) from tbl_mt_meeting where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeeting" parameterType="com.dragon.portal.model.rscmgmt.Meeting"  >
+        insert into tbl_mt_meeting (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{theme,jdbcType=VARCHAR},
+        #{meetingroomId,jdbcType=VARCHAR},
+        #{meetingroomName,jdbcType=VARCHAR},
+        #{startTime,jdbcType=TIMESTAMP},
+        #{endTime,jdbcType=TIMESTAMP},
+        #{content,jdbcType=LONGVARCHAR},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER},
+        #{changeId,jdbcType=VARCHAR},
+        #{changeKey,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="delMeetingById" parameterType="java.lang.String" >
+        delete from tbl_mt_meeting
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meeting
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeeting" parameterType="com.dragon.portal.model.rscmgmt.Meeting" >
+        update tbl_mt_meeting
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="theme != null" >
+                theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomId != null" >
+                meetingroom_id = #{meetingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomName != null" >
+                meetingroom_name = #{meetingroomName,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null" >
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null" >
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="changeId != null" >
+                change_id = #{changeId,jdbcType=INTEGER},
+            </if>
+            <if test="changeKey != null" >
+                change_key = #{changeKey,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingByIds" parameterType="java.util.Map">
+        update tbl_mt_meeting
+        <set>
+            <if test="meeting.id != null" >
+                id = #{meeting.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meeting.theme != null" >
+                theme = #{meeting.theme,jdbcType=VARCHAR},
+            </if>
+            <if test="meeting.meetingroomId != null" >
+                meetingroom_id = #{meeting.meetingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="meeting.meetingroomName != null" >
+                meetingroom_name = #{meeting.meetingroomName,jdbcType=VARCHAR},
+            </if>
+            <if test="meeting.startTime != null" >
+                start_time = #{meeting.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meeting.endTime != null" >
+                end_time = #{meeting.endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meeting.content != null" >
+                content = #{meeting.content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="meeting.status != null" >
+                status = #{meeting.status,jdbcType=INTEGER},
+            </if>
+            <if test="meeting.createTime != null" >
+                create_time = #{meeting.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meeting.creator != null" >
+                creator = #{meeting.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="meeting.updateTime != null" >
+                update_time = #{meeting.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meeting.updator != null" >
+                updator = #{meeting.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="meeting.delFlag != null" >
+                del_flag = #{meeting.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 会议管理-我的邀请分页数据查询 -->
+    <select id="getMyMeetingPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.Meeting" resultMap="MeetingMap">
+		select * from tbl_mt_meeting 
+        <where>
+            <if test="status!=null">
+                status not in (#{status,jdbcType=INTEGER})
+            </if>
+            <if test="theme!=null and theme!=''">
+                and theme like CONCAT('%',#{theme,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="creator!=null">
+                and creator = #{creator,jdbcType=VARCHAR}
+            </if>
+             <if test="id!=null">
+                and id = #{id,jdbcType=VARCHAR}
+            </if>
+        </where> 
+        order by update_time desc
+    </select>
+</mapper>

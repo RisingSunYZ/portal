@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingReplyDao" >
+    <resultMap id="MeetingReplyMap" type="com.dragon.portal.model.rscmgmt.MeetingReply" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="meeting_id" property="meetingId" jdbcType="VARCHAR" />
+        
+        <result column="reply_status" property="replyStatus" jdbcType="INTEGER" />
+        
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="reply_name" property="replyName" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        meeting_id,
+        reply_status,
+        content,
+        create_time,
+        creator,
+        reply_name,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="meetingId!=null and meetingId!=''">
+        and meeting_id = #{meetingId,jdbcType=VARCHAR}
+        </if>
+        <if test="replyStatus!=null">
+        and reply_status = #{replyStatus,jdbcType=INTEGER}
+        </if>
+        <if test="content!=null and content!=''">
+        and content = #{content,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="replyName!=null and replyName!=''">
+        and reply_name = #{replyName,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getMeetingReplyById" resultMap="MeetingReplyMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingreply
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.MeetingReply" resultMap="MeetingReplyMap">
+        select * from tbl_mt_meetingreply where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.MeetingReply" resultMap="MeetingReplyMap">
+        select * from tbl_mt_meetingreply where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.MeetingReply" resultType="int">
+        select count(1) from tbl_mt_meetingreply where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingReply" parameterType="com.dragon.portal.model.rscmgmt.MeetingReply"  >
+        insert into tbl_mt_meetingreply (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{meetingId,jdbcType=VARCHAR},
+        #{replyStatus,jdbcType=INTEGER},
+        #{content,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{replyName,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delMeetingReplyById" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingreply
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingReplyByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingreply
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeetingReply" parameterType="com.dragon.portal.model.rscmgmt.MeetingReply" >
+        update tbl_mt_meetingreply
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingId != null" >
+                meeting_id = #{meetingId,jdbcType=VARCHAR},
+            </if>
+            <if test="replyStatus != null" >
+                reply_status = #{replyStatus,jdbcType=INTEGER},
+            </if>
+            <if test="content != null" >
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="replyName != null" >
+                reply_name = #{replyName,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingReplyByIds" parameterType="java.util.Map">
+        update tbl_mt_meetingreply
+        <set>
+            <if test="meetingReply.id != null" >
+                id = #{meetingReply.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingReply.meetingId != null" >
+                meeting_id = #{meetingReply.meetingId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingReply.replyStatus != null" >
+                reply_status = #{meetingReply.replyStatus,jdbcType=INTEGER},
+            </if>
+            <if test="meetingReply.content != null" >
+                content = #{meetingReply.content,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingReply.createTime != null" >
+                create_time = #{meetingReply.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingReply.creator != null" >
+                creator = #{meetingReply.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingReply.replyName != null" >
+                reply_name = #{replyName.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingReply.updateTime != null" >
+                update_time = #{meetingReply.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingReply.updator != null" >
+                updator = #{meetingReply.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingReply.delFlag != null" >
+                del_flag = #{meetingReply.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 会议答复===》》》根据答复状态和答复人工号 -->
+    <select id="getMeetingReplyByMeetingIdAndPersonNo" parameterType="java.util.Map" resultMap="MeetingReplyMap">
+        select * from tbl_mt_meetingreply 
+        where meeting_id = #{meeting_id} 
+        and creator =#{creator} 
+    </select>
+    
+    <!-- 会议详情页面查询会议答复内容 -->
+    <select id="getReplyByMeeting" parameterType="java.util.List" resultMap="MeetingReplyMap">
+        select * from tbl_mt_meetingreply where meeting_id 
+        in 
+        (
+        <foreach collection="list" item="item" index="index"
+			separator=",">
+			#{item.meetingId,jdbcType=VARCHAR}
+		</foreach>
+        )
+    </select>
+    
+    <!-- 会议编辑页面查询会议答复内容 -->
+    <select id="getReplyByMeetingId" resultMap="MeetingReplyMap" parameterType="java.lang.String" >
+        select * from tbl_mt_meetingreply
+        where meeting_id = #{meeting_id,jdbcType=VARCHAR}
+    </select>
+</mapper>

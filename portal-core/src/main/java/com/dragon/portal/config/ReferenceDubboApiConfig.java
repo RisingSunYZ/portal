@@ -46,7 +46,7 @@ public class ReferenceDubboApiConfig {
     @Reference(version = "1.0",check = false)
     private IPrivilegeApi privilegeApi;
 
-    @Reference(version = "1.0")
+    @Reference(version = "1.0",check = false)
     private ISendSmsApi sendSmsApi;
 
 

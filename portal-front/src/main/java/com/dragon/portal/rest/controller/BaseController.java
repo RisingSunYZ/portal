@@ -1,4 +1,4 @@
-package com.dragon.portal.web.controller;
+package com.dragon.portal.rest.controller;
 
 import com.dragon.portal.config.PropertiesConfig;
 import com.dragon.portal.vo.user.UserSessionInfo;

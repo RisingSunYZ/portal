@@ -25,6 +25,11 @@ public class FormConstant {
     /** 未删除状态=1 */
     public static final int NO_DELETE_FLAG = 1;
 
+    /** 启用[上架]状态 */
+    public static final int STATUS_ENABLED = 1;
+
+    /** 不可用[下架]状态 */
+    public static final int STATUS_DISABLED = 0;
 }
 
 
