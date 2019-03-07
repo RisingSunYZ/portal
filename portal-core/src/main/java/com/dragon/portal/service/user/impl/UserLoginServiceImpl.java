@@ -167,13 +167,12 @@ public class UserLoginServiceImpl implements IUserLoginService {
 
 	/**
 	 * 登录后-》修改密码
-	 * @param oldPassword
      * @param password
      * @param session
 	 * @return
 	 * @throws Exception
 	 */
-	public ReturnVo updatePwdAfterLogin(String oldPassword,String password, HttpSession session) throws Exception{
+	public ReturnVo updatePwdAfterLogin(String password, HttpSession session) throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"修改失败！");
 		//获取登录后的工号
 		String userNo = (String)session.getAttribute(FormConstant.USER_UID);
@@ -181,14 +180,8 @@ public class UserLoginServiceImpl implements IUserLoginService {
 			List<UserLogin> userLoginList = userLoginDao.getUserLoginByUserName(userNo);
 			if (CollectionUtils.isNotEmpty(userLoginList)) {
                 UserLogin user = userLoginList.get(0);
-                //对比原密码
-			    if( MD5Util.checkPassword(oldPassword,user.getPassword())) {
-                    //修改密码
-                    this.updatePwd(user, password);
-                    returnVo = new ReturnVo(ReturnCode.SUCCESS, "修改成功！");
-                }else{
-			        returnVo.setMsg("原始密码不正确！");
-                }
+                this.updatePwd(user, password);
+                returnVo = new ReturnVo(ReturnCode.SUCCESS, "修改成功！");
 			}
 		}else{
 			returnVo.setMsg("用户已过期");
