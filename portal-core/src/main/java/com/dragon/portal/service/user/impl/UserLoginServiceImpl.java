@@ -5,6 +5,7 @@ import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.dao.user.IUserLoginDao;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.properties.CommonProperties;
+import com.dragon.portal.service.idm.IImdLoginService;
 import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.service.user.IUserLoginService;
 import com.dragon.tools.common.MD5Util;
@@ -14,9 +15,14 @@ import com.mhome.se.api.ISendSmsApi;
 import com.mhome.se.eum.SmsModeTypeEnum;
 import com.mhome.se.model.sms.SmsInfo;
 import com.mhome.se.vo.SeReturnVo;
+import com.ys.ucenter.api.IPersonnelApi;
+import com.ys.ucenter.model.vo.PersonnelApiVo;
+import com.ys.yahu.vo.idm.LoginRvo;
+import com.ys.yahu.vo.idm.User;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -46,6 +52,15 @@ public class UserLoginServiceImpl implements IUserLoginService {
 
 	@Resource
 	private RedisService redisService;
+
+	@Autowired
+	private Environment environment;
+
+    @Autowired
+    private IImdLoginService iImdLoginService;
+
+	@Resource
+	private IPersonnelApi personnelApi;
 	/**
 	 * 登录验证
 	 * @param username
@@ -56,15 +71,43 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	 */
 	public ReturnVo updateCheckLogin(String username , String password, HttpSession session)throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"用户或密码错误！");
-		UserLogin userLogin = new UserLogin();
-		userLogin.setUserName(username);
-		userLogin.setPassword(MD5Util.getMD5String(password));
-		List<UserLogin> list = userLoginDao.getUserByNameAndPwd(userLogin);
-		if(CollectionUtils.isNotEmpty(list)) {
-			UserLogin user = list.get(0);
+
+        final String loginSwitch = environment.getProperty("idm.login.switch");
+		UserLogin user = new UserLogin();
+		boolean check = false;
+
+        if("true".equals(loginSwitch)){//启用IDM登录
+            LoginRvo loginRvo = iImdLoginService.loginIDM(username, password);
+			if (null != loginRvo && null != loginRvo.getUser() && StringUtils.isNotBlank(loginRvo.getUser().getUid())) {
+				User userTemp = loginRvo.getUser();
+				user.setUserNo(userTemp.getUid());
+				//获取头像和姓名
+				com.ys.tools.vo.ReturnVo<PersonnelApiVo> rvo = personnelApi.getPersonnelApiVoByNo(userTemp.getUid());
+				if (null != rvo && PortalConstant.SUCCESS.equals(rvo.getCode()+"") && null != rvo.getData()) {
+					PersonnelApiVo personnel = rvo.getData();
+					user.setUserName(personnel.getName());
+					user.setEmail(personnel.getSelfEmail());
+					user.setMobile(personnel.getMobilePhone());
+				}
+				check = true;
+			}
+        }else{
+            //查询用户id
+            List<UserLogin> list = userLoginDao.getUserLoginByUserName(username);
+            if(CollectionUtils.isNotEmpty(list)) {
+                user = list.get(0);
+            }
+			//对比不加密密码
+			check = MD5Util.checkPassword(password, user.getPassword());
+			if(!check){//对比加密密码
+				check= password.equals(user.getPassword());
+			}
+        }
+
+		if (check) {
+			userLoginDao.updateUserLogin(user);
 			//记录上次登录时间
 			user.setLastLoginTime(new Date());
-			userLoginDao.updateUserLogin(user);
 
 			//返回结果
 			returnVo = new ReturnVo(ReturnCode.SUCCESS,"登录成功！");
