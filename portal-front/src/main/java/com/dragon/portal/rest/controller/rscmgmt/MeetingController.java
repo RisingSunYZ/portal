@@ -298,7 +298,7 @@ public class MeetingController {
     public ReturnVo saveReply(@ApiJsonObject ({
             @ApiJsonProperty(key="id",description = "答复id"),
             @ApiJsonProperty(key="meetingId",description = "会议id"),
-            @ApiJsonProperty(key="replyStatus",description = "答复状态",type = "int"),
+            @ApiJsonProperty(key="replyStatus",description = "答复状态"),
             @ApiJsonProperty(key="content",description = "答复内容"),
     })@RequestBody MeetingReply reply, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "答复失败");
