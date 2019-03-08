@@ -88,7 +88,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			throws Exception {
 		Page<Meeting> page = null;
 		if(!(ObjectUtils.isEmpty(meeting) || ObjectUtils.isEmpty(query) )){
-			PageHelper.startPage(query.getPageIndex(),query.getPageSize());
+			PageHelper.startPage(query.getPageIndex()-1,query.getPageSize());
 			if(meeting.getStatus() == MeetingStatusEnum.MY_DRAFT.getCode()){
 				page = meetingDao.getMyDraftPagerModelByQuery(meeting);
 			}else{
@@ -251,7 +251,9 @@ public class MeetingServiceImpl implements IMeetingService {
 	public void delMeetingByIds(String ids) throws Exception {
 		ids = this.converString(ids);
 		if(StringUtils.isNotBlank(ids)){
-			this.meetingDao.delMeetingByIds(ids);
+			Map<String,Object> params = new HashMap();
+			params.put("ids", ids);
+			this.meetingDao.delMeetingByIds(params);
 		}
 	}
 

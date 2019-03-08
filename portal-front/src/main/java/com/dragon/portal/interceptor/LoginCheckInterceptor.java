@@ -2,6 +2,7 @@ package com.dragon.portal.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dragon.portal.constant.FormConstant;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.service.redis.RedisService;
@@ -54,7 +55,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
 			return true;
 		}else{
-			UserLogin userLogin = (UserLogin)request.getSession().getAttribute(FormConstant.SYS_USER);
+			UserLogin userLogin = (UserLogin)request.getSession().getAttribute(PortalConstant.SYS_USER);
 			if (null != userLogin) {
 				return true;
 			} else {

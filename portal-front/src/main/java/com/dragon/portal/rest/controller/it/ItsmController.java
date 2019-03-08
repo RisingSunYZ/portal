@@ -8,8 +8,8 @@ import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
 import com.ys.tools.common.JsonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,8 +26,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +40,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -128,7 +127,7 @@ public class ItsmController extends BaseController {
             UserSessionInfo user = getUserSessionInfo(request, response);
             String userNo = user.getNo();
             int pageSize = query.getPageSize();
-            int pageNumber = query.getPageNumber();
+            int pageNumber = query.getPageIndex();
             String path = commonProperties.getItsmPath() + "/apiEventController.do?";
 //		String method = "getSelfSubmitEvent&userName=admin&rows="+pageSize+"&page="+pageNumber+"&statusName="+statusName;
             String method = "getSelfSubmitEvent&userName=" + userNo + "&rows=" + pageSize + "&page=" + pageNumber + "&statusName=" + statusName;
@@ -316,7 +315,7 @@ public class ItsmController extends BaseController {
 	 */
 	@GetMapping("/getAssessResultByEventId/{eventId}")
 	@ApiOperation("查看评价UI")
-	@ApiImplicitParam(name = "eventId", value = "eventId", paramType = "query", required = true, dataType = "String")
+	@ApiImplicitParam(name = "eventId", value = "eventId", paramType = "", required = true, dataType = "String")
 	public ReturnVo lookAssess(HttpServletRequest request, HttpServletResponse response,  String eventId) {
 		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		try {
@@ -337,9 +336,10 @@ public class ItsmController extends BaseController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping("/saveVisitRecord")
-	public String saveVisitRecord(HttpServletRequest request, HttpServletResponse response, RecodeDTO recodeDTO) {
+	@PostMapping("/saveVisitRecord}")
+	@ApiOperation("保存评价")
+	public ReturnVo saveVisitRecord(HttpServletRequest request, HttpServletResponse response, @RequestBody RecodeDTO recodeDTO) {
+		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"保存失败");
 		String saveResult = "";
 		String no ="";
 		String itsmBasePath ="";
@@ -353,10 +353,12 @@ public class ItsmController extends BaseController {
 					+ "&remark=" + recodeDTO.getRemark() + "&respondSpeed="+recodeDTO.getRespondSpeed()
 					+ "&solveSpeed="+ recodeDTO.getSolveSpeed() +"&serviceAttitude="+recodeDTO.getServiceAttitude();
 			saveResult = this.sendPost(itsmBasePath+"/apiVisitRecordController.do?", param);
+			returnVo = new ReturnVo(ReturnCode.SUCCESS,"保存成功");
+			returnVo.setData(saveResult);
 		} catch (Exception e) {
 			logger.error("保存评价，投诉接口出错，错误原因"+e);
 		}
-		return saveResult;
+		return returnVo;
 	}
 
 
@@ -366,11 +368,11 @@ public class ItsmController extends BaseController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping("/apiEventController")
-	@GetMapping("/apiEventController/{eventId}")
-	@ApiOperation("查看评价UI")
-	public String apiEventController(HttpServletRequest request, HttpServletResponse response,  String eventId, String solutionText) {
+	@GetMapping("/apiEventController")
+	@ApiOperation("撤销反馈")
+	public ReturnVo apiEventController(HttpServletRequest request, HttpServletResponse response,
+									   String eventId, String solutionText) {
+		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"撤销失败");
 		String saveResult = "";
 		String no = "";
 		String param  = "";
@@ -381,10 +383,12 @@ public class ItsmController extends BaseController {
 			no = userInfo.getNo();
 			param = "selfResolve&eventId="+eventId+ "&operUserName=" +no + "&solutionText=" + solutionText ;
 			saveResult = this.sendPost(itsmBasePath+"/apiEventController.do?", param);
+			returnVo = new ReturnVo(ReturnCode.SUCCESS,"撤销成功");
+			returnVo.setData(saveResult);
 		} catch (Exception e) {
 			logger.error("撤销反馈出错，错误原因"+e);
 		}
-		return saveResult;
+		return returnVo;
 	}
 
 
@@ -395,9 +399,10 @@ public class ItsmController extends BaseController {
 	 * 2. 调用知识列表接口，根据linkcode 查询个数
 	 * 3. 递归查询拼接
 	 */
-	@ResponseBody
-	@RequestMapping("/knowledgeCategory")
-	public String getKnowledgeCategory(String classCode){
+	@GetMapping("/knowledgeCategory")
+	@ApiOperation("查询知识分类树形结构")
+	public ReturnVo getKnowledgeCategory(String classCode){
+		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		StringBuffer sb = new StringBuffer();
 		String itsmBasePath = commonProperties.getItsmPath();
 		String cCode = StringUtils.isBlank(classCode)?"knowledgeSort":classCode;
@@ -446,10 +451,12 @@ public class ItsmController extends BaseController {
 			}else{
 				str = rows.toString();
 			}
+			returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+			returnVo.setData(str);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return str;
+		return returnVo;
 	}
 
 	/**
@@ -517,17 +524,17 @@ public class ItsmController extends BaseController {
 	 * @param request
 	 * @param response
 	 * @param query	分页
-	 * @param model
 	 * @param keyword 关键字
 	 * @return json
 	 */
-	@ResponseBody
-	@RequestMapping("/apiKnowledgeController")
-	public String apiKnowledgeController(HttpServletRequest request, HttpServletResponse response, Query query, ModelMap model, String keyword, String linkCode) {
+	@GetMapping("/apiKnowledgeController")
+	@ApiOperation("查询知识列表")
+	public ReturnVo apiKnowledgeController(HttpServletRequest request, HttpServletResponse response, Query query,String keyword, String linkCode) {
+		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		PagerModel<QuestionKnowledge> pm = new PagerModel<QuestionKnowledge>();
 		List<QuestionKnowledge> list = new ArrayList<QuestionKnowledge>();
-		int pageSize = query.getRows();
-		String pageNumber = query.getPage();
+		int pageSize = query.getPageSize();
+		int pageNumber = query.getPageIndex();
 		try {
 			/*if(StringUtils.isNotBlank(keyword)){
 				keyword = new String(keyword.getBytes("ISO-8859-1"), "UTF-8");
@@ -558,11 +565,13 @@ public class ItsmController extends BaseController {
 			}
 			pm.setTotal(total);
 			pm.setRows(list);
+			returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+			returnVo.setData(pm);
 			//logger.info("pm="+JsonUtils.toJson(pm));
 		} catch (Exception e) {
-			logger.error("查询知识库出错，错误原因"+e);
+			logger.error("查询知识库出错，错误原因",e);
 		}
-		return JsonUtils.toJson(pm);
+		return returnVo;
 	}
 
 	/**
@@ -571,9 +580,10 @@ public class ItsmController extends BaseController {
 	 * @param response
 	 * @return	json
 	 */
-	@ResponseBody
-	@RequestMapping("/getHotKnowledge")
-	public String getHotKnowledge(HttpServletRequest request, HttpServletResponse response){
+	@GetMapping("/getHotKnowledge")
+	@ApiOperation("查询热门知识")
+	public ReturnVo getHotKnowledge(HttpServletRequest request, HttpServletResponse response){
+		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		PagerModel<QuestionKnowledge> pm = new PagerModel<QuestionKnowledge>();
 		List<QuestionKnowledge> list = new ArrayList<QuestionKnowledge>();
 		try {
@@ -595,22 +605,26 @@ public class ItsmController extends BaseController {
 			}
 			pm.setTotal(total);
 			pm.setRows(list);
+			returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+			returnVo.setData(pm);
 		} catch (Exception e) {
 			logger.error("查询知识库出错，错误原因"+e);
 		}
-		return JsonUtils.toJson(pm);
+		return returnVo;
 	}
 
 	/**
 	 * 方法描述 : 知识详情页面
 	 * @param request
 	 * @param response
-	 * @param model
 	 * @return String
 	 */
-	@RequestMapping("/knowledgeDetail")
-	public String knowledgeDetail(HttpServletRequest request, HttpServletResponse response, ModelMap model, String id) {
+	@GetMapping("/knowledgeDetail")
+	@ApiOperation("知识详情")
+	public ReturnVo knowledgeDetail(HttpServletRequest request, HttpServletResponse response, String id) {
+		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		QuestionKnowledgeDetail knowledge = new QuestionKnowledgeDetail();
+		Map<String,Object> model = new HashMap<>();
 		List<QuestionFileVo> files =new ArrayList<QuestionFileVo>();
 		String itsmBasePath = commonProperties.getItsmPath();
 		String param = "getKonwledgeDetial&id="+id;
@@ -634,12 +648,14 @@ public class ItsmController extends BaseController {
 				}
 				knowledge.setFiles(files);
 			}
-			model.addAttribute("files", files);//附件
-			model.addAttribute("knowledge", knowledge);
+			model.put("files", files);//附件
+			model.put("knowledge", knowledge);
+			returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+			returnVo.setData(model);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "/it/it-knlg-detail";
+		return returnVo;
 	}
 
 	/**
@@ -648,9 +664,10 @@ public class ItsmController extends BaseController {
 	 * @param id 知识id
 	 * @return json
 	 */
-	@ResponseBody
-	@RequestMapping("/getKonwledgeDetial")
-	public String getKonwledgeDetial(HttpServletRequest request,String id){
+	@GetMapping("/getKonwledgeDetial")
+	@ApiOperation("撤销反馈")
+	public ReturnVo getKonwledgeDetial(HttpServletRequest request,String id){
+		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		QuestionKnowledgeDetail knowledge = new QuestionKnowledgeDetail();
 		String itsmBasePath = commonProperties.getItsmPath();
 		String param = "getKonwledgeDetial&id=297ed9f85cab1b70015cab1e08c41b0b";
@@ -674,10 +691,12 @@ public class ItsmController extends BaseController {
 				}
 				knowledge.setFiles(files);
 			}
+			returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+			returnVo.setData(knowledge);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return JsonUtils.toJson(knowledge);
+		return returnVo;
 	}
 
 	/**

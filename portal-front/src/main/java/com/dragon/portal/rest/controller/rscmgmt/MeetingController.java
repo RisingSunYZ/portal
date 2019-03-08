@@ -11,9 +11,11 @@ import com.dragon.portal.model.rscmgmt.*;
 import com.dragon.portal.model.schedule.ScheduleEvent;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.properties.CommonProperties;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.rscmgmt.*;
 import com.dragon.portal.service.schedule.IScheduleEventService;
 import com.dragon.portal.util.DateUtils;
+import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.FileUtils;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.ftp.FtpTools;
@@ -38,7 +40,6 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,7 +54,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/portal/rscmgmt/meeting")
 @Api(value="会议", description = "会议", tags={"会议 /portal/rscmgmt/meeting"})
-public class MeetingController {
+public class MeetingController extends BaseController {
     private static Logger logger = Logger.getLogger(MeetingController.class);
 
     @Resource
@@ -80,16 +81,6 @@ public class MeetingController {
     @Resource
     private IScheduleEventService scheduleEventService;
     /**
-     * 从sesssion里获取用户
-     * @param request
-     * @return
-     * @throws Exception
-     */
-    private UserLogin getUserSessionInfo(HttpServletRequest request, HttpServletResponse response){
-        HttpSession session = request.getSession();
-        return (UserLogin)session.getAttribute(PortalConstant.SYS_USER);
-    }
-    /**
      * @param request
      * @Description:新建、编辑会议页面数据保存
      */
@@ -98,10 +89,10 @@ public class MeetingController {
     public ReturnVo save(@RequestBody Meeting meeting, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败");
         try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                String userNo=loginUser.getUserNo();
-                String userName=loginUser.getRealName();
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                String userNo=loginUser.getNo();
+                String userName=loginUser.getName();
                 if(StringUtils.isBlank(meeting.getId())){
                     meeting.setCreator(userNo);
                     meeting.setUpdator(userNo);
@@ -140,14 +131,14 @@ public class MeetingController {
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserNo())) {
-                meeting.setCreator(loginUser.getUserNo());
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                meeting.setCreator(loginUser.getNo());
                 meeting.setStatus(MeetingStatusEnum.PENDIND.getCode());
                 meeting.setStartTime(new Date());
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getData();
-                meetingService.getInitList(meetings,loginUser.getUserNo());
+                meetingService.getInitList(meetings,loginUser.getNo());
                 returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
                 returnVo.setData(pm);
             }
@@ -173,14 +164,14 @@ public class MeetingController {
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                meeting.setCreator(loginUser.getUserName());
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                meeting.setCreator(loginUser.getNo());
                 meeting.setStatus(MeetingStatusEnum.MY_DRAFT.getCode());
                 pm = this.meetingService.getMyMeetingPagerModelByQuery(meeting, query);
                 if(null != pm){
                     List<Meeting> meetings = pm.getData();
-                    meetings = meetingService.getInitList(meetings,loginUser.getUserName());
+                    meetings = meetingService.getInitList(meetings,loginUser.getNo());
                 }
             }
             returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
@@ -207,19 +198,19 @@ public class MeetingController {
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                meeting.setCreator(loginUser.getUserName());
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                meeting.setCreator(loginUser.getNo());
 //                meeting.setStatus(MeetingStatusEnum.ALREADY_HELD.getCode());
                 meeting.setEndTime(new Date());
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getData();
-                meetings = meetingService.getInitList(meetings,loginUser.getUserName());
+                meetings = meetingService.getInitList(meetings,loginUser.getNo());
                 returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
             }
         } catch (Exception e) {
-            logger.error("MeetingController-ajaxHistoryList:"+e);
-            e.printStackTrace();
+            logger.error("MeetingController-ajaxHistoryList:",e);
+            pm = null;
         }
         returnVo.setData(pm);
         return returnVo;
@@ -241,13 +232,13 @@ public class MeetingController {
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                meeting.setCreator(loginUser.getUserName());
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                meeting.setCreator(loginUser.getNo());
                 meeting.setStatus(MeetingStatusEnum.MY_DRAFT.getCode());
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getData();
-                meetings = meetingService.getInitList(meetings,loginUser.getUserName());
+                meetings = meetingService.getInitList(meetings,loginUser.getNo());
                 returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
             }
         } catch (Exception e) {
@@ -271,11 +262,11 @@ public class MeetingController {
     })
     public ReturnVo reply(@RequestParam String meetingId, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo<MeetingReply> returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
-        UserLogin loginUser = getUserSessionInfo(request,response);
+        UserSessionInfo loginUser = getUserSessionInfo(request,response);
         MeetingReply meetingReply =new MeetingReply();
         if(StringUtils.isNotBlank(meetingId)){
             try {
-                meetingReply =  meetingReplyService.getMeetingReplyByMeetingIdAndPersonNo(meetingId,loginUser.getUserName());
+                meetingReply =  meetingReplyService.getMeetingReplyByMeetingIdAndPersonNo(meetingId,loginUser.getNo());
                 returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -303,21 +294,21 @@ public class MeetingController {
     })@RequestBody MeetingReply reply, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "答复失败");
         try {
-            UserLogin loginUser = getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
+            UserSessionInfo loginUser = getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 if(StringUtils.isNotBlank(reply.getId())){
-                    MeetingReply meetingReply =  meetingReplyService.getMeetingReplyByMeetingIdAndPersonNo(reply.getMeetingId(),loginUser.getUserName());
+                    MeetingReply meetingReply =  meetingReplyService.getMeetingReplyByMeetingIdAndPersonNo(reply.getMeetingId(),loginUser.getNo());
                     meetingReply.setReplyStatus(reply.getReplyStatus());
                     meetingReply.setContent(reply.getContent());
-                    meetingReply.setUpdator(loginUser.getUserName());
+                    meetingReply.setUpdator(loginUser.getNo());
                     meetingReplyService.updateMeetingReply(meetingReply);
                 }else{
                     MeetingReply meetingReply =new MeetingReply();
                     meetingReply.setMeetingId(reply.getMeetingId());
-                    meetingReply.setCreator(loginUser.getUserName());
+                    meetingReply.setCreator(loginUser.getNo());
                     meetingReply.setReplyStatus(reply.getReplyStatus());
                     meetingReply.setContent(reply.getContent());
-                    meetingReply.setReplyName(loginUser.getRealName());
+                    meetingReply.setReplyName(loginUser.getNo());
                     meetingReplyService.insertMeetingReply(meetingReply);
                 }
                 returnVo = new ReturnVo(ReturnCode.SUCCESS, "答复成功");
@@ -345,8 +336,8 @@ public class MeetingController {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
         try{
             Map<String,Object>map = new HashMap<>();
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 MeetingSummary meetingSummary = this.meetingSummaryService.getMeetingSummaryByMeetingId(id);
                 if(meetingSummary!=null){
                     //设置编辑页面显示会议的附件
@@ -394,10 +385,10 @@ public class MeetingController {
     public String saveMeetingSummary(@RequestBody MeetingSummary meetingSummary, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败");
         try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                String userNo=loginUser.getUserName();
-                String userName=loginUser.getRealName();
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                String userNo=loginUser.getNo();
+                String userName=loginUser.getName();
                 if(StringUtils.isBlank(meetingSummary.getId())){
                     meetingSummary.setCreator(userNo);
                     meetingSummary.setUpdator(userNo);
@@ -425,7 +416,7 @@ public class MeetingController {
      * @param request
      * @Description:根据id查询会议
      */
-    @GetMapping("/getMeetingById")
+    @GetMapping("/getMeetingById/{id}")
     @ApiOperation("根据id查询会议")
     @ApiImplicitParams({
             @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "query",required = true),
@@ -434,8 +425,8 @@ public class MeetingController {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
         try {
             Map<String,Object>model = new HashMap<>();
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 if(StringUtils.isNotBlank(id)){
                     Meeting meeting = getMeetingPersonnel(id);
                     //设置编辑页面显示会议的附件
@@ -470,7 +461,7 @@ public class MeetingController {
                     meeting.setMeetingFiles(meetingFiles);
 
                     //设置会议回复记录
-                    meeting.setUserNo(loginUser.getUserName());
+                    meeting.setUserNo(loginUser.getNo());
                     List<MeetingReply> meetingReplys = meetingReplyService.getReplyByMeetingId(meeting.getId());
                     for(MeetingReply mp : meetingReplys){
                         mp.setUpdateTimeStr(DateUtils.dateToString(mp.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
@@ -488,8 +479,8 @@ public class MeetingController {
                     model.put("meetingFiles", meetingFiles);
                 }else{
                     Meeting meeting = new Meeting();
-                    meeting.setRecordPersonNo(loginUser.getUserName());
-                    meeting.setRecordPersonName(loginUser.getRealName());
+                    meeting.setRecordPersonNo(loginUser.getNo());
+                    meeting.setRecordPersonName(loginUser.getNo());
                     meeting.setStatus(MeetingStatusEnum.MY_DRAFT.getCode());
                     model.put("meeting", meeting);
                 }
@@ -497,7 +488,7 @@ public class MeetingController {
             }
             returnVo.setData(model);
         } catch (Exception e) {
-            logger.error("MeetingController-input:",e);
+            logger.error("MeetingController-getMeetingById:",e);
         }
         return returnVo;
     }
@@ -512,12 +503,12 @@ public class MeetingController {
     public ReturnVo sendInvitation(@RequestBody Meeting meeting,  HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "发送失败");
         try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                String userName = loginUser.getUserName();
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                String userName = loginUser.getNo();
                 //设置会议发起人邮箱地址
                 AppointmentVO appointmentVO = new AppointmentVO();
-                com.ys.tools.vo.ReturnVo<PersonnelApiVo> person = personnelApi.getPersonnelApiVoByNo(loginUser.getUserName());
+                com.ys.tools.vo.ReturnVo<PersonnelApiVo> person = personnelApi.getPersonnelApiVoByNo(loginUser.getNo());
                 PersonnelApiVo personnelApiVo = person.getData();
                 if(personnelApiVo != null){
                     appointmentVO.setEmail(personnelApiVo.getEmail());
@@ -640,7 +631,7 @@ public class MeetingController {
                         //新建会议邀请
                         meeting.setCreator(userName);
                         meeting.setUpdator(userName);
-                        meeting.setCreatorName(loginUser.getRealName());
+                        meeting.setCreatorName(loginUser.getName());
                         meeting.setStatus(MeetingStatusEnum.PENDIND.getCode());//待召开
                         meeting.setDelFlag(1);
                         logger.info("必选人员邮箱"+appointmentVO.getMandatoryEmail());
@@ -683,7 +674,7 @@ public class MeetingController {
                         appointmentVO.setOldEnd(DateUtils.dateToString(mt.getEndTime(), "yyyy-MM-dd HH:mm:ss"));
                         meeting.setCreator(userName);
                         meeting.setUpdator(userName);
-                        meeting.setCreatorName(loginUser.getRealName());
+                        meeting.setCreatorName(loginUser.getName());
                         meeting.setStatus(MeetingStatusEnum.PENDIND.getCode());
                         meeting.setDelFlag(1);
                         if(mt.getChangeId() != null && mt.getChangeKey() != null){
@@ -830,9 +821,9 @@ public class MeetingController {
     public String updateStatus(@RequestParam String ids,@RequestParam Integer status, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改状态失败");
         try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                String userName=loginUser.getUserName();
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                String userName=loginUser.getName();
                 if (StringUtils.isNotBlank(ids) && null != status) {
                     Meeting meeting = new  Meeting();
                     meeting.setUpdator(userName);
@@ -860,9 +851,9 @@ public class MeetingController {
     public String dels(@RequestParam String ids,HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "删除失败");
         try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                String userName=loginUser.getUserName();
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                String userName=loginUser.getNo();
                 if(StringUtils.isNotBlank(ids)){
                     Meeting meeting = new  Meeting();
                     meeting.setUpdator(userName);
@@ -929,8 +920,8 @@ public class MeetingController {
     public String delPersonnel(@PathVariable  String id, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "删除记录人失败");
         try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 if(StringUtils.isNotBlank(id)){
                     MeetingPersonnel meetingPersonnel = new  MeetingPersonnel();
                     meetingPersonnel.setMeetingId(id);
@@ -942,7 +933,7 @@ public class MeetingController {
                 returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
             }
         } catch (Exception e) {
-            logger.error("MeetingController-dels:"+e);
+            logger.error("MeetingController-delPersonnel:"+e);
             e.printStackTrace();
         }
         return JsonUtils.toJson(returnVo);
@@ -954,24 +945,24 @@ public class MeetingController {
      * @Description:新增记录人
      */
     @PostMapping("/insertPersonnel")
-    @ApiOperation("设置记录人")
+    @ApiOperation("保存记录人")
     public ReturnVo insertPersonnel(@ApiJsonObject({
             @ApiJsonProperty(key="meetingId",description = "会议id"),
             @ApiJsonProperty(key="personNo",description = "参加会议人员工号"),
             @ApiJsonProperty(key="personName",description = "参加会议人员姓名"),
     })@RequestBody MeetingPersonnel meetingPersonnel,HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "设置记录人失败");
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "保存失败");
         try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
-                String userName=loginUser.getUserName();
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                String userName=loginUser.getNo();
                 if(StringUtils.isNotBlank(meetingPersonnel.getMeetingId())){
                     meetingPersonnel.setPersonType(MeetingPersonnelType.RECORD.getCode());
                     meetingPersonnel.setCreator(userName);
                     meetingPersonnel.setUpdator(userName);
                     this.meetingPersonnelService.insertMeetingPersonnel(meetingPersonnel);
                 }
-                returnVo = new ReturnVo(ReturnCode.SUCCESS, "设置记录人成功");
+                returnVo = new ReturnVo(ReturnCode.SUCCESS, "保存成功");
             }else{
                 returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
             }
@@ -1067,8 +1058,8 @@ public class MeetingController {
             com.ys.tools.vo.ReturnVo<PersonnelApiVo> persons = null;
             Meeting meeting = new Meeting();
             Query query = new Query(1);
-            UserLogin loginUser = getUserSessionInfo(request, response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
+            UserSessionInfo loginUser = getUserSessionInfo(request, response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 meeting.setCreator(mt.getCreator());
                 meeting.setId(id);
                 pm = this.meetingService.getMyMeetingPagerModelByQuery(meeting, query);
@@ -1281,8 +1272,8 @@ public class MeetingController {
     public String delMyDraft(@PathVariable String id,HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "删除草稿失败");
         try {
-            UserLogin loginUser =  getUserSessionInfo(request,response);
-            if (null != loginUser && StringUtils.isNotBlank(loginUser.getUserName())) {
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 if(StringUtils.isNotBlank(id)){
                     this.meetingService.delMeetingById(id);
                 }
