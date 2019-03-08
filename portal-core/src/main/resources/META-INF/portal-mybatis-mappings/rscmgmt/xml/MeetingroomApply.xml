@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingroomApplyDao" >
+    <resultMap id="MeetingroomApplyMap" type="com.dragon.portal.model.rscmgmt.MeetingroomApply" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="apply_no" property="applyNo" jdbcType="VARCHAR" />
+        
+        <result column="meetingroom_id" property="meetingroomId" jdbcType="VARCHAR" />
+        
+        <result column="meetingroom_name" property="meetingroomName" jdbcType="VARCHAR" />
+        
+        <result column="proposer_no" property="proposerNo" jdbcType="VARCHAR" />
+        
+        <result column="proposer_name" property="proposerName" jdbcType="VARCHAR" />
+        
+        <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+        
+        <result column="dept_id" property="deptId" jdbcType="VARCHAR" />
+        
+        <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+        
+        <result column="detail_address" property="detailAddress" jdbcType="VARCHAR" />
+        
+        <result column="apply_type" property="applyType" jdbcType="INTEGER" />
+        
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        
+        <result column="week_day" property="weekDay" jdbcType="INTEGER" />
+        
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        
+        <result column="period_no" property="periodNo" jdbcType="VARCHAR" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+        
+        <result column="start_day" property="startDay" jdbcType="VARCHAR" />
+        
+        <result column="end_day" property="endDay" jdbcType="VARCHAR" />
+        
+        <result column="week_days" property="weekDays" jdbcType="VARCHAR" />
+        
+        <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+          
+        <result column="old_id" property="oldId" jdbcType="VARCHAR" /> 
+                
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        apply_no,
+        meetingroom_id,
+        meetingroom_name,
+        proposer_no,
+        proposer_name,
+        mobile,
+        dept_id,
+        dept_name,
+        detail_address,
+        apply_type,
+        start_time,
+        end_time,
+        week_day,
+        remark,
+        period_no,
+        status,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag,
+        start_day,
+        end_day,
+        task_id,
+        old_id
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="applyNo!=null and applyNo!=''">
+        and apply_no = #{applyNo,jdbcType=VARCHAR}
+        </if>
+        <if test="meetingroomId!=null and meetingroomId!=''">
+        and meetingroom_id = #{meetingroomId,jdbcType=VARCHAR}
+        </if>
+        <if test="meetingroomName!=null and meetingroomName!=''">
+        and meetingroom_name = #{meetingroomName,jdbcType=VARCHAR}
+        </if>
+        <if test="proposerNo!=null and proposerNo!=''">
+        and proposer_no = #{proposerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="proposerName!=null and proposerName!=''">
+        and proposer_name = #{proposerName,jdbcType=VARCHAR}
+        </if>
+        <if test="mobile!=null and mobile!=''">
+        and mobile = #{mobile,jdbcType=VARCHAR}
+        </if>
+        <if test="deptId!=null and deptId!=''">
+        and dept_id = #{deptId,jdbcType=VARCHAR}
+        </if>
+        <if test="deptName!=null and deptName!=''">
+        and dept_name = #{deptName,jdbcType=VARCHAR}
+        </if>
+        <if test="detailAddress!=null and detailAddress!=''">
+        and detail_address = #{detailAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="applyType!=null">
+        and apply_type = #{applyType,jdbcType=INTEGER}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+        and start_time = #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+        and end_time = #{endTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="weekDay!=null">
+        and week_day = #{weekDay,jdbcType=INTEGER}
+        </if>
+        <if test="remark!=null and remark!=''">
+        and remark = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="periodNo!=null and periodNo!=''">
+        and period_no = #{periodNo,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and task_id = #{taskId,jdbcType=VARCHAR}
+        </if>
+        
+    </sql>
+    
+    <select id="getMeetingroomApplyById" resultMap="MeetingroomApplyMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingroom_apply
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApply" resultMap="MeetingroomApplyMap">
+        select * from tbl_mt_meetingroom_apply where 1=1 
+        <include refid="where" />
+    </select>
+    
+    
+	<select id="getAllByDateAndMeetingId" parameterType="java.util.Map" resultMap="MeetingroomApplyMap">
+        select * from tbl_mt_meetingroom_apply where 1=1 
+        <if test="proposerNo!=null and proposerNo!=''">
+      	and (status = 1 or status = 0 and proposer_no = #{proposerNo,jdbcType=VARCHAR})
+        </if>
+        and start_time &gt;= CONCAT(#{applyDateStr,jdbcType=VARCHAR},' 00:00:00') 
+        and end_time &lt;= CONCAT(#{applyNextDateStr,jdbcType=VARCHAR},' 00:00:00') 
+        and meetingroom_id = #{meetingroomId,jdbcType=VARCHAR}
+        and del_flag = 1
+        order by start_time asc
+    </select>
+    
+    
+	<select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApply" resultMap="MeetingroomApplyMap">
+        select * from tbl_mt_meetingroom_apply where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    
+   	<select id="getPagerModelByQueryOfMyApply" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApply" resultMap="MeetingroomApplyMap">
+        select * from (
+	        select id,proposer_no,apply_no,meetingroom_id,meetingroom_name,status,apply_type,start_time,end_time,week_day week_days,period_no,create_time,start_day,end_day,task_id,proposer_name,dept_name from tbl_mt_meetingroom_apply where apply_type = 0 and del_flag = 1
+		 	union 
+		 	select id,proposer_no,apply_no,meetingroom_id,meetingroom_name,status,apply_type,min(start_time) start_time,max(end_time) end_time,GROUP_CONCAT(distinct week_day) week_days,period_no,create_time,start_day,end_day,task_id,proposer_name,dept_name from tbl_mt_meetingroom_apply where apply_type = 1 and del_flag = 1 GROUP BY apply_no) u
+		where 1=1 
+		<if test="proposerNo!=null and proposerNo!=''">
+		and u.proposer_no = #{proposerNo,jdbcType=VARCHAR}
+		</if>
+		<if test="meetingroomId!=null and meetingroomId!=''">
+		and meetingroom_id = #{meetingroomId,jdbcType=VARCHAR} 
+		</if>
+		<if test="startTime!=null">
+		and start_time &gt;= #{startTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="endTime!=null">
+		and end_time &lt;= #{endTime,jdbcType=TIMESTAMP}
+		</if>
+		order by create_time desc
+    </select>
+    
+    
+    
+    <select id="getMeetingroomApplyByApplyNo" parameterType="java.lang.String" resultMap="MeetingroomApplyMap">
+        select * from (
+	        select id,dept_id,dept_name,detail_address,remark,mobile,proposer_no,proposer_name,apply_no,meetingroom_id,meetingroom_name,status,apply_type,start_time,end_time,week_day week_days,create_time,start_day,end_day,task_id from tbl_mt_meetingroom_apply where apply_type = 0
+		 	union 
+		 	select id,dept_id,dept_name,detail_address,remark,mobile,proposer_no,proposer_name,apply_no,meetingroom_id,meetingroom_name,status,apply_type,min(start_time) start_time,max(end_time) end_time,GROUP_CONCAT(distinct week_day) week_days,create_time,start_day,end_day,task_id from tbl_mt_meetingroom_apply where apply_type = 1 GROUP BY apply_no) u
+		where 1=1 and apply_no = #{applyNo,jdbcType=VARCHAR}
+    </select>
+    
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApply" resultType="int">
+        select count(1) from tbl_mt_meetingroom_apply where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingroomApply" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApply"  >
+        insert into tbl_mt_meetingroom_apply (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{applyNo,jdbcType=VARCHAR},
+        #{meetingroomId,jdbcType=VARCHAR},
+        #{meetingroomName,jdbcType=VARCHAR},
+        #{proposerNo,jdbcType=VARCHAR},
+        #{proposerName,jdbcType=VARCHAR},
+        #{mobile,jdbcType=VARCHAR},
+        #{deptId,jdbcType=VARCHAR},
+        #{deptName,jdbcType=VARCHAR},
+        #{detailAddress,jdbcType=VARCHAR},
+        #{applyType,jdbcType=INTEGER},
+        #{startTime,jdbcType=TIMESTAMP},
+        #{endTime,jdbcType=TIMESTAMP},
+        #{weekDay,jdbcType=INTEGER},
+        #{remark,jdbcType=VARCHAR},
+        #{periodNo,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER},
+        #{startDay,jdbcType=VARCHAR},
+        #{endDay,jdbcType=VARCHAR},
+        #{taskId,jdbcType=VARCHAR},
+        #{oldId,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="delMeetingroomApplyById" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_apply
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingroomApplyByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_apply
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeetingroomApply" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApply" >
+        update tbl_mt_meetingroom_apply
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="applyNo != null" >
+                apply_no = #{applyNo,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomId != null" >
+                meetingroom_id = #{meetingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomName != null" >
+                meetingroom_name = #{meetingroomName,jdbcType=VARCHAR},
+            </if>
+            <if test="proposerNo != null" >
+                proposer_no = #{proposerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="proposerName != null" >
+                proposer_name = #{proposerName,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null" >
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null" >
+                dept_id = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptName != null" >
+                dept_name = #{deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="detailAddress != null" >
+                detail_address = #{detailAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="applyType != null" >
+                apply_type = #{applyType,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null" >
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="weekDay != null" >
+                week_day = #{weekDay,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="periodNo != null" >
+                period_no = #{periodNo,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="taskId != null" >
+                task_id = #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="oldId != null" >
+                old_id = #{oldId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    
+    
+        <update id="updateMeetingroomApplyByApplyNo" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomApply" >
+        update tbl_mt_meetingroom_apply
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="applyNo != null" >
+                apply_no = #{applyNo,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomId != null" >
+                meetingroom_id = #{meetingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomName != null" >
+                meetingroom_name = #{meetingroomName,jdbcType=VARCHAR},
+            </if>
+            <if test="proposerNo != null" >
+                proposer_no = #{proposerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="proposerName != null" >
+                proposer_name = #{proposerName,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null" >
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null" >
+                dept_id = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptName != null" >
+                dept_name = #{deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="detailAddress != null" >
+                detail_address = #{detailAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="applyType != null" >
+                apply_type = #{applyType,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null" >
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="weekDay != null" >
+                week_day = #{weekDay,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="periodNo != null" >
+                period_no = #{periodNo,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="taskId != null" >
+                task_id = #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="oldId != null" >
+                old_id = #{oldId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where apply_no = #{applyNo,jdbcType=VARCHAR}
+    </update>
+    
+
+    <update id="updateMeetingroomApplyByIds" parameterType="java.util.Map">
+        update tbl_mt_meetingroom_apply
+        <set>
+            <if test="meetingroomApply.id != null" >
+                id = #{meetingroomApply.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.applyNo != null" >
+                apply_no = #{meetingroomApply.applyNo,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.meetingroomId != null" >
+                meetingroom_id = #{meetingroomApply.meetingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.meetingroomName != null" >
+                meetingroom_name = #{meetingroomApply.meetingroomName,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.proposerNo != null" >
+                proposer_no = #{meetingroomApply.proposerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.proposerName != null" >
+                proposer_name = #{meetingroomApply.proposerName,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.mobile != null" >
+                mobile = #{meetingroomApply.mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.deptId != null" >
+                dept_id = #{meetingroomApply.deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.deptName != null" >
+                dept_name = #{meetingroomApply.deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.detailAddress != null" >
+                detail_address = #{meetingroomApply.detailAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.applyType != null" >
+                apply_type = #{meetingroomApply.applyType,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroomApply.startTime != null" >
+                start_time = #{meetingroomApply.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingroomApply.endTime != null" >
+                end_time = #{meetingroomApply.endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingroomApply.weekDay != null" >
+                week_day = #{meetingroomApply.weekDay,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroomApply.remark != null" >
+                remark = #{meetingroomApply.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.periodNo != null" >
+                period_no = #{meetingroomApply.periodNo,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.status != null" >
+                status = #{meetingroomApply.status,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroomApply.createTime != null" >
+                create_time = #{meetingroomApply.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingroomApply.creator != null" >
+                creator = #{meetingroomApply.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.updateTime != null" >
+                update_time = #{meetingroomApply.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingroomApply.updator != null" >
+                updator = #{meetingroomApply.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomApply.delFlag != null" >
+                del_flag = #{meetingroomApply.delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="taskId != null" >
+                task_id = #{meetingroomApply.taskId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+	<select id="countMeetingroomApplyByTime" parameterType="java.util.Map" resultType="int">
+        select count(1) from tbl_mt_meetingroom_apply where 1=1 
+        and status = 1
+        and meetingroom_id = #{meetingroomId,jdbcType=VARCHAR}
+        and start_time &lt; #{endTime,jdbcType=VARCHAR} 
+        and end_time  &gt; #{startTime,jdbcType=VARCHAR}
+        and apply_no != #{applyNo,jdbcType=VARCHAR}
+        and del_flag = 1
+    </select>
+	
+	<select id="countMeetingroomApplyByMeetingroomId" parameterType="java.util.Map" resultType="int">
+        select count(1) from tbl_mt_meetingroom_apply where 1=1 
+        and status = 0
+        and meetingroom_id in (${meetingroomId}) 
+    </select>
+	
+    
+    <insert id="insertMeetingroomApplyByList" parameterType="java.util.List"  >
+        insert into tbl_mt_meetingroom_apply (<include refid="Base_Column_List" />)
+        values 
+        <foreach collection="list" item="item" index="index" separator="," >  
+        (
+        #{item.id,jdbcType=VARCHAR},
+        #{item.applyNo,jdbcType=VARCHAR},
+        #{item.meetingroomId,jdbcType=VARCHAR},
+        #{item.meetingroomName,jdbcType=VARCHAR},
+        #{item.proposerNo,jdbcType=VARCHAR},
+        #{item.proposerName,jdbcType=VARCHAR},
+        #{item.mobile,jdbcType=VARCHAR},
+        #{item.deptId,jdbcType=VARCHAR},
+        #{item.deptName,jdbcType=VARCHAR},
+        #{item.detailAddress,jdbcType=VARCHAR},
+        #{item.applyType,jdbcType=INTEGER},
+        #{item.startTime,jdbcType=TIMESTAMP},
+        #{item.endTime,jdbcType=TIMESTAMP},
+        #{item.weekDay,jdbcType=INTEGER},
+        #{item.remark,jdbcType=VARCHAR},
+        #{item.periodNo,jdbcType=VARCHAR},
+        #{item.status,jdbcType=INTEGER},
+        #{item.createTime,jdbcType=TIMESTAMP},
+        #{item.creator,jdbcType=VARCHAR},
+        #{item.updateTime,jdbcType=TIMESTAMP},
+        #{item.updator,jdbcType=VARCHAR},
+        #{item.delFlag,jdbcType=INTEGER},
+		#{item.startDay,jdbcType=VARCHAR},
+        #{item.endDay,jdbcType=VARCHAR},
+        #{item.taskId,jdbcType=VARCHAR},
+        #{item.oldId,jdbcType=VARCHAR}
+        )
+        </foreach>
+    </insert>
+    
+    
+</mapper>

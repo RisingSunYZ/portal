@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingroomDao" >
+    <resultMap id="MeetingroomMap" type="com.dragon.portal.model.rscmgmt.Meetingroom" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="addr_id" property="addrId" jdbcType="VARCHAR" />
+        
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        
+        <result column="floor_num" property="floorNum" jdbcType="VARCHAR" />
+        
+        <result column="person_num" property="personNum" jdbcType="INTEGER" />
+        
+        <result column="room_img" property="roomImg" jdbcType="VARCHAR" />
+        
+        <result column="is_cyclicity" property="isCyclicity" jdbcType="INTEGER" />
+        
+        <result column="need_approval" property="needApproval" jdbcType="INTEGER" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+        
+        <result column="openrange" property="openrange" jdbcType="VARCHAR" />
+          
+        <result column="approver" property="approver" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    
+	<resultMap id="MeetingroomVoMap" type="com.dragon.portal.vo.rscmgmt.MeetingroomViewVo" >
+        <id column="id" property="meetingroomId" jdbcType="VARCHAR" />
+        
+        <result column="name" property="meetingroomName" jdbcType="VARCHAR" />
+        
+        <result column="room_img" property="roomImg" jdbcType="VARCHAR" />
+       
+        <result column="is_cyclicity" property="isCyclicity" jdbcType="INTEGER" />
+        
+        <result column="need_approval" property="needApproval" jdbcType="INTEGER" />
+        
+       	<result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+       
+       	<result column="status" property="status" jdbcType="INTEGER" />
+       
+        <result column="floor_num" property="floorNum" jdbcType="VARCHAR" />
+        
+        <result column="addr_id" property="meetingroomAddrId" jdbcType="VARCHAR" />
+        
+        <result column="person_num" property="personNum" jdbcType="INTEGER" />
+        
+       	<result column="isOpenRange" property="isOpenRange" jdbcType="INTEGER" /> 
+        
+        
+    </resultMap>
+    
+    
+    <sql id="Base_Column_List" >
+        id,
+        addr_id,
+        name,
+        floor_num,
+        person_num,
+        room_img,
+        is_cyclicity,
+        need_approval,
+        sort_no,
+        status,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="addrId!=null and addrId!=''">
+        and addr_id = #{addrId,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+        and name like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="floorNum!=null and floorNum!=''">
+        and floor_num = #{floorNum,jdbcType=VARCHAR}
+        </if>
+        <if test="personNum!=null">
+        and person_num = #{personNum,jdbcType=INTEGER}
+        </if>
+        <if test="roomImg!=null and roomImg!=''">
+        and room_img = #{roomImg,jdbcType=VARCHAR}
+        </if>
+        <if test="isCyclicity!=null">
+        and is_cyclicity = #{isCyclicity,jdbcType=INTEGER}
+        </if>
+        <if test="needApproval!=null">
+        and need_approval = #{needApproval,jdbcType=INTEGER}
+        </if>
+        <if test="sortNo!=null">
+        and sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getMeetingroomById" resultMap="MeetingroomMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingroom
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.Meetingroom" resultMap="MeetingroomMap">
+        select * from tbl_mt_meetingroom where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.Meetingroom" resultMap="MeetingroomMap">
+        select m.*,d.openrange,p.approver from tbl_mt_meetingroom m
+        left join (SELECT GROUP_CONCAT(dept_name) openrange,mettingroom_id FROM tbl_mt_meetingroom_openrange GROUP BY mettingroom_id) d on m.id = d.mettingroom_id
+        left join (SELECT GROUP_CONCAT(approver_name) approver,mettingroom_id FROM tbl_mt_meetingroom_approver GROUP BY mettingroom_id) p on m.id = p.mettingroom_id
+		left join (SELECT group_concat(admin_no) admin_no,addr_id a_id FROM tbl_mt_meetingroom_addr_admin GROUP BY addr_id) a on a.a_id = m.addr_id
+		 where 1=1 
+        <include refid="where" />
+        <if test="adminNo!=null and adminNo!=''">
+        and a.admin_no LIKE CONCAT('%',#{adminNo},'%') 
+        </if>
+		order by sort_no asc,update_time desc
+    </select>
+    
+    <select id="getPagerModelVoByQuery" parameterType="com.dragon.portal.vo.rscmgmt.MeetingroomViewVo" resultMap="MeetingroomVoMap">
+        select m.*,if(d.openrange is not null,1,0) isOpenRange from tbl_mt_meetingroom m
+        left join (SELECT GROUP_CONCAT(dept_id) openrange,mettingroom_id FROM tbl_mt_meetingroom_openrange GROUP BY mettingroom_id) d on m.id = d.mettingroom_id
+        left join (SELECT mettingroom_id,GROUP_CONCAT(b.id) tId FROM tbl_mt_meetingroom_conftools a LEFT JOIN  tbl_mt_meetingroom_tools b ON a.tools_id = b.id where name is not null GROUP BY  mettingroom_id) t on m.id = t.mettingroom_id
+        where 1=1 
+        <if test="status != null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        and (
+        <if test="rangeDeftId !=null">
+        d.openrange is not null and 
+        <foreach item="item" index="index" collection="rangeDeftId" open="(" separator="or" close=")">
+		 	d.openrange LIKE CONCAT('%',#{item},'%')
+		</foreach>
+        or
+        </if> d.openrange is null)
+        <if test="meetingroomAddrId!=null and meetingroomAddrId!=''">
+        and addr_id = #{meetingroomAddrId,jdbcType=VARCHAR}
+        </if>
+        <if test="personNumMin != null" >
+        and person_num &gt;= #{personNumMin,jdbcType=INTEGER}
+        </if>
+        <if test="personNumMax != null" >
+        and person_num &lt;= #{personNumMax,jdbcType=INTEGER}
+        </if>
+        <if test="confTools!=null">
+       	<foreach collection="confTools" item="item" index="index" separator="" >
+       	  and t.tId like CONCAT('%',#{item,jdbcType=VARCHAR},'%')
+       	</foreach>
+ 		</if>
+ 		<if test="meetingroomName!=null and meetingroomName!=''">
+        and name like CONCAT('%',#{meetingroomName,jdbcType=VARCHAR},'%')
+        </if>
+ 		
+ 		and del_flag = 1
+		order by sort_no asc,update_time desc,isOpenRange desc,floor_num desc
+    </select>
+    
+    
+    <select id="getPagerModelVoByQueryOfAdmin" parameterType="com.dragon.portal.vo.rscmgmt.MeetingroomViewVo" resultMap="MeetingroomVoMap">
+       select m.*,if(d.openrange is not null,1,0) isOpenRange from tbl_mt_meetingroom m
+        left join (SELECT GROUP_CONCAT(dept_id) openrange,mettingroom_id FROM tbl_mt_meetingroom_openrange GROUP BY mettingroom_id) d on m.id = d.mettingroom_id
+        left join (SELECT mettingroom_id,GROUP_CONCAT(b.id) tId FROM tbl_mt_meetingroom_conftools a LEFT JOIN  tbl_mt_meetingroom_tools b ON a.tools_id = b.id where name is not null GROUP BY  mettingroom_id) t on m.id = t.mettingroom_id
+		left JOIN (SELECT  group_concat(admin_no) admin_no, addr_id from tbl_mt_meetingroom_addr_admin GROUP BY addr_id) addr on  m.addr_id = addr.addr_id
+		left join (SELECT group_concat(approver_no) approver_no,mettingroom_id meetingroom_id from tbl_mt_meetingroom_approver GROUP BY mettingroom_id) r on r.meetingroom_id = m.id
+        where 1=1 
+        <if test="status != null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="isAdmin==0 and adminNo!=null and adminNo!=''">
+        and (addr.admin_no like CONCAT('%',#{adminNo},'%') or r.approver_no like CONCAT('%',#{adminNo},'%')) 
+        </if>
+        <if test="meetingroomAddrId!=null and meetingroomAddrId!=''">
+        and m.addr_id = #{meetingroomAddrId,jdbcType=VARCHAR}
+        </if>
+        <if test="personNumMin != null" >
+        and person_num &gt;= #{personNumMin,jdbcType=INTEGER}
+        </if>
+        <if test="personNumMax != null" >
+        and person_num &lt;= #{personNumMax,jdbcType=INTEGER}
+        </if>
+        <if test="confTools!=null">
+       	<foreach collection="confTools" item="item" index="index" separator="" >
+       	  and t.tId like CONCAT('%',#{item,jdbcType=VARCHAR},'%')
+       	</foreach>
+ 		</if>
+ 		and del_flag = 1
+		order by sort_no asc,update_time desc,isOpenRange desc,floor_num desc
+    </select>
+    
+    
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.Meetingroom" resultType="int">
+        select count(1) from tbl_mt_meetingroom where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingroom" parameterType="com.dragon.portal.model.rscmgmt.Meetingroom"  >
+        insert into tbl_mt_meetingroom (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{addrId,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{floorNum,jdbcType=VARCHAR},
+        #{personNum,jdbcType=INTEGER},
+        #{roomImg,jdbcType=VARCHAR},
+        #{isCyclicity,jdbcType=INTEGER},
+        #{needApproval,jdbcType=INTEGER},
+        #{sortNo,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delMeetingroomById" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingroomByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeetingroom" parameterType="com.dragon.portal.model.rscmgmt.Meetingroom" >
+        update tbl_mt_meetingroom
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="addrId != null" >
+                addr_id = #{addrId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="floorNum != null" >
+                floor_num = #{floorNum,jdbcType=VARCHAR},
+            </if>
+            <if test="personNum != null" >
+                person_num = #{personNum,jdbcType=INTEGER},
+            </if>
+            <if test="roomImg != null" >
+                room_img = #{roomImg,jdbcType=VARCHAR},
+            </if>
+            <if test="isCyclicity != null" >
+                is_cyclicity = #{isCyclicity,jdbcType=INTEGER},
+            </if>
+            <if test="needApproval != null" >
+                need_approval = #{needApproval,jdbcType=INTEGER},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingroomByIds" parameterType="java.util.Map">
+        update tbl_mt_meetingroom
+        <set>
+            <if test="meetingroom.id != null" >
+                id = #{meetingroom.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroom.addrId != null" >
+                addr_id = #{meetingroom.addrId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroom.name != null" >
+                name = #{meetingroom.name,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroom.floorNum != null" >
+                floor_num = #{meetingroom.floorNum,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroom.personNum != null" >
+                person_num = #{meetingroom.personNum,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroom.roomImg != null" >
+                room_img = #{meetingroom.roomImg,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroom.isCyclicity != null" >
+                is_cyclicity = #{meetingroom.isCyclicity,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroom.needApproval != null" >
+                need_approval = #{meetingroom.needApproval,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroom.sortNo != null" >
+                sort_no = #{meetingroom.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroom.status != null" >
+                status = #{meetingroom.status,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroom.createTime != null" >
+                create_time = #{meetingroom.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingroom.creator != null" >
+                creator = #{meetingroom.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroom.updateTime != null" >
+                update_time = #{meetingroom.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingroom.updator != null" >
+                updator = #{meetingroom.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroom.delFlag != null" >
+                del_flag = #{meetingroom.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>
