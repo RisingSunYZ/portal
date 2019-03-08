@@ -20,6 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -40,6 +42,21 @@ public class UserController extends BaseController {
     IPersonnelApi personnelApi;
     @Autowired
     IOrgApi orgApi;
+
+    @ApiOperation("用户登录测试")
+    @GetMapping("/userLogin")
+    public void userLogin(HttpServletRequest request, HttpServletResponse response){
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询数据异常");
+
+        try {
+
+
+            response.getWriter().write("<script>top.location.href='http://www.baidu.com'</script>");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * @param request
      * @param response

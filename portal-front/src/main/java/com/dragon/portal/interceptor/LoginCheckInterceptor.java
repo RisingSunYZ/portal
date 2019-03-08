@@ -1,6 +1,7 @@
 package com.dragon.portal.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dragon.portal.constant.FormConstant;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.service.redis.RedisService;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * 登录拦截器
@@ -42,25 +44,27 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		return true;
-//		//判断是否IDM登录
-//		if("true".equals("true")){
-//
-//
-//
-//			return true;
-//		}else{
-//			UserLogin userLogin = (UserLogin)request.getSession().getAttribute(FormConstant.SYS_USER);
-//			if (null != userLogin) {
-//				return true;
-//			} else {
-//				logger.error("Request Intercept : " + request.getRequestURI());
-//				ReturnVo vo = new ReturnVo(ReturnCode.FAIL, "您的登录会话已经失效，请重新登录");
-//				response.setContentType("application/json;charset=UTF-8");
-//				response.getWriter().write(JSONObject.toJSONString(vo));
-//				return false;
-//			}
-//		}
+		HttpSession session = request.getSession();
+//		final Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+		logger.info(session);
+		//判断是否IDM登录
+		if("true".equals("true")){
+
+
+
+			return true;
+		}else{
+			UserLogin userLogin = (UserLogin)request.getSession().getAttribute(FormConstant.SYS_USER);
+			if (null != userLogin) {
+				return true;
+			} else {
+				logger.error("Request Intercept : " + request.getRequestURI());
+				ReturnVo vo = new ReturnVo(ReturnCode.FAIL, "您的登录会话已经失效，请重新登录");
+				response.setContentType("application/json;charset=UTF-8");
+				response.getWriter().write(JSONObject.toJSONString(vo));
+				return false;
+			}
+		}
 	}
 
 	/*
