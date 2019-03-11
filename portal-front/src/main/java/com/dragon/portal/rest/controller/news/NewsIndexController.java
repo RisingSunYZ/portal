@@ -96,9 +96,11 @@ public class NewsIndexController extends BaseController {
                 PagerModel<NewsNoticeVo> pm = new PagerModel<NewsNoticeVo>();
 
                 notice.setUserNo(userSessionInfo.getNo());
-                if (CollectionUtils.isNotEmpty(notice.getRangeDeftId())){
-                    newsNoticePage = newsNoticeService.getPagerModelByQueryOfRangeRedis(notice, query,userSessionInfo.getNo());
-                }
+                // FIXME 因为Session获取用户信息暂未开发，为了测试先不进行判断，session开发完了注释部分打开
+                newsNoticePage = newsNoticeService.getPagerModelByQueryOfRangeRedis(notice, query,userSessionInfo.getNo());
+//                if (CollectionUtils.isNotEmpty(notice.getRangeDeftId())){
+//                    newsNoticePage = newsNoticeService.getPagerModelByQueryOfRangeRedis(notice, query,userSessionInfo.getNo());
+//                }
             } else {  //用户未登录
                 newsNoticePage = newsNoticeService.getPagerModelByQueryOfRange(notice, query,"");
             }
