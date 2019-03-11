@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.hr.IContactUsDao" >
+    <resultMap id="ContactUsMap" type="com.dragon.portal.model.hr.ContactUs" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+        
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        
+        <result column="tel" property="tel" jdbcType="VARCHAR" />
+        
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        
+        <result column="type" property="type" jdbcType="INTEGER" />
+        
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+        
+        <result column="type_id" property="typeId" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        dept_name,
+        user_name,
+        tel,
+        email,
+        address,
+        type,
+        remark,
+        status,
+        sort_no,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag,
+        type_id
+    </sql>
+    
+    <sql id="where">
+        <if test="id != null and id != ''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="deptName!=null and deptName!=''">
+        and dept_name = #{deptName,jdbcType=VARCHAR}
+        </if>
+        <if test="userName!=null and userName!=''">
+        and user_name = #{userName,jdbcType=VARCHAR}
+        </if>
+        <if test="tel!=null and tel!=''">
+        and tel = #{tel,jdbcType=VARCHAR}
+        </if>
+        <if test="email!=null and email!=''">
+        and email = #{email,jdbcType=VARCHAR}
+        </if>
+        <if test="address!=null and address!=''">
+        and address = #{address,jdbcType=VARCHAR}
+        </if>
+        <if test="type!=null">
+        and type = #{type,jdbcType=INTEGER}
+        </if>
+        <if test="remark!=null and remark!=''">
+        and remark = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="sortNo!=null">
+        and sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+        <if test="typeId!=null and typeId!=''">
+        and type_id = #{typeId,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    
+    <select id="getContactUsById" resultMap="ContactUsMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_hr_contact_us
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.hr.ContactUs" resultMap="ContactUsMap">
+        select * from tbl_hr_contact_us where 1=1 
+        <include refid="where" />
+        order by sort_no desc
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.hr.ContactUs" resultMap="ContactUsMap">
+        select * from tbl_hr_contact_us where 1=1 
+        <include refid="where" />
+		order by sort_no desc, update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.hr.ContactUs" resultType="int">
+        select count(1) from tbl_hr_contact_us where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertContactUs" parameterType="com.dragon.portal.model.hr.ContactUs" useGeneratedKeys="true" keyProperty="id" >
+        insert into tbl_hr_contact_us (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{deptName,jdbcType=VARCHAR},
+        #{userName,jdbcType=VARCHAR},
+        #{tel,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR},
+        #{type,jdbcType=INTEGER},
+        #{remark,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
+        #{sortNo,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER},
+        #{typeId,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="delContactUsById" parameterType="java.lang.String" >
+        delete from tbl_hr_contact_us
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delContactUsByIds" parameterType="java.lang.String" >
+        delete from tbl_hr_contact_us
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateContactUs" parameterType="com.dragon.portal.model.hr.ContactUs" >
+        update tbl_hr_contact_us
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="deptName != null" >
+                dept_name = #{deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null" >
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null" >
+                tel = #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null" >
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null" >
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="typeId != null" >
+                type_id = #{typeId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateContactUsByIds" parameterType="java.util.Map">
+        update tbl_hr_contact_us
+        <set>
+            <if test="contactUs.id != null" >
+                id = #{contactUs.id,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.deptName != null" >
+                dept_name = #{contactUs.deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.userName != null" >
+                user_name = #{contactUs.userName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.tel != null" >
+                tel = #{contactUs.tel,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.email != null" >
+                email = #{contactUs.email,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.address != null" >
+                address = #{contactUs.address,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.type != null" >
+                type = #{contactUs.type,jdbcType=INTEGER},
+            </if>
+            <if test="contactUs.remark != null" >
+                remark = #{contactUs.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.status != null" >
+                status = #{contactUs.status,jdbcType=INTEGER},
+            </if>
+            <if test="contactUs.sortNo != null" >
+                sort_no = #{contactUs.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="contactUs.createTime != null" >
+                create_time = #{contactUs.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="contactUs.creator != null" >
+                creator = #{contactUs.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.updateTime != null" >
+                update_time = #{contactUs.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="contactUs.updator != null" >
+                updator = #{contactUs.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="contactUs.delFlag != null" >
+                del_flag = #{contactUs.delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="contactUs.typeId != null" >
+                type_id = #{contactUs.typeId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>
