@@ -86,6 +86,7 @@ public class NewsNoticeServiceImpl implements INewsNoticeService {
         params.put("id", id);
         params.put("userNo", userNo);
 
+        this.noticeDao.getFullById(params);
         return StringUtils.isNotBlank(id) ? this.noticeDao.getFullById(params) : null;
 
 
@@ -138,7 +139,7 @@ public class NewsNoticeServiceImpl implements INewsNoticeService {
                 net.sf.json.JSONObject value = null;
                 if ( null != redisValue && !"null".equals(redisValue) ){
                     value = JSONObject.fromObject( redisValue );
-                    newsNoticesList = (List<NewsNotice>) JSONArray.toList(value.getJSONArray("rows"), new NewsNotice(), new JsonConfig());
+                    newsNoticesList = (List<NewsNotice>) JSONArray.toList(value.getJSONArray("data"), new NewsNotice(), new JsonConfig());
                 }
                 long total = null != value && !"null".equals(value) ? value.getLong("total") : 0L;
                 newsNotices = new PagerModel<NewsNotice>();
