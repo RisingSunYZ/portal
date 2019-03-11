@@ -2,6 +2,8 @@ package com.dragon.portal.rest.controller.addrbook;
 
 
 import com.dragon.portal.constant.PortalConstant;
+import com.dragon.portal.customLabel.ApiJsonObject;
+import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.model.addrbook.TopContacts;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.addrbook.ITopContactsService;
@@ -17,7 +19,6 @@ import com.ys.ucenter.model.company.Company;
 import com.ys.ucenter.model.vo.OrgTreeApiVo;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.*;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -50,40 +51,6 @@ public class AddressBookController extends BaseController {
 	@Resource
 	private ITopContactsService topContactsService;
 
-//	/*
-//	*
-//	 * @Author yangzhao
-//	 * @Description //TODO 通讯录首页
-//	 * @Date 13:48 2019/3/8
-//	 * @Param [request, response]
-//	 * @return com.dragon.tools.vo.ReturnVo<com.ys.ucenter.model.vo.PersonnelApiVo>
-//	 **/
-//	@GetMapping("/index")
-//	@ApiOperation("通讯录首页")
-//	public ReturnVo<PersonnelApiVo> index(HttpServletRequest request, HttpServletResponse response) {
-//		ReturnVo<PersonnelApiVo> returnVo = new ReturnVo<PersonnelApiVo>(ReturnCode.FAIL, "通讯录首页查询失败！");
-//		try {
-//			UserSessionInfo loginUser = getUserSessionInfo(request, response);
-//			if (null != loginUser) {
-//				com.ys.tools.vo.ReturnVo<PersonnelApiVo> vo = personnelApi.getPersonnelApiVoByNo(loginUser.getNo());
-//				if(null != vo && UcenterConstant.SUCCESS == vo.getCode()){
-//                    returnVo = new ReturnVo<>(ReturnCode.SUCCESS,vo.getMsg(),vo.getData());
-//                }else{
-//                    returnVo.setMsg(vo.getMsg());
-//                    logger.error("AddressBookController-index:"+vo.getMsg());
-//                }
-//				return returnVo;
-//			} else {
-//				logger.error("获取登录用户异常！");
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			logger.error("获取人员数据异常！");
-//		}
-//
-//		return returnVo;
-//	}
-//
 	/*
 	*
 	 * @Author yangzhao
@@ -177,63 +144,73 @@ public class AddressBookController extends BaseController {
 		}
 		return returnVo;
 	}
-//
-//	/*
-//	*
-//	 * @Author yangzhao
-//	 * @Description //TODO 加载组织机构树形结构
-//	 * @Date 13:49 2019/3/8
-//	 * @Param []
-//	 * @return java.util.LinkedList<com.ys.ucenter.model.vo.OrgTreeApiVo>
-//	 **/
-//	@GetMapping("/getOrgTreeData")
-//	@ApiOperation("加载组织机构树形结构")
-//	public LinkedList<OrgTreeApiVo> getOrgTreeData() {
-//		LinkedList<OrgTreeApiVo> orgTree = new LinkedList<OrgTreeApiVo>();// new
-//		com.ys.tools.vo.ReturnVo<OrgTreeApiVo> returnVo = orgApi.getOrgTree();
-//		if (UcenterConstant.SUCCESS == returnVo.getCode()) {
-//			orgTree = new LinkedList<OrgTreeApiVo>(returnVo.getDatas());
-//			// 添加一个根节点：常用联系人
-//			OrgTreeApiVo root = new OrgTreeApiVo();
-//			root.setId("TOP-CONTACTS");
-//			root.setpId("0");
-//			root.setCompanyId("");
-//			root.setText("常用联系人");
-//			orgTree.addFirst(root);
-//		} else {
-//			logger.error(returnVo.getMsg());
-//		}
-//		return orgTree;
-//	}
-//
-//	/*
-//	*
-//	 * @Author yangzhao
-//	 * @Description //TODO 查询人员数据
-//	 * @Date 13:49 2019/3/8
-//	 * @Param [personnelApiVo, query]
-//	 * @return com.ys.tools.pager.PagerModel<com.ys.ucenter.model.vo.PersonnelApiVo>
-//	 **/
-//	@GetMapping("/getPersonnelData")
-//	@ApiOperation("查询人员数据")
-//	public PagerModel<PersonnelApiVo> getPersonnelData(@ApiParam(value = "人员Api对象") PersonnelApiVo personnelApiVo, @ApiParam(value = "查询对象") Query query) {
-//		String page = StringUtils.isBlank(query.getPage())?"1":query.getPage();
-//		query.setPageIndex(Integer.parseInt(page));
-//		query.setPageSize(query.getRows());
-//		personnelApiVo.setShowDept(UcenterConstant.YES);
-//		ReturnVo<PagerModel<PersonnelApiVo>> returnVo = personnelApi.getPersonnel(personnelApiVo, query);
-//		PagerModel<PersonnelApiVo> pm = returnVo.getData();
-//		Company company = new Company();
-//		com.ys.tools.vo.ReturnVo<List<Company>> companyReturnVo = orgApi.getCompany(company);
-//
-//		Map<String, Company> companyMap = new HashMap<String, Company>();
-//		if (CollectionUtils.isNotEmpty(companyReturnVo.getData())) {
-//			for (Company c : companyReturnVo.getData()) {
-//				companyMap.put(c.getId(), c);
-//			}
-//		}
-//		return pm;
-//	}
+
+	/*
+	*
+	 * @Author yangzhao
+	 * @Description //TODO 加载组织机构树形结构
+	 * @Date 13:49 2019/3/8
+	 * @Param []
+	 * @return java.util.LinkedList<com.ys.ucenter.model.vo.OrgTreeApiVo>
+	 **/
+	@GetMapping("/getOrgTreeData")
+	@ApiOperation("加载组织机构树形结构")
+	public LinkedList<OrgTreeApiVo> getOrgTreeData() {
+		LinkedList<OrgTreeApiVo> orgTree = new LinkedList<OrgTreeApiVo>();// new
+		com.ys.tools.vo.ReturnVo<OrgTreeApiVo> returnVo = orgApi.getOrgTree();
+		if (UcenterConstant.SUCCESS == returnVo.getCode()) {
+			orgTree = new LinkedList<OrgTreeApiVo>(returnVo.getDatas());
+			// 添加一个根节点：常用联系人
+			OrgTreeApiVo root = new OrgTreeApiVo();
+			root.setId("TOP-CONTACTS");
+			root.setpId("0");
+			root.setCompanyId("");
+			root.setText("常用联系人");
+			orgTree.addFirst(root);
+		} else {
+			logger.error(returnVo.getMsg());
+		}
+		return orgTree;
+	}
+
+	/*
+	*
+	 * @Author yangzhao
+	 * @Description //TODO 查询人员数据
+	 * @Date 13:49 2019/3/8
+	 * @Param [personnelApiVo, query]
+	 * @return com.ys.tools.pager.PagerModel<com.ys.ucenter.model.vo.PersonnelApiVo>
+	 **/
+	@GetMapping("/getPersonnelData")
+	@ApiOperation("查询人员数据")
+	@ApiImplicitParams({
+			@ApiImplicitParam(value="公司Id",name="companyId",dataType = "String",paramType = "query"),
+			@ApiImplicitParam(value="部门Id",name="deptId",dataType = "String",paramType = "query"),
+			@ApiImplicitParam(value="当前页",name="pageIndex",dataType = "int",paramType = "query"),
+			@ApiImplicitParam(value="每页记录数",name="pageSize",dataType = "int",paramType = "query"),
+	})
+	public PagerModel<PersonnelApiVo> getPersonnelData(PersonnelApiVo personnelApiVo,Query query) {
+        com.ys.tools.pager.Query ysQuery = new com.ys.tools.pager.Query();
+        PagerModel<PersonnelApiVo> pm = new PagerModel<>();
+        com.ys.tools.pager.PagerModel<PersonnelApiVo> ysPm = null;
+        ysQuery.setPageSize(query.getPageSize());
+        ysQuery.setPageIndex(query.getInitPageIndex());
+		personnelApiVo.setShowDept(UcenterConstant.YES);
+        com.ys.tools.vo.ReturnVo<com.ys.tools.pager.PagerModel<PersonnelApiVo>> returnVo = personnelApi.getPersonnel(personnelApiVo, ysQuery);
+		ysPm = returnVo.getData();
+        pm.setRows(ysPm.getRows());
+        pm.setTotal(ysPm.getTotal());
+		Company company = new Company();
+		com.ys.tools.vo.ReturnVo<List<Company>> companyReturnVo = orgApi.getCompany(company);
+
+		Map<String, Company> companyMap = new HashMap<String, Company>();
+		if (CollectionUtils.isNotEmpty(companyReturnVo.getData())) {
+			for (Company c : companyReturnVo.getData()) {
+				companyMap.put(c.getId(), c);
+			}
+		}
+		return pm;
+	}
 
 	/*
 	*
@@ -243,9 +220,13 @@ public class AddressBookController extends BaseController {
 	 * @Param [request, response, query]
 	 * @return com.ys.tools.pager.PagerModel<com.ys.ucenter.model.vo.PersonnelApiVo>
 	 **/
-	@PostMapping("/getTopContactsData")
+	@GetMapping("/getTopContactsData")
 	@ApiOperation("加载常用联系人数据")
-	public PagerModel<PersonnelApiVo> getTopContactsData(HttpServletRequest request, HttpServletResponse response,@ApiParam(value = "查询对象") Query query) {
+	@ApiImplicitParams({
+			@ApiImplicitParam(value="当前页",name="pageIndex",dataType = "int",paramType = "query"),
+			@ApiImplicitParam(value="每页记录数",name="pageSize",dataType = "int",paramType = "query"),
+	})
+	public PagerModel<PersonnelApiVo> getTopContactsData(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response,Query query) {
 		PagerModel<PersonnelApiVo> pm = new PagerModel<PersonnelApiVo>();
 		try {
 			// 获取登录用户
@@ -282,67 +263,78 @@ public class AddressBookController extends BaseController {
 	}
 
 
-//	/*
-//	*
-//	 * @Author yangzhao
-//	 * @Description //TODO 加载组织机构树形结构
-//	 * @Date 13:49 2019/3/8
-//	 * @Param [request, response]
-//	 * @return java.util.LinkedList<com.ys.ucenter.model.vo.OrgTreeApiVo>
-//	 **/
-//	@GetMapping("/getOrgTreeDataforBook")
-//	@ApiOperation("加载组织机构树形结构")
-//	public LinkedList<OrgTreeApiVo> getOrgTreeDataforBook(HttpServletRequest request, HttpServletResponse response) {
-//		LinkedList<OrgTreeApiVo> orgTree = new LinkedList<OrgTreeApiVo>();// new
-//		UserSessionInfo loginUser = getUserSessionInfo(request, response);
-//		if(null!=loginUser){
-//			com.ys.tools.vo.ReturnVo<OrgTreeApiVo> returnVo = orgApi.getOrgTreeForBook(loginUser.getNo());
-//			if (UcenterConstant.SUCCESS == returnVo.getCode()) {
-//				orgTree = new LinkedList<OrgTreeApiVo>(returnVo.getDatas());
-//				// 添加一个根节点：常用联系人
-//				OrgTreeApiVo root = new OrgTreeApiVo();
-//
-//				root.setId("TOP-CONTACTS");
-//				root.setpId("0");
-//				root.setCompanyId("");
-//				root.setText("常用联系人");
-//				orgTree.addFirst(root);
-//			} else {
-//				logger.error(returnVo.getMsg());
-//			}
-//		}
-//		return orgTree;
-//	}
-//
-//	/*
-//	*
-//	 * @Author yangzhao
-//	 * @Description //TODO 查询人员数据
-//	 * @Date 13:49 2019/3/8
-//	 * @Param [request, response, personnelApiVo, query]
-//	 * @return com.ys.tools.pager.PagerModel<com.ys.ucenter.model.vo.PersonnelApiVo>
-//	 **/
-//	@GetMapping("/getPersonnelDataForBook")
-//	@ApiOperation("查询人员数据")
-//	public PagerModel<PersonnelApiVo> getPersonnelDataForBook(HttpServletRequest request, HttpServletResponse response,@ApiParam(value = "人员Api对象") PersonnelApiVo personnelApiVo,@ApiParam(value = "查询对象") Query query) {
-//		UserSessionInfo loginUser = getUserSessionInfo(request, response);
-//		PagerModel<PersonnelApiVo> pm = null;
-//		if(null!=loginUser){
-//			String page = StringUtils.isBlank(query.getPage())?"1":query.getPage();
-//			query.setPageSize(query.getRows());
-//			personnelApiVo.setShowDept(UcenterConstant.YES);
-//			com.ys.tools.vo.ReturnVo<PagerModel<PersonnelApiVo>> returnVo = personnelApi.getPersonnelForBook(personnelApiVo, query,loginUser.getNo());
-//			pm = returnVo.getData();
-//			Company company = new Company();
-//			com.ys.tools.vo.ReturnVo<List<Company>> companyReturnVo = orgApi.getCompanyForBook(company);
-//
-//			Map<String, Company> companyMap = new HashMap<String, Company>();
-//			if (CollectionUtils.isNotEmpty(companyReturnVo.getData())) {
-//				for (Company c : companyReturnVo.getData()) {
-//					companyMap.put(c.getId(), c);
-//				}
-//			}
-//		}
-//		return pm;
-//	}
+	/*
+	*
+	 * @Author yangzhao
+	 * @Description //TODO 加载组织机构树形结构
+	 * @Date 13:49 2019/3/8
+	 * @Param [request, response]
+	 * @return java.util.LinkedList<com.ys.ucenter.model.vo.OrgTreeApiVo>
+	 **/
+	@GetMapping("/getOrgTreeDataforBook")
+	@ApiOperation("加载通讯录组织机构树形结构")
+	public LinkedList<OrgTreeApiVo> getOrgTreeDataforBook(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+		LinkedList<OrgTreeApiVo> orgTree = new LinkedList<OrgTreeApiVo>();// new
+		UserSessionInfo loginUser = getUserSessionInfo(request, response);
+		if(null!=loginUser){
+			com.ys.tools.vo.ReturnVo<OrgTreeApiVo> returnVo = orgApi.getOrgTreeForBook(loginUser.getNo());
+			if (UcenterConstant.SUCCESS == returnVo.getCode()) {
+				orgTree = new LinkedList<OrgTreeApiVo>(returnVo.getDatas());
+				// 添加一个根节点：常用联系人
+				OrgTreeApiVo root = new OrgTreeApiVo();
+
+				root.setId("TOP-CONTACTS");
+				root.setpId("0");
+				root.setCompanyId("");
+				root.setText("常用联系人");
+				orgTree.addFirst(root);
+			} else {
+				logger.error(returnVo.getMsg());
+			}
+		}
+		return orgTree;
+	}
+
+	/*
+	*
+	 * @Author yangzhao
+	 * @Description //TODO 查询人员数据
+	 * @Date 13:49 2019/3/8
+	 * @Param [request, response, personnelApiVo, query]
+	 * @return com.ys.tools.pager.PagerModel<com.ys.ucenter.model.vo.PersonnelApiVo>
+	 **/
+	@GetMapping("/getPersonnelDataForBook")
+	@ApiOperation("查询通讯录人员数据")
+	@ApiImplicitParams({
+			@ApiImplicitParam(value="公司Id",name="companyId",dataType = "String",paramType = "query"),
+			@ApiImplicitParam(value="部门Id",name="deptId",dataType = "String",paramType = "query"),
+			@ApiImplicitParam(value="当前页",name="pageIndex",dataType = "int",paramType = "query"),
+			@ApiImplicitParam(value="每页记录数",name="pageSize",dataType = "int",paramType = "query"),
+	})
+	public PagerModel<PersonnelApiVo> getPersonnelDataForBook(@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response,
+															  PersonnelApiVo personnelApiVo, Query query) {
+		UserSessionInfo loginUser = getUserSessionInfo(request, response);
+		PagerModel<PersonnelApiVo> pm = new PagerModel<>();
+		com.ys.tools.pager.PagerModel<PersonnelApiVo> ysPm = null;
+		if(null!=loginUser){
+			com.ys.tools.pager.Query ysQuery = new com.ys.tools.pager.Query();
+			ysQuery.setPageSize(query.getPageSize());
+			ysQuery.setPageIndex(query.getInitPageIndex());
+			personnelApiVo.setShowDept(UcenterConstant.YES);
+			com.ys.tools.vo.ReturnVo<com.ys.tools.pager.PagerModel<PersonnelApiVo>> returnVo = personnelApi.getPersonnelForBook(personnelApiVo, ysQuery,loginUser.getNo());
+			ysPm = returnVo.getData();
+			pm.setRows(ysPm.getRows());
+			pm.setTotal(ysPm.getTotal());
+			Company company = new Company();
+			com.ys.tools.vo.ReturnVo<List<Company>> companyReturnVo = orgApi.getCompanyForBook(company);
+
+			Map<String, Company> companyMap = new HashMap<String, Company>();
+			if (CollectionUtils.isNotEmpty(companyReturnVo.getData())) {
+				for (Company c : companyReturnVo.getData()) {
+					companyMap.put(c.getId(), c);
+				}
+			}
+		}
+		return pm;
+	}
 }
