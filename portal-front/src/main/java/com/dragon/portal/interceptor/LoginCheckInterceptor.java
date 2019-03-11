@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * 登录拦截器
@@ -43,8 +44,11 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		HttpSession session = request.getSession();
+//		final Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+		logger.info(session);
 		//判断是否IDM登录
-		if("true".equals("")){
+		if("true".equals("true")){
 
 
 
