@@ -20,11 +20,56 @@ public class PropertiesConfig {
     @Value("${dic.developer.no}")
     private String developerNo;
 
+
+
+
+    //idm配置
+    @Value("${idm.appuser}")
+    private String appuser; //接入应用授权代码
+    @Value("${idm.appkey}")
+    private String appkey;
+    @Value("${idm.appinfo}")
+    private String appinfo;
+    @Value("${idm.url}")
+    private String idmUrl;
+
     public String getDeveloperNo() {
         return developerNo;
     }
 
     public void setDeveloperNo(String developerNo) {
         this.developerNo = developerNo;
+    }
+
+    public String getAppuser() {
+        return appuser;
+    }
+
+    public void setAppuser(String appuser) {
+        this.appuser = appuser;
+    }
+
+    public String getAppkey() {
+        return appkey;
+    }
+
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
+    }
+
+    public String getAppinfo() {
+        return appinfo;
+    }
+
+    public void setAppinfo(String appinfo) {
+        this.appinfo = appinfo;
+    }
+
+    public String getIdmUrl() {
+        return idmUrl;
+    }
+
+    public void setIdmUrl(String idmUrl) {
+        this.idmUrl = idmUrl;
     }
 }

@@ -30,7 +30,7 @@ public class AuthUtils {
 	protected String appuser;
 	@Value("${idm.appinfo}")
 	protected String appinfo;
-	@Value("${idm.appsecret}")
+	@Value("${idm.appkey}")
 	protected String appkey;
 
 

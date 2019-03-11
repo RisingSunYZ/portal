@@ -54,16 +54,17 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
 			return true;
 		}else{
-			UserLogin userLogin = (UserLogin)request.getSession().getAttribute(FormConstant.SYS_USER);
-			if (null != userLogin) {
-				return true;
-			} else {
-				logger.error("Request Intercept : " + request.getRequestURI());
-				ReturnVo vo = new ReturnVo(ReturnCode.FAIL, "您的登录会话已经失效，请重新登录");
-				response.setContentType("application/json;charset=UTF-8");
-				response.getWriter().write(JSONObject.toJSONString(vo));
-				return false;
-			}
+//			UserLogin userLogin = (UserLogin)request.getSession().getAttribute(FormConstant.SYS_USER);
+//			if (null != userLogin) {
+//				return true;
+//			} else {
+//				logger.error("Request Intercept : " + request.getRequestURI());
+//				ReturnVo vo = new ReturnVo(ReturnCode.FAIL, "您的登录会话已经失效，请重新登录");
+//				response.setContentType("application/json;charset=UTF-8");
+//				response.getWriter().write(JSONObject.toJSONString(vo));
+//				return false;
+//			}
+			return  false;
 		}
 	}
 
