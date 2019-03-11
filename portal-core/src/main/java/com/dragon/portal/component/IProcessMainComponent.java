@@ -52,7 +52,7 @@ public interface IProcessMainComponent {
 	/**
 	 * 撤回
 	 * @param userNo 撤销人工号
-	 * @param taskId 任务id
+	 * @param processInstId 任务id
 	 * @return
 	 */
 	public ReturnVo<String> revoke(String userNo, String processInstId, String message);
