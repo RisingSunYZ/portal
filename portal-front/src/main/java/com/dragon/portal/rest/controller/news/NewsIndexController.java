@@ -12,6 +12,7 @@ import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
+import com.seeyon.ctp.util.BeanUtils;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.user.Department;
@@ -72,35 +73,36 @@ public class NewsIndexController extends BaseController {
 	 * 获取新闻资讯列表
 	 */
 	@GetMapping("/ajaxListVo")
-	@ApiOperation("获取新闻资讯列表")
+	@ApiOperation("获取通知公告、banner、公司动态、行业动态列表")
 	@ApiImplicitParams({})
 	public Object ajaxListVo( String typeSn, NewsNotice notice, Query query, @ApiIgnore HttpServletRequest request,
 							  @ApiIgnore HttpServletResponse response) {
-		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "获取新闻资讯列表失败!");
+		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "获取失败!");
 		try {
 			UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
+            Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
+            sqlOrderBy.put("publish_time", ORDERBY.DESC);
+            query.setSqlOrderBy(sqlOrderBy);
+            NewsType newsType = newsTypeService.queryNewsTypeBySn(typeSn);
+            PagerModel<NewsNotice> newsNoticePage = new PagerModel<>();
+            // newsType不为空时
+            if (null != newsType){
+                notice.setTypeId(newsType.getId());
+            }
+
+            // 用户登录
 			if (null != userSessionInfo){
                 notice.setRangeDeftId(getRangeDeftId(userSessionInfo.getDepId()));
                 PagerModel<NewsNoticeVo> pm = new PagerModel<NewsNoticeVo>();
-                Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
-                sqlOrderBy.put("publish_time", ORDERBY.DESC);
-                query.setSqlOrderBy(sqlOrderBy);
 
-                NewsType newsType = newsTypeService.queryNewsTypeBySn(typeSn);
-                if (null != newsType){
-                    notice.setTypeId(newsType.getId());
-                    notice.setUserNo(userSessionInfo.getNo());
-                    if(CollectionUtils.isEmpty(notice.getRangeDeftId())){
-                        returnVo = new ReturnVo( ReturnCode.SUCCESS, "获取新闻资讯列表成功!",pm);
-                    }else{
-                        PagerModel<NewsNotice> pagerModelByQueryOfRange = newsNoticeService.getPagerModelByQueryOfRangeRedis(notice, query,userSessionInfo.getNo());
-                        returnVo = new ReturnVo( ReturnCode.SUCCESS, "获取新闻资讯列表成功!",pagerModelByQueryOfRange);
-                    }
+                notice.setUserNo(userSessionInfo.getNo());
+                if (CollectionUtils.isNotEmpty(notice.getRangeDeftId())){
+                    newsNoticePage = newsNoticeService.getPagerModelByQueryOfRangeRedis(notice, query,userSessionInfo.getNo());
                 }
-            } else {
-                //用户未登录
-                returnVo = new ReturnVo( ReturnCode.FAIL, "用户未登录！" );
+            } else {  //用户未登录
+                newsNoticePage = newsNoticeService.getPagerModelByQueryOfRange(notice, query,"");
             }
+            returnVo = new ReturnVo<>( ReturnCode.SUCCESS, "查询成功！" , newsNoticePage);
 
 		} catch (Exception e) {
 			e.printStackTrace();

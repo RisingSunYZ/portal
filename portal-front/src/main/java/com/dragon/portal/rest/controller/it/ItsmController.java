@@ -7,6 +7,7 @@ import com.dragon.portal.model.it.EventDTO;
 import com.dragon.portal.model.it.QuestionFileVo;
 import com.dragon.portal.model.it.QuestionKnowledge;
 import com.dragon.portal.model.it.QuestionVo;
+import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
@@ -58,6 +59,8 @@ public class ItsmController extends BaseController {
 
 	@Autowired
 	private PropertiesConfig propertiesConfig;
+	@Autowired
+	private CommonProperties commonProperties;
 
 	/**
 	 * 查询热门知识
@@ -70,7 +73,7 @@ public class ItsmController extends BaseController {
 		try {
 			PagerModel<QuestionKnowledge> pm = new PagerModel<QuestionKnowledge>();
 			List<QuestionKnowledge> list = new ArrayList<QuestionKnowledge>();
-			String itsmBasePath = propertiesConfig.getItsmPath();
+			String itsmBasePath = commonProperties.getItsmPath();
 			String	param  = "datagrid&sort=browseRecord&order=desc&rows=5";
 			String result = this.sendPost(itsmBasePath+"/apiKnowledgeController.do?", param);
 			JSONObject json = JSONObject.fromObject(result);
@@ -106,7 +109,7 @@ public class ItsmController extends BaseController {
 								   @ApiIgnore HttpServletResponse response){
 		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
 		try {
-			String itsmBasePath = propertiesConfig.getItsmPath();
+			String itsmBasePath = commonProperties.getItsmPath();
 			UserSessionInfo userInfo = getPersonInfo(request, response);
 			String no = userInfo.getNo();
 			String parentCategorys = "";
@@ -136,7 +139,7 @@ public class ItsmController extends BaseController {
 	public ReturnVo findTSType(@PathVariable(name = "classCode") String classCode){
 		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
 		try {
-			String itsmBasePath = propertiesConfig.getItsmPath();
+			String itsmBasePath = commonProperties.getItsmPath();
 			if(StringUtils.isNotBlank(classCode)){
 				String param = "findDicByGroupCode&typeGroupCode=" + classCode;
 				String parentCategorys = this.sendGet(itsmBasePath+"/apiFindTSTypeController.do", param);
@@ -160,7 +163,7 @@ public class ItsmController extends BaseController {
 	public ReturnVo save(EventDTO eventDTO ,@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
 		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "保存失败!");
 		try {
-			String itsmBasePath = propertiesConfig.getItsmPath();
+			String itsmBasePath = commonProperties.getItsmPath();
 			UserSessionInfo userInfo = getPersonInfo(request, response);
 			String no = userInfo.getNo();
 			//设置标题  标题=最后一级分类名称+发起人用户名
@@ -192,7 +195,7 @@ public class ItsmController extends BaseController {
 	public ReturnVo ajaxList(String statusName, Query query, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
 		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
 		try {
-			String itsmBasePath = propertiesConfig.getItsmPath();
+			String itsmBasePath = commonProperties.getItsmPath();
 			PagerModel<QuestionVo> pm = new PagerModel<QuestionVo>();
 			List<QuestionVo> rows = new ArrayList<QuestionVo>();
 
@@ -319,7 +322,7 @@ public class ItsmController extends BaseController {
 							   @ApiIgnore HttpServletResponse response) {
 		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "撤销失败!");
 		try {
-			String itsmBasePath = propertiesConfig.getItsmPath();
+			String itsmBasePath = commonProperties.getItsmPath();
 			UserSessionInfo userInfo = getPersonInfo(request, response);
 			//获取工号
 			String no = userInfo.getNo();

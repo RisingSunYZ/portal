@@ -1,8 +1,7 @@
 package com.dragon.portal.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
 
 /**
  * @Description:
@@ -11,34 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @Version: 1.1.0
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
+// FIXME 此类暂未使用，这里的配置放到了CommonProperties类中
 @Configuration
 public class PropertiesConfig {
-
-    /**
-     * 开发环境使用,默认账号
-     */
-    @Value("${dic.developer.no}")
-    private String developerNo;
-
-    /**
-     * ITSM路径
-     */
-    @Value( "${itsm.path}" )
-    private String itsmPath;
-
-    public String getItsmPath() {
-        return itsmPath;
-    }
-
-    public void setItsmPath(String itsmPath) {
-        this.itsmPath = itsmPath;
-    }
-
-    public String getDeveloperNo() {
-        return developerNo;
-    }
-
-    public void setDeveloperNo(String developerNo) {
-        this.developerNo = developerNo;
-    }
 }
