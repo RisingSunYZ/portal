@@ -43,8 +43,11 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		HttpSession session = request.getSession();
+//		final Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+		logger.info(session);
 		//判断是否IDM登录
-		if("true".equals("true")){//现都不拦截，后续修改
+		if("true".equals("true")){
 
 
 
