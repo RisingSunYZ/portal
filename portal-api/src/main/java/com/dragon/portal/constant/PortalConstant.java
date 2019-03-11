@@ -251,4 +251,9 @@ public class PortalConstant {
     /**用户验证结果*/
     public static final String CHECK_CODE_FLAG = "checkCodeFlag";
     //**********************************
+
+    /** 普通分割符 */
+    public static final String SEPARATOR = ",";
+    /** 序列基数 */
+    public static final Integer BASE_INDEX = 100;
 }
