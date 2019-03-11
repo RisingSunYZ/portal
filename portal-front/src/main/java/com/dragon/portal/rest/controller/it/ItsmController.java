@@ -7,9 +7,9 @@ import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
-import com.dragon.tools.vo.ReturnVo;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
+import com.dragon.tools.vo.ReturnVo;
 import com.ys.tools.common.JsonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -54,7 +54,7 @@ import java.util.Map;
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
 @RestController
-@RequestMapping("/portal/itsm")
+@RequestMapping("/rest/portal/itsm")
 @Api(value="IT知识库", description = "IT知识库", tags={"IT知识库 /portal/itsm"})
 public class ItsmController extends BaseController {
 	private static Logger logger = Logger.getLogger(ItsmController.class);
@@ -275,7 +275,7 @@ public class ItsmController extends BaseController {
 	 */
     @PostMapping(value = "/uploadFile",headers="content-type=multipart/form-data")
     @ApiOperation("ITSM 文件上传 - 适用于富文本编辑框")
-	public String uploadFile(@RequestParam(value = "questFiles", required = false) MultipartFile questFiles, String eventId, String sessionId, String filePath){
+	public String uploadFile(@RequestParam(value = "questFiles", required = false) MultipartFile questFiles, String eventId){
 		String itsmBasePath = commonProperties.getItsmPath();
 		String url = itsmBasePath +"/apiEventController.do?saveFiles";
 		String result = "";
@@ -619,8 +619,9 @@ public class ItsmController extends BaseController {
 	 * @param response
 	 * @return String
 	 */
-	@GetMapping("/knowledgeDetail")
+	@GetMapping("/knowledgeDetail/{id}")
 	@ApiOperation("知识详情")
+	@ApiImplicitParam(name = "id", value = "id", paramType = "query", required = true, dataType = "String")
 	public ReturnVo knowledgeDetail(HttpServletRequest request, HttpServletResponse response, String id) {
 		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		QuestionKnowledgeDetail knowledge = new QuestionKnowledgeDetail();

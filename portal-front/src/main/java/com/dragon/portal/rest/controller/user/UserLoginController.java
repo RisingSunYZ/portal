@@ -4,8 +4,8 @@ import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.customLabel.ApiJsonObject;
 import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.model.user.UserLogin;
-import com.dragon.portal.service.user.IUserLoginService;
 import com.dragon.portal.rest.controller.BaseController;
+import com.dragon.portal.service.user.IUserLoginService;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -29,8 +28,8 @@ import javax.servlet.http.HttpSession;
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
 @RestController
-@RequestMapping("/portal/user/userLogin")
-@Api(value="用户登录", description = "用户登录", tags={"用户登录 /portal/user/userLogin"})
+@RequestMapping("/rest/portal/user/userLogin")
+@Api(value="用户登录", description = "用户登录", tags={"用户登录 /rest/portal/user/userLogin"})
 public class UserLoginController extends BaseController{
 
     private static Logger logger = LoggerFactory.getLogger(UserLoginController.class);
