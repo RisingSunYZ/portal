@@ -32,6 +32,7 @@ import java.util.*;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
+// FIXME 暂未使用此类，如果不要可删除
 @RestController
 @RequestMapping("/rest/portal/workplat")
 @Api(value="门户首页", description = "门户首页", tags={"门户首页 /rest/portal/workplat"})
@@ -49,63 +50,5 @@ public class HomeController extends BaseController {
 	private ISystemMenuUserService systemMenuUserService;
 
 
-	/**
-	 * 门户首页-常用系统查询
-	 */
-	@GetMapping("/getSysData")
-	@ApiOperation("查询常用系统")
-	@ApiImplicitParams({})
-	public ReturnVo getSysData(@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
-		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "常用系统查询失败！" );
-		try {
-			// 常用系统查询
-			List<SystemMenu> allByNo = null;
-			List<ThirdSystem> thirdSystems = new ArrayList<ThirdSystem>();
-			List<SystemMenu> systemMenus = new ArrayList<SystemMenu>();
 
-			//登录用户信息
-			UserSessionInfo userSessionInfo = this.getPersonInfo(request, response);
-			String userNo = userSessionInfo.getNo();
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("userName", userNo);
-			String resultStr;
-
-			//FIXME IDM暂未弄，可以了下面注释部分不掉
-			resultStr =  "";
-//			resultStr = authUtils.getResponseFromServer("/rest/user/get_ssoapp_byuser", params);
-			JSONObject jsonObject = JSONObject.parseObject(resultStr);
-			if (jsonObject != null && jsonObject.getInteger("resultCode") != null
-					&& jsonObject.getInteger("resultCode") == 1) {
-				JSONArray wsSSOServices = jsonObject.getJSONArray("wsSSOServices");
-				Iterator<Object> it = wsSSOServices.iterator();
-				ThirdSystem thirdSystem;
-				while (it.hasNext()) {
-					JSONObject ob = (JSONObject) it.next();
-					thirdSystem = new ThirdSystem();
-					thirdSystem.setAppName(ob.getString("name"));
-					thirdSystem.setAppUrl(ob.getString("serviceId"));
-					thirdSystem.setIconImageSrc(ob.getString("serviceLogo"));
-
-					//过滤
-					if (!limit_display.contains(thirdSystem.getAppName())) {
-						thirdSystems.add(thirdSystem);
-						SystemMenu systemMenu = new SystemMenu();
-						systemMenu.setSysName(thirdSystem.getAppName());
-						systemMenu.setLinkUrl(thirdSystem.getAppUrl());
-						systemMenu.setSysIcon(thirdSystem.getIconImageSrc());
-						systemMenu.setSysSn(thirdSystem.getAppName());
-						systemMenus.add(systemMenu);
-					}
-				}
-			}
-			// 保存IDM常用系统
-			systemMenuService.compareMenu(userNo, systemMenus);
-			allByNo = systemMenuUserService.getAllByNo(userNo);
-			returnVo = new ReturnVo( ReturnCode.SUCCESS, "常用系统查询成功！", allByNo );
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("HomeController-getSysData:" + e);
-		}
-		return returnVo;
-	}
 }
