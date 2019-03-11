@@ -14,12 +14,10 @@ import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
-import com.ys.ucenter.model.company.Company;
 import com.ys.ucenter.model.user.Department;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import com.ys.yahu.enm.NewsNoticeEnum;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
@@ -29,13 +27,9 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -66,15 +60,13 @@ public class NewsIndexController extends BaseController {
 	@Autowired
 	private RedisService redisService;
 	@Autowired
-	private INewsPublishRangeService newsPublishRangeService;
-	@Autowired
 	private INewsNoticeVisitLogService newsNoticeVisitLogService;
 	@Autowired
 	private INewsFileService newsFileService;
 	@Autowired
-	private INewsNoticeProcessService newsNoticeProcessService;
-	@Autowired
 	private INewsSignRecordService newsSignRecordService;
+	@Autowired
+    private INewsCommentService newsCommentService;
 
 	/**
 	 * 获取新闻资讯列表
@@ -199,6 +191,86 @@ public class NewsIndexController extends BaseController {
         return returnVo;
     }
 
+    /**
+     * 通用获取员工风采 、集团视频
+     */
+    @GetMapping("/ajaxListMedia")
+    @ApiOperation("通用获取员工风采 、集团视频")
+    @ApiImplicitParams({})
+    public ReturnVo ajaxListMedia(String typeSn, NewsNotice notice, Query query) {
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
+        try {
+            Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
+            PagerModel<NewsNotice> pm = null;
+            sqlOrderBy.put("publish_time", ORDERBY.DESC);
+            query.setSqlOrderBy(sqlOrderBy);
+            NewsType newsType = newsTypeService.queryNewsTypeBySn(typeSn);
+
+            if (null != newsType){
+                notice.setTypeId(newsType.getId());
+                notice.setPublishStatus(1);
+                pm = this.newsNoticeService.getPagerModelByQueryOfImage(notice, query);
+            }
+            returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功!",pm);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("NewsIndexController-ajaxListMedia:"+e);
+        }
+        return returnVo;
+    }
+
+    /**
+     * 添加员工风采评论
+     */
+    @GetMapping("/addNewscomment")
+    @ApiOperation("添加员工风采评论")
+    @ApiImplicitParams({})
+    public ReturnVo addNewscomment (String id, String content, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response){
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "添加失败!");
+        if(StringUtils.isNotBlank(id)&&StringUtils.isNotBlank(content)){
+            UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
+            NewsComment newsComment = new NewsComment();
+            newsComment.setRefId(id);
+            newsComment.setContent(content);
+            newsComment.setType(0);
+            newsComment.setUserNo(userSessionInfo.getNo());
+            newsComment.setCreator(userSessionInfo.getName());
+            newsComment.setCreateTime(new Date());
+            newsComment.setCompanyId(userSessionInfo.getCompanyId());
+            newsComment.setCompanyName(userSessionInfo.getCompanyName());
+            newsComment.setDeptId(userSessionInfo.getDepId());
+            newsComment.setDeptName(userSessionInfo.getDepName());
+            try {
+                newsCommentService.insertNewsComment(newsComment);
+                returnVo = new ReturnVo( ReturnCode.SUCCESS, "添加成功!",newsComment);
+            } catch (Exception e) {
+                logger.error("NewsIndexController-addNewscomment:评论"+e);
+                e.printStackTrace();
+            }
+        }
+        return returnVo;
+    }
+
+    /**
+     * 新闻资讯-员工风采-我要秀  添加员工风采记录
+     */
+    @GetMapping("/addNewsStaffPresence")
+    @ApiOperation("新闻资讯-员工风采-我要秀  添加员工风采记录")
+    @ApiImplicitParams({})
+    public ReturnVo addNewsStaffPresence(NewsNotice notice){
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "员工风采保存失败!");
+        try {
+            NewsType newsType = newsTypeService.queryNewsTypeBySn("staff_presence");
+            notice.setTypeId(newsType.getId());
+            newsNoticeService.insertNotice(notice);
+            returnVo = new ReturnVo( ReturnCode.SUCCESS, "员工风采保存成功!", notice.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("NewsIndexController-addNewsStaffPresence:" + e);
+        }
+        return returnVo;
+    }
+
 
     /**
 	 * 获取详情页面数据
@@ -274,8 +346,13 @@ public class NewsIndexController extends BaseController {
 		return returnVo;
 	}
 
+    /**
+     * 行业动态详情
+     */
 	@GetMapping("/industryDetail")
-	public ReturnVo industryDetail(String id,HttpServletRequest request, HttpServletResponse response){
+    @ApiOperation("行业动态详情")
+    @ApiImplicitParams({})
+	public ReturnVo industryDetail(String id, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response){
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
 	    Map<String, Object> resultMap = new HashMap<>();
 		try {
