@@ -12,6 +12,11 @@ public class PortalConstant {
     public static final Integer DEL_FLAG = 0;
     public static final Integer NO_DELETE_FLAG = 1;
 
+    /** IT服务=1 */
+    public static final int IT_SERVICE_FLAG = 1;
+
+    /** HR服务=2 */
+    public static final int HR_SERVICE_FLAG = 2;
 
     /** 启用[上架]状态 */
     public static final int STATUS_ENABLED = 1;

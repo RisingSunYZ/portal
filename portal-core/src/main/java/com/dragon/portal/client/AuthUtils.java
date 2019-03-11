@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 
-//FIXME
+//FIXME IDM暂未弄
 public class AuthUtils {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss'Z'");
@@ -96,9 +96,4 @@ public class AuthUtils {
 		this.url = url;
 	}
 
-	
-
-	
-	
-	
 }

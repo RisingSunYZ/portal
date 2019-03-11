@@ -9,6 +9,7 @@ import com.dragon.portal.service.cstm.ISystemMenuTypeService;
 import com.dragon.portal.service.cstm.ISystemMenuUserService;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
+import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import com.google.gson.reflect.TypeToken;
 import com.ys.tools.common.JsonUtils;
@@ -17,10 +18,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
@@ -29,10 +27,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * 常用系统Controller
+ */
 @RestController
 @RequestMapping("/rest/portal/workplat/system")
-@Api(value="门户首页（工作台）-系统菜单", description = "门户首页（工作台）-系统菜单", tags={"门户首页（工作台）-系统菜单 /rest/portal/workplat/system"})
+@Api(value="常用系统", description = "常用系统", tags={"常用系统菜单 /rest/portal/workplat/system"})
 public class SystemMenuController extends BaseController {
 
 	private static Logger logger = Logger.getLogger(SystemMenuController.class);
@@ -42,58 +42,79 @@ public class SystemMenuController extends BaseController {
 	@Autowired
 	private ISystemMenuUserService systemMenuUserService;
 
-	@GetMapping("/getSystemByetId")
-	@ApiOperation("系统菜单查询")
+	/**
+	 * 根据Id查询系统菜单
+	 */
+	@GetMapping("/getSystemById/{id}")
+	@ApiOperation("根据Id查询系统菜单")
 	@ApiImplicitParams({})
-	public List<SystemMenuType> getSystemById(String id){
-
-		List<SystemMenuType> classify = null;
+	public ReturnVo getSystemById(@PathVariable(name = "id") String id){
+		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "常用系统查询失败！" );
 		try {
-			classify = systemMenuTypeService.getClassify(1, id);
+			List<SystemMenuType> classify = systemMenuTypeService.getClassify(1, id);
+			returnVo = new ReturnVo<>( ReturnCode.SUCCESS, "常用系统查询成功！" , classify);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("SystemMenuController-getSystemById:",e);
+		}
+		return returnVo;
+	}
+
+	/**
+	 * 查询用户系统菜单
+	 */
+	@GetMapping("/getUserSystem")
+	@ApiOperation("查询用户系统菜单")
+	@ApiImplicitParams({})
+	public ReturnVo getUserSystem(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response){
+		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询用户系统菜单失败！" );
+		try {
+			UserSessionInfo loginUser = this.getPersonInfo(request, response);
+			if (null != loginUser){
+				String userNo = loginUser.getNo();
+				List<SystemMenu> userSystemMenuList = systemMenuUserService.getAllByNo( userNo );
+				returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询用户系统菜单成功！", userSystemMenuList );
+			}else {
+				// 用户未登录
+				returnVo = new ReturnVo( ReturnCode.FAIL, "用户未登录！" );
+			}
+		} catch (Exception e) {
+			logger.error("SystemMenuController-getUserSystem:",e);
 			e.printStackTrace();
 		}
-		return classify;
+
+		return returnVo;
 	}
 
-	@GetMapping("/userSys")
-	@ApiOperation("用户系统菜单查询")
+	/**
+	 * 保存系统菜单
+	 */
+	@PostMapping("/saveSystemMenu")
+	@ApiOperation("保存系统菜单")
 	@ApiImplicitParams({})
-	public String userSys(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response){
-		UserSessionInfo loginUser = this.getPersonInfo(request, response);
-		List<SystemMenu> allByNo = null;
-		if(loginUser!=null){
-			try {
-				allByNo = systemMenuUserService.getAllByNo(loginUser.getNo());
-			} catch (Exception e) {
-				logger.error("SystemMenuController--userSys",e);
-				e.printStackTrace();
-			}
-		}
-		return JsonUtils.toJson(allByNo);
-	}
-
-	@PostMapping("/save")
-	@ApiOperation("系统菜单保存")
-	@ApiImplicitParams({})
-	public ReturnVo<String> save(@ApiIgnore HttpServletRequest request,@ApiIgnore  HttpServletResponse response, String systemMenuUserJson){
-		UserSessionInfo loginUser = this.getPersonInfo(request, response);
-		ReturnVo<String> returnVo = new ReturnVo<String>( PortalConstant.ERROR, "常用系统保存失败");
+	public ReturnVo saveSystemMenu(String systemMenuUserJson, @ApiIgnore HttpServletRequest request, @ApiIgnore  HttpServletResponse response){
+		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "保存常用系统失败!");
 		try {
-			List<SystemMenuUser> list = JsonUtils.getGson().fromJson(systemMenuUserJson,
-					new TypeToken<ArrayList<SystemMenuUser>>(){}.getType());
-			for(SystemMenuUser temp : list){
-				temp.setUserNo(loginUser.getNo());
-				temp.setStatus(PortalConstant.STATUS_ENABLED);
+			UserSessionInfo loginUser = this.getPersonInfo(request, response);
+			if (null != loginUser){
+				String userNo = loginUser.getNo();
+
+				List<SystemMenuUser> list = JsonUtils.getGson().fromJson(systemMenuUserJson, new TypeToken<ArrayList<SystemMenuUser>>(){}.getType());
+				for(SystemMenuUser temp : list){
+					temp.setUserNo(userNo);
+					temp.setStatus(PortalConstant.STATUS_ENABLED);
+				}
+
+				//保存
+				systemMenuUserService.insertAfterDelByNo(list, userNo);
+				returnVo = new ReturnVo( ReturnCode.SUCCESS, "保存常用系统成功！" );
+			} else {
+				// 用户未登录
+				returnVo = new ReturnVo( ReturnCode.FAIL, "用户未登录！" );
 			}
-			//保存
-			systemMenuUserService.insertAfterDelByNo(list, loginUser.getNo());
-			returnVo.setMsg("常用系统保存成功");
-			returnVo.setCode(PortalConstant.SUCCESS);
 		}catch (Exception e){
 			e.printStackTrace();
-			logger.error("SystemMenuController-save保存常用系统异常",e);
+			logger.error("SystemMenuController-saveSystemMenu:",e);
 		}
 		return returnVo;
 	}

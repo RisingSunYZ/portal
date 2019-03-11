@@ -137,7 +137,6 @@ public class NewsFileServiceImpl implements INewsFileService {
 
 	@Override
 	public void updateSortNoById(String id, Integer num) throws Exception {
-		// TODO Auto-generated method stub
 		if (StringUtils.isNotBlank(id) && null != num){
 			Map<String,Object> params = new HashMap<String, Object>();
 			params.put("id", id);
