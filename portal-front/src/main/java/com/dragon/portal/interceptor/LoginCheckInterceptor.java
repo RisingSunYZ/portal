@@ -1,8 +1,6 @@
 package com.dragon.portal.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dragon.portal.constant.FormConstant;
-import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.service.redis.RedisService;
@@ -20,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * 登录拦截器
