@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.cstm.IBizSysMenuDao" >
+    <resultMap id="BizSysMenuMap" type="com.dragon.portal.model.cstm.BizSysMenu" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+
+        <result column="type" property="type" jdbcType="INTEGER" />
+
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        
+        <result column="sn" property="sn" jdbcType="VARCHAR" />
+        
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        
+        <result column="icon" property="icon" jdbcType="VARCHAR" />
+        
+        <result column="pid" property="pid" jdbcType="VARCHAR" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        type,
+        name,
+        sn,
+        url,
+        icon,
+        pid,
+        sort_no,
+        status,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="type!=null and type!=''">
+        and type = #{type,jdbcType=INTEGER}
+        </if>
+        <if test="name!=null and name!=''">
+        and name = #{name,jdbcType=VARCHAR}
+        </if>
+        <if test="sn!=null and sn!=''">
+        and sn = #{sn,jdbcType=VARCHAR}
+        </if>
+        <if test="url!=null and url!=''">
+        and url = #{url,jdbcType=VARCHAR}
+        </if>
+        <if test="icon!=null and icon!=''">
+        and icon = #{icon,jdbcType=VARCHAR}
+        </if>
+        <if test="pid!=null and pid!=''">
+        and pid = #{pid,jdbcType=VARCHAR}
+        </if>
+        <if test="sortNo!=null">
+        and sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getBizSysMenuById" resultMap="BizSysMenuMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_biz_sys_menu
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getIdBySn" resultType="java.lang.String" parameterType="java.lang.String" >
+        select 
+        id
+        from tbl_pt_biz_sys_menu
+        where sn = #{sn,jdbcType=VARCHAR}
+        and status = 1
+        and del_flag = 1
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.cstm.BizSysMenu" resultMap="BizSysMenuMap">
+        SELECT p.*,(SELECT COUNT(*) FROM tbl_pt_biz_sys_menu c WHERE c.pid=p.id)childrenNumber from tbl_pt_biz_sys_menu p where 1=1
+        <include refid="where" />
+        order by p.sort_no ASC
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.cstm.BizSysMenu" resultMap="BizSysMenuMap">
+        select * from tbl_pt_biz_sys_menu where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.cstm.BizSysMenu" resultType="int">
+        select count(1) from tbl_pt_biz_sys_menu where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertBizSysMenu" parameterType="com.dragon.portal.model.cstm.BizSysMenu"  >
+        insert into tbl_pt_biz_sys_menu (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{type,jdbcType=INTEGER},
+        #{name,jdbcType=VARCHAR},
+        #{sn,jdbcType=VARCHAR},
+        #{url,jdbcType=VARCHAR},
+        #{icon,jdbcType=VARCHAR},
+        #{pid,jdbcType=VARCHAR},
+        #{sortNo,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delBizSysMenuById" parameterType="java.lang.String" >
+        delete from tbl_pt_biz_sys_menu
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delBizSysMenuByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_biz_sys_menu
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateBizSysMenu" parameterType="com.dragon.portal.model.cstm.BizSysMenu" >
+        update tbl_pt_biz_sys_menu
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null" >
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sn != null" >
+                sn = #{sn,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null" >
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="icon != null" >
+                icon = #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null" >
+                pid = #{pid,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateBizSysMenuByIds" parameterType="java.util.Map">
+        update tbl_pt_biz_sys_menu
+        <set>
+            <if test="bizSysMenu.id != null" >
+                id = #{bizSysMenu.id,jdbcType=VARCHAR},
+            </if>
+            <if test="bizSysMenu.name != null" >
+                name = #{bizSysMenu.name,jdbcType=VARCHAR},
+            </if>
+            <if test="bizSysMenu.sn != null" >
+                sn = #{bizSysMenu.sn,jdbcType=VARCHAR},
+            </if>
+            <if test="bizSysMenu.url != null" >
+                url = #{bizSysMenu.url,jdbcType=VARCHAR},
+            </if>
+            <if test="bizSysMenu.icon != null" >
+                icon = #{bizSysMenu.icon,jdbcType=VARCHAR},
+            </if>
+            <if test="bizSysMenu.pid != null" >
+                pid = #{bizSysMenu.pid,jdbcType=VARCHAR},
+            </if>
+            <if test="bizSysMenu.sortNo != null" >
+                sort_no = #{bizSysMenu.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="bizSysMenu.status != null" >
+                status = #{bizSysMenu.status,jdbcType=INTEGER},
+            </if>
+            <if test="bizSysMenu.createTime != null" >
+                create_time = #{bizSysMenu.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bizSysMenu.creator != null" >
+                creator = #{bizSysMenu.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="bizSysMenu.updateTime != null" >
+                update_time = #{bizSysMenu.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bizSysMenu.updator != null" >
+                updator = #{bizSysMenu.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="bizSysMenu.delFlag != null" >
+                del_flag = #{bizSysMenu.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>

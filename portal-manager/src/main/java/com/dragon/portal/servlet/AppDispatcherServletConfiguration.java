@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 /**
  * @ClassName AppDispatcherServletConfiguration
- * @Description TODO
+ * @Description
  * @Author bruce.liu
  * @Date 2018/9/19/019 21:40
  * @Version 1.0
