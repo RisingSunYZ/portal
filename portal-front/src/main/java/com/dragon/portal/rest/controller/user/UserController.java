@@ -1,12 +1,14 @@
 package com.dragon.portal.rest.controller.user;
 
-import com.dragon.portal.service.idm.IIdmService;
-import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
+import com.dragon.portal.service.idm.IIdmService;
+import com.dragon.portal.service.user.IUserLoginService;
+import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import com.ecnice.privilege.vo.idm.IdmReturnEntity;
+import com.ecnice.privilege.vo.idm.IdmUser;
 import com.ys.tools.pager.PagerModel;
 import com.ys.tools.pager.Query;
 import com.ys.ucenter.api.IOrgApi;
@@ -22,16 +24,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,40 +48,40 @@ public class UserController extends BaseController {
     IOrgApi orgApi;
     @Autowired
     IIdmService idmService;
+    @Autowired
+    IUserLoginService userLoginService;
 
-    @ApiOperation("用户登录测试")
+    @Autowired
+    Environment environment;
+
+    @ApiOperation("用户IDM登录回调")
     @GetMapping("/userLogin")
     public void userLogin(HttpServletRequest request, HttpServletResponse response){
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询数据异常");
-
         try {
-            Enumeration headerNames = request.getHeaderNames();
-
-            headerNames.toString();
-
-            Enumeration e =  request.getHeaders("SIAMTGT");
-            String e2 =  request.getHeader("SIAMTGT");
-            request.getHeader("SIAMTGT");
-
-
-            Map<String, String> map = new HashMap<String, String>();
-            while (headerNames.hasMoreElements()) {
-                String key = (String) headerNames.nextElement();
-                String value = request.getHeader(key);
-                map.put(key, value);
-            }
             Cookie siamtgt = getCookieByName(request, "SIAMTGT");
-            logger.info(siamtgt);
-
-
-            logger.info(map.get("SIAMTGT"));
-            IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamtgt.getValue());
-
-            logger.info(idmReturnEntity.getUser());
-
-            //response.getWriter().write("<script>top.location.href='/portal/auth'</script>"); // 授权认证失败
-            response.getWriter().write("<script>top.location.href='/portal/main/workplace'</script>"); // 授权认证成功，跳转到主页
+            if(null != siamtgt){
+                IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamtgt.getValue());
+                if(null != idmReturnEntity){
+                    IdmUser user = idmReturnEntity.getUser();
+                    if(null != user){
+                        //讲用户信息存储session
+                        ReturnVo returnVo = userLoginService.loginCallback(idmReturnEntity.getUser().getUid(), request.getSession());
+                        if(ReturnCode.SUCCESS.equals(returnVo.getCode())){
+                            response.getWriter().write("<script>top.location.href='"+environment.getProperty("idm.callback.success.url")+"'</script>"); // 授权认证成功，跳转到主页
+                            return ;
+                        }else{
+                            logger.error("UserController-userLogin:用户IDM登录用户信息存储Session失败");
+                        }
+                    }
+                }else{
+                    logger.error("UserController-userLogin:用户IDM登录判断登录状态失败");
+                }
+            }else{
+                logger.error("UserController-userLogin:用户IDM登录回调获取Cookie失败");
+            }
+            response.getWriter().write("<script>top.location.href='"+environment.getProperty("idm.callback.fail.url")+"'</script>"); // 授权认证失败
         } catch (Exception e) {
+            logger.error("UserController-userLogin:用户IDM登录回调失败"+e);
             e.printStackTrace();
         }
     }
