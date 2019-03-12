@@ -33,6 +33,20 @@ public class PropertiesConfig {
     @Value("${idm.url}")
     private String idmUrl;
 
+    /**
+     * ITSM路径
+     */
+    @Value( "${itsm.path}" )
+    private String itsmPath;
+
+    public String getItsmPath() {
+        return itsmPath;
+    }
+
+    public void setItsmPath(String itsmPath) {
+        this.itsmPath = itsmPath;
+    }
+
     public String getDeveloperNo() {
         return developerNo;
     }

@@ -5,9 +5,9 @@ import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import com.ecnice.privilege.api.privilege.IPrivilegeApi;
+import com.ecnice.privilege.constant.PrivilegeConstant;
 import com.ys.mis.api.IMisApi;
 import com.ys.mis.constant.MisConstant;
-import com.ys.mis.enm.NoticeTypeEnum;
 import com.ys.mis.model.notice.Notification;
 import com.ys.tools.pager.PagerModel;
 import com.ys.tools.pager.Query;
@@ -15,13 +15,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -39,8 +38,8 @@ import java.util.Map;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
-@Controller
-@RequestMapping("/portal/msg")
+@RestController
+@RequestMapping("/rest/portal/msg")
 @Api(value="消息通知", description = "消息通知", tags={"消息通知 /portal/msg"})
 public class MsgNotifyController extends BaseController {
 	
@@ -63,53 +62,58 @@ public class MsgNotifyController extends BaseController {
 		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		try {
 			com.ecnice.privilege.vo.ReturnVo rVo = privilegeApi.getAllSystem(null);
-			if (null != rVo.getDatas()) {
+			if (null != rVo.getDatas()&&PrivilegeConstant.SUCCESS_CODE==rVo.getStatus()) {
 				returnVo.setData(rVo.getDatas());
 				returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
-			}
+			}else{
+			    logger.info(rVo.getMessage());
+			    returnVo.setMsg(rVo.getMessage());
+            }
 		}catch (Exception e){
 			logger.error("MsgNotifyController-getAllSystem:",e);
 		}
 		return returnVo;
 	}
-	/**
-	 * 消息类型查询
-	 * @param notification
-	 */
-	@GetMapping("/getNoticeType")
-	@ApiOperation("消息类型查询")
-	public ReturnVo<List<Notification>> getNoticeType(Notification notification, HttpServletRequest request, HttpServletResponse response){
-		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
-		try {
-			com.ys.tools.vo.ReturnVo<List<Notification>> system = misApi.getNoticeType(notification);
-			if(null !=system.getData()){
-				List<Notification> noticeTypes = system.getData();
-				for(Notification noticeType :noticeTypes){
-					if(noticeType.getNoticeType()==NoticeTypeEnum.FLOW_NOTIFY.getType()){
-						noticeType.setMessage(NoticeTypeEnum.FLOW_NOTIFY.getName());
-					}else if(noticeType.getNoticeType()==NoticeTypeEnum.FLOW_MESSAGE.getType()){
-						noticeType.setMessage(NoticeTypeEnum.FLOW_MESSAGE.getName());
-					}else if(noticeType.getNoticeType()==NoticeTypeEnum.SYSTEM_NOTIFY.getType()){
-						noticeType.setMessage(NoticeTypeEnum.SYSTEM_NOTIFY.getName());
-					}else{
-						noticeType.setMessage(NoticeTypeEnum.SYSTEM_TODO.getName());
-					}
-				}
-				returnVo.setData(noticeTypes);
-			}
-		}catch (Exception e){
-			logger.error("MsgNotifyController-getNoticeType:",e);
-		}
-		return returnVo;
-	}
+//	/**
+//	 * 消息类型查询
+//	 * @param notification
+//	 */
+//	@GetMapping("/getNoticeType")
+//	@ApiOperation("消息类型查询")
+//	public ReturnVo<List<Notification>> getNoticeType(@ApiIgnore Notification notification, HttpServletRequest request, HttpServletResponse response){
+//		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
+//		try {
+//			com.ys.tools.vo.ReturnVo<List<Notification>> system = misApi.getNoticeType(notification);
+//			if(null !=system.getData()){
+//				List<Notification> noticeTypes = system.getData();
+//				for(Notification noticeType :noticeTypes){
+//					if(noticeType.getNoticeType()==NoticeTypeEnum.FLOW_NOTIFY.getType()){
+//						noticeType.setMessage(NoticeTypeEnum.FLOW_NOTIFY.getName());
+//					}else if(noticeType.getNoticeType()==NoticeTypeEnum.FLOW_MESSAGE.getType()){
+//						noticeType.setMessage(NoticeTypeEnum.FLOW_MESSAGE.getName());
+//					}else if(noticeType.getNoticeType()==NoticeTypeEnum.SYSTEM_NOTIFY.getType()){
+//						noticeType.setMessage(NoticeTypeEnum.SYSTEM_NOTIFY.getName());
+//					}else{
+//						noticeType.setMessage(NoticeTypeEnum.SYSTEM_TODO.getName());
+//					}
+//				}
+//				returnVo.setData(noticeTypes);
+//			}
+//		}catch (Exception e){
+//			logger.error("MsgNotifyController-getNoticeType:",e);
+//		}
+//		return returnVo;
+//	}
 
 
 	@GetMapping("/ajaxlist")
 	@ApiOperation("获取消息列表")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name="messageType",value = "消息类型",dataType = "String",paramType = "query",required = true),
+			@ApiImplicitParam(name="pageIndex",value = "页码",dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name="pageSize",value = "条数",dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name="messageType",value = "消息类型",dataType = "String",paramType = "query"),
 	})
-	public ReturnVo<PagerModel<Notification>> ajaxlist(Query query, @Ignore Notification notification, HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo<PagerModel<Notification>> ajaxlist(@ApiIgnore Query query, @ApiIgnore Notification notification,HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<PagerModel<Notification>> returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		String[] messageTypes = request.getParameterValues("messageType");
 		String messageType = StringUtils.join(messageTypes,",");
@@ -138,7 +142,7 @@ public class MsgNotifyController extends BaseController {
 	 */
 	@GetMapping("/getMsgCount")
 	@ApiOperation("获取消息数量")
-	public ReturnVo<Map<String,Integer>> getMsgCount(HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo getMsgCount(HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<Map<String, Integer>> returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		try {
 			UserSessionInfo user = getUserSessionInfo(request, response);

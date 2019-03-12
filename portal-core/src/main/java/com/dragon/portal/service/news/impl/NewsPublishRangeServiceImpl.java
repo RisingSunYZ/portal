@@ -121,7 +121,6 @@ public class NewsPublishRangeServiceImpl implements INewsPublishRangeService {
 
 	@Override
 	public void delNewsPublishRangeByNId(String id) throws Exception {
-		// TODO Auto-generated method stub
 		if(StringUtils.isNotBlank(id)){
 			this.newsPublishRangeDao.delNewsPublishRangeByNId(id);
 		}

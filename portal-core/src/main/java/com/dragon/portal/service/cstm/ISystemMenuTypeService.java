@@ -116,9 +116,11 @@ public interface ISystemMenuTypeService {
 	 * @throws Exception
 	 */
 	public List<SystemMenuType> getFirstClassify() throws Exception;
+
 	/**
 	 * 查询二级三级分类菜单
-	 * @param systemMenuType
+	 * @param level
+	 * @param id
 	 * @return
 	 * @throws Exception
 	 */

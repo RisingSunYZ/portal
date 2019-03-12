@@ -75,11 +75,11 @@ public interface IMeetingDao {
 	
 	/**
 	 * 通过id批量删除会议管理Meeting
-	 * @param ids 如："'1','2','3','4'..."
+	 * @param map 如："'1','2','3','4'..."
 	 * @throws Exception
 	 * @Description:
 	 */
-	public void delMeetingByIds(String ids) throws Exception;
+	public void delMeetingByIds(Map<String,Object> map) throws Exception;
 	
 	/**
 	 * 通过id修改会议管理Meeting
