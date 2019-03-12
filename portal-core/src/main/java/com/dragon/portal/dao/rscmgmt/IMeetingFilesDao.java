@@ -69,11 +69,11 @@ public interface IMeetingFilesDao {
 	
 	/**
 	 * 通过id批量删除会议附件MeetingFiles
-	 * @param ids 如："'1','2','3','4'..."
+	 * @param params 如："'1','2','3','4'..."
 	 * @throws Exception
 	 * @Description:
 	 */
-	public void delMeetingFilesByIds(String ids) throws Exception;
+	public void delMeetingFilesByIds(Map<String,Object> params) throws Exception;
 	
 	/**
 	 * 通过id修改会议附件MeetingFiles
@@ -85,12 +85,11 @@ public interface IMeetingFilesDao {
 
 	/**
 	 * 通过ids批量修改会议附件MeetingFiles
-	 * @param ids 如："'1','2','3','4'..."
-	 * @param meetingFiles
+	 * @param map
 	 * @throws Exception
 	 * @Description:
 	 */
-	public void updateMeetingFilesByIds(String ids,MeetingFiles meetingFiles) throws Exception;
+	public void updateMeetingFilesByIds(Map<String,Object> map) throws Exception;
 	
 	/**
 	 * 通过meeting_id得到会议附件MeetingFiles
@@ -103,7 +102,7 @@ public interface IMeetingFilesDao {
 	
 	/**
 	 * 批量添加会议附件MeetingFiles
-	 * @param personnels
+	 * @param meetingFiles
 	 * @throws Exception
 	 * @Description:
 	 */

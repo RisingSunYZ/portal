@@ -13,23 +13,29 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 
-//FIXME
+@Configuration
 public class AuthUtils {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss'Z'");
 
+	@Value("${idm.appuser}")
 	protected String appuser;
+	@Value("${idm.appinfo}")
+	protected String appinfo;
+	@Value("${idm.appkey}")
 	protected String appkey;
-	protected String appinfo = "app-demo";
-	protected String url;
+
 
 	public String getResponseFromServer(String url, Map<String, Object> params) throws Exception {
-		HttpPost httpPost = new HttpPost(this.url+url);
+		HttpPost httpPost = new HttpPost(url);
 		createSignHeader(httpPost, params);
 		JSONObject object = JSONObject.fromObject(params);
 		httpPost.setEntity(new ByteArrayEntity(object.toString().getBytes(), ContentType.APPLICATION_JSON));
@@ -88,17 +94,12 @@ public class AuthUtils {
 		this.appkey = appkey;
 	}
 
-	public String getUrl() {
-		return url;
+
+	public String getAppinfo() {
+		return appinfo;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setAppinfo(String appinfo) {
+		this.appinfo = appinfo;
 	}
-
-	
-
-	
-	
-	
 }

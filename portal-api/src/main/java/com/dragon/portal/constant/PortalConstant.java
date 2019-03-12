@@ -12,6 +12,11 @@ public class PortalConstant {
     public static final Integer DEL_FLAG = 0;
     public static final Integer NO_DELETE_FLAG = 1;
 
+    /** IT服务=1 */
+    public static final int IT_SERVICE_FLAG = 1;
+
+    /** HR服务=2 */
+    public static final int HR_SERVICE_FLAG = 2;
 
     /** 启用[上架]状态 */
     public static final int STATUS_ENABLED = 1;
@@ -240,4 +245,20 @@ public class PortalConstant {
     public static final String[] WF_FLOW_LEVEL_FIELDS = {"statusStr", "flowlevelCode", "startDeptName", "oneDeptName", "twoDeptName", "threeDeptName", "deptHeaderName", "areaOneName", "areaDeputyName", "areaHeaderName", "centerdeputyHeaderName", "centerHeaderName", "companyHeaderName", "groupLeaderName", "startTime", "endTime"};
     public static final String[] WF_FLOW_LEVEL_FIELDNAMES = {"状态", "序号", "单位名称", "一级部门", "上级部门", "提交部门", "部门负责人", "区域公司一级部门负责人", "区域副总", "区域总经理", "中心副总", "中心总经理", "单位总经理", "集团分管领导", "创建时间", "更新时间"};
 
+    /**用户账号*/
+    public static final String USER_UID = "uid";
+    /**用户*/
+    public static final String SYS_USER = "sys_user";
+    /**临时用户账号*/
+    public static final String TEMPORARY_USER_UID = "temporaryUserUid";
+    /**用户验证码*/
+    public static final String VERIFICATION_CODE = "verificationCode";
+    /**用户验证结果*/
+    public static final String CHECK_CODE_FLAG = "checkCodeFlag";
+    //**********************************
+
+    /** 普通分割符 */
+    public static final String SEPARATOR = ",";
+    /** 序列基数 */
+    public static final Integer BASE_INDEX = 100;
 }

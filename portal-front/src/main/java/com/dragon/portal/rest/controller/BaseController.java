@@ -42,8 +42,7 @@ public class BaseController {
         return userSessionInfo;
     }
 
-    //FIXME
-    // 用户登录接口暂未完成，完成后需用注释部分
+    //FIXME 用户登录接口暂未完成，完成后需用注释部分
     /**
      * @Titile:session中取用户登录信息
      * @param request
@@ -75,8 +74,7 @@ public class BaseController {
 //        return userInfo;
     }
 
-    //FIXME
-    // 用户登录接口暂未完成，完成后需用注释部分
+    //FIXME 用户登录接口暂未完成，完成后需用注释部分
     /**
      * 从用户会话信息中获取登录用户的信息
      * @param request
@@ -151,8 +149,7 @@ public class BaseController {
 //        return u;
     }
 
-    //FIXME
-    // 用户登录接口暂未完成，完成后需用注释部分
+    //FIXME 用户登录接口暂未完成，完成后需用注释部分
     /**
      * 用户自动登录
      * @param request
@@ -173,8 +170,7 @@ public class BaseController {
 //        setPersonInfo(request, response, u);
     }
 
-    //FIXME
-    // 用户登录接口暂未完成，完成后需用注释部分
+    //FIXME 用户登录接口暂未完成，完成后需用注释部分
     /**
      * 设置登录信息到Cookie中
      * @param u
@@ -191,8 +187,7 @@ public class BaseController {
 //        Cookies.crossDomainPut(response, PortalConstant.COOKIE_USER_SESSION_ID, usid, PortalConstant.COOKIE_TITLE_MONTH);
     }
 
-    //FIXME
-    // 用户登录接口暂未完成，完成后需用注释部分
+    //FIXME 用户登录接口暂未完成，完成后需用注释部分
     /**
      * 把用户登录信息保存到会话中
      * @return

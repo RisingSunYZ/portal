@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -68,11 +69,11 @@ public interface IMeetingSummaryDao {
 	
 	/**
 	 * 通过id批量删除会议纪要MeetingSummary
-	 * @param ids 如："'1','2','3','4'..."
+	 * @param params
 	 * @throws Exception
 	 * @Description:
 	 */
-	public void delMeetingSummaryByIds(String ids) throws Exception;
+	public void delMeetingSummaryByIds(Map<String,Object> params) throws Exception;
 	
 	/**
 	 * 通过id修改会议纪要MeetingSummary

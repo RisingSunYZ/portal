@@ -83,6 +83,12 @@ public class CommonProperties {
     @Value("${itsm.path}")
     private String itsmPath;
 
+    /**
+     * 开发环境使用,默认账号
+     */
+    @Value("${dic.developer.no}")
+    private String developerNo;
+
 
     @Value("${finance.email.sn}")
     private String financeEmailSn;
@@ -152,6 +158,10 @@ public class CommonProperties {
 
     public String getItsmPath() {
         return itsmPath;
+    }
+
+    public String getDeveloperNo() {
+        return developerNo;
     }
 
     public String getFinanceEmailFromEmail() { return financeEmailFromEmail; }

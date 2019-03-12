@@ -1,10 +1,12 @@
 package com.dragon.portal.rest.controller.user;
 
+import com.dragon.portal.service.idm.IIdmService;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
+import com.ecnice.privilege.vo.idm.IdmReturnEntity;
 import com.ys.tools.pager.PagerModel;
 import com.ys.tools.pager.Query;
 import com.ys.ucenter.api.IOrgApi;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,6 +45,8 @@ public class UserController extends BaseController {
     IPersonnelApi personnelApi;
     @Autowired
     IOrgApi orgApi;
+    @Autowired
+    IIdmService idmService;
 
     @ApiOperation("用户登录测试")
     @GetMapping("/userLogin")
@@ -49,13 +54,73 @@ public class UserController extends BaseController {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询数据异常");
 
         try {
+            Enumeration headerNames = request.getHeaderNames();
+
+            headerNames.toString();
+
+            Enumeration e =  request.getHeaders("SIAMTGT");
+            String e2 =  request.getHeader("SIAMTGT");
+            request.getHeader("SIAMTGT");
 
 
-            response.getWriter().write("<script>top.location.href='http://www.baidu.com'</script>");
-        } catch (IOException e) {
+            Map<String, String> map = new HashMap<String, String>();
+            while (headerNames.hasMoreElements()) {
+                String key = (String) headerNames.nextElement();
+                String value = request.getHeader(key);
+                map.put(key, value);
+            }
+            Cookie siamtgt = getCookieByName(request, "SIAMTGT");
+            logger.info(siamtgt);
+
+
+            logger.info(map.get("SIAMTGT"));
+            IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamtgt.getValue());
+
+            logger.info(idmReturnEntity.getUser());
+
+            //response.getWriter().write("<script>top.location.href='/portal/auth'</script>"); // 授权认证失败
+            response.getWriter().write("<script>top.location.href='/portal/main/workplace'</script>"); // 授权认证成功，跳转到主页
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 根据名字获取cookie
+     *
+     * @param request
+     * @param name
+     *            cookie名字
+     * @return
+     */
+    public static Cookie getCookieByName(HttpServletRequest request, String name) {
+        Map<String, Cookie> cookieMap = ReadCookieMap(request);
+        if (cookieMap.containsKey(name)) {
+            Cookie cookie = (Cookie) cookieMap.get(name);
+            return cookie;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 将cookie封装到Map里面
+     *
+     * @param request
+     * @return
+     */
+    private static Map<String, Cookie> ReadCookieMap(HttpServletRequest request) {
+        Map<String, Cookie> cookieMap = new HashMap<String, Cookie>();
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies) {
+            for (Cookie cookie : cookies) {
+                cookieMap.put(cookie.getName(), cookie);
+            }
+        }
+        return cookieMap;
+    }
+
+
 
     /**
      * @param request
