@@ -3,14 +3,15 @@ package com.dragon.portal.service.fnc.impl;
 import com.dragon.portal.dao.fnc.IMaterialFileTypeDao;
 import com.dragon.portal.model.fnc.MaterialFileType;
 import com.dragon.portal.service.fnc.IMaterialFileTypeService;
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.mhome.tools.common.UUIDGenerator;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,10 @@ public class MaterialFileTypeServiceImpl implements IMaterialFileTypeService {
 	@Override
 	public PagerModel<MaterialFileType> getPagerModelByQuery(MaterialFileType materialFileType, Query query)
 			throws Exception {
-		return (null != materialFileType && null != query) ? this.materialFileTypeDao.getPagerModelByQuery(materialFileType, query) : null;
+		PageHelper.startPage(query.getPageIndex(), query.getPageSize());
+		Page<MaterialFileType> page = (null != query && null != materialFileType) ?
+				this.materialFileTypeDao.getPagerModelByQuery(materialFileType) : null;
+		return  new PagerModel<MaterialFileType>(page);
 	}
 
 	@Override

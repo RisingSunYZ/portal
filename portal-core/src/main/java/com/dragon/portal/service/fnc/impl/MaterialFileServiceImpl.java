@@ -4,9 +4,12 @@ import com.dragon.portal.dao.fnc.IMaterialFileDao;
 
 import com.dragon.portal.model.fnc.MaterialFile;
 import com.dragon.portal.service.fnc.IMaterialFileService;
-import com.mhome.tools.common.UUIDGenerator;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
+import com.dragon.tools.common.UUIDGenerator;
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +44,9 @@ public class MaterialFileServiceImpl implements IMaterialFileService {
 	@Override
 	public PagerModel<MaterialFile> getPagerModelByQuery(MaterialFile materialFile, Query query)
 			throws Exception {
-		return (null != materialFile && null != query) ? this.materialFileDao.getPagerModelByQuery(materialFile, query) : null;
+		PageHelper.startPage(query.getPageIndex(), query.getPageSize());
+		Page<MaterialFile> page = (null != materialFile && null != query) ? this.materialFileDao.getPagerModelByQuery(materialFile) : null;
+		return new PagerModel<MaterialFile>(page);
 	}
 
 	@Override

@@ -1,8 +1,8 @@
 package com.dragon.portal.dao.fnc;
 
 import com.dragon.portal.model.fnc.MaterialFileType;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
+import com.github.pagehelper.Page;
+
 
 import java.util.List;
 
@@ -38,12 +38,11 @@ public interface IMaterialFileTypeDao {
 	/**
 	 * 分页查询财务服务-资料类型MaterialFileType
 	 * @param materialFileType
-	 * @param query
 	 * @return
 	 * @throws Exception
 	 * @Description:
 	 */
-	public PagerModel<MaterialFileType> getPagerModelByQuery(MaterialFileType materialFileType, Query query) throws Exception;
+	public Page<MaterialFileType> getPagerModelByQuery(MaterialFileType materialFileType) throws Exception;
 
 	/**
 	 * 添加财务服务-资料类型MaterialFileType

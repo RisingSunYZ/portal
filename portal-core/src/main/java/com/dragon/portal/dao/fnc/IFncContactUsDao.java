@@ -1,8 +1,9 @@
 package com.dragon.portal.dao.fnc;
 
 import com.dragon.portal.model.fnc.ContactUs;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
+import com.dragon.tools.pager.PagerModel;
+import com.github.pagehelper.Page;
+
 
 import java.util.List;
 
@@ -38,12 +39,11 @@ public interface IFncContactUsDao {
 	/**
 	 * 分页查询财务服务-联系人管理ContactUs
 	 * @param contactUs
-	 * @param query
 	 * @return
 	 * @throws Exception
 	 * @Description:
 	 */
-	public PagerModel<ContactUs> getPagerModelByQuery(ContactUs contactUs, Query query) throws Exception;
+	public Page<ContactUs> getPagerModelByQuery(ContactUs contactUs) throws Exception;
 
 	/**
 	 * 添加财务服务-联系人管理ContactUs

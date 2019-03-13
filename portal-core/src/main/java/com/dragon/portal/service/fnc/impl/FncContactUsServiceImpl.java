@@ -4,14 +4,15 @@ import com.dragon.portal.constant.YsportalConstant;
 import com.dragon.portal.dao.fnc.IFncContactUsDao;
 import com.dragon.portal.model.fnc.ContactUs;
 import com.dragon.portal.service.fnc.IFncContactUsService;
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.mhome.tools.common.UUIDGenerator;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +43,9 @@ public class FncContactUsServiceImpl implements IFncContactUsService {
 	@Override
 	public PagerModel<ContactUs> getPagerModelByQuery(ContactUs contactUs, Query query)
 			throws Exception {
-		return (null != contactUs && null != query) ? this.contactUsDao.getPagerModelByQuery(contactUs, query) : null;
+		PageHelper.startPage(query.getPageIndex(), query.getPageSize());
+		Page<ContactUs> page = (null != contactUs && null != query) ? this.contactUsDao.getPagerModelByQuery(contactUs) : null;
+		return new PagerModel<ContactUs>(page);
 	}
 
 	@Override
