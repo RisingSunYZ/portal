@@ -261,4 +261,7 @@ public class PortalConstant {
     public static final String SEPARATOR = ",";
     /** 序列基数 */
     public static final Integer BASE_INDEX = 100;
+
+    /** 最大分页显示的数据 */
+    public static final Integer MAX_PAGE_SIZE = 10000;
 }

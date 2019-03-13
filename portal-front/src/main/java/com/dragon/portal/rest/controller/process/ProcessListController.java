@@ -3,40 +3,45 @@ package com.dragon.portal.rest.controller.process;
 import com.dragon.flow.api.IFlowApi;
 import com.dragon.flow.constant.FlowConstant;
 import com.dragon.flow.enm.flowable.run.ProcessStatusEnum;
+import com.dragon.flow.enm.from.FormDraftStatusEnum;
 import com.dragon.flow.enm.from.ModelAppliedRangeEnum;
+import com.dragon.flow.model.basedata.FlowCategory;
+import com.dragon.flow.model.form.FormDraft;
 import com.dragon.flow.vo.flowable.task.TaskQueryParamsVo;
 import com.dragon.flow.vo.flowable.task.TaskVo;
+import com.dragon.flow.vo.model.ModelVo;
 import com.dragon.flow.vo.mongdb.QueryTaskVo;
 import com.dragon.flow.vo.mongdb.SearchExecutionVo;
 import com.dragon.flow.vo.mongdb.SearchTaskVo;
 import com.dragon.portal.constant.PortalConstant;
-import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
+import com.dragon.portal.vo.process.WfCategoryTree;
+import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
-import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
+import com.ys.tools.common.JsonUtils;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 流程中心-列表操作
@@ -265,6 +270,196 @@ public class ProcessListController extends BaseController {
             logger.error("ApiProcessController-getAlreadySend:",e);
         }
         return returnVo;
+    }
+
+
+
+    /*
+    *
+     * @Author yangzhao
+     * @Description //TODO 获取草稿数量
+     * @Date 11:24 2019/3/13
+     * @Param [formDraft, query, request, response]
+     * @return com.dragon.tools.vo.ReturnVo
+     **/
+    @GetMapping("/ajaxListMyDraftCount")
+    @ApiOperation("获取草稿数量")
+    public ReturnVo ajaxListMyDraftCount(@ApiIgnore FormDraft formDraft,@ApiIgnore Query query, @ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
+        try {
+            UserSessionInfo user=getUserSessionInfo(request,response);
+            if (null != user){
+                formDraft.setCreator(user.getNo());
+                formDraft.setStatus( FormDraftStatusEnum.CG.getStatus());
+                ReturnVo<PagerModel<FormDraft>> vo = flowApi.getFormDraftPagerModel(formDraft,query);
+                if (null != vo && FlowConstant.SUCCESS.equals(vo.getCode()) &&null != vo.getData()){
+                    returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询草稿数量成功！", vo.getData().getTotal() );
+                }else{
+                    returnVo = new ReturnVo( ReturnCode.FAIL, "查询草稿数量失败！");
+                }
+            }else {
+                // 用户未登录
+                returnVo = new ReturnVo( ReturnCode.FAIL, "用户未登录！" );
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            logger.error("ProcessListController-ajaxListMyDraftCount-查询草稿数量失败",e);
+        }
+        return returnVo;
+    }
+
+
+
+    /*
+    *
+     * @Author yangzhao
+     * @Description //TODO 表单模板目录
+     * @Date 13:05 2019/3/13
+     * @Param [model, wfCategoryVo, request, response]
+     * @return java.lang.String
+     **/
+    @GetMapping("/ajaxListWfCategory")
+    @ApiOperation("获取表单模板目录")
+    public ReturnVo ajaxListWfCategory(@ApiIgnore FlowCategory wfCategoryVo) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败!");
+        List<WfCategoryTree> wfCategoryTrees=new ArrayList<>();
+        try {
+            ReturnVo<List<FlowCategory>> vo=flowApi.getWfCategoryVoAll(wfCategoryVo);
+            if(null != vo && FlowConstant.SUCCESS.equals(vo.getCode()) && CollectionUtils.isNotEmpty(vo.getData())){
+                List<FlowCategory> list=vo.getData();
+                WfCategoryTree wfCategoryTree = new WfCategoryTree("myDraft","我的草稿","","my_draft");
+                wfCategoryTrees.add(wfCategoryTree);
+                for(FlowCategory vo2 : list){
+                    if(StringUtils.isBlank(vo2.getPid())){
+                        WfCategoryTree wfCategoryTree2 = new WfCategoryTree(vo2.getId(),vo2.getName(),vo2.getPid(),vo2.getCode());
+                        getChildren(vo2.getId(),wfCategoryTree2);
+                        wfCategoryTrees.add(wfCategoryTree2);
+                    }
+                }
+                returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功!",wfCategoryTrees);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("ProcessListController-ajaxListWfCategory-查询表单模板目录失败",e);
+        }
+        return returnVo;
+    }
+
+
+    /*
+    *
+     * @Author yangzhao
+     * @Description //TODO 表单模板列表
+     * @Date 13:23 2019/3/13
+     * @Param [model, modelVo, name, rows, query, page, request, response]
+     * @return java.lang.String
+     **/
+    @ApiOperation("表单模板列表")
+    @GetMapping("/ajaxListModel")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value="类别Id",name="categoryId",dataType = "String",paramType = "query")
+    })
+    public String ajaxListModel(ModelVo modelVo,@ApiIgnore String name,@ApiIgnore Integer rows,@ApiIgnore Query query,@ApiIgnore String page,@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+        PagerModel<ModelVo> pm=new PagerModel<>();
+        modelVo.setModelName(name);
+        query.setPageSize(PortalConstant.MAX_PAGE_SIZE);
+        try {
+            if("myDraft".equals(modelVo.getCategoryId())){
+                FormDraft formDraft=new FormDraft();
+                formDraft.setName(modelVo.getModelName());
+                Map<String, Object> maps = getMyDraft(query, page,rows,formDraft, request, response);
+                return JsonUtils.toJson(maps.get("list"));
+            }else{
+                ReturnVo<PagerModel<ModelVo>> vo=flowApi.getModelByCategory(modelVo,query);
+                if(vo!=null && FlowConstant.SUCCESS.equals(vo.getCode()) && vo.getData()!=null ){
+                    pm=vo.getData();
+                    pm.setRows(pm.getData());
+                }
+            }
+        } catch (Exception e) {
+            logger.error("ProcessListController-ajaxListModel:-获取表单模板列表失败",e);
+        }
+
+        return JsonUtils.toJson(pm.getRows());
+    }
+
+    /*
+    *
+     * @Author yangzhao
+     * @Description //TODO 递归方法
+     * @Date 13:23 2019/3/13
+     * @Param [pid, parent]
+     * @return void
+     **/
+    private void getChildren(String pid,WfCategoryTree parent){
+        FlowCategory wfCategory = new FlowCategory();
+        wfCategory.setPid(pid);
+        try{
+            ReturnVo<List<FlowCategory>> returnVo = flowApi.getWfCategoryVoAll(wfCategory);
+            if(returnVo!=null&&returnVo.getData()!=null&&FlowConstant.SUCCESS.equals(returnVo.getCode())){
+                List<WfCategoryTree> list = new ArrayList<WfCategoryTree>();
+                if(returnVo.getData().size()>0){
+                    for(FlowCategory vo : returnVo.getData()){
+                        WfCategoryTree wfCategoryTree = new WfCategoryTree(vo.getId(),vo.getName(),vo.getPid(),vo.getCode());
+                        getChildren(vo.getId(),wfCategoryTree);
+                        list.add(wfCategoryTree);
+                    }
+                    parent.setChildren(list);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("ProcessListController-getChildren-查询表单模板目录子节点失败",e);
+        }
+
+    }
+
+    /*
+    *
+     * @Author yangzhao
+     * @Description //TODO 获取我的草稿
+     * @Date 13:26 2019/3/13
+     * @Param [query, page, rows, formDraft, request, response]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    private Map<String, Object> getMyDraft(Query query,String page,Integer rows, FormDraft formDraft, HttpServletRequest request, HttpServletResponse response) {
+        UserSessionInfo user=getUserSessionInfo(request,response);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+        renderPageIndex(query, page,rows);
+        PagerModel<FormDraft> pm=new PagerModel<FormDraft>();
+        if(user!=null && StringUtils.isNotBlank(user.getNo())){
+            formDraft.setCreator(user.getNo());
+            formDraft.setStatus(FormDraftStatusEnum.CG.getStatus());
+            try {
+                ReturnVo<PagerModel<FormDraft>> vo = flowApi.getFormDraftPagerModel(formDraft,query);
+                if(vo!=null && FlowConstant.SUCCESS.equals(vo.getCode()) && vo.getData()!=null){
+                    pm=vo.getData();
+                    for(FormDraft draft:pm.getRows()){
+                        if(draft.getStatus()!=null){
+                            for(FormDraftStatusEnum e : FormDraftStatusEnum.values()){
+                                if(e.getStatus()==draft.getStatus()){
+                                    draft.setStatusName(e.getName());
+                                }
+                            }
+                        }
+                        if(draft.getCreateTime()!=null){
+                            draft.setCreateTimeStr(sdf.format(draft.getCreateTime()));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        Map<String, Object> maps = new HashMap<>();
+        maps.put("list", pm.getRows());
+
+        Map<String, Object> pageMap = new HashMap<>();
+        pageMap.put("current", query.getPageIndex()-1);
+        pageMap.put("pageSize", query.getPageSize());
+        pageMap.put("total", pm.getTotal());
+        maps.put("pagination", pageMap);
+        return maps;
     }
 
     /**
