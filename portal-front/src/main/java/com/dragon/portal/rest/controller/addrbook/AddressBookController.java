@@ -37,8 +37,8 @@ import java.util.*;
  * 浙江亚厦 2018 ~ 2030 版权所有
  */
 @RestController
-@RequestMapping("/addrbook/addressBook")
-@Api(value="通讯录", description = "通讯录", tags={"通讯录 /addrbook/addressBook"})
+@RequestMapping("/rest/addrbook/addressBook")
+@Api(value="通讯录", description = "通讯录", tags={"通讯录 /rest/addrbook/addressBook"})
 public class AddressBookController extends BaseController {
 
 	private static Logger logger = Logger.getLogger(AddressBookController.class);
