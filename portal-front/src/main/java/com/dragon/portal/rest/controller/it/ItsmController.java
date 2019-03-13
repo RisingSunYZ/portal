@@ -26,6 +26,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,7 +60,7 @@ import java.util.Map;
 public class ItsmController extends BaseController {
 	private static Logger logger = Logger.getLogger(ItsmController.class);
 	
-	@Resource
+	@Autowired
 	private CommonProperties commonProperties;
 	
 

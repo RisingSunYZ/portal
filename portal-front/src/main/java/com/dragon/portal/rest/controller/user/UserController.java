@@ -1,5 +1,7 @@
 package com.dragon.portal.rest.controller.user;
 
+import com.dragon.portal.component.IUserLoginComponent;
+import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.idm.IIdmService;
 import com.dragon.portal.service.user.IUserLoginService;
@@ -25,10 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +52,11 @@ public class UserController extends BaseController {
 
     @Autowired
     Environment environment;
+
+    @Autowired
+    IUserLoginComponent userLoginComponent;
+    @Autowired
+    CommonProperties commonProperties;
 
     @ApiOperation("用户IDM登录回调")
     @GetMapping("/userLogin")
@@ -123,24 +127,61 @@ public class UserController extends BaseController {
 
 
 
+//    /**
+//     * @param request
+//     * @param response
+//     * @return
+//     * @Description:获取用户信息
+//     */
+//    @ApiOperation("获取用户信息")
+//    @RequestMapping(value = "/currentUser",method = RequestMethod.GET)
+//    public ReturnVo currentUser(HttpServletRequest request, HttpServletResponse response) {
+//        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "获取当前登录用户失败！");
+//
+//        UserSessionInfo userSessionInfo = this.getLoginUser(request, response);
+//
+//        returnVo.setData(userSessionInfo);
+//        returnVo.setCode(ReturnCode.SUCCESS);
+//        returnVo.setMsg("查询当前登录用户成功！");
+//        return returnVo;
+//    }
+
+
     /**
      * @param request
      * @param response
      * @return
      * @Description:获取用户信息
      */
+    @GetMapping("/currentUser")
     @ApiOperation("获取用户信息")
-    @RequestMapping(value = "/currentUser",method = RequestMethod.GET)
-    public String currentUser(HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo<UserSessionInfo> returnVo = new ReturnVo<>(ReturnCode.FAIL, "查询数据异常");
+    public ReturnVo currentUser(String siamTgt, HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询数据异常");
 
-        UserSessionInfo userSessionInfo = this.getLoginUser(request, response);
+        UserSessionInfo userSessionInfo = getUserSessionInfo(request, response);
 
-        returnVo.setData(userSessionInfo);
-        returnVo.setCode(ReturnCode.SUCCESS);
-        returnVo.setMsg("查询当前登录用户成功！");
-        return JsonUtils.toJson(returnVo);
+        if(userSessionInfo == null){
+            // 获取Cookiej里面值
+//            String siamTgt = request.getParameter("siamTgt");
+            if(StringUtils.isBlank(siamTgt)){
+                Cookie cookie =this.getCookieByName(request, "SIAMTGT");
+                siamTgt = null == cookie?null:cookie.getValue();
+            }
+            userSessionInfo = userLoginComponent.getCurrentUser(siamTgt, request, response);
+            if(null != userSessionInfo){
+                userSessionInfo.setUserImgUrl(StringUtils.isNotBlank(userSessionInfo.getUserImgUrl())?(commonProperties.getFtpHost() + userSessionInfo.getUserImgUrl()):null);
+                returnVo.setData(userSessionInfo);
+                returnVo.setCode(ReturnCode.SUCCESS);
+                returnVo.setMsg("查询当前登录用户成功！");
+            }else{
+                returnVo.setCode(ReturnCode.FAIL);
+                returnVo.setMsg("查询当前登录用户失败！");
+            }
+        }
+        return returnVo;
     }
+
+
     /**
      * @param userNo
      * @return

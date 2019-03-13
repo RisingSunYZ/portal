@@ -12,6 +12,12 @@ public class PortalConstant {
     public static final Integer DEL_FLAG = 0;
     public static final Integer NO_DELETE_FLAG = 1;
 
+
+    /**
+     * 用户Cookie相关的key
+     */
+    //cookie存活时间一个月
+    public static final int COOKIE_TITLE_MONTH = 2592000;
     /** IT服务=1 */
     public static final int IT_SERVICE_FLAG = 1;
 
@@ -20,14 +26,57 @@ public class PortalConstant {
 
     /** 启用[上架]状态 */
     public static final int STATUS_ENABLED = 1;
+    //用户会话信息对象在redis中的生命周期(单位/小时)
+    public static final int SESSION_INFO_TTL = 12;
+    /**
+     * 系统名称
+     */
+    public static final String SYSTEM_SN = "ys_portal";
 
-    /** 不可用[下架]状态 */
-    public static final int STATUS_DISABLED = 0;
+
+    //用户名
+    public static final String COOKIE_USERNAME = "userName";
+
+    //登录个人信息相关
+    public static final String SESSION_PERSON_INFO = "personInfo";
+
+    //登录个人信息领导部门相关
+    public static final String SESSION_PERSON_LEADERDEPT_INFO = "personLeaderDeptInfo";
+
+    /**
+     * Redis Session共享中存储的Cookie值
+     */
+    public static final String SESSION = "SESSION";
+
+    //用户信息
+    public static final String COOKIE_PERSONINFO = "personInfo";
+
+    /**
+     * 浏览器Cookie
+     */
+    public static final String COOKIE_JSESSIONID = "JSESSIONID";
 
     /**
      * windows操作系统
      */
     public static final String OPERATE_SYSTEM_WINDOWS = "windows";
+    /**
+     * 用户会话ID【随机ID】
+     */
+    public static final String COOKIE_USER_SESSION_ID = "usid";
+
+
+    // 用户中心加密的key
+    public static final String CRYPT_KEY = "4de5v45wqeQ6e9";
+    /**
+     * 用户工号加密串键-值为：(USER_REDIS_ID_PREFIX+userNo)加密
+     */
+    public static final String COOKIE_USER_REDIS_ID = "urid";
+    /**
+     * 用户工号Redis前缀
+     */
+    public static final String USER_REDIS_ID_PREFIX = "USER_NO_";
+
 
 
     /**
