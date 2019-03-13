@@ -4,6 +4,7 @@ import com.dragon.portal.client.AuthUtils;
 import com.dragon.portal.component.IUserLoginComponent;
 import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.properties.CommonProperties;
+import com.dragon.portal.service.idm.IIdmService;
 import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.util.CryptUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
@@ -55,6 +56,8 @@ public class UserLoginComponentImpl implements IUserLoginComponent {
 	private IOrgApi orgApi;
 	@Autowired
 	private CommonProperties commonProperties;
+	@Autowired
+	private IIdmService idmService;
 
 	@Override
 	public UserSessionInfo getCurrentUser(String siamTgt, HttpServletRequest request, HttpServletResponse response) {
@@ -65,10 +68,8 @@ public class UserLoginComponentImpl implements IUserLoginComponent {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("ticketValue", siamTgt);
 		params.put("ticketName", "SIAMTGT");
-		String resultStr;
 		try {
-			resultStr = authUtils.getResponseFromServer(commonProperties.getIdmUrl() + "/rest/auth/validate", params);
-			IdmReturnEntity idmReturnEntity = (IdmReturnEntity) JsonUtils.jsonToObj(resultStr,IdmReturnEntity.class);
+			IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamTgt);
 			if(null != idmReturnEntity && null != idmReturnEntity.getUser()){
 				IdmUser idmUser = idmReturnEntity.getUser();
 				idmUser.getUid();
@@ -144,7 +145,7 @@ public class UserLoginComponentImpl implements IUserLoginComponent {
 								}
 							}
 							UserSessionInfo usr = genUserSessionInfo(personVo);
-
+							userSessionInfo = usr;
 							doLogin(usr, urInfo, leaderDeptList);
 						} else {
 							//如果人员主数据系统中查不到此人，则认为是临时人员登录

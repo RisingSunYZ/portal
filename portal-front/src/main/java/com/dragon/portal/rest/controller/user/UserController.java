@@ -169,7 +169,7 @@ public class UserController extends BaseController {
             }
             userSessionInfo = userLoginComponent.getCurrentUser(siamTgt, request, response);
             if(null != userSessionInfo){
-                userSessionInfo.setUserImgUrl(StringUtils.isNotBlank(userSessionInfo.getUserImgUrl())?(commonProperties.getFtpHost() + userSessionInfo.getUserImgUrl()):null);
+                userSessionInfo.setUserImgUrl (StringUtils.isNotBlank(userSessionInfo.getUserImgUrl())?(commonProperties.getFtpHost() + userSessionInfo.getUserImgUrl()):null);
                 returnVo.setData(userSessionInfo);
                 returnVo.setCode(ReturnCode.SUCCESS);
                 returnVo.setMsg("查询当前登录用户成功！");
