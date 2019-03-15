@@ -8,6 +8,7 @@ import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.vo.user.UserSessionRedisInfo;
 import com.dragon.tools.common.JsonUtils;
+import com.dragon.tools.utils.CookiesUtil;
 import com.ys.mis.utils.Cookies;
 import com.ys.ucenter.model.vo.LeaderDepartmentVo;
 import org.apache.commons.lang.StringUtils;
@@ -61,17 +62,12 @@ public class BaseController {
     public UserSessionInfo getUserSessionInfo(HttpServletRequest request, HttpServletResponse response) {
         UserSessionInfo userInfo = getPersonInfo(request, response);
         if (null == userInfo){
-            //开发环境使用,默认账号
-//            String developerNo = readProperty.getValue("developer.no");
-            String developerNo = propertiesConfig.getDeveloperNo();
-            if(StringUtils.isNotBlank(developerNo)){
-                try {
-                    this.doLogin(request, response, userInfo, developerNo, 1, 1);
-                    userInfo = getPersonInfo(request, response);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.error( "获取当前登录信息失败！" );
-                }
+            try {
+                // this.doLogin(request, response, userInfo, 1, 1);
+                userInfo = getPersonInfo(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error( "获取当前登录信息失败！" );
             }
         }
         return userInfo;
@@ -87,7 +83,8 @@ public class BaseController {
 
         UserSessionInfo u = null;
         try {
-            String userNo = Cookies.get(request, PortalConstant.COOKIE_USERNAME);
+
+            String userNo = CookiesUtil.get(request, PortalConstant.COOKIE_USERNAME);
             String ssid = request.getSession().getId();
             UserSessionRedisInfo userSessionInfo = userLoginComponent.getUserSessionRedisInfos(ssid, userNo, response);
 
@@ -122,14 +119,13 @@ public class BaseController {
      * @param request
      * @param response
      * @param u
-     * @param userNo
      * @param autoLogin
      * @param loginType
      * @throws Exception
      * @Description:
      * @author xietongjian 2017 上午9:31:59
      */
-    public void doLogin(HttpServletRequest request, HttpServletResponse response, UserSessionInfo u, String userNo,Integer autoLogin,Integer loginType) throws Exception {
+    public void doLogin(HttpServletRequest request, HttpServletResponse response, UserSessionInfo u, Integer autoLogin,Integer loginType) throws Exception {
         //用户登录成功
         setPersonInfoCookies(u, request, response, autoLogin);
         //用户手机,邮箱是否认证标记

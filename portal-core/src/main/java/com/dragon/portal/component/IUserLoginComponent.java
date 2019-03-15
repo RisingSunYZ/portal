@@ -23,5 +23,7 @@ public interface IUserLoginComponent {
 
 	public UserSessionRedisInfo getUserSessionRedisInfos(String ssid, String userNo, HttpServletResponse response);
 
+	public void putUserSessionRedisInfo(String usid, UserSessionRedisInfo usi);
+
 
 }

@@ -18,6 +18,7 @@ import com.ys.atds.utils.CommUtils;
 import com.ys.mis.utils.Cookies;
 import com.ys.tools.common.JsonUtils;
 import com.ys.tools.common.ReadProperty;
+import com.ys.tools.utils.CookiesUtil;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.constant.UcenterConstant;
@@ -64,10 +65,6 @@ public class UserLoginComponentImpl implements IUserLoginComponent {
 		if(StringUtils.isBlank(siamTgt)){
 			return null;
 		}
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ticketValue", siamTgt);
-		params.put("ticketName", "SIAMTGT");
 		try {
 			IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamTgt);
 			if(null != idmReturnEntity && null != idmReturnEntity.getUser()){
@@ -105,13 +102,14 @@ public class UserLoginComponentImpl implements IUserLoginComponent {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Object obj = redisService.get(urid);
+			Object obj = redisService.get(PortalConstant.SYSTEM_SN + urid);
 			if (CommUtils.isNull(obj)) {
 				UserSessionRedisInfo usri = new UserSessionRedisInfo();
 				usri.putValue(PortalConstant.COOKIE_USER_SESSION_ID, ssid);
+				CookiesUtil.put(response, PortalConstant.COOKIE_USERNAME, userNo);
 				return usri;
 			} else {
-				UserSessionRedisInfo usri = (UserSessionRedisInfo) obj;
+				UserSessionRedisInfo usri = (UserSessionRedisInfo)JsonUtils.jsonToObj(obj.toString(), UserSessionRedisInfo.class);
 				return usri;
 			}
 		}else{
@@ -270,6 +268,7 @@ public class UserLoginComponentImpl implements IUserLoginComponent {
 			String urid = u.getNo();
 			try {
 				urid = CryptUtils.getCryPasswd(PortalConstant.USER_REDIS_ID_PREFIX+u.getNo());
+				usIdInfo.putValue(PortalConstant.COOKIE_USERNAME, u.getNo());
 			} catch (Exception e) {
 				logger.error("用户工号加密异常！" + e);
 				e.printStackTrace();
@@ -284,7 +283,7 @@ public class UserLoginComponentImpl implements IUserLoginComponent {
 	 * @return
 	 */
 	public void putUserSessionRedisInfo(String usid, UserSessionRedisInfo usi) {
-		String usiStr = com.mhome.tools.common.JsonUtils.toJson(usi);
+		String usiStr = JsonUtils.toJson(usi);
 		if (StringUtils.isNotBlank(usid)) {
 			redisService.put(usid, usiStr, PortalConstant.SESSION_INFO_TTL, TimeUnit.HOURS);
 		}

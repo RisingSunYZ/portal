@@ -5,6 +5,7 @@ import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.idm.IIdmService;
 import com.dragon.portal.service.user.IUserLoginService;
+import com.dragon.portal.utils.CommUtil;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.ReturnCode;
@@ -62,7 +63,7 @@ public class UserController extends BaseController {
     @GetMapping("/userLogin")
     public void userLogin(HttpServletRequest request, HttpServletResponse response){
         try {
-            Cookie siamtgt = getCookieByName(request, "SIAMTGT");
+            Cookie siamtgt = CommUtil.getCookieByName(request, "SIAMTGT");
             if(null != siamtgt){
                 IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamtgt.getValue());
                 if(null != idmReturnEntity){
@@ -89,42 +90,6 @@ public class UserController extends BaseController {
             e.printStackTrace();
         }
     }
-
-    /**
-     * 根据名字获取cookie
-     *
-     * @param request
-     * @param name
-     *            cookie名字
-     * @return
-     */
-    public static Cookie getCookieByName(HttpServletRequest request, String name) {
-        Map<String, Cookie> cookieMap = ReadCookieMap(request);
-        if (cookieMap.containsKey(name)) {
-            Cookie cookie = (Cookie) cookieMap.get(name);
-            return cookie;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 将cookie封装到Map里面
-     *
-     * @param request
-     * @return
-     */
-    private static Map<String, Cookie> ReadCookieMap(HttpServletRequest request) {
-        Map<String, Cookie> cookieMap = new HashMap<String, Cookie>();
-        Cookie[] cookies = request.getCookies();
-        if (null != cookies) {
-            for (Cookie cookie : cookies) {
-                cookieMap.put(cookie.getName(), cookie);
-            }
-        }
-        return cookieMap;
-    }
-
 
 
 //    /**
@@ -164,10 +129,10 @@ public class UserController extends BaseController {
             // 获取Cookiej里面值
 //            String siamTgt = request.getParameter("siamTgt");
             if(StringUtils.isBlank(siamTgt)){
-                Cookie cookie =this.getCookieByName(request, "SIAMTGT");
+                Cookie cookie = CommUtil.getCookieByName(request, "SIAMTGT");
                 siamTgt = null == cookie?null:cookie.getValue();
             }
-            userSessionInfo = userLoginComponent.getCurrentUser(siamTgt, request, response);
+//            userSessionInfo = userLoginComponent.getCurrentUser(siamTgt, request, response);
             if(null != userSessionInfo){
                 userSessionInfo.setUserImgUrl (StringUtils.isNotBlank(userSessionInfo.getUserImgUrl())?(commonProperties.getFtpHost() + userSessionInfo.getUserImgUrl()):null);
                 returnVo.setData(userSessionInfo);
@@ -177,6 +142,10 @@ public class UserController extends BaseController {
                 returnVo.setCode(ReturnCode.FAIL);
                 returnVo.setMsg("查询当前登录用户失败！");
             }
+        }else{
+            returnVo.setData(userSessionInfo);
+            returnVo.setCode(ReturnCode.SUCCESS);
+            returnVo.setMsg("获取数据成功！");
         }
         return returnVo;
     }
