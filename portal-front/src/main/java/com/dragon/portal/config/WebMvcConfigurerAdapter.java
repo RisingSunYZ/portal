@@ -42,8 +42,14 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/portal/user/userLogin/**","/swagger-resources/**","/rest/index/**",
-                        "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+                .excludePathPatterns("/portal/user/userLogin/**",
+                        "/swagger-resources/**",
+                        "/flow/form/**",
+                        "/favicon.ico",
+                        "/rest/index/**",
+                        "/webjars/**",
+                        "/v2/**",
+                        "/swagger-ui.html/**");
     }
 
 
