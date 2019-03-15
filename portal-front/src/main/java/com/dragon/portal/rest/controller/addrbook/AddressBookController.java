@@ -2,8 +2,6 @@ package com.dragon.portal.rest.controller.addrbook;
 
 
 import com.dragon.portal.constant.PortalConstant;
-import com.dragon.portal.customLabel.ApiJsonObject;
-import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.model.addrbook.TopContacts;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.addrbook.ITopContactsService;
@@ -42,7 +40,6 @@ import java.util.*;
 public class AddressBookController extends BaseController {
 
 	private static Logger logger = Logger.getLogger(AddressBookController.class);
-
 	@Resource
 	private IOrgApi orgApi;
 
@@ -275,6 +272,7 @@ public class AddressBookController extends BaseController {
 	@ApiOperation("加载通讯录组织机构树形结构")
 	public LinkedList<OrgTreeApiVo> getOrgTreeDataforBook(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
 		LinkedList<OrgTreeApiVo> orgTree = new LinkedList<OrgTreeApiVo>();// new
+		LinkedList<OrgTreeApiVo> orgTreeList = new LinkedList<OrgTreeApiVo>();// new
 		UserSessionInfo loginUser = getUserSessionInfo(request, response);
 		if(null!=loginUser){
 			com.ys.tools.vo.ReturnVo<OrgTreeApiVo> returnVo = orgApi.getOrgTreeForBook(loginUser.getNo());
@@ -287,13 +285,32 @@ public class AddressBookController extends BaseController {
 				root.setpId("0");
 				root.setCompanyId("");
 				root.setText("常用联系人");
-				orgTree.addFirst(root);
+				orgTreeList.addFirst(root);
+
+				for (OrgTreeApiVo vo:orgTree){
+					if("0001K310000000000ABG".equals(vo.getpId())){
+						vo.setOrgTreeApiVos(getChildrenDept(vo.getId(),orgTree));
+						orgTreeList.add(vo);
+					}
+				}
 			} else {
 				logger.error(returnVo.getMsg());
 			}
 		}
-		return orgTree;
+		return orgTreeList;
 	}
+
+	private List<OrgTreeApiVo> getChildrenDept(String pid,List<OrgTreeApiVo> treeList){
+		List<OrgTreeApiVo> list=new ArrayList<OrgTreeApiVo>();
+		for (OrgTreeApiVo vo:treeList){
+			if(pid.equals(vo.getpId())){
+				vo.setOrgTreeApiVos(getChildrenDept(vo.getId(),treeList));
+				list.add(vo);
+			}
+		}
+		return list;
+	}
+
 
 	/*
 	*
