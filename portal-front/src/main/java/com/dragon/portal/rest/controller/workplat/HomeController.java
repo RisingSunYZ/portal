@@ -2,12 +2,16 @@ package com.dragon.portal.rest.controller.workplat;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.dragon.flow.api.IFlowApi;
+import com.dragon.flow.vo.flowable.task.TaskQueryParamsVo;
 import com.dragon.portal.model.cstm.SystemMenu;
 import com.dragon.portal.model.workplat.ThirdSystem;
 import com.dragon.portal.service.cstm.ISystemMenuService;
 import com.dragon.portal.service.cstm.ISystemMenuUserService;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.web.controller.BaseController;
+import com.dragon.tools.common.ReturnCode;
+import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +24,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -45,8 +50,33 @@ public class HomeController extends BaseController {
 	private ISystemMenuService systemMenuService;
 	@Resource
 	private ISystemMenuUserService systemMenuUserService;
+	@Resource
+	private IFlowApi flowApi;
 
-
+	/**
+	 * 获取流程中心个人代办数量
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@GetMapping("/getNewFlowCount")
+	@ApiOperation("获取流程中心个人代办数量")
+	@ApiImplicitParams({})
+	public ReturnVo<Integer> getNewFlowCount(@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
+		UserSessionInfo user=getUserSessionInfo(request,response);
+		ReturnVo<Integer> vo=new ReturnVo<Integer>(ReturnCode.FAIL,"查询失败");
+		TaskQueryParamsVo params=new TaskQueryParamsVo();
+		params.setUserCode(user.getNo());
+		Integer pendingCount=0;
+		try {
+			pendingCount=flowApi.getApprovingCountBySql(params);
+			vo=new ReturnVo<Integer>(ReturnCode.SUCCESS,"查询成功");
+			vo.setData(pendingCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return vo;
+	}
 	@GetMapping("/getSysData")
 	@ApiOperation("列表数据查询")
 	@ApiImplicitParams({})
