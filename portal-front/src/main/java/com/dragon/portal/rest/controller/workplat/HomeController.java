@@ -1,17 +1,12 @@
 package com.dragon.portal.rest.controller.workplat;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.dragon.portal.model.cstm.SystemMenu;
-import com.dragon.portal.model.workplat.ThirdSystem;
+import com.dragon.portal.model.schedule.ScheduleEvent;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.cstm.ISystemMenuService;
 import com.dragon.portal.service.cstm.ISystemMenuUserService;
+import com.dragon.portal.service.schedule.IScheduleEventService;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.rest.controller.BaseController;
-import com.dragon.tools.common.ReturnCode;
-import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +17,10 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Title:门户首页
@@ -48,6 +46,44 @@ public class HomeController extends BaseController {
 	private ISystemMenuService systemMenuService;
 	@Autowired
 	private ISystemMenuUserService systemMenuUserService;
+	@Autowired
+	private IScheduleEventService scheduleEventService;
+
+
+	/*
+	*
+	 * @Author yangzhao
+	 * @Description //TODO 获取日程总数量
+	 * @Date 13:14 2019/3/15
+	 * @Param [request, response]
+	 * @return java.lang.String
+	 **/
+	@GetMapping("/getNewSchduleCount")
+	@ApiOperation("获取日程总数量")
+	public String getNewSchduleCount(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+		UserSessionInfo user = getUserSessionInfo(request,response);
+		ScheduleEvent scheduleEvent = new ScheduleEvent();
+		scheduleEvent.setStartTime(new Date());
+		scheduleEvent.setReceiveNo(user.getNo());
+
+		String jsonp = request.getParameter("jsonpcallback");
+		Integer pendingCount=0;
+		try {
+			List<ScheduleEvent> listScheduleEvent = scheduleEventService.getAll(scheduleEvent);
+			if(null != listScheduleEvent){
+				pendingCount = listScheduleEvent.size();
+				String userJson = jsonp+"("+pendingCount+")";
+				OutputStream out = response.getOutputStream();
+				out.write(userJson.getBytes("UTF-8"));
+				out.flush();
+				out.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("HomeController-getNewSchduleCount:获取日程总数量失败:"+e);
+		}
+		return "";
+	}
 
 
 

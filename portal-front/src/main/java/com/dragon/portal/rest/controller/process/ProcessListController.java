@@ -462,6 +462,34 @@ public class ProcessListController extends BaseController {
         return maps;
     }
 
+
+    /*
+    *
+     * @Author yangzhao
+     * @Description //TODO 查询是否有表单查询权限
+     * @Date 14:50 2019/3/15
+     * @Param [model, request, response]
+     * @return java.lang.String
+     **/
+    @ApiOperation("查询是否有表单查询权限")
+    @GetMapping("/hasPermission")
+    public ReturnVo hasPermission(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+        UserSessionInfo user=this.getUserSessionInfo(request, response);
+        ReturnVo vo = new ReturnVo(ReturnCode.FAIL, "查询是否有表单查询权限异常");
+        try {
+            if(null != user){
+                vo = flowApi.hasAuthorization(user.getNo());
+                if(FlowConstant.SUCCESS.equals(vo.getCode())){
+                    vo = new ReturnVo(ReturnCode.SUCCESS, "查询是否有表单查询权限成功",vo.getData());
+                }
+            }
+        } catch (Exception e) {
+            logger.error("ProcessListController-hasPermission查询是否有表单查询权限异常:"+e);
+            e.printStackTrace();
+        }
+        return vo;
+    }
+
     /**
      * 封装Query对象
      * @param query
