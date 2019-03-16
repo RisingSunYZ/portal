@@ -41,9 +41,9 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Spring Boot中使用Swagger2构建RESTful API")
+                .title("门户 API文档")
                 .description("rest api 文档构建利器")
-                .termsOfServiceUrl("http://org.dragon.com")
+                .termsOfServiceUrl("http://www.dragon.com")
                 .version("1.0")
                 .build();
     }

@@ -11,7 +11,9 @@ import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.vo.user.UserSessionRedisInfo;
 import com.dragon.tools.common.JsonUtils;
+import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.utils.CookiesUtil;
+import com.dragon.tools.vo.ReturnVo;
 import com.ecnice.privilege.vo.idm.IdmReturnEntity;
 import com.ecnice.privilege.vo.idm.IdmUser;
 import com.ys.ucenter.api.IOrgApi;
@@ -21,9 +23,11 @@ import com.ys.ucenter.model.vo.LeaderDepartmentVo;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -32,6 +36,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -64,14 +70,17 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		HttpSession session = request.getSession();
 		// 判断是否IDM登录
-		if("true".equals("true")){
+		if(Boolean.TRUE.toString().equals(commonProperties.getLoginSwitch())){
 			// 1、从Redis中获取存储的当前登录用户。
 
 			// 验证IDM接口是否已经登录
 			Cookie cookie = CommUtil.getCookieByName(request, "SIAMTGT");
 			String siamTgt = null == cookie?null:cookie.getValue();
 
+			long start = System.currentTimeMillis();
 			IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamTgt);
+			long end = System.currentTimeMillis();
+			logger.info((end - start) + " ms= ---------------------------->");
 
 			if(null != idmReturnEntity && null != idmReturnEntity.getUser()){
 				IdmUser idmUser = idmReturnEntity.getUser();
@@ -113,29 +122,22 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 						e.printStackTrace();
 					}
 				}
-
-
 				return true;
 			}else{
-				logger.info("验证失败！");
+				logger.warn("您的登录会话已经失效，请重新登录！");
+				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+				response.setHeader("msg", "no login, please do login.");
 				return false;
 			}
-
-
-
-
 		}else{
-//			UserLogin userLogin = (UserLogin)request.getSession().getAttribute(FormConstant.SYS_USER);
-//			if (null != userLogin) {
-//				return true;
-//			} else {
-//				logger.error("Request Intercept : " + request.getRequestURI());
-//				ReturnVo vo = new ReturnVo(ReturnCode.FAIL, "您的登录会话已经失效，请重新登录");
-//				response.setContentType("application/json;charset=UTF-8");
-//				response.getWriter().write(JSONObject.toJSONString(vo));
-//				return false;
-//			}
-			return  false;
+			UserSessionInfo u = (UserSessionInfo) request.getSession().getAttribute(PortalConstant.SYS_USER);
+			if(null == u){
+				logger.warn("您的登录会话已经失效，请重新登录！");
+				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+				response.setHeader("msg", "no login, please do login.");
+				return false;
+			}
+			return true;
 		}
 	}
 

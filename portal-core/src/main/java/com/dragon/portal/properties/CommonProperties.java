@@ -95,6 +95,13 @@ public class CommonProperties {
     private String developerNo;
 
 
+    /**
+     * 是否启用第三方登录
+     */
+    @Value("${idm.login.switch}")
+    private String loginSwitch;
+
+
     public String getIp() {
         return ip;
     }
@@ -169,5 +176,13 @@ public class CommonProperties {
 
     public void setIdmUrl(String idmUrl) {
         this.idmUrl = idmUrl;
+    }
+
+    public String getLoginSwitch() {
+        return loginSwitch;
+    }
+
+    public void setLoginSwitch(String loginSwitch) {
+        this.loginSwitch = loginSwitch;
     }
 }

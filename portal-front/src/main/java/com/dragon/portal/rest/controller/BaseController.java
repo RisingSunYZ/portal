@@ -3,6 +3,7 @@ package com.dragon.portal.rest.controller;
 import com.dragon.portal.component.IUserLoginComponent;
 import com.dragon.portal.config.PropertiesConfig;
 import com.dragon.portal.constant.PortalConstant;
+import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
@@ -38,6 +39,8 @@ public class BaseController {
     private RedisService redisService;
     @Autowired
     private IUserLoginComponent userLoginComponent;
+    @Autowired
+    private CommonProperties commonProperties;
 
 
     /**
@@ -61,15 +64,6 @@ public class BaseController {
      */
     public UserSessionInfo getUserSessionInfo(HttpServletRequest request, HttpServletResponse response) {
         UserSessionInfo userInfo = getPersonInfo(request, response);
-        if (null == userInfo){
-            try {
-                // this.doLogin(request, response, userInfo, 1, 1);
-                userInfo = getPersonInfo(request, response);
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.error( "获取当前登录信息失败！" );
-            }
-        }
         return userInfo;
     }
 
@@ -83,28 +77,31 @@ public class BaseController {
 
         UserSessionInfo u = null;
         try {
+            if(Boolean.TRUE.toString().equals(commonProperties.getLoginSwitch())) {
+                String userNo = CookiesUtil.get(request, PortalConstant.COOKIE_USERNAME);
+                String ssid = request.getSession().getId();
+                UserSessionRedisInfo userSessionInfo = userLoginComponent.getUserSessionRedisInfos(ssid, userNo, response);
 
-            String userNo = CookiesUtil.get(request, PortalConstant.COOKIE_USERNAME);
-            String ssid = request.getSession().getId();
-            UserSessionRedisInfo userSessionInfo = userLoginComponent.getUserSessionRedisInfos(ssid, userNo, response);
+                String uo = userSessionInfo.getValue(PortalConstant.SESSION_PERSON_INFO);
+                String leaderDeptJson = userSessionInfo.getValue(PortalConstant.SESSION_PERSON_LEADERDEPT_INFO);
 
-            String uo = userSessionInfo.getValue(PortalConstant.SESSION_PERSON_INFO);
-            String leaderDeptJson = userSessionInfo.getValue(PortalConstant.SESSION_PERSON_LEADERDEPT_INFO);
-
-            if(!StringUtils.isBlank(uo)) {
-                u = (UserSessionInfo) JsonUtils.jsonToObj(uo, UserSessionInfo.class);
-                try {
-                    if(!"null".equals(leaderDeptJson)&&StringUtils.isNotEmpty(leaderDeptJson) && !CommUtils.isEmpty(leaderDeptJson) && leaderDeptJson instanceof String){
-                        net.sf.json.JSONArray jsonArr = net.sf.json.JSONArray.fromObject(leaderDeptJson);
-                        List<LeaderDepartmentVo> leaderDeptList = jsonArr.toList(jsonArr, LeaderDepartmentVo.class);
-                        u.setLeaderDeptList(leaderDeptList);
+                if (!StringUtils.isBlank(uo)) {
+                    u = (UserSessionInfo) JsonUtils.jsonToObj(uo, UserSessionInfo.class);
+                    try {
+                        if (!"null".equals(leaderDeptJson) && StringUtils.isNotEmpty(leaderDeptJson) && !CommUtils.isEmpty(leaderDeptJson) && leaderDeptJson instanceof String) {
+                            net.sf.json.JSONArray jsonArr = net.sf.json.JSONArray.fromObject(leaderDeptJson);
+                            List<LeaderDepartmentVo> leaderDeptList = jsonArr.toList(jsonArr, LeaderDepartmentVo.class);
+                            u.setLeaderDeptList(leaderDeptList);
+                        }
+                    } catch (Exception e) {
+                        logger.error("设置用户领导部门集合信息异常！" + e);
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    logger.error("设置用户领导部门集合信息异常！"+e);
-                    e.printStackTrace();
+                    //log.info("从Redis中获取登录用户: " + (u!=null?u.getName():""));
+                    return u;
                 }
-                //log.info("从Redis中获取登录用户: " + (u!=null?u.getName():""));
-                return u;
+            }else{
+                u = (UserSessionInfo) request.getSession().getAttribute(PortalConstant.SYS_USER);
             }
         } catch(Exception e) {
             e.printStackTrace();
