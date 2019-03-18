@@ -68,6 +68,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		logger.info(request.getRequestURI());
 		HttpSession session = request.getSession();
 		// 判断是否IDM登录
 		if(Boolean.TRUE.toString().equals(commonProperties.getLoginSwitch())){

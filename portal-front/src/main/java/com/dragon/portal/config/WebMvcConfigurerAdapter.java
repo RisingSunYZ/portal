@@ -41,11 +41,10 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/portal/user/userLogin/**",
-                        "/swagger-resources/**",
+                .excludePathPatterns(
+                        "/portal/user/userLogin/**",
                         "/flow/form/**",
                         "/favicon.ico",
                         "/rest/index/**",
@@ -53,11 +52,16 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
                         "/rest/portal/news/ajaxListVo",
                         "/rest/portal/user/userLogin/login",
 
+                        "/swagger-ui.html",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/v2/api-docs",
+                        "/error",
                         "/webjars/**",
-                        "/v2/**",
-                        "/swagger-ui.html/**");
+                        "/**/favicon.ico"
+                );
     }
-
 
     /**
      * 静态资源配置
@@ -69,11 +73,10 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
         registry.addResourceHandler("/a/**")
                 .addResourceLocations("classpath:/templates/assets/");
 
-        // 设置所有的请求不缓存
-        registry.addResourceHandler("/**").setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS));
-//        registry.addResourceHandler("/**")
-//                .addResourceLocations("classpath:/static/");
+        // 设置所有接口的请求不缓存
+        registry.addResourceHandler("/rest/**").setCacheControl(CacheControl.noCache());
     }
+
     /**
      * 消息类型转换
      *
