@@ -69,15 +69,8 @@ public class UserLoginController extends BaseController{
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "注销失败！");
         try {
             HttpSession session = request.getSession();
-            try {
-//                urid = CryptUtils.getCryPasswd("1");
-//                this..delKey(urid);
-                session.setAttribute(PortalConstant.USER_UID,null);
-                session.setAttribute(PortalConstant.SYS_USER,null);
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.error("清除Redis中保存的用户信息异常！" , e);
-            }
+            session.removeAttribute(PortalConstant.SYS_USER);
+            session.removeAttribute(PortalConstant.USER_UID);
             returnVo = new ReturnVo(ReturnCode.SUCCESS, "注销成功！");
         } catch (Exception e) {
             logger.error("UserLoginController-out:", e);

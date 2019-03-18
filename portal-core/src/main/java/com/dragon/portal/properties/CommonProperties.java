@@ -114,6 +114,13 @@ public class CommonProperties {
 
     public String getYsportalManagerURL() { return ysportalManagerURL; }
 
+    /**
+     * 是否启用第三方登录
+     */
+    @Value("${idm.login.switch}")
+    private String loginSwitch;
+
+
     public String getIp() {
         return ip;
     }
@@ -197,4 +204,12 @@ public class CommonProperties {
     public String getFinanceEmailSubject() { return financeEmailSubject; }
 
     public String getFinanceEmailType() { return financeEmailType; }
+
+    public String getLoginSwitch() {
+        return loginSwitch;
+    }
+
+    public void setLoginSwitch(String loginSwitch) {
+        this.loginSwitch = loginSwitch;
+    }
 }

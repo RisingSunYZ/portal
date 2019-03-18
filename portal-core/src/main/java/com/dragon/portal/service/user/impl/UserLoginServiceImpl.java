@@ -87,7 +87,7 @@ public class UserLoginServiceImpl implements IUserLoginService {
 
 			//保存session
 			session.setAttribute(PortalConstant.USER_UID, user.getUserName());
-			session.setAttribute(PortalConstant.SYS_USER, user);
+			// session.setAttribute(PortalConstant.SYS_USER, user);
 			this.loginCallback(user.getUserNo(),session);
 		}
 		return returnVo;
@@ -203,14 +203,13 @@ public class UserLoginServiceImpl implements IUserLoginService {
 		return returnVo;
 	}
 
-	/*
-	*
+	/**
 	 * @Author yangzhao
 	 * @Description //TODO 登录回调 用户信息封装Session
 	 * @Date 16:10 2019/3/12
 	 * @Param [userNo, session]
 	 * @return com.dragon.tools.vo.ReturnVo
-	 **/
+	 */
 	@Override
 	public ReturnVo loginCallback(String userNo, HttpSession session) throws Exception {
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"用户信息存储Session失败！");
@@ -228,8 +227,8 @@ public class UserLoginServiceImpl implements IUserLoginService {
 						}
 					}
 					UserSessionInfo user = genUserSessionInfo(personVo);
-					session.setAttribute("user",user);
-					session.setAttribute("leaderDeptList",leaderDeptList);
+					user.setLeaderDeptList(leaderDeptList);
+					session.setAttribute(PortalConstant.SYS_USER, user);
 					returnVo = new ReturnVo(ReturnCode.SUCCESS,"用户信息存储Session成功！");
 				}
 			}else{

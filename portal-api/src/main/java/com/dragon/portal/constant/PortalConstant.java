@@ -28,6 +28,8 @@ public class PortalConstant {
     public static final int STATUS_ENABLED = 1;
     //用户会话信息对象在redis中的生命周期(单位/小时)
     public static final int SESSION_INFO_TTL = 12;
+    /** HTTP返回登录拦截状态 */
+    public static final int NO_LOGIN_CODE = 999;
     /**
      * 系统名称
      */
