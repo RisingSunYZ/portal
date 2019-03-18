@@ -83,6 +83,16 @@ public class CommonProperties {
     @Value("${itsm.path}")
     private String itsmPath;
 
+    // ############################# IDM配置 start #############################
+    @Value("${idm.logouturl}")
+    private String idmLogoutUrl;
+
+    @Value("${idm.url}")
+    private String idmUrl;
+
+    // ############################# IDM配置 end #############################
+
+
     /**
      * 开发环境使用,默认账号
      */
@@ -162,6 +172,22 @@ public class CommonProperties {
 
     public String getDeveloperNo() {
         return developerNo;
+    }
+
+    public String getIdmLogoutUrl() {
+        return idmLogoutUrl;
+    }
+
+    public void setIdmLogoutUrl(String idmLogoutUrl) {
+        this.idmLogoutUrl = idmLogoutUrl;
+    }
+
+    public String getIdmUrl() {
+        return idmUrl;
+    }
+
+    public void setIdmUrl(String idmUrl) {
+        this.idmUrl = idmUrl;
     }
 
     public String getFinanceEmailFromEmail() { return financeEmailFromEmail; }

@@ -3,8 +3,8 @@ package com.dragon.portal.service.idm.impl;
 import com.dragon.portal.client.AuthUtils;
 import com.dragon.portal.config.PropertiesConfig;
 import com.dragon.portal.service.idm.IIdmService;
+import com.dragon.tools.common.JsonUtils;
 import com.ecnice.privilege.vo.idm.IdmReturnEntity;
-import com.ys.tools.common.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +27,12 @@ public class IdmServiceImpl implements IIdmService {
 
     @Override
     public IdmReturnEntity checkLoginStatus(String ticketValue)throws Exception {
-        String appuser = propertiesConfig.getAppuser();
-        String appkey = propertiesConfig.getAppkey();
-        String appinfo = propertiesConfig.getAppinfo();
-//        AuthUtils util = new AuthUtils(appuser, appkey, appinfo);
-
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ticketValue", ticketValue);
         params.put("ticketName", "SIAMTGT");
         String url = propertiesConfig.getIdmUrl() + "/siam/rest/auth/validate";
         String retStr = util.getResponseFromServer(url, params);
-        IdmReturnEntity idmReturnEntity = (IdmReturnEntity)JsonUtils.jsonToObj(retStr,IdmReturnEntity.class);
+        IdmReturnEntity idmReturnEntity = (IdmReturnEntity) JsonUtils.jsonToObj(retStr,IdmReturnEntity.class);
         return idmReturnEntity;
     }
 

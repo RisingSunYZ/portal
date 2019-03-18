@@ -49,10 +49,13 @@ public class AuthUtils {
 			client = HttpClientBuilder.create().build();
 			resp = client.execute(request);
 			return EntityUtils.toString(resp.getEntity());
+		} catch(Exception e){
+			e.printStackTrace();
 		} finally {
 			HttpClientUtils.closeQuietly(resp);
 			HttpClientUtils.closeQuietly(client);
 		}
+		return null;
 	}
 
 	private void createSignHeader(HttpUriRequest request, Map<String, Object> params) throws Exception {

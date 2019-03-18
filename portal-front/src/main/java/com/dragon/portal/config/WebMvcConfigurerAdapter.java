@@ -1,9 +1,11 @@
 package com.dragon.portal.config;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.dragon.portal.interceptor.LoginCheckInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -17,12 +19,12 @@ import java.util.List;
 
 /**
  * 拦截器配置
- *
- * @author wangzhiyong
  */
 @Configuration
 public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 
+    @Autowired
+    private LoginCheckInterceptor loginCheckInterceptor;
 
     /**
      * 请求地址拦截 前后缀都不做匹配
@@ -38,12 +40,12 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(new LoginCheckInterceptor())
+        registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/portal/user/userLogin/**","/swagger-resources/**","/rest/index/**",
-                        "/webjars/**", "/v2/**", "/swagger-ui.html/**")
-                ;
+                        "/webjars/**", "/v2/**", "/swagger-ui.html/**");
     }
+
 
     /**
      * 静态资源配置
