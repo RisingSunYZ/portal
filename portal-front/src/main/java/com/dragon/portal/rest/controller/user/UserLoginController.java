@@ -1,11 +1,11 @@
 package com.dragon.portal.rest.controller.user;
 
-import com.dragon.portal.constant.FormConstant;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.customLabel.ApiJsonObject;
 import com.dragon.portal.customLabel.ApiJsonProperty;
 import com.dragon.portal.model.user.UserLogin;
-import com.dragon.portal.service.user.IUserLoginService;
 import com.dragon.portal.rest.controller.BaseController;
+import com.dragon.portal.service.user.IUserLoginService;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -29,8 +28,8 @@ import javax.servlet.http.HttpSession;
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
 @RestController
-@RequestMapping("/portal/user/userLogin")
-@Api(value="用户登录", description = "用户登录", tags={"用户登录 /portal/user/userLogin"})
+@RequestMapping("/rest/portal/user/userLogin")
+@Api(value="用户登录", description = "用户登录", tags={"用户登录 /rest/portal/user/userLogin"})
 public class UserLoginController extends BaseController{
 
     private static Logger logger = LoggerFactory.getLogger(UserLoginController.class);
@@ -70,15 +69,8 @@ public class UserLoginController extends BaseController{
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "注销失败！");
         try {
             HttpSession session = request.getSession();
-            try {
-//                urid = CryptUtils.getCryPasswd("1");
-//                this..delKey(urid);
-                session.setAttribute(FormConstant.USER_UID,null);
-                session.setAttribute(FormConstant.SYS_USER,null);
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.error("清除Redis中保存的用户信息异常！" , e);
-            }
+            session.removeAttribute(PortalConstant.SYS_USER);
+            session.removeAttribute(PortalConstant.USER_UID);
             returnVo = new ReturnVo(ReturnCode.SUCCESS, "注销成功！");
         } catch (Exception e) {
             logger.error("UserLoginController-out:", e);
@@ -157,14 +149,13 @@ public class UserLoginController extends BaseController{
     @PostMapping("/updatePwdAfterLogin")
     @ApiOperation("登录后->修改密码")
     public ReturnVo updatePwdAfterLogin(@ApiJsonObject({
-            @ApiJsonProperty(key="oldPassword",description = "原始密码"),
             @ApiJsonProperty(key="password",description = "密码" )
     })@RequestBody(required = false) UserLogin userLogin,HttpServletRequest request) {
         HttpSession session = request.getSession();
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败！");
         try {
-            if(StringUtils.isNotEmpty(userLogin.getPassword())&&StringUtils.isNotEmpty(userLogin.getOldPassword())){
-                returnVo = userLoginService.updatePwdAfterLogin(userLogin.getOldPassword(),userLogin.getPassword(),session);
+            if(StringUtils.isNotEmpty(userLogin.getPassword())){
+                returnVo = userLoginService.updatePwdAfterLogin(userLogin.getPassword(),session);
             }
         } catch (Exception e) {
             logger.error("UserLoginController-updatePwdAfterLogin:", e);

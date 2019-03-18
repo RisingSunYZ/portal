@@ -144,6 +144,7 @@ public class NewsNoticeServiceImpl implements INewsNoticeService {
                 long total = null != value && !"null".equals(value) ? value.getLong("total") : 0L;
                 newsNotices = new PagerModel<NewsNotice>();
                 newsNotices.setRows(newsNoticesList);
+                newsNotices.setData(newsNoticesList);
                 newsNotices.setTotal(total);
             }else{
                 String val= "";

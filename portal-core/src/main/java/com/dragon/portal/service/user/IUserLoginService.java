@@ -3,6 +3,7 @@ package com.dragon.portal.service.user;
 
 import com.dragon.tools.vo.ReturnVo;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -50,12 +51,22 @@ public interface IUserLoginService{
 
     /**
      * 登录后-》修改密码
-     * @param oldPassword
      * @param password
      * @param session
      * @return
      * @throws Exception
      */
-    public ReturnVo updatePwdAfterLogin(String oldPassword,String password, HttpSession session) throws Exception;
+    public ReturnVo updatePwdAfterLogin(String password, HttpSession session) throws Exception;
+
+
+    /*
+    *
+     * @Author yangzhao
+     * @Description //TODO 登录回调 用户信息存储到Session
+     * @Date 17:05 2019/3/11
+     * @Param [password, session]
+     * @return com.dragon.tools.vo.ReturnVo
+     **/
+    public ReturnVo loginCallback(String userNo, HttpSession session) throws Exception;
 
 }

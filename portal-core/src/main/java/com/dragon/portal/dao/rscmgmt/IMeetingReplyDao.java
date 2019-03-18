@@ -1,6 +1,7 @@
 package com.dragon.portal.dao.rscmgmt;
 
 import java.util.List;
+import java.util.Map;
 
 import com.mhome.tools.pager.PagerModel;
 import com.mhome.tools.pager.Query;
@@ -68,11 +69,11 @@ public interface IMeetingReplyDao {
 	
 	/**
 	 * 通过id批量删除会议答复MeetingReply
-	 * @param ids 如："'1','2','3','4'..."
+	 * @param params
 	 * @throws Exception
 	 * @Description:
 	 */
-	public void delMeetingReplyByIds(String ids) throws Exception;
+	public void delMeetingReplyByIds(Map<String,Object> params) throws Exception;
 	
 	/**
 	 * 通过id修改会议答复MeetingReply
@@ -84,20 +85,19 @@ public interface IMeetingReplyDao {
 
 	/**
 	 * 通过ids批量修改会议答复MeetingReply
-	 * @param ids 如："'1','2','3','4'..."
-	 * @param meetingReply
+	 * @param params
 	 * @throws Exception
 	 * @Description:
 	 */
-	public void updateMeetingReplyByIds(String ids,MeetingReply meetingReply) throws Exception;
+	public void updateMeetingReplyByIds(Map<String,Object> params) throws Exception;
 	
 	/**
 	 * 通过会议id和答复人工号会议答复MeetingReply
-	 * @param replyNo
+	 * @param params
 	 * @throws Exception
 	 * @Description:
 	 */
-	public MeetingReply getMeetingReplyByMeetingIdAndPersonNo(String meetingId,String replyNo);
+	public MeetingReply getMeetingReplyByMeetingIdAndPersonNo(Map<String,Object> params);
 	
 	/**
 	 * 会议详情页面加载会议答复内容

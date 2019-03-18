@@ -76,12 +76,12 @@
         <if test="isAllDay!=null">
         and is_all_day = #{isAllDay,jdbcType=INTEGER}
         </if>
-        <if test="startTime!=null and startTime!=''">
+        <if test="startTime!=null">
             <![CDATA[  
                 and start_time >= #{startTime,jdbcType=TIMESTAMP}
             ]]>
         </if>
-        <if test="endTime!=null and endTime!=''">
+        <if test="endTime!=null">
             <![CDATA[  
                 and end_time <= #{endTime,jdbcType=TIMESTAMP}
             ]]>

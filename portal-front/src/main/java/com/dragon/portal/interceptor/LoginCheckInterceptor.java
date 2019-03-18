@@ -1,25 +1,44 @@
 package com.dragon.portal.interceptor;
 
-import com.alibaba.fastjson.JSONObject;
-import com.dragon.portal.constant.FormConstant;
-import com.dragon.portal.model.user.UserLogin;
+import com.dragon.portal.component.IUserLoginComponent;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.properties.CommonProperties;
+import com.dragon.portal.service.idm.IIdmService;
 import com.dragon.portal.service.redis.RedisService;
+import com.dragon.portal.util.CryptUtils;
+import com.dragon.portal.utils.CommUtil;
+import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
+import com.dragon.portal.vo.user.UserSessionRedisInfo;
+import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.ReturnCode;
+import com.dragon.tools.utils.CookiesUtil;
 import com.dragon.tools.vo.ReturnVo;
+import com.ecnice.privilege.vo.idm.IdmReturnEntity;
+import com.ecnice.privilege.vo.idm.IdmUser;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
+import com.ys.ucenter.constant.UcenterConstant;
+import com.ys.ucenter.model.vo.LeaderDepartmentVo;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * 登录拦截器
@@ -30,6 +49,7 @@ import javax.servlet.http.HttpSession;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
+@Component
 public class LoginCheckInterceptor implements HandlerInterceptor {
 	
 	private static final Logger logger = Logger.getLogger(LoginCheckInterceptor.class);
@@ -41,33 +61,154 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 	private RedisService redisService;
 	@Resource
 	private CommonProperties commonProperties;
+	@Resource
+	private IIdmService idmService;
+	@Autowired
+	private IUserLoginComponent userLoginComponent;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		logger.info(request.getRequestURI());
 		HttpSession session = request.getSession();
-//		final Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
-		logger.info(session);
-		//判断是否IDM登录
-		if("true".equals("true")){
+		// 判断是否IDM登录
+		if(Boolean.TRUE.toString().equals(commonProperties.getLoginSwitch())){
+			// 1、从Redis中获取存储的当前登录用户。
 
+			// 验证IDM接口是否已经登录
+			Cookie cookie = CommUtil.getCookieByName(request, "SIAMTGT");
+			String siamTgt = null == cookie?null:cookie.getValue();
 
+			long start = System.currentTimeMillis();
+			IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamTgt);
+			long end = System.currentTimeMillis();
+			logger.info((end - start) + " ms= ---------------------------->");
 
-			return true;
-		}else{
-			UserLogin userLogin = (UserLogin)request.getSession().getAttribute(FormConstant.SYS_USER);
-			if (null != userLogin) {
+			if(null != idmReturnEntity && null != idmReturnEntity.getUser()){
+				IdmUser idmUser = idmReturnEntity.getUser();
+				String userNo = idmUser.getUid();
+
+				// String userNo = CookiesUtil.get(request,PortalConstant.COOKIE_USERNAME);
+				// 如果IDM是登录状态，将获取用户信息存入缓存中
+				UserSessionRedisInfo urInfo = userLoginComponent.getUserSessionRedisInfos(session.getId(), idmUser.getUid(), response);
+				UserSessionInfo userSessionInfo = getUserSessionInfo(urInfo);
+				logger.info(JsonUtils.toJson(urInfo));
+				if(null == userSessionInfo){
+					try {
+						com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVo = this.personnelApi.getPersonnelApiVoByNo(userNo);
+						//用户登录
+						if(returnVo.getCode() == UcenterConstant.SUCCESS) {
+							if(null != returnVo.getData()){
+								PersonnelApiVo personVo = returnVo.getData();
+								List<LeaderDepartmentVo> leaderDeptList = null;
+								if(null!=personVo && StringUtils.isNotBlank(personVo.getNo())){
+									com.ys.tools.vo.ReturnVo<LeaderDepartmentVo> returnVos = this.orgApi.getDepartmentsByLeaderCode(personVo.getNo());
+									if(returnVos != null && CollectionUtils.isNotEmpty(returnVos.getDatas())){
+										leaderDeptList = returnVos.getDatas();
+									}
+								}
+								UserSessionInfo usr = genUserSessionInfo(personVo);
+
+								setPersonInfo(usr, urInfo, leaderDeptList, response);
+							}else{
+								//如果人员主数据系统中查不到此人，则认为是临时人员登录
+								//登录临时人员
+								UserSessionInfo usr = genTempUserSessionInfo(idmUser);
+								setPersonInfo(usr, urInfo, null, response);
+							}
+						}else{
+							logger.error("获取人员主数据接口出错！" + returnVo.getMsg());
+						}
+					} catch (Exception e) {
+						logger.error("调用人员主数据接口异常！"+e);
+						e.printStackTrace();
+					}
+				}
 				return true;
-			} else {
-				logger.error("Request Intercept : " + request.getRequestURI());
-				ReturnVo vo = new ReturnVo(ReturnCode.FAIL, "您的登录会话已经失效，请重新登录");
-				response.setContentType("application/json;charset=UTF-8");
-				response.getWriter().write(JSONObject.toJSONString(vo));
+			}else{
+				logger.warn("您的登录会话已经失效，请重新登录！");
+				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+				response.setHeader("msg", "no login, please do login.");
 				return false;
 			}
+		}else{
+			UserSessionInfo u = (UserSessionInfo) request.getSession().getAttribute(PortalConstant.SYS_USER);
+			if(null == u){
+				logger.warn("您的登录会话已经失效，请重新登录！");
+				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+				response.setHeader("msg", "no login, please do login.");
+				return false;
+			}
+			return true;
 		}
 	}
 
-	/*
+	/**
+	 * 组装临时人员信息
+	 * @return
+	 * @Description:
+	 * @author xietongjian 2017 下午4:45:18
+	 */
+	public UserSessionInfo genTempUserSessionInfo(IdmUser idmUser){
+		UserSessionInfo userInfo = new UserSessionInfo();
+		String userName = idmUser.getUid();
+
+		userInfo.setNo(userName);
+		userInfo.setName(userName);
+//		userInfo.setDepName(request.getParameter("department"));
+//		userInfo.setCompanyName(request.getParameter("companyName"));
+//		userInfo.setUserImgUrl(request.getParameter("userImgUrl"));
+//		userInfo.setUserPost(request.getParameter("userPost"));
+		return userInfo;
+	}
+
+	/**
+	 * 把用户登录信息保存到Redis中
+	 * @param leaderDeptList
+	 * @return
+	 */
+	private void setPersonInfo(UserSessionInfo u, UserSessionRedisInfo usIdInfo, List<LeaderDepartmentVo> leaderDeptList, HttpServletResponse response) {
+		if(!CommUtils.isNull(u)) {
+			String userStr = JsonUtils.toJson(u);
+
+			//设置用户信息到Redis中
+			usIdInfo.putValue(PortalConstant.SESSION_PERSON_INFO, userStr);
+			//设置用户领导部门集合到Redis中
+
+			if(CollectionUtils.isNotEmpty(leaderDeptList)){
+				String userLeaderDeptListStr = JsonUtils.toJson(leaderDeptList);
+				usIdInfo.putValue(PortalConstant.SESSION_PERSON_LEADERDEPT_INFO, userLeaderDeptListStr);
+			}
+
+			String urid = u.getNo();
+			try {
+				urid = CryptUtils.getCryPasswd(PortalConstant.USER_REDIS_ID_PREFIX+u.getNo());
+
+				CookiesUtil.crossDomainPut(response, PortalConstant.COOKIE_USERNAME, u.getNo());
+			} catch (Exception e) {
+				logger.error("用户工号加密异常！" + e);
+				e.printStackTrace();
+			}
+			userLoginComponent.putUserSessionRedisInfo(urid, usIdInfo);
+		}
+	}
+
+		/**
+		 * @Titile:session中取用户登录信息,用于判断Redis中是否有该用户信息
+		 * @return 返回null
+		 */
+	private UserSessionInfo getUserSessionInfo(UserSessionRedisInfo usIdInfo) {
+		UserSessionInfo u = null;
+		String uo = usIdInfo.getValue(PortalConstant.SESSION_PERSON_INFO);
+		if(StringUtils.isNotEmpty(uo)) {
+			u = (UserSessionInfo)JsonUtils.jsonToObj(uo, UserSessionInfo.class);
+			// logger.info("从Redis中获取登录用户: " + u.getName());
+		}else{
+			//logger.info("Redis中获取用户信息为空！");
+		}
+		return u;
+	}
+
+	/**
 	 * 获取门户Redis里面皮肤主题
 	 * (non-Javadoc)
 	 * @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#postHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, org.springframework.web.servlet.ModelAndView)

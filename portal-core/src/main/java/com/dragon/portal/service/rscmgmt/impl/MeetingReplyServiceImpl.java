@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Title:会议答复Service实现
@@ -64,7 +66,9 @@ public class MeetingReplyServiceImpl implements IMeetingReplyService {
 	public void delMeetingReplyByIds(String ids) throws Exception {
 		ids = this.converString(ids);
 		if(StringUtils.isNotBlank(ids)){
-			this.meetingReplyDao.delMeetingReplyByIds(ids);
+			Map<String,Object> params = new HashMap();
+			params.put("ids", ids);
+			this.meetingReplyDao.delMeetingReplyByIds(params);
 		}
 	}
 	
@@ -81,7 +85,10 @@ public class MeetingReplyServiceImpl implements IMeetingReplyService {
 		ids = this.converString(ids);
 		if (StringUtils.isNotBlank(ids) && null != meetingReply) {
 			meetingReply.setUpdateTime(new Date());
-			this.meetingReplyDao.updateMeetingReplyByIds(ids, meetingReply);
+			Map<String,Object> params = new HashMap();
+			params.put("ids", ids);
+			params.put("meetingReply", meetingReply);
+			this.meetingReplyDao.updateMeetingReplyByIds(params);
 		}
 	}
 	
@@ -111,7 +118,10 @@ public class MeetingReplyServiceImpl implements IMeetingReplyService {
 
 	@Override
 	public MeetingReply getMeetingReplyByMeetingIdAndPersonNo(String meetingId, String replyNo) {
-		return (StringUtils.isNotBlank(meetingId) && StringUtils.isNotBlank(replyNo)) ? this.meetingReplyDao.getMeetingReplyByMeetingIdAndPersonNo(meetingId, replyNo) : null;
+		Map<String,Object> params = new HashMap();
+		params.put("meeting_id", meetingId);
+		params.put("creator", replyNo);
+		return (StringUtils.isNotBlank(meetingId) && StringUtils.isNotBlank(replyNo)) ? this.meetingReplyDao.getMeetingReplyByMeetingIdAndPersonNo(params) : null;
 	}
 
 	@Override
