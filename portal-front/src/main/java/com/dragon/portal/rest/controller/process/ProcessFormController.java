@@ -31,14 +31,17 @@ import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.*;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -98,6 +101,7 @@ public class ProcessFormController extends BaseController {
 		ExtendModel modelExtend=new ExtendModel();
 		modelExtend.setBusinessKey(bizId);
 		modelExtend.setModelKey(modelId);
+		String processDefineId="";
 		try{
 			if(!"0".equals(instId)&&"0".equals(taskId)){
 				ReturnVo<ActReProcdefExtendVo> rVo = flowApi.getPInfoByPId(instId);
@@ -129,7 +133,7 @@ public class ProcessFormController extends BaseController {
 					formTitle = StringUtils.isNotBlank(bizId)&&!"0".equals(bizId)?actReModelExtend.getName()+"-"+bizId:actReModelExtend.getName();
 					formInfo.put("formTitle",formTitle);
 					if(StringUtils.isNotBlank(instId)&&"0".equals(instId)){
-						instId = actReModelExtend.getProcessDefinitionId();
+						processDefineId = actReModelExtend.getProcessDefinitionId();
 					}else{
 						//获取流程提交人信息
 						this.getUserInfo(formInfo,instId);
@@ -138,6 +142,7 @@ public class ProcessFormController extends BaseController {
 			}
 			formInfo.put("bizId",bizId);
 			formInfo.put("proInstId",(instId));
+			formInfo.put("processDefineId",(processDefineId));
 			formInfo.put("taskId",taskId);
 		}catch (Exception e){
 			e.printStackTrace();
@@ -881,6 +886,64 @@ public class ProcessFormController extends BaseController {
 		model.put("approveRecords", approveRecords);
 		model.put("transferRecords", readRecords);
 		model.put("flowEnd", flowEnd);
+	}
+	/**
+	 * 获取流程图图片流
+	 * @param processInstId
+	 * @param processDefineId
+	 * @param response
+	 * @Description:
+	 * @author xietongjian 2017 下午11:21:24
+	 */
+	@ApiOperation("获取流程图图片流")
+	@ApiImplicitParams({
+			@ApiImplicitParam(value="流程实例id",name="processInstId",dataType="String",paramType="query"),
+			@ApiImplicitParam(value="流程定义id",name="processDefineId",dataType="String",paramType="query")
+	})
+	@RequestMapping(value = "/generateDiagramImg",method = RequestMethod.GET)
+	public void generateDiagramImg(String processInstId, String processDefineId ,@Ignore HttpServletResponse response){
+		try {
+			// 如果有流程实例，则通过流程实例ID查询流程图片
+			if(StringUtils.isNotBlank(processInstId)){
+				com.dragon.tools.vo.ReturnVo<byte[]> vo= flowApi.generateDiagram(processInstId);
+				if(FlowConstant.SUCCESS.equals(vo.getCode())){
+					byte[] b=vo.getData();
+					response.getOutputStream().write(b, 0, b.length);
+				}
+			}else{
+				byte[] b= flowApi.generateDiagramByProcessDefinitionId(processDefineId);
+				response.getOutputStream().write(b, 0, b.length);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("流转换异常！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("获取流程图的图片流异常！" + e.getMessage());
+		}
+	}
+	/**
+	 * 加载流程图上的审批人节点数据
+	 * @param processInstId
+	 * @return
+	 * @Description:
+	 * @author xietongjian 2017 下午11:37:17
+	 */
+	@ApiOperation("加载流程图上的审批人节点数据")
+	@ApiImplicitParams(
+			@ApiImplicitParam(value="流程实例id",name="processInstId",dataType="String",paramType="query")
+	)
+	@RequestMapping(value = "/loadDiagramData",method = RequestMethod.GET)
+	public List<ActivityVo> loadDiagramData(String processInstId){
+		List<ActivityVo> nodes = null;
+		try {
+			if(StringUtils.isNotBlank(processInstId)){
+				nodes = flowApi.getProcessActivityVos(processInstId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return nodes;
 	}
 	/**
 	 * 封装人员主数据列表
