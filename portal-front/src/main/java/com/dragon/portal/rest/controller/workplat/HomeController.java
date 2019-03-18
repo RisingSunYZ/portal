@@ -9,7 +9,7 @@ import com.dragon.portal.model.workplat.ThirdSystem;
 import com.dragon.portal.service.cstm.ISystemMenuService;
 import com.dragon.portal.service.cstm.ISystemMenuUserService;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
