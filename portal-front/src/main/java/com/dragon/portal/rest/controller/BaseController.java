@@ -101,7 +101,7 @@ public class BaseController {
                     return u;
                 }
             }else{
-                u = (UserSessionInfo) request.getSession().getAttribute(PortalConstant.SYS_USER);
+                u = (UserSessionInfo) request.getSession().getAttribute(PortalConstant.SESSION_SYS_USER);
             }
         } catch(Exception e) {
             e.printStackTrace();

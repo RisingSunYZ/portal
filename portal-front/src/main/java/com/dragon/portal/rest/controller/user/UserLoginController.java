@@ -69,8 +69,8 @@ public class UserLoginController extends BaseController{
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "注销失败！");
         try {
             HttpSession session = request.getSession();
-            session.removeAttribute(PortalConstant.SYS_USER);
-            session.removeAttribute(PortalConstant.USER_UID);
+            session.removeAttribute(PortalConstant.SESSION_SYS_USER);
+            session.removeAttribute(PortalConstant.SESSION_USER_UID);
             returnVo = new ReturnVo(ReturnCode.SUCCESS, "注销成功！");
         } catch (Exception e) {
             logger.error("UserLoginController-out:", e);
@@ -149,13 +149,14 @@ public class UserLoginController extends BaseController{
     @PostMapping("/updatePwdAfterLogin")
     @ApiOperation("登录后->修改密码")
     public ReturnVo updatePwdAfterLogin(@ApiJsonObject({
+            @ApiJsonProperty(key="oldPassword",description = "密码" ),
             @ApiJsonProperty(key="password",description = "密码" )
     })@RequestBody(required = false) UserLogin userLogin,HttpServletRequest request) {
         HttpSession session = request.getSession();
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败！");
         try {
-            if(StringUtils.isNotEmpty(userLogin.getPassword())){
-                returnVo = userLoginService.updatePwdAfterLogin(userLogin.getPassword(),session);
+            if(StringUtils.isNotEmpty(userLogin.getPassword())&&StringUtils.isNotEmpty(userLogin.getOldPassword())){
+                returnVo = userLoginService.updatePwdAfterLogin(userLogin.getOldPassword(),userLogin.getPassword(),session);
             }
         } catch (Exception e) {
             logger.error("UserLoginController-updatePwdAfterLogin:", e);

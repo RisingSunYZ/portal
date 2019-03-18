@@ -316,94 +316,94 @@ public class MeetingController extends BaseController {
         return returnVo;
     }
 
-//    /**
-//     * 根据id查询会议答复
-//     * @return
-//     * @Description:
-//     */
-//    @GetMapping("/getSummaryMeeting")
-//    @ApiOperation("根据id查询会议纪要和附件")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "query",required = true),
-//    })
-//    public ReturnVo<Map<String,Object>> getSummaryMeeting(String id ,HttpServletRequest request,HttpServletResponse response){
-//        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
-//        try{
-//            Map<String,Object>map = new HashMap<>();
-//            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
-//            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
-//                MeetingSummary meetingSummary = this.meetingSummaryService.getMeetingSummaryByMeetingId(id);
-//                if(meetingSummary!=null){
-//                    //设置编辑页面显示会议的附件
-//                    List<MeetingFiles> meetingSummaryFilesTmp = meetingFilesService.getMeetingFilesByMeetingId(id);
-//
-//                    List<MeetingFiles> meetingSummaryFiles = new ArrayList<>();
-//                    String fileName="";
-//                    String filePath="";
-//                    if(meetingSummaryFilesTmp.size()>0){
-//                        for(MeetingFiles f : meetingSummaryFilesTmp){
-//                            if(f.getUseType() == MeetingFileType.MEETING_SUMMARY_FILE.getCode()){
-//                                meetingSummaryFiles.add(f);
-//                                fileName=fileName+f.getFileName()+",";
-//                                filePath=filePath+f.getFilePath()+",";
-//                            }
-//                        }
-//                        if(StringUtils.isNotBlank(fileName)){
-//                            meetingSummary.setFileName(fileName.substring(0, fileName.length()-1));
-//                        }
-//                        if(StringUtils.isNotBlank(filePath)){
-//                            meetingSummary.setFilePath(filePath.substring(0, filePath.length()-1));
-//                        }
-//                    }
-//                    map.put("meetingSummaryFiles", meetingSummaryFiles);
-//                }else{
-//                    meetingSummary = new MeetingSummary();
-//                    meetingSummary.setMeetingId(id);
-//                }
-//                map.put("meetingSummary", meetingSummary);
-//                returnVo = new ReturnVo(ReturnCode.SUCCESS, "查询成功");
-//            }
-//            returnVo.setData(map);
-//        }catch (Exception e){
-//            logger.error("MeetingController-getSummaryMeeting",e);
-//        }
-//        return returnVo;
-//    }
+    /**
+     * 根据id查询会议纪要和附件
+     * @return
+     * @Description:
+     */
+    @GetMapping("/getSummaryMeeting")
+    @ApiOperation("根据id查询会议纪要和附件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "query",required = true),
+    })
+    public ReturnVo<Map<String,Object>> getSummaryMeeting(String id ,HttpServletRequest request,HttpServletResponse response){
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
+        try{
+            Map<String,Object>map = new HashMap<>();
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                MeetingSummary meetingSummary = this.meetingSummaryService.getMeetingSummaryByMeetingId(id);
+                if(meetingSummary!=null){
+                    //设置编辑页面显示会议的附件
+                    List<MeetingFiles> meetingSummaryFilesTmp = meetingFilesService.getMeetingFilesByMeetingId(id);
 
-//    /**
-//     * @param request
-//     * @Description:新建、编辑会议纪要页面数据保存
-//     */
-//    @PostMapping("/saveMeetingSummary")
-//    @ApiOperation("新建、编辑会议纪要页面数据保存")
-//    public String saveMeetingSummary(@RequestBody MeetingSummary meetingSummary, HttpServletRequest request, HttpServletResponse response) {
-//        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败");
-//        try {
-//            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
-//            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
-//                String userNo=loginUser.getNo();
-//                String userName=loginUser.getName();
-//                if(StringUtils.isBlank(meetingSummary.getId())){
-//                    meetingSummary.setCreator(userNo);
-//                    meetingSummary.setUpdator(userNo);
-//                    this.meetingSummaryService.insertMeetingSummary(meetingSummary);
-//                    returnVo = new ReturnVo(ReturnCode.SUCCESS, "添加成功");
-//                }else{
-//                    meetingSummary.setCreator(userNo);
-//                    meetingSummary.setUpdator(userNo);
-//                    meetingSummary.setDelFlag(1);
-//                    this.meetingSummaryService.updateMeetingSummary(meetingSummary);
-//                    returnVo = new ReturnVo(ReturnCode.SUCCESS, "修改成功");
-//                }
-//            }else{
-//                returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingController-update:"+e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(returnVo);
-//    }
+                    List<MeetingFiles> meetingSummaryFiles = new ArrayList<>();
+                    String fileName="";
+                    String filePath="";
+                    if(meetingSummaryFilesTmp.size()>0){
+                        for(MeetingFiles f : meetingSummaryFilesTmp){
+                            if(f.getUseType() == MeetingFileType.MEETING_SUMMARY_FILE.getCode()){
+                                meetingSummaryFiles.add(f);
+                                fileName=fileName+f.getFileName()+",";
+                                filePath=filePath+f.getFilePath()+",";
+                            }
+                        }
+                        if(StringUtils.isNotBlank(fileName)){
+                            meetingSummary.setFileName(fileName.substring(0, fileName.length()-1));
+                        }
+                        if(StringUtils.isNotBlank(filePath)){
+                            meetingSummary.setFilePath(filePath.substring(0, filePath.length()-1));
+                        }
+                    }
+                    map.put("meetingSummaryFiles", meetingSummaryFiles);
+                }else{
+                    meetingSummary = new MeetingSummary();
+                    meetingSummary.setMeetingId(id);
+                }
+                map.put("meetingSummary", meetingSummary);
+                returnVo = new ReturnVo(ReturnCode.SUCCESS, "查询成功");
+            }
+            returnVo.setData(map);
+        }catch (Exception e){
+            logger.error("MeetingController-getSummaryMeeting",e);
+        }
+        return returnVo;
+    }
+
+    /**
+     * @param request
+     * @Description:新建、编辑会议纪要页面数据保存
+     */
+    @PostMapping("/saveMeetingSummary")
+    @ApiOperation("新建、编辑会议纪要页面数据保存")
+    public String saveMeetingSummary(@RequestBody MeetingSummary meetingSummary, HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败");
+        try {
+            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                String userNo=loginUser.getNo();
+                String userName=loginUser.getName();
+                if(StringUtils.isBlank(meetingSummary.getId())){
+                    meetingSummary.setCreator(userNo);
+                    meetingSummary.setUpdator(userNo);
+                    this.meetingSummaryService.insertMeetingSummary(meetingSummary);
+                    returnVo = new ReturnVo(ReturnCode.SUCCESS, "添加成功");
+                }else{
+                    meetingSummary.setCreator(userNo);
+                    meetingSummary.setUpdator(userNo);
+                    meetingSummary.setDelFlag(1);
+                    this.meetingSummaryService.updateMeetingSummary(meetingSummary);
+                    returnVo = new ReturnVo(ReturnCode.SUCCESS, "修改成功");
+                }
+            }else{
+                returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
+            }
+        } catch (Exception e) {
+            logger.error("MeetingController-update:"+e);
+            e.printStackTrace();
+        }
+        return JsonUtils.toJson(returnVo);
+    }
 
     /**
      * @param id
@@ -836,35 +836,6 @@ public class MeetingController extends BaseController {
         return JsonUtils.toJson(returnVo);
     }
 
-    //删除
-//    @GetMapping("/dels")
-//    @ApiOperation("根据id删除会议")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name="ids",value = "多个id逗号隔开",required = true,dataType = "String",paramType = "query"),
-//    })
-//    public String dels(@RequestParam String ids,HttpServletRequest request, HttpServletResponse response) {
-//        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "删除失败");
-//        try {
-//            UserSessionInfo loginUser =  getUserSessionInfo(request,response);
-//            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
-//                String userName=loginUser.getNo();
-//                if(StringUtils.isNotBlank(ids)){
-//                    Meeting meeting = new  Meeting();
-//                    meeting.setUpdator(userName);
-//                    meeting.setDelFlag(PortalConstant.DEL_FLAG);
-//                    this.meetingService.updateMeetingByIds(ids,meeting);//逻辑删除
-//                    //this.meetingService.delMeetingByIds(ids); //物理删除
-//                }
-//                returnVo = new ReturnVo(ReturnCode.SUCCESS, "删除成功");
-//            }else{
-//                returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingController-dels:"+e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(returnVo);
-//    }
     /**
      *@Description 上传会议附件
      *@param
