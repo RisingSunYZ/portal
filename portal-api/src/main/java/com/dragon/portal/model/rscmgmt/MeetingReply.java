@@ -1,12 +1,10 @@
 package com.dragon.portal.model.rscmgmt;
 
-import java.io.Serializable;
-
+import com.dragon.tools.common.BaseModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.lang.StringUtils;
 
-import com.dragon.tools.common.BaseModel;
+import java.io.Serializable;
 
 /**
  * @Title:会议答复
@@ -27,6 +25,7 @@ public class MeetingReply extends BaseModel implements Serializable{
 	/**
      * id
      */
+    @ApiModelProperty(value="ID",name="ID")
     private String id;
     
     /**

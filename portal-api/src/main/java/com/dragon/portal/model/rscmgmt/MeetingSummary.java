@@ -3,6 +3,8 @@ package com.dragon.portal.model.rscmgmt;
 import java.io.Serializable;
 
 import com.dragon.tools.common.BaseModel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @Title:会议纪要
@@ -12,6 +14,7 @@ import com.dragon.tools.common.BaseModel;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
  */
+@ApiModel(value="MeetingSummary 会议纪要",description = "MeetingSummary 会议纪要")
 public class MeetingSummary extends BaseModel implements Serializable{
     
     /**
@@ -27,19 +30,23 @@ public class MeetingSummary extends BaseModel implements Serializable{
     /**
      * 会议ID
      */
+    @ApiModelProperty(value="会议ID",name="meetingId")
     private String meetingId;
     
     /**
      * 纪要内容
      */
+    @ApiModelProperty(value="纪要内容",name="content")
     private String content;
     
     //附件（文件名称）
+    @ApiModelProperty(value="附件（文件名称）",name="fileName")
     private String fileName;
     //附件（文件路劲）
+    @ApiModelProperty(value="附件（文件路劲）",name="filePath")
     private String filePath;
-    
-    
+
+
     public String getId() {
         return id;
     }

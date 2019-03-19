@@ -74,7 +74,32 @@ public class CommonProperties {
     @Value("${exchange.uri}")
     private String exchangeUri;
     // ############################# Exchange end #############################
+    // ############################# itsm Path start #############################
+    @Value("${itsm.path}")
+    private String itsmPath;
 
+    // ############################# IDM配置 start #############################
+    @Value("${idm.logouturl}")
+    private String idmLogoutUrl;
+
+    @Value("${idm.url}")
+    private String idmUrl;
+
+    // ############################# IDM配置 end #############################
+
+
+    /**
+     * 开发环境使用,默认账号
+     */
+    @Value("${dic.developer.no}")
+    private String developerNo;
+
+
+    /**
+     * 是否启用第三方登录
+     */
+    @Value("${idm.login.switch}")
+    private String loginSwitch;
 
 
     public String getIp() {
@@ -127,5 +152,37 @@ public class CommonProperties {
 
     public String getExchangeUri() {
         return exchangeUri;
+    }
+
+    public String getItsmPath() {
+        return itsmPath;
+    }
+
+    public String getDeveloperNo() {
+        return developerNo;
+    }
+
+    public String getIdmLogoutUrl() {
+        return idmLogoutUrl;
+    }
+
+    public void setIdmLogoutUrl(String idmLogoutUrl) {
+        this.idmLogoutUrl = idmLogoutUrl;
+    }
+
+    public String getIdmUrl() {
+        return idmUrl;
+    }
+
+    public void setIdmUrl(String idmUrl) {
+        this.idmUrl = idmUrl;
+    }
+
+    public String getLoginSwitch() {
+        return loginSwitch;
+    }
+
+    public void setLoginSwitch(String loginSwitch) {
+        this.loginSwitch = loginSwitch;
     }
 }

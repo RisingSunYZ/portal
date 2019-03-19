@@ -14,6 +14,7 @@ import com.dragon.portal.vo.process.ProcessMainVo;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
+import com.sun.tools.javac.comp.Flow;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -127,6 +128,9 @@ public class ProcessMainComponentImpl implements IProcessMainComponent {
 			backVo.setUserCode(userNo);
 			backVo.setMessage(message);
 			returnVo = flowApi.revocationTask(backVo);
+			if(FlowConstant.SUCCESS.equals(returnVo.getCode())){
+				returnVo.setCode(ReturnCode.SUCCESS);
+			}
 		}else{
 			returnVo.setMsg("驳回人工号，实例id不能为空");
 		}
@@ -134,7 +138,7 @@ public class ProcessMainComponentImpl implements IProcessMainComponent {
 	}
 	@Override
 	public ReturnVo<String> backToAnyStep(RevokeVo revoke){
-		com.dragon.tools.vo.ReturnVo<String> vo=new com.dragon.tools.vo.ReturnVo<String>(FlowConstant.ERROR,"驳回失败");
+		com.dragon.tools.vo.ReturnVo<String> vo=new com.dragon.tools.vo.ReturnVo<String>(ReturnCode.FAIL,"驳回失败");
 		BackApiVo backVo=new BackApiVo();
 		if(StringUtils.isNotBlank(revoke.getUserNo())
 				&& StringUtils.isNotBlank(revoke.getActivityId())
@@ -144,7 +148,8 @@ public class ProcessMainComponentImpl implements IProcessMainComponent {
 			backVo.setMessage("【驳回到"+revoke.getActivityName()+" "+revoke.getAssigneeName()+"】"+revoke.getMessage());
 			backVo.setProcessInstanceId(revoke.getProcessInstId());
 			backVo.setDistFlowElementId(revoke.getActivityId());
-			vo = flowApi.backToStep(backVo);
+			flowApi.backToStep(backVo);
+			vo=new com.dragon.tools.vo.ReturnVo<String>(ReturnCode.SUCCESS,"驳回成功");
 		}else{
 			vo.setMsg("驳回人工号，任务id不能为空");
 		}

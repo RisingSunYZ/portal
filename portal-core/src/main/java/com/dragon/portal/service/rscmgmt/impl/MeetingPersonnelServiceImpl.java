@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Title:会议参与人员Service实现
@@ -65,7 +67,9 @@ public class MeetingPersonnelServiceImpl implements IMeetingPersonnelService {
 	public void delMeetingPersonnelByIds(String ids) throws Exception {
 		ids = this.converString(ids);
 		if(StringUtils.isNotBlank(ids)){
-			this.meetingPersonnelDao.delMeetingPersonnelByIds(ids);
+			Map<String,Object> params = new HashMap<>();
+			params.put("ids", ids);
+			this.meetingPersonnelDao.delMeetingPersonnelByIds(params);
 		}
 	}
 	
@@ -82,7 +86,10 @@ public class MeetingPersonnelServiceImpl implements IMeetingPersonnelService {
 		ids = this.converString(ids);
 		if (StringUtils.isNotBlank(ids) && null != meetingPersonnel) {
 			meetingPersonnel.setUpdateTime(new Date());
-			this.meetingPersonnelDao.updateMeetingPersonnelByIds(ids, meetingPersonnel);
+			Map<String,Object> params = new HashMap();
+			params.put("ids", ids);
+			params.put("meetingPersonnel", meetingPersonnel);
+			this.meetingPersonnelDao.updateMeetingPersonnelByIds(params);
 		}
 	}
 	

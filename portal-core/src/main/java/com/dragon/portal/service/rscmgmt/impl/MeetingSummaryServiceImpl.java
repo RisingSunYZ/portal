@@ -73,7 +73,9 @@ public class MeetingSummaryServiceImpl implements IMeetingSummaryService {
 	public void delMeetingSummaryByIds(String ids) throws Exception {
 		ids = this.converString(ids);
 		if(StringUtils.isNotBlank(ids)){
-			this.meetingSummaryDao.delMeetingSummaryByIds(ids);
+			Map<String,Object> params = new HashMap();
+			params.put("ids", ids);
+			this.meetingSummaryDao.delMeetingSummaryByIds(params);
 		}
 	}
 	
