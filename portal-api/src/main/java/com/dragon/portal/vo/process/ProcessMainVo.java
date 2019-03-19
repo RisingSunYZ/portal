@@ -85,6 +85,45 @@ public class ProcessMainVo extends BaseProcessVo implements Serializable{
 	 */
 	private String bizUrl;
 
+	/**
+	 * 附言内容
+	 */
+	private String attachMsg;
+
+	/**
+	 * 附言添加的附件
+	 */
+	private String attachMsgAttAdd;
+
+	/**
+	 * 附言内容删除的附件
+	 */
+	private String attachMsgAttDel;
+
+	public String getAttachMsg() {
+		return attachMsg;
+	}
+
+	public void setAttachMsg(String attachMsg) {
+		this.attachMsg = attachMsg;
+	}
+
+	public String getAttachMsgAttAdd() {
+		return attachMsgAttAdd;
+	}
+
+	public void setAttachMsgAttAdd(String attachMsgAttAdd) {
+		this.attachMsgAttAdd = attachMsgAttAdd;
+	}
+
+	public String getAttachMsgAttDel() {
+		return attachMsgAttDel;
+	}
+
+	public void setAttachMsgAttDel(String attachMsgAttDel) {
+		this.attachMsgAttDel = attachMsgAttDel;
+	}
+
 	public ProcessMainVo() {
 	}
 

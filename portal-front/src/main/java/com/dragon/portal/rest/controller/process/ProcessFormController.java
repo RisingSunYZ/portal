@@ -316,28 +316,24 @@ public class ProcessFormController extends BaseController {
 	 * @Description:
 	 */
 	@ApiOperation("添加附言数据")
-	@ApiImplicitParams({
-			@ApiImplicitParam(value="附言内容",name="attachMsg",dataType="String",paramType="query"),
-			@ApiImplicitParam(value="附言添加的附件",name="attachMsgAttAdd",dataType="String",paramType="query"),
-			@ApiImplicitParam(value="附言内容删除的附件",name="attachMsgAttDel",dataType="String",paramType="query")
-	})
+
 	@RequestMapping(value = "/insertAttachMsg",method = RequestMethod.POST)
 	public ReturnVo<List<Map<String,Object>>> insertAttachMsg(HttpServletRequest request, HttpServletResponse response,
-								  @RequestBody @ApiParam(value = "流程参数对象") ProcessMainVo processMainVo, String attachMsg, String attachMsgAttAdd, String attachMsgAttDel) {
+								  @RequestBody @ApiParam(value = "流程参数对象") ProcessMainVo processMainVo) {
 		ReturnVo<List<Map<String,Object>>> returnVo = new ReturnVo<List<Map<String,Object>>>(ReturnCode.FAIL, "保存失败");
 		WfPostscript wfPostscript = new WfPostscript();
 		UserSessionInfo loginUser = this.getLoginUser(request, response);
-		if(StringUtils.isNotBlank(attachMsg)){
+		if(StringUtils.isNotBlank(processMainVo.getAttachMsg())){
 			if(StringUtils.isNotBlank(processMainVo.getBizId()) || StringUtils.isNotBlank(processMainVo.getProcessInstId())){
 				wfPostscript.setProcFormId(processMainVo.getBizId());
 				wfPostscript.setProcInstId(processMainVo.getProcessInstId());
 				wfPostscript.setCreator(loginUser.getNo());
-				wfPostscript.setMassage(CommUtil.decodeString(attachMsg,"UTF-8"));
+				wfPostscript.setMassage(CommUtil.decodeString(processMainVo.getAttachMsg(),"UTF-8"));
 				try {
 					ReturnVo<String> rVo = flowApi.addWfPostscript(wfPostscript);
 					if(FlowConstant.SUCCESS.equals(rVo.getCode())){
 						// 添加附件
-						processMainComponent.formAttOpt(CommUtil.decodeString(attachMsgAttAdd,"UTF-8"), attachMsgAttDel, loginUser.getNo(), rVo.getData());
+						processMainComponent.formAttOpt(CommUtil.decodeString(processMainVo.getAttachMsgAttAdd(),"UTF-8"), processMainVo.getAttachMsgAttDel(), loginUser.getNo(), rVo.getData());
 						WfPostscript wfPostscript2 =new WfPostscript();
 //						wfPostscript2.setCreator(processMainVo.getSenderNo());
 						wfPostscript2.setProcFormId(processMainVo.getBizId());
