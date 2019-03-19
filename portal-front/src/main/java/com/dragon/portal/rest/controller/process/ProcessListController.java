@@ -1,12 +1,17 @@
 package com.dragon.portal.rest.controller.process;
 
+import com.dragon.flow.api.ICusFlowApi;
 import com.dragon.flow.api.IFlowApi;
 import com.dragon.flow.constant.FlowConstant;
 import com.dragon.flow.enm.flowable.run.ProcessStatusEnum;
+import com.dragon.flow.enm.from.FormDefultFieldEnum;
 import com.dragon.flow.enm.from.FormDraftStatusEnum;
 import com.dragon.flow.enm.from.ModelAppliedRangeEnum;
+import com.dragon.flow.model.basedata.DicItem;
 import com.dragon.flow.model.basedata.FlowCategory;
 import com.dragon.flow.model.form.FormDraft;
+import com.dragon.flow.model.form.FormItem;
+import com.dragon.flow.model.org.UserVo;
 import com.dragon.flow.vo.flowable.task.TaskQueryParamsVo;
 import com.dragon.flow.vo.flowable.task.TaskVo;
 import com.dragon.flow.vo.model.ModelVo;
@@ -21,24 +26,38 @@ import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
+import com.dragon.tools.vo.SimpleReturnVo;
 import com.ys.tools.common.JsonUtils;
+import com.ys.ucenter.api.IAreaApi;
+import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
+import com.ys.ucenter.constant.UcenterConstant;
+import com.ys.ucenter.model.common.Area;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jdk.nashorn.internal.ir.annotations.Ignore;
+import net.sf.json.JSONArray;
+import net.sf.json.JsonConfig;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -55,9 +74,16 @@ public class ProcessListController extends BaseController {
     @Autowired
     private IFlowApi flowApi;
     @Autowired
+    private ICusFlowApi cusFlowApi;
+    @Autowired
     IPersonnelApi personnelApi;
-
+    @Autowired
+    IOrgApi orgApi;
+    @Resource
+    IAreaApi areaApi;
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
 
     /**
      * 查询待办事项未办理
@@ -537,6 +563,716 @@ public class ProcessListController extends BaseController {
         return sbf.toString();
     }
 
+    /**
+     *
+     * @param request
+     * @return
+     * @Description:表单查询模板目录
+     */
+    @ApiOperation("表单查询右侧模板目录树")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value="关键字",name="keyword",dataType = "String",paramType = "query")
+    })
+    @RequestMapping(value="/getWfCategoryByUser",method = RequestMethod.GET)
+    public ReturnVo getWfCategoryByUser(String keyword, @Ignore HttpServletRequest request, @Ignore HttpServletResponse response) {
+        List<FlowCategory> list=new ArrayList<FlowCategory>();
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
+        //增加一个树结构的list
+        List<WfCategoryTree> listTree = new ArrayList<WfCategoryTree>();
+        UserSessionInfo user=this.getUserSessionInfo(request, response);
+        try {
+            if(user!=null && StringUtils.isNotBlank(user.getNo())){
+                ReturnVo<LinkedHashSet<FlowCategory>> vo=flowApi.getProcessListByUser(user.getNo(), keyword);
+                if(vo!=null && FlowConstant.SUCCESS.equals(vo.getCode()) && CollectionUtils.isNotEmpty(vo.getData())){
+                    list=new ArrayList<FlowCategory>(vo.getData());
+                    for(FlowCategory wfCategoryVo:list){
+                        //查找出pid为空的数据
+                        if(StringUtils.isBlank(wfCategoryVo.getPid())){
+                            //将数据封装成树结构的数据
+                            WfCategoryTree wfCategoryTree = new WfCategoryTree(wfCategoryVo.getId(),wfCategoryVo.getName(),wfCategoryVo.getPid(),wfCategoryVo.getCode());
+                            //用递归方法查找出下级，下下级的数据
+                            getTreeChildren(wfCategoryVo.getId(),wfCategoryTree,list);
+                            //加入到树结构的list中
+                            listTree.add(wfCategoryTree);
+                        }
+                    }
+                }
+            }
+            returnVo=new ReturnVo(ReturnCode.SUCCESS,"查询成功",listTree);
+        } catch (Exception e) {
+            logger.error("ApiProcessController-getWfCategoryByUser:",e);
+        }
+        return returnVo;
+    }
+
+    //递归方法
+    @ApiIgnore
+    private void getTreeChildren(String pid,WfCategoryTree parent,List<FlowCategory> wfCategoryVoList){
+        //创建子类的树结构list
+        List<WfCategoryTree> list = new ArrayList<WfCategoryTree>();
+        if(wfCategoryVoList.size()>0){
+            //循环总的list(这样省略了查询数据库)
+            for(FlowCategory vo : wfCategoryVoList){
+                //查到子类,将子类转化为树结构类型，再查找下级子类，加入到父类中
+                if(pid.equals(vo.getPid())){
+                    WfCategoryTree wfCategoryTree = new WfCategoryTree(vo.getId(),vo.getName(),vo.getPid(),vo.getCode());
+                    getTreeChildren(vo.getId(),wfCategoryTree,wfCategoryVoList);
+                    list.add(wfCategoryTree);
+                }
+            }
+            parent.setChildren(list);
+        }
+
+    }
+    /**
+     *
+     * @param request
+     * @return
+     * @Description:表单查询结果
+     */
+    @ApiOperation("表单查询结果")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value="页数",name="page",dataType = "String", paramType = "query"),
+            @ApiImplicitParam(value="每页几行",name="rows",dataType = "Integer", paramType = "query")
+    })
+    @RequestMapping(value = "/getFormDataList" ,method = RequestMethod.GET)
+    public ReturnVo getFormDataList(QueryTaskVo param, String page,Integer rows,@Ignore HttpServletRequest request,@Ignore HttpServletResponse response) {
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
+        PagerModel<Map<String, Object>> pm=new PagerModel<Map<String,Object>>();
+        Query query=new Query();
+        UserSessionInfo user=this.getUserSessionInfo(request, response);
+        Set<String> userNos=new HashSet<String>();
+        Set<String> deptIds=new HashSet<String>();
+        String deptField= FormDefultFieldEnum.FQBM.getFieldName();
+        String companyField= FormDefultFieldEnum.FQDW.getFieldName();
+        String userField= FormDefultFieldEnum.FQR.getFieldName();
+        renderPageIndex(query, page,rows);
+        try {
+            if(user!=null && StringUtils.isNotBlank(user.getNo())){
+                ReturnVo<PagerModel<Map<String, Object>>> vo= flowApi.getSearchDesProcessBase(param,query);
+                if(vo!=null && FlowConstant.SUCCESS.equals(vo.getCode()) && vo.getData()!=null ){
+                    pm=vo.getData();
+                    for (Map<String,Object> item : pm.getData()) {
+                        Iterator<String> it=item.keySet().iterator();
+                        //遍历map里面的每一个字段
+                        String value=(String)item.get(deptField);
+                        if(StringUtils.isNotBlank(value)){
+                            deptIds.add(value);
+                        }
+                        String value2=(String)item.get(userField);
+                        if(StringUtils.isNotBlank(value2)){
+                            userNos.add(value2);
+                        }
+                        //翻译审批类型
+
+                    }
+                    Map<String, com.dragon.flow.model.org.Department> deptMap=this.getDeptVoMapByNos(new ArrayList<String>(deptIds));
+                    Map<String, com.dragon.flow.model.org.Company> comMap=this.getComVoMapByNos();
+                    Map<String, UserVo> userMap=this.getPersonnelVoMapByNos(new ArrayList<String>(userNos));
+                    for (Map<String,Object> item : pm.getData()) {
+                        //翻译自定义表单的人员选择器
+                        String userNo=(String)item.get(userField);
+                        if(StringUtils.isNotBlank(userNo)){
+                            item.put("sponsor",userMap.get(userNo).getUserName());
+                        }
+                        //翻译自定义表单的部门选择器
+                        String deptId=(String)item.get(deptField);
+                        if(StringUtils.isNotBlank(deptId)){
+                            item.put("launch_department",deptMap.get(deptId).getName());
+                        }
+                        //翻译自定义表单的公司选择器
+                        String comId=(String)item.get(companyField);
+                        if(StringUtils.isNotBlank(comId)){
+                            item.put("launch_company",comMap.get(comId).getCname());
+                        }
+                    }
+                    pm.setRows(pm.getData());
+                }
+            }
+            Map<String, Object> maps = new HashMap<>();
+            maps.put("list", pm.getRows());
+
+            Map<String, Object> pageMap = new HashMap<>();
+            pageMap.put("current", query.getPageIndex()-1);
+            pageMap.put("pageSize", query.getPageSize());
+            pageMap.put("total", pm.getTotal());
+            maps.put("pagination", pageMap);
+            returnVo=new ReturnVo( ReturnCode.SUCCESS, "查询成功！", maps );
+        } catch (Exception e) {
+            logger.error("MyApplyController-getFormDesList:",e);
+        }
+        return returnVo;
+    }
+
+
+    /**
+     * 导出
+     * @param param
+     * @param formName
+     * @param response
+     * @param request
+     * @param sessionId
+     * @return
+     */
+    @ApiIgnore
+    @RequestMapping("/export2Excel")
+    public String export2Excel(QueryTaskVo param, String formName, HttpServletResponse response, HttpServletRequest request, String sessionId){
+        SimpleReturnVo returnVo = new SimpleReturnVo(FlowConstant.ERROR, "导出失败");
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdftime=new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
+        PagerModel<Map<String, Object>> pm=new PagerModel<Map<String,Object>>();
+        UserSessionInfo user=this.getUserSessionInfo(request, response);
+        List<String> userNos=new ArrayList<String>();
+        List<String> deptIds=new ArrayList<String>();
+        List<String> userFields=new ArrayList<String>();//人员选择器的字段列表
+        List<String> deptFields=new ArrayList<String>();//部门选择器的字段列表
+        List<String> companyFields=new ArrayList<String>();//公司选择器的字段列表
+        List<String> fileFields=new ArrayList<String>();//上传文件字段的名称列表
+        List<String> areaFields=new ArrayList<String>();//地址的字段列表
+        Map<String,String> areaMap=this.getAreaMap();//地区字典项
+        Map<String,List<Map<String, String>>> dicMap=new HashMap<String, List<Map<String,String>>>();
+        String[] fieldArr=new String[]{"code","process_type"};
+        String[] titles=new String[]{"流程实例编号","流程状态"};
+        Query query=new Query();
+        query.setPageSize(10000);
+        try {
+            if(user!=null && org.apache.commons.lang.StringUtils.isNotBlank(user.getNo())) {
+                ReturnVo<PagerModel<Map<String, Object>>> vo = flowApi.ExportSearchFormDesList(param, query);
+                if (vo != null && FlowConstant.SUCCESS.equals(vo.getCode()) && vo.getData() != null) {
+                    ReturnVo<List<FormItem>> vo2 = cusFlowApi.getFormItemByCode(param.getProcessDefinitionKey());
+                    if (vo != null && CollectionUtils.isNotEmpty(vo2.getData())) {
+                        List<FormItem> list = vo2.getData();
+                        for (FormItem formItem : list) {
+                            //将自定义表单字段根据控件进行分类
+                            switch (formItem.getType()) {
+                                case "user":
+                                    userFields.add(formItem.getFieldName());
+                                    break;
+                                case "dept":
+                                    deptFields.add(formItem.getFieldName());
+                                    break;
+                                case "company":
+                                    companyFields.add(formItem.getFieldName());
+                                    break;
+                                case "upload":
+                                    fileFields.add(formItem.getFieldName());
+                                    break;
+                                case "deptgroup":
+                                    //公司部门多选同用同一个控件
+                                    deptFields.add(formItem.getFieldName());
+                                    companyFields.add(formItem.getFieldName());
+                                    break;
+                                case "usergroup":
+                                    userFields.add(formItem.getFieldName());
+                                    break;
+                                case "address":
+                                    areaFields.add(formItem.getFieldName());
+                                    break;
+                                default:
+                                    break;
+                            }
+                            titles = ArrayUtils.add(titles, formItem.getLabelName());
+                            fieldArr = ArrayUtils.add(fieldArr, formItem.getFieldName());
+                        }
+                        dicMap = getDictMap(list);//获取所有自定义表单字典，用于翻译
+                    }
+                    pm = vo.getData();
+                    for (Map<String, Object> item : pm.getData()) {
+                        Iterator<String> it = item.keySet().iterator();
+                        while (it.hasNext()) {
+                            String key = it.next();
+                            //翻译字典项-s
+                            if (dicMap.keySet().contains(key)) {
+                                List<Map<String, String>> dict = dicMap.get(key);
+                                if (org.apache.commons.lang.StringUtils.isNotBlank((String) item.get(key))) {
+                                    StringBuffer itemTexts = new StringBuffer("");
+                                    List<String> itemCodeList = Arrays.asList(((String) item.get(key)).split("\\$#"));
+                                    if (itemCodeList.size() > 1) {
+                                        //长度大于说明是多行子表单进行1，2，3编号
+                                        for (int i = 0; i < itemCodeList.size(); i++) {
+                                            List<String> itemCodes = Arrays.asList((itemCodeList.get(i)).split(","));//多选情况下，需要先按,切割在进行翻译
+                                            StringBuffer itemTextsInner = new StringBuffer("");
+                                            for (Map<String, String> map : dict) {
+                                                for (String code : itemCodes) {
+                                                    if (code.equals(map.get("code"))) {
+                                                        itemTextsInner.append(map.get("text")).append(",");
+                                                    }
+                                                }
+                                            }
+                                            if (itemTextsInner.length() > 1) {
+                                                itemTexts.append(i + 1).append("、");
+                                                itemTextsInner.deleteCharAt(itemTextsInner.length() - 1);
+                                                itemTexts.append(itemTextsInner).append(" ");
+                                            }
+                                        }
+                                        if (itemTexts.length() > 0) {
+                                            item.put(key, itemTexts.toString());
+                                        }
+                                    } else {
+                                        List<String> itemCodes = Arrays.asList(itemCodeList.get(0).split(","));//多选情况下，需要先按,切割在进行翻译
+                                        for (Map<String, String> map : dict) {
+                                            for (String code : itemCodes) {
+                                                if (code.equals(map.get("code"))) {
+                                                    itemTexts.append(map.get("text")).append(",");
+                                                }
+                                            }
+                                        }
+                                        if (itemTexts.length() > 0) {
+                                            item.put(key, itemTexts.deleteCharAt(itemTexts.length() - 1).toString());
+                                        }
+                                    }
+                                }
+                                //翻译字典项-e
+                                //筛选人员，部门，公司进行翻译
+                            } else if (userFields.contains(key)) {
+                                String value = (String) item.get(key);
+                                if (org.apache.commons.lang.StringUtils.isNotBlank(value)) {
+                                    //如果是多行子表单进行1，2，3编号
+                                    List<String> itemCodeList = Arrays.asList(((String) item.get(key)).split("\\$#"));
+                                    if (itemCodeList.size() > 0) {
+                                        for (int i = 0; i < itemCodeList.size(); i++) {
+                                            if (org.apache.commons.lang.StringUtils.isNotBlank(itemCodeList.get(i))) {
+                                                List<String> userNoItems = Arrays.asList((itemCodeList.get(i)).split(","));
+                                                for (String no : userNoItems) {
+                                                    userNos.add(no);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if (deptFields.contains(key)) {
+                                String value = (String) item.get(key);
+                                if (org.apache.commons.lang.StringUtils.isNotBlank(value)) {
+                                    //如果是多行子表单进行1，2，3编号
+                                    List<String> itemCodeList = Arrays.asList(((String) item.get(key)).split("\\$#"));
+                                    if (itemCodeList.size() > 0) {
+                                        for (int i = 0; i < itemCodeList.size(); i++) {
+                                            if (org.apache.commons.lang.StringUtils.isNotBlank(itemCodeList.get(i))) {
+                                                List<String> deptItems = Arrays.asList((itemCodeList.get(i)).split(","));
+                                                for (String id : deptItems) {
+                                                    deptIds.add(id);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                //翻译地址
+                            } else if (areaFields.contains(key)) {
+                                String value = (String) item.get(key);
+                                if (org.apache.commons.lang.StringUtils.isNotBlank(value)) {
+                                    //如果是多行子表单进行1，2，3编号
+                                    List<String> itemCodeList = Arrays.asList(((String) item.get(key)).split("\\$#"));
+                                    if (itemCodeList.size() > 1) {
+                                        StringBuffer bf = new StringBuffer("");
+                                        for (int i = 0; i < itemCodeList.size(); i++) {
+                                            List<String> areaItems = Arrays.asList((itemCodeList.get(i)).split(","));
+                                            StringBuffer bf2 = new StringBuffer("");
+                                            if (areaItems.size() > 1) {
+                                                for (int j = 0; j < areaItems.size() - 1; j++) {
+                                                    bf2.append(areaMap.get(areaItems.get(j))).append(",");
+                                                }
+                                                bf2.append(areaItems.get(areaItems.size() - 1));
+                                                if (bf2.length() > 0) {
+                                                    bf.append(i + 1).append("、").append(bf2).append(" ");
+                                                }
+                                            }
+                                        }
+                                        item.put(key, bf.toString());
+                                    } else {
+                                        List<String> areaItems = Arrays.asList((value).split(","));
+                                        if (areaItems.size() > 1) {
+                                            StringBuffer bf = new StringBuffer("");
+                                            for (int i = 0; i < areaItems.size() - 1; i++) {
+                                                bf.append(areaMap.get(areaItems.get(i))).append(",");
+                                            }
+                                            bf.append(areaItems.get(areaItems.size() - 1));
+                                            if (bf.length() > 0) {
+                                                item.put(key, bf.toString());
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                //其他输入框如果是多行子表单进行1，2，3编号
+                                if (item.get(key) instanceof String && org.apache.commons.lang.StringUtils.isNotBlank((String) item.get(key))) {
+                                    List<String> itemCodeList = Arrays.asList(((String) item.get(key)).split("\\$#"));
+                                    StringBuffer bf = new StringBuffer("");
+                                    if (itemCodeList.size() > 1) {
+                                        for (int i = 0; i < itemCodeList.size(); i++) {
+                                            bf.append(i + 1).append("、").append(itemCodeList.get(i)).append(" ");
+                                        }
+                                        item.put(key, bf.toString());
+                                    } else {
+                                        if(itemCodeList.size()>0)
+                                            item.put(key, itemCodeList.get(0));
+
+
+                                    }
+                                }
+                            }
+
+                        }
+
+
+                    }
+                    Map<String, com.dragon.flow.model.org.Department> deptMap = this.getDeptVoMapByNos(deptIds);
+                    Map<String, com.dragon.flow.model.org.Company> comMap = this.getComVoMapByNos();
+                    Map<String, UserVo> userMap = this.getPersonnelVoMapByNos(userNos);
+                    for (Map<String, Object> item : pm.getData()) {
+                        //翻译自定义表单的人员选择器（包含多选）
+                        for (String field : userFields) {
+                            String value = (String) item.get(field);
+                            if (org.apache.commons.lang.StringUtils.isNotBlank(value)) {
+                                List<String> itemCodeList = Arrays.asList((value).split("\\$#"));
+                                //如果是多行子表单进行1，2，3编号
+                                if (itemCodeList.size() > 1) {
+                                    StringBuffer bf = new StringBuffer("");
+                                    for (int i = 0; i < itemCodeList.size(); i++) {
+                                        if (org.apache.commons.lang.StringUtils.isNotBlank(itemCodeList.get(i))) {
+                                            List<String> userNoItems = Arrays.asList((itemCodeList.get(i)).split(","));
+                                            StringBuffer bf2 = new StringBuffer("");
+                                            for (String no : userNoItems) {
+                                                UserVo person = userMap.get(no);
+                                                if (person != null) {
+                                                    bf2.append(person.getUserName()).append("，");
+                                                }
+                                            }
+                                            if (bf2.length() > 1) {
+                                                bf2.deleteCharAt(bf2.length() - 1);
+                                                bf.append(i + 1).append(",").append(bf2).append(" ");
+                                            }
+                                        }
+                                    }
+                                    if (bf.length() > 0) {
+                                        item.put(field, (bf).toString());
+                                    }
+                                } else {
+                                    List<String> userNoItems = Arrays.asList((itemCodeList.get(0)).split(","));
+                                    StringBuffer bf = new StringBuffer("");
+                                    for (String no : userNoItems) {
+                                        UserVo person = userMap.get(no);
+                                        if (person != null) {
+                                            bf.append(person.getUserName()).append("，");
+                                        }
+                                    }
+                                    if (bf.length() > 0) {
+                                        item.put(field, (bf.deleteCharAt(bf.lastIndexOf("，"))).toString());
+                                    }
+                                }
+                            }
+                        }
+                        //翻译自定义表单的部门选择器
+                        for (String field : companyFields) {
+                            String value = (String) item.get(field);
+                            if (org.apache.commons.lang.StringUtils.isNotBlank(value)) {
+                                //如果是多行子表单进行1，2，3编号
+                                List<String> itemCodeList = Arrays.asList((value).split("\\$#"));
+                                if (itemCodeList.size() > 1) {
+                                    StringBuffer bf = new StringBuffer("");
+                                    for (int i = 0; i < itemCodeList.size(); i++) {
+                                        if (org.apache.commons.lang.StringUtils.isNotBlank(itemCodeList.get(i))) {
+                                            StringBuffer bf2 = new StringBuffer("");
+                                            List<String> companyItems = Arrays.asList((itemCodeList.get(i)).split(","));
+                                            for (String id : companyItems) {
+                                                com.dragon.flow.model.org.Company com = comMap.get(id);
+                                                if (com != null) {
+                                                    bf2.append(com.getCname()).append("，");
+                                                }
+                                            }
+                                            if (bf2.length() > 1) {
+                                                bf2.deleteCharAt(bf2.length() - 1);
+                                                bf.append(i + 1).append(",").append(bf2).append(" ");
+                                            }
+                                        }
+                                    }
+                                    if (bf.length() > 0) {
+                                        item.put(field, (bf).toString());
+                                    }
+                                } else {
+                                    List<String> companyItems = Arrays.asList((itemCodeList.get(0)).split(","));
+                                    StringBuffer bf = new StringBuffer("");
+                                    for (String id : companyItems) {
+                                        com.dragon.flow.model.org.Company com = comMap.get(id);
+                                        if (com != null) {
+                                            bf.append(com.getCname()).append("，");
+                                        }
+                                    }
+                                    if (bf.length() > 0) {
+                                        item.put(field, (bf.deleteCharAt(bf.lastIndexOf("，"))).toString());
+                                    }
+                                }
+                            }
+
+                        }
+                        //翻译自定义表单的公司选择器
+                        for (String field : deptFields) {
+
+                            String value = (String) item.get(field);
+                            if (org.apache.commons.lang.StringUtils.isNotBlank(value)) {
+                                //如果是多行子表单进行1，2，3编号
+                                List<String> itemCodeList = Arrays.asList((value).split("\\$#"));
+                                if (itemCodeList.size() > 1) {
+                                    StringBuffer bf = new StringBuffer("");
+                                    for (int i = 0; i < itemCodeList.size(); i++) {
+                                        if (org.apache.commons.lang.StringUtils.isNotBlank(itemCodeList.get(i))) {
+                                            StringBuffer bf2 = new StringBuffer("");
+                                            List<String> deptItems = Arrays.asList((itemCodeList.get(i)).split(","));
+                                            for (String id : deptItems) {
+                                                com.dragon.flow.model.org.Department dept = deptMap.get(id);
+                                                if (dept != null) {
+                                                    bf.append(dept.getName()).append("，");
+                                                }
+                                            }
+                                            if (bf2.length() > 1) {
+                                                bf2.deleteCharAt(bf2.length() - 1);
+                                                bf.append(i + 1).append(",").append(bf2).append(" ");
+                                            }
+                                        }
+                                    }
+                                    if (bf.length() > 0) {
+                                        item.put(field, (bf).toString());
+                                    }
+                                } else {
+                                    List<String> deptItems = Arrays.asList((itemCodeList.get(0)).split(","));
+                                    StringBuffer bf = new StringBuffer("");
+                                    for (String id : deptItems) {
+                                        com.dragon.flow.model.org.Department dept = deptMap.get(id);
+                                        if (dept != null) {
+                                            bf.append(dept.getName()).append("，");
+                                        }
+                                    }
+                                    if (bf.length() > 0) {
+                                        item.put(field, (bf.deleteCharAt(bf.lastIndexOf("，"))).toString());
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                // 声明一个工作薄
+                HSSFWorkbook workbook = new HSSFWorkbook();
+                // 生成一个表格
+                HSSFSheet sheet = workbook.createSheet("表单查询");
+                // 设置表格默认列宽度为15个字节
+                sheet.setDefaultColumnWidth(15);
+                //字体样式一用于设置表头
+                HSSFCellStyle style = workbook.createCellStyle();
+                // 设置这些样式
+                style.setFillForegroundColor(HSSFColor.BLACK.index);
+                style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+                style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+                style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+                style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+                style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+                style.setVerticalAlignment(HSSFCellStyle.ALIGN_CENTER);
+                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+                // 生成一个字体
+                HSSFFont font = workbook.createFont();
+                font.setColor(HSSFColor.WHITE.index);
+                font.setFontHeightInPoints((short) 8);
+                font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                font.setFontName("微软雅黑");
+                // 把字体应用到当前的样式
+                style.setFont(font);
+                // 生成并设置另一个样式
+                HSSFCellStyle style2 = workbook.createCellStyle();
+                style2.setFillForegroundColor(HSSFColor.WHITE.index);
+                style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                style2.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+                style2.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+                style2.setBorderRight(HSSFCellStyle.BORDER_THIN);
+                style2.setBorderTop(HSSFCellStyle.BORDER_THIN);
+                style2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+                style2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+                // 生成另一个字体
+                HSSFFont font2 = workbook.createFont();
+                font2.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+                // 把字体应用到当前的样式
+                style2.setFont(font2);
+
+                // 生成表头样式
+                HSSFCellStyle style0 = workbook.createCellStyle();
+                style0.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+                style0.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框
+                style0.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框
+                style0.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框
+                style0.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框
+                // 生成表头字体
+                HSSFFont font0 = workbook.createFont();
+                font0.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+                font0.setFontName("黑体");
+                font0.setFontHeightInPoints((short) 14);// 设置字体大小
+                // 把字体应用到当前的样式
+                style0.setFont(font0);
+                //第一行
+                HSSFRow row0 = sheet.createRow(0);
+                row0.setHeight((short) 500);
+                HSSFCell cell0 = row0.createCell(0);
+                cell0.setCellStyle(style0);
+                cell0.setCellValue(formName);
+                //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, titles.length - 1));//合并单元格
+                //第二行
+                HSSFRow row1 = sheet.createRow(1);
+                row1.setHeight((short) 500);
+                HSSFCell cell1 = row1.createCell(0);
+                cell1.setCellStyle(style2);
+                cell1.setCellValue("导出人:" + user.getName() + "   " + "导出时间:" + sdf.format(new Date()) + "   导出系统:门户");
+                //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+                sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 3));//合并单元格
+                //第三行
+                HSSFRow row = sheet.createRow(2);
+                row.setHeight((short) 600);
+
+                for (int i = 0; i < titles.length; i++) {
+                    HSSFCell cell = row.createCell(i);
+                    cell.setCellStyle(style);
+                    HSSFRichTextString text = new HSSFRichTextString(titles[i]);
+                    cell.setCellValue(text);
+                }
+                for (int i = 0; i < pm.getData().size(); i++) {
+                    Map<String, Object> rowVo = pm.getData().get(i);
+                    row = sheet.createRow(i + 3);
+                    row.setHeight((short) 500);
+                    for (int j = 0; j < fieldArr.length; j++) {
+                        HSSFCell cell = row.createCell(j);
+                        cell.setCellStyle(style2);
+                        Object obj = rowVo.get(fieldArr[j]);
+                        if (obj != null) {
+                            if (Timestamp.class.equals(obj.getClass())) {
+                                cell.setCellValue(sdftime.format((Date) obj));
+                            }
+                            if (Date.class.equals(obj.getClass())) {
+                                cell.setCellValue(sdf.format((Date) obj));
+                            } else if (fileFields.contains(fieldArr[j])) {
+                                String pathJson = (String) obj;
+                                StringBuffer fileName = new StringBuffer("");
+                                if (org.apache.commons.lang.StringUtils.isNotBlank(pathJson)) {
+                                    JSONArray jsonArray = JSONArray.fromObject(pathJson);
+                                    List<Map<String, Object>> pathList = jsonArray.toList(jsonArray, new HashMap<String, Object>(), new JsonConfig());
+                                    for (Map<String, Object> file : pathList) {
+                                        fileName.append(file.get("name")).append(",");
+                                    }
+                                    if (fileName.length() > 0) {
+                                        cell.setCellValue(fileName.deleteCharAt(fileName.lastIndexOf(",")).toString());
+                                    }
+                                }
+                            } else {
+                                cell.setCellValue(String.valueOf(obj));
+                            }
+                        } else {
+                            cell.setCellValue("");
+                        }
+                    }
+                }
+                returnVo = new SimpleReturnVo(FlowConstant.SUCCESS, "导出成功");
+                String fileName = new String(sheet.getSheetName().getBytes("UTF-8"), "ISO-8859-1");
+                try {
+                    response.setContentType("application/vnd.ms-excel");
+                    response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+                    OutputStream ouputStream = response.getOutputStream();
+                    workbook.write(ouputStream);
+                    ouputStream.flush();
+                    ouputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return JsonUtils.toJson(returnVo);
+    }
+    @ApiIgnore
+    private Map<String,String> getAreaMap(){
+        Map<String, String> map = new HashMap<String, String>();
+
+        try {
+            com.ys.tools.vo.ReturnVo<List<Area>> cvo = areaApi.getAllArea();
+            if(cvo.getCode()== UcenterConstant.SUCCESS && CollectionUtils.isNotEmpty(cvo.getData())){
+                for(Area vo : cvo.getData()){
+                    map.put(vo.getCode(), vo.getName());
+                }
+            }else{
+                logger.info("调用区域数据出错！" + cvo.getMsg());
+            }
+        } catch (Exception e) {
+            logger.error("调用区域主数据接口【areaApi.getAllArea】异常！" + e);
+            e.printStackTrace();
+        }
+        return map;
+
+    }
+    @ApiIgnore
+    private Map<String, com.dragon.flow.model.org.Department> getDeptVoMapByNos(List<String> ids){
+        Map<String, com.dragon.flow.model.org.Department> dMap = new HashMap<String, com.dragon.flow.model.org.Department>();
+
+        try {
+            List<com.dragon.flow.model.org.Department> list = flowApi.getDepartmentByIdList(ids);
+            if(CollectionUtils.isNotEmpty(list)) {
+                for(com.dragon.flow.model.org.Department vo : list){
+                    dMap.put(vo.getId(), vo);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("调用部门主数据接口【flowApi.getDepartmentByIdsList(nos)】异常！" + e);
+            e.printStackTrace();
+        }
+        return dMap;
+    }
+    @ApiIgnore
+    private Map<String, UserVo> getPersonnelVoMapByNos(List<String> nos){
+        Map<String, UserVo> pMap = new HashMap<String, UserVo>();
+
+        try {
+            List<UserVo> list = flowApi.getUserInfoByNoList(nos);
+            for(UserVo vo : list){
+                pMap.put(vo.getUserId(), vo);
+            }
+        } catch (Exception e) {
+            logger.error("调用人员主数据接口【personnelApi.getPersonnelApiVoByNos(nos)】异常！" + e);
+            e.printStackTrace();
+        }
+        return pMap;
+    }
+    @ApiIgnore
+    private Map<String, com.dragon.flow.model.org.Company> getComVoMapByNos(){
+        Map<String, com.dragon.flow.model.org.Company> cMap = new HashMap<String, com.dragon.flow.model.org.Company>();
+
+        try {
+            List<com.dragon.flow.model.org.Company> list = flowApi.getCompanyAll(new com.dragon.flow.model.org.Company());
+            for(com.dragon.flow.model.org.Company vo : list){
+                cMap.put(vo.getId(), vo);
+            }
+        } catch (Exception e) {
+            logger.error("调用公司主数据接口【orgApi.getAllCompany】异常！" + e);
+            e.printStackTrace();
+        }
+        return cMap;
+    }
+    @ApiIgnore
+    private Map<String,List<Map<String, String>>> getDictMap(List<FormItem> list) {
+        Map<String,List<Map<String, String>>> dictMap=new HashMap<String, List<Map<String,String>>>();
+        for (FormItem formItem : list) {
+            if(org.apache.commons.lang.StringUtils.isNotBlank(formItem.getAjaxurl())){
+                DicItem dictionaryitem=new DicItem();
+                dictionaryitem.setMainId(formItem.getAjaxurl());
+                ReturnVo<List<Map<String, String>>> returnVo=null;
+                try {
+                    returnVo = flowApi.getDicItem(dictionaryitem);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(null != returnVo && FlowConstant.SUCCESS.equals(returnVo.getCode())&& CollectionUtils.isNotEmpty(returnVo.getData())){
+                    dictMap.put(formItem.getFieldName(), returnVo.getData());
+                }
+            }
+        }
+        return dictMap;
+    }
 }
 
 	
