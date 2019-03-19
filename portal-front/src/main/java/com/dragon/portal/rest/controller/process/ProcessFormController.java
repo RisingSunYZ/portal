@@ -21,12 +21,11 @@ import com.dragon.portal.enm.process.OptionEnum;
 import com.dragon.portal.utils.CommUtil;
 import com.dragon.portal.vo.process.*;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.web.controller.BaseController;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
 import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.ReturnCode;
-import com.rabbitmq.client.Return;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
@@ -68,7 +67,7 @@ public class ProcessFormController extends BaseController {
 	 */
 	@ApiOperation("得到状态及类型枚举数据")
 	@RequestMapping(value = "/getProcessEnums",method = RequestMethod.GET)
-	public String getProcessStatus() {
+	public Map<String, Object> getProcessStatus() {
 		Map<String, Object> map = new HashMap<>();
 		try{
 			map.put("formTypes", ModelAppliedRangeEnum.getAllinfo());
@@ -76,7 +75,7 @@ public class ProcessFormController extends BaseController {
 			e.printStackTrace();
 			logger.error("ApiProcessController-getProcessEnums",e);
 		}
-		return JsonUtils.toJson(map);
+		return map;
 	}
 	/**
 	 * 流程的基本信息
@@ -96,7 +95,7 @@ public class ProcessFormController extends BaseController {
 			@ApiImplicitParam(value="任务id",name="taskId",dataType = "String",paramType = "query")
 	})
 	@RequestMapping(value = "/getBaseInfo",method = RequestMethod.GET)
-	private String getBaseInfo( String modelId,String instId,String bizId,String taskId,HttpServletRequest request, HttpServletResponse response) {
+	private Map<String,Object> getBaseInfo( String modelId,String instId,String bizId,String taskId,HttpServletRequest request, HttpServletResponse response) {
 		Map<String,Object> formInfo=new HashMap<String,Object>();
 		ExtendModel modelExtend=new ExtendModel();
 		modelExtend.setBusinessKey(bizId);
@@ -149,7 +148,7 @@ public class ProcessFormController extends BaseController {
 			logger.error("流程的基本信息 ApiProcessController-getBaseInfo"+e);
 		}
 
-		return JsonUtils.toJson(formInfo);
+		return formInfo;
 	}
 	/**
 	 * 获取iframe连接
@@ -171,7 +170,7 @@ public class ProcessFormController extends BaseController {
 			@ApiImplicitParam(value="差旅报销单使用",name="expType",dataType = "String",paramType = "query")
 	})
 	@RequestMapping(value = "/getFormUrl",method = RequestMethod.GET)
-	private String getFormUrl( String modelId,String instId,String bizId,String taskId,String expType,HttpServletRequest request, HttpServletResponse response) {
+	private Map<String,Object> getFormUrl( String modelId,String instId,String bizId,String taskId,String expType,HttpServletRequest request, HttpServletResponse response) {
 		Map<String,Object> formInfo=new HashMap<String,Object>();
 		Integer appliedRange=ModelAppliedRangeEnum.UNKNOW.getStatus();
 		String url="";
@@ -217,7 +216,7 @@ public class ProcessFormController extends BaseController {
 			e.printStackTrace();
 			logger.error("获取iframe连接 ApiProcessController-getFromUrl"+e);
 		}
-		return JsonUtils.toJson(formInfo);
+		return formInfo;
 	}
 	/**
 	 * 获取表单信息
@@ -235,7 +234,7 @@ public class ProcessFormController extends BaseController {
 			@ApiImplicitParam(value="任务id",name="taskId",dataType = "String",paramType = "query")
 	})
 	@RequestMapping(value = "/getFormInfo",method = RequestMethod.GET)
-	public String getFormInfo( String instId, String bizId, String taskId, HttpServletRequest request, HttpServletResponse response) {
+	public Map<String,Object> getFormInfo( String instId, String bizId, String taskId, HttpServletRequest request, HttpServletResponse response) {
 		Map<String,Object> formInfo=new HashMap<String,Object>();
 		long beginTime=System.currentTimeMillis();
 		try{
@@ -309,7 +308,7 @@ public class ProcessFormController extends BaseController {
 			logger.error("获取表单信息出错 ApiProcessController-getFormInfo"+e);
 		}
 
-		return JsonUtils.toJson(formInfo);
+		return formInfo;
 	}
 	/**
 	 * 添加附言数据
@@ -323,7 +322,7 @@ public class ProcessFormController extends BaseController {
 			@ApiImplicitParam(value="附言内容删除的附件",name="attachMsgAttDel",dataType="String",paramType="query")
 	})
 	@RequestMapping(value = "/insertAttachMsg",method = RequestMethod.POST)
-	public String insertAttachMsg(HttpServletRequest request, HttpServletResponse response,
+	public ReturnVo<List<Map<String,Object>>> insertAttachMsg(HttpServletRequest request, HttpServletResponse response,
 								  @RequestBody @ApiParam(value = "流程参数对象") ProcessMainVo processMainVo, String attachMsg, String attachMsgAttAdd, String attachMsgAttDel) {
 		ReturnVo<List<Map<String,Object>>> returnVo = new ReturnVo<List<Map<String,Object>>>(ReturnCode.FAIL, "保存失败");
 		WfPostscript wfPostscript = new WfPostscript();
@@ -356,29 +355,32 @@ public class ProcessFormController extends BaseController {
 		}else{
 			returnVo.setMsg("附言不能为空！");
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 	/**
 	 *
 	 * @param request
 	 * @return
-	 * @Description:审批操作
+	 * @Description:审批，暂存，协同，评审都用此方法
 	 */
-	@ApiOperation("审批操作")
-	@ApiImplicitParams({
-			@ApiImplicitParam(value="审批意见",name="option",dataType="String",paramType="query")
-	})
+	@ApiOperation("审批，暂存，协同，评审都用此方法")
 	@RequestMapping(value = "/saveSp",method = RequestMethod.POST)
-	public String saveSp(@RequestBody @ApiParam("任务API对象")CompleteTaskApiVo params, String option, HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo<String> option(@RequestBody @ApiParam("任务API对象")CompleteTaskApiVo params, HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "操作失败");
 		UserSessionInfo user=getLoginUser(request,response);
 		try {
 			if(StringUtils.isNotBlank(params.getTaskId())){
 				params.setMessage(CommUtil.decodeString(params.getMessage(),"UTF-8"));
-				if(OptionEnum.ZC.getCode().equals(option)){
+				if(CommentTypeEnum.ZC.equals(params.getType())){
 					params.setUserCode(user.getNo());
-					returnVo=flowApi.claim(params);
-				}else if(OptionEnum.BTY.getCode().equals(option)){
+					ReturnVo<String> claimVo=flowApi.claim(params);
+					if(FlowConstant.SUCCESS.equals(claimVo.getCode())){
+						returnVo.setMsg(claimVo.getMsg());
+						returnVo.setCode(ReturnCode.SUCCESS);
+					}else {
+						returnVo.setMsg(claimVo.getMsg());
+					}
+				}else if(CommentTypeEnum.BH.equals(params.getType())){
 					BackApiVo backVo=new BackApiVo();
 					backVo.setUserCode(user.getNo());
 					backVo.setTaskId(params.getTaskId());
@@ -395,20 +397,10 @@ public class ProcessFormController extends BaseController {
 					}else{
 						returnVo.setMsg("此节点不许与驳回！");
 					}
-				}else if(OptionEnum.TY.getCode().equals(option)){
+				}else if(CommentTypeEnum.SP.equals(params.getType())
+						||CommentTypeEnum.PS.equals(params.getType())
+						||CommentTypeEnum.XT.equals(params.getType())){
 					params.setUserCode(user.getNo());
-					flowApi.completeTask(params);
-					returnVo.setCode(ReturnCode.SUCCESS);
-					returnVo.setMsg("保存成功");
-				}else if("PC".equals(option)){
-					params.setUserCode(user.getNo());
-					params.setType(CommentTypeEnum.PS);
-					flowApi.completeTask(params);
-					returnVo.setCode(ReturnCode.SUCCESS);
-					returnVo.setMsg("保存成功");
-				}else if("XT".equals(option)){
-					params.setUserCode(user.getNo());
-					params.setType(CommentTypeEnum.XT);
 					flowApi.completeTask(params);
 					returnVo.setCode(ReturnCode.SUCCESS);
 					returnVo.setMsg("保存成功");
@@ -420,7 +412,7 @@ public class ProcessFormController extends BaseController {
 			e.printStackTrace();
 			logger.error("ApplyController-update:"+e);
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 	/**
 	 *
@@ -430,7 +422,7 @@ public class ProcessFormController extends BaseController {
 	 */
 	@ApiOperation("转办")
 	@RequestMapping(value = "/turnDo",method = RequestMethod.POST)
-	public String turnDo(@RequestBody TurnDoVo turnDoVo, HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo<String> turnDo(@RequestBody TurnDoVo turnDoVo, HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "流程转办失败");
 		UserSessionInfo user=getLoginUser(request,response);
 		try {
@@ -451,13 +443,15 @@ public class ProcessFormController extends BaseController {
 				if(FlowConstant.SUCCESS.equals(vo.getCode())){
 					returnVo.setCode(ReturnCode.SUCCESS);
 					returnVo.setMsg("转办成功");
+				}else{
+					returnVo.setMsg(vo.getMsg());
 				}
 			}
 		} catch (Exception e) {
 			logger.error("ApplyController-update:"+e);
 			e.printStackTrace();
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 	/**
 	 *
@@ -467,7 +461,7 @@ public class ProcessFormController extends BaseController {
 	 */
 	@ApiOperation("加签")
 	@RequestMapping(value = "/addSign",method = RequestMethod.POST)
-	public String addSign(@RequestBody TurnReadVo addSignVo,HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo<String> addSign(@RequestBody TurnReadVo addSignVo,HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "操作失败");
 		UserSessionInfo user=getLoginUser(request,response);
 		try {
@@ -487,17 +481,17 @@ public class ProcessFormController extends BaseController {
 				signVo.setMessage(stringBuffer.toString());
 				ReturnVo<String> vo=flowApi.addSign(signVo);
 				if(FlowConstant.SUCCESS.equals(vo.getCode())){
-					returnVo.setMsg("审批并加签成功");
+					returnVo.setMsg(vo.getMsg());
 					returnVo.setCode(ReturnCode.SUCCESS);
 				}else{
-					returnVo.setMsg("审批并加签失败");
+					returnVo.setMsg(vo.getMsg());
 				}
 			}
 		} catch (Exception e) {
 			logger.error("加签操作异常！ ApplyController-addSign:"+e);
 			e.printStackTrace();
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 
 	/**
@@ -508,7 +502,7 @@ public class ProcessFormController extends BaseController {
 	 */
 	@ApiOperation("转阅")
 	@RequestMapping(value = "/turnRead",method = RequestMethod.POST)
-	public String turnRead(@RequestBody TurnReadVo param , HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo<String> turnRead(@RequestBody TurnReadVo param , HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "操作失败");
 		UserSessionInfo user=getLoginUser(request,response);
 		try {
@@ -532,7 +526,7 @@ public class ProcessFormController extends BaseController {
 			logger.error("转阅异常！ApplyController-turnRead:"+e);
 			e.printStackTrace();
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 	/**
 	 *
@@ -586,7 +580,7 @@ public class ProcessFormController extends BaseController {
 	 */
 	@ApiOperation("驳回到任意节点")
 	@RequestMapping(value = "/backToAnyStep",method = RequestMethod.POST)
-	public String backToAnyStep(@RequestBody @ApiParam("撤回的对象") RevokeVo revokeVo, HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo<String> backToAnyStep(@RequestBody @ApiParam("撤回的对象") RevokeVo revokeVo, HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "操作失败");
 		UserSessionInfo user=getLoginUser(request,response);
 		try {
@@ -601,7 +595,7 @@ public class ProcessFormController extends BaseController {
 			logger.error("撤回操作异常！ApplyController-revoke:"+e);
 			e.printStackTrace();
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 	/**
 	 * 表单提交，保存待发。
@@ -611,7 +605,7 @@ public class ProcessFormController extends BaseController {
 	 */
 	@ApiOperation("表单提交，保存待发。")
 	@RequestMapping(value = "/submit",method = RequestMethod.POST)
-	public String submit(HttpServletRequest request, HttpServletResponse response, @RequestBody ProcessSubmitVo processSubmitVo){
+	public ReturnVo<String> submit(HttpServletRequest request, HttpServletResponse response, @RequestBody ProcessSubmitVo processSubmitVo){
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "保存失败!");
 		UserSessionInfo loginUser = getLoginUser(request, response);
 		try {
@@ -640,7 +634,7 @@ public class ProcessFormController extends BaseController {
 			returnVo.setMsg("调用接口异常！");
 			e.printStackTrace();
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 
 	/**
@@ -668,7 +662,7 @@ public class ProcessFormController extends BaseController {
 	 */
 	@ApiOperation("转阅知会进入页面时进行的审批操作")
 	@RequestMapping(value = "/doZYZH",method = RequestMethod.POST)
-	public String doZYZH(@RequestBody @ApiParam("结束任务的对象") CompleteTaskApiVo params,HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo<String> doZYZH(@RequestBody @ApiParam("结束任务的对象") CompleteTaskApiVo params,HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(FlowConstant.ERROR, "操作失败");
 		UserSessionInfo user=getLoginUser(request,response);
 		try {
@@ -684,7 +678,7 @@ public class ProcessFormController extends BaseController {
 			e.printStackTrace();
 			logger.error("ApplyController-doZYZH:"+e);
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 
 
@@ -696,7 +690,7 @@ public class ProcessFormController extends BaseController {
 	 */
 	@ApiOperation("终止")
 	@RequestMapping(value = "/stopProcess",method = RequestMethod.POST)
-	public String stopProcess(@RequestBody @ApiParam("流程终止对象") EndApiVo vo,HttpServletRequest request, HttpServletResponse response) {
+	public ReturnVo<String> stopProcess(@RequestBody @ApiParam("流程终止对象") EndApiVo vo,HttpServletRequest request, HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "操作失败");
 		UserSessionInfo user=getLoginUser(request,response);
 		try {
@@ -712,7 +706,7 @@ public class ProcessFormController extends BaseController {
 			logger.error("回退到起点异常！ApplyController-stopProcess:"+e);
 			e.printStackTrace();
 		}
-		return JsonUtils.toJson(returnVo);
+		return returnVo;
 	}
 	/**
 	 *  获取审批节点列表
@@ -728,7 +722,7 @@ public class ProcessFormController extends BaseController {
 			@ApiImplicitParam(value="任务id",name="taskId",dataType="String",paramType="query")
 	})
 	@RequestMapping(value = "/getBackNodes",method = RequestMethod.GET)
-	public String getBackNodes( String page, Integer rows, String taskId, HttpServletRequest request, HttpServletResponse response) {
+	public Map<String, Object> getBackNodes( String page, Integer rows, String taskId, HttpServletRequest request, HttpServletResponse response) {
 		Map<String,Object> formInfo=new HashMap<String,Object>();
 		Map<String, Object> maps = new HashMap<>();
 		Query query=new Query();
@@ -752,7 +746,7 @@ public class ProcessFormController extends BaseController {
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return JsonUtils.toJson(maps);
+		return maps;
 	}
 
 	/**

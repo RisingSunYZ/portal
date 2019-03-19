@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingroomAddrDao" >
+    <resultMap id="MeetingroomAddrMap" type="com.dragon.portal.model.rscmgmt.MeetingroomAddr" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+        
+        <result column="adminName" property="adminName" jdbcType="VARCHAR" />
+        
+        
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        address,
+        remark,
+        sort_no,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="address!=null and address!=''">
+        and address = #{address,jdbcType=VARCHAR}
+        </if>
+        <if test="remark!=null and remark!=''">
+        and remark = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="sortNo!=null">
+        and sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getMeetingroomAddrById" resultMap="MeetingroomAddrMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingroom_addr
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddr" resultMap="MeetingroomAddrMap">
+        select * from tbl_mt_meetingroom_addr where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getAllByAdmin" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddr" resultMap="MeetingroomAddrMap">
+        select * from tbl_mt_meetingroom_addr r left join (SELECT group_concat(admin_no) admin_no,addr_id FROM tbl_mt_meetingroom_addr_admin GROUP BY addr_id) a 
+        on a.addr_id = r.id
+        where 1=1 
+        <include refid="where" />
+        and a.admin_no LIKE CONCAT('%',#{adminName},'%') 
+    </select>
+    
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddr" resultMap="MeetingroomAddrMap">
+        select r.*, a.adminName from tbl_mt_meetingroom_addr r left join (SELECT group_concat(admin_name) adminName,addr_id FROM tbl_mt_meetingroom_addr_admin GROUP BY addr_id) a 
+        on a.addr_id = r.id
+        where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddr" resultType="int">
+        select count(1) from tbl_mt_meetingroom_addr where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingroomAddr" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddr"  >
+        insert into tbl_mt_meetingroom_addr (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{sortNo,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delMeetingroomAddrById" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_addr
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingroomAddrByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_addr
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeetingroomAddr" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddr" >
+        update tbl_mt_meetingroom_addr
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingroomAddrByIds" parameterType="java.util.Map">
+        update tbl_mt_meetingroom_addr
+        <set>
+            <if test="meetingroomAddr.id != null" >
+                id = #{meetingroomAddr.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomAddr.address != null" >
+                address = #{meetingroomAddr.address,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomAddr.remark != null" >
+                remark = #{meetingroomAddr.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomAddr.sortNo != null" >
+                sort_no = #{meetingroomAddr.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="meetingroomAddr.createTime != null" >
+                create_time = #{meetingroomAddr.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingroomAddr.creator != null" >
+                creator = #{meetingroomAddr.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomAddr.updateTime != null" >
+                update_time = #{meetingroomAddr.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingroomAddr.updator != null" >
+                updator = #{meetingroomAddr.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomAddr.delFlag != null" >
+                del_flag = #{meetingroomAddr.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>

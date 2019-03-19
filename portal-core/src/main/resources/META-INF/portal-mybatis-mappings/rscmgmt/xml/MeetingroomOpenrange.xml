@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingroomOpenrangeDao" >
+    <resultMap id="MeetingroomOpenrangeMap" type="com.dragon.portal.model.rscmgmt.MeetingroomOpenrange" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="mettingroom_id" property="mettingroomId" jdbcType="VARCHAR" />
+        
+        <result column="dept_id" property="deptId" jdbcType="VARCHAR" />
+        
+        <result column="dept_no" property="deptNo" jdbcType="VARCHAR" />
+        
+        <result column="ref_type" property="refType" jdbcType="INTEGER" />
+        
+       <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+       
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        mettingroom_id,
+        dept_id,
+        dept_no,
+        ref_type,
+        dept_name
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="mettingroomId!=null and mettingroomId!=''">
+        and mettingroom_id = #{mettingroomId,jdbcType=VARCHAR}
+        </if>
+        <if test="deptId!=null and deptId!=''">
+        and dept_id = #{deptId,jdbcType=VARCHAR}
+        </if>
+        <if test="deptNo!=null and deptNo!=''">
+        and dept_no = #{deptNo,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    
+    <select id="getMeetingroomOpenrangeById" resultMap="MeetingroomOpenrangeMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingroom_openrange
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomOpenrange" resultMap="MeetingroomOpenrangeMap">
+        select * from tbl_mt_meetingroom_openrange where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomOpenrange" resultMap="MeetingroomOpenrangeMap">
+        select * from tbl_mt_meetingroom_openrange where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomOpenrange" resultType="int">
+        select count(1) from tbl_mt_meetingroom_openrange where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingroomOpenrange" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomOpenrange"  >
+        insert into tbl_mt_meetingroom_openrange (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{mettingroomId,jdbcType=VARCHAR},
+        #{deptId,jdbcType=VARCHAR},
+        #{deptNo,jdbcType=VARCHAR},
+        #{refType,jdbcType=INTEGER},
+        #{deptName,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="delMeetingroomOpenrangeById" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_openrange
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingroomOpenrangeByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_openrange
+		where id in(${ids}) 
+    </delete>
+    
+    
+    <delete id="delMeetingroomOpenrangeByMeetingRoomId" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_openrange
+        where mettingroom_id = #{mettingroomId,jdbcType=VARCHAR}
+    </delete> 
+    
+    <update id="updateMeetingroomOpenrange" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomOpenrange" >
+        update tbl_mt_meetingroom_openrange
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="mettingroomId != null" >
+                mettingroom_id = #{mettingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null" >
+                dept_id = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptNo != null" >
+                dept_no = #{deptNo,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingroomOpenrangeByIds" parameterType="java.util.Map">
+        update tbl_mt_meetingroom_openrange
+        <set>
+            <if test="meetingroomOpenrange.id != null" >
+                id = #{meetingroomOpenrange.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomOpenrange.mettingroomId != null" >
+                mettingroom_id = #{meetingroomOpenrange.mettingroomId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomOpenrange.deptId != null" >
+                dept_id = #{meetingroomOpenrange.deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomOpenrange.deptNo != null" >
+                dept_no = #{meetingroomOpenrange.deptNo,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>

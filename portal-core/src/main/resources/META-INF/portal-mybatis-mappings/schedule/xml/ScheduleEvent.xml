@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.schedule.IScheduleEventDao" >
+    <resultMap id="ScheduleEventMap" type="com.dragon.portal.model.schedule.ScheduleEvent" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        
+        <result column="type" property="type" jdbcType="INTEGER" />
+        
+        <result column="is_all_day" property="isAllDay" jdbcType="INTEGER" />
+        
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        
+        <result column="change_key" property="changeKey" jdbcType="VARCHAR" />
+        
+        <result column="change_id" property="changeId" jdbcType="VARCHAR" />
+        
+        <result column="receive_no" property="receiveNo" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+        
+        <result column="meeting_id" property="meetingId" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        title,
+        address,
+        content,
+        type,
+        is_all_day,
+        start_time,
+        end_time,
+        change_key,
+        change_id,
+        receive_no,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag,
+        meeting_id
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="title!=null and title!=''">
+        and title = #{title,jdbcType=VARCHAR}
+        </if>
+        <if test="address!=null and address!=''">
+        and address = #{address,jdbcType=VARCHAR}
+        </if>
+        <if test="content!=null and content!=''">
+        and content = #{content,jdbcType=VARCHAR}
+        </if>
+        <if test="type!=null">
+        and type = #{type,jdbcType=INTEGER}
+        </if>
+        <if test="isAllDay!=null">
+        and is_all_day = #{isAllDay,jdbcType=INTEGER}
+        </if>
+        <if test="startTime!=null">
+            <![CDATA[  
+                and start_time >= #{startTime,jdbcType=TIMESTAMP}
+            ]]>
+        </if>
+        <if test="endTime!=null">
+            <![CDATA[  
+                and end_time <= #{endTime,jdbcType=TIMESTAMP}
+            ]]>
+        </if>
+        <if test="changeKey!=null and changeKey!=''">
+        and change_key = #{changeKey,jdbcType=VARCHAR}
+        </if>
+        <if test="changeId!=null and changeId!=''">
+        and change_id = #{changeId,jdbcType=VARCHAR}
+        </if>
+        <if test="receiveNo!=null and receiveNo!=''">
+        and receive_no = #{receiveNo,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+        <if test="meetingId!=null">
+        and meeting_id = #{meetingId,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    
+    <select id="getScheduleEventById" resultMap="ScheduleEventMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_schedule_event
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.schedule.ScheduleEvent" resultMap="ScheduleEventMap">
+        select * from tbl_pt_schedule_event where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.schedule.ScheduleEvent" resultMap="ScheduleEventMap">
+        select * from tbl_pt_schedule_event where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.schedule.ScheduleEvent" resultType="int">
+        select count(1) from tbl_pt_schedule_event where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertScheduleEvent" parameterType="com.dragon.portal.model.schedule.ScheduleEvent"  >
+        insert into tbl_pt_schedule_event (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{title,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR},
+        #{content,jdbcType=VARCHAR},
+        #{type,jdbcType=INTEGER},
+        #{isAllDay,jdbcType=INTEGER},
+        #{startTime,jdbcType=TIMESTAMP},
+        #{endTime,jdbcType=TIMESTAMP},
+        #{changeKey,jdbcType=VARCHAR},
+        #{changeId,jdbcType=VARCHAR},
+        #{receiveNo,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER},
+        #{meetingId,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="delScheduleEventById" parameterType="java.lang.String" >
+        delete from tbl_pt_schedule_event
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delScheduleEventByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_schedule_event
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateScheduleEvent" parameterType="com.dragon.portal.model.schedule.ScheduleEvent" >
+        update tbl_pt_schedule_event
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null" >
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null" >
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="type != null" >
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="isAllDay != null" >
+                is_all_day = #{isAllDay,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null" >
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="changeKey != null" >
+                change_key = #{changeKey,jdbcType=VARCHAR},
+            </if>
+            <if test="changeId != null" >
+                change_id = #{changeId,jdbcType=VARCHAR},
+            </if>
+            <if test="receiveNo != null" >
+                receive_no = #{receiveNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="meetingId != null" >
+                meeting_id = #{meetingId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateScheduleEventByIds" parameterType="java.util.Map">
+        update tbl_pt_schedule_event
+        <set>
+            <if test="scheduleEvent.id != null" >
+                id = #{scheduleEvent.id,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.title != null" >
+                title = #{scheduleEvent.title,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.address != null" >
+                address = #{scheduleEvent.address,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.content != null" >
+                content = #{scheduleEvent.content,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.type != null" >
+                type = #{scheduleEvent.type,jdbcType=INTEGER},
+            </if>
+            <if test="scheduleEvent.isAllDay != null" >
+                is_all_day = #{scheduleEvent.isAllDay,jdbcType=INTEGER},
+            </if>
+            <if test="scheduleEvent.startTime != null" >
+                start_time = #{scheduleEvent.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="scheduleEvent.endTime != null" >
+                end_time = #{scheduleEvent.endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="scheduleEvent.changeKey != null" >
+                change_key = #{scheduleEvent.changeKey,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.changeId != null" >
+                change_id = #{scheduleEvent.changeId,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.receiveNo != null" >
+                receive_no = #{scheduleEvent.receiveNo,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.createTime != null" >
+                create_time = #{scheduleEvent.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="scheduleEvent.creator != null" >
+                creator = #{scheduleEvent.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.updateTime != null" >
+                update_time = #{scheduleEvent.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="scheduleEvent.updator != null" >
+                updator = #{scheduleEvent.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEvent.delFlag != null" >
+                del_flag = #{scheduleEvent.delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="scheduleEvent.meetingId != null" >
+                meeting_id = #{scheduleEvent.meetingId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 查询当前用户下的日程及被授权的日程、授权类型 -->
+    <select id="getScheduleEvenList" parameterType="java.util.Map" resultMap="ScheduleEventMap">
+        select * from tbl_pt_schedule_event 
+        where receive_no in (${personNos})
+        <if test="scheduleEvent.startTime != null and scheduleEvent.startTime!=''" >
+           	<![CDATA[  
+                 and start_time >= #{scheduleEvent.startTime,jdbcType=TIMESTAMP}
+            ]]>
+       	</if>
+        <if test="scheduleEvent.endTime != null and scheduleEvent.endTime!=''" >
+            <![CDATA[  
+                 and end_time <= #{scheduleEvent.endTime,jdbcType=TIMESTAMP}
+            ]]>
+        </if>
+    </select>
+    
+    <!-- 批量添加日程信息 -->
+    <insert id="insertScheduleEvents" parameterType="java.util.List">
+		insert into tbl_pt_schedule_event (
+		<include refid="Base_Column_List" />
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			    #{item.id,jdbcType=VARCHAR},
+		        #{item.title,jdbcType=VARCHAR},
+		        #{item.address,jdbcType=VARCHAR},
+		        #{item.content,jdbcType=VARCHAR},
+		        #{item.type,jdbcType=INTEGER},
+		        #{item.isAllDay,jdbcType=INTEGER},
+		        #{item.startTime,jdbcType=TIMESTAMP},
+		        #{item.endTime,jdbcType=TIMESTAMP},
+		        #{item.changeKey,jdbcType=VARCHAR},
+		        #{item.changeId,jdbcType=VARCHAR},
+		        #{item.receiveNo,jdbcType=VARCHAR},
+		        #{item.createTime,jdbcType=TIMESTAMP},
+		        #{item.creator,jdbcType=VARCHAR},
+		        #{item.updateTime,jdbcType=TIMESTAMP},
+		        #{item.updator,jdbcType=VARCHAR},
+		        #{item.delFlag,jdbcType=INTEGER},
+		        #{item.meetingId,jdbcType=VARCHAR}
+			)
+		</foreach>
+	</insert>
+	
+	<!-- 根据会议id查询日程 -->
+	<select id="getScheduleEventByMeetingId" parameterType="java.lang.String" resultMap="ScheduleEventMap">
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_schedule_event
+        where meeting_id = #{meetingId,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- app接口  查询所有日程   数据库开始时间小于传入的结束时间  ，数据库结束时间大于开始时间才可以查询区间日期  	 -->
+    <select id="getAllEvent" parameterType="java.util.Map" resultMap="ScheduleEventMap">
+        select * from tbl_pt_schedule_event 
+        where 1=1 and del_flag = 1
+        <if test="scheduleEvent.startTime != null and scheduleEvent.startTime!=''" >
+        	and receive_no = #{scheduleEvent.receiveNo,jdbcType=VARCHAR}
+        </if>
+        <if test="scheduleEvent.startTime != null and scheduleEvent.startTime!=''" >
+           	<![CDATA[  
+                 and start_time <= #{scheduleEvent.endTime,jdbcType=TIMESTAMP}
+            ]]>
+       	</if>
+        <if test="scheduleEvent.endTime != null and scheduleEvent.endTime!=''" >
+            <![CDATA[  
+                 and end_time >= #{scheduleEvent.startTime,jdbcType=TIMESTAMP}
+            ]]>
+        </if>
+    </select>
+    
+</mapper>

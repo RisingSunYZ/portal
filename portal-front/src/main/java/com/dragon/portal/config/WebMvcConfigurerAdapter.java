@@ -1,26 +1,32 @@
 package com.dragon.portal.config;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.dragon.portal.interceptor.LoginCheckInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 拦截器配置
- *
- * @author wangzhiyong
  */
 @Configuration
 public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 
+    @Autowired
+    private LoginCheckInterceptor loginCheckInterceptor;
 
     /**
      * 请求地址拦截 前后缀都不做匹配
@@ -33,6 +39,30 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
                 .setUseTrailingSlashMatch(true);
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginCheckInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/portal/user/userLogin/**",
+                        "/flow/form/**",
+                        "/favicon.ico",
+                        "/rest/index/**",
+                        "/rest/user/currentUser",
+                        "/rest/portal/news/ajaxListVo",
+                        "/rest/portal/user/userLogin/login",
+
+                        "/swagger-ui.html",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/v2/api-docs",
+                        "/error",
+                        "/webjars/**",
+                        "/**/favicon.ico"
+                );
+    }
+
     /**
      * 静态资源配置
      */
@@ -42,9 +72,11 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/templates/page/");
         registry.addResourceHandler("/a/**")
                 .addResourceLocations("classpath:/templates/assets/");
-//        registry.addResourceHandler("/**")
-//                .addResourceLocations("classpath:/static/");
+
+        // 设置所有接口的请求不缓存
+        registry.addResourceHandler("/rest/**").setCacheControl(CacheControl.noCache());
     }
+
     /**
      * 消息类型转换
      *

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingroomAddrAdminDao" >
+    <resultMap id="MeetingroomAddrAdminMap" type="com.dragon.portal.model.rscmgmt.MeetingroomAddrAdmin" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="addr_id" property="addrId" jdbcType="VARCHAR" />
+        
+        <result column="admin_no" property="adminNo" jdbcType="VARCHAR" />
+        
+        <result column="admin_name" property="adminName" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        addr_id,
+        admin_no,
+        admin_name
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="addrId!=null and addrId!=''">
+        and addr_id = #{addrId,jdbcType=VARCHAR}
+        </if>
+        <if test="adminNo!=null and adminNo!=''">
+        and admin_no = #{adminNo,jdbcType=VARCHAR}
+        </if>
+        <if test="adminName!=null and adminName!=''">
+        and admin_name = #{adminName,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    
+    <select id="getMeetingroomAddrAdminById" resultMap="MeetingroomAddrAdminMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meetingroom_addr_admin
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddrAdmin" resultMap="MeetingroomAddrAdminMap">
+        select * from tbl_mt_meetingroom_addr_admin where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddrAdmin" resultMap="MeetingroomAddrAdminMap">
+        select * from tbl_mt_meetingroom_addr_admin where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddrAdmin" resultType="int">
+        select count(1) from tbl_mt_meetingroom_addr_admin where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingroomAddrAdmin" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddrAdmin"  >
+        insert into tbl_mt_meetingroom_addr_admin (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{addrId,jdbcType=VARCHAR},
+        #{adminNo,jdbcType=VARCHAR},
+        #{adminName,jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <delete id="delMeetingroomAddrAdminById" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_addr_admin
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingroomApproverByAddrId" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_addr_admin where
+        addr_id = #{addrId,jdbcType=VARCHAR}
+    </delete>
+    
+    
+    <delete id="delMeetingroomAddrAdminByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meetingroom_addr_admin
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeetingroomAddrAdmin" parameterType="com.dragon.portal.model.rscmgmt.MeetingroomAddrAdmin" >
+        update tbl_mt_meetingroom_addr_admin
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="addrId != null" >
+                addr_id = #{addrId,jdbcType=VARCHAR},
+            </if>
+            <if test="adminNo != null" >
+                admin_no = #{adminNo,jdbcType=VARCHAR},
+            </if>
+            <if test="adminName != null" >
+                admin_name = #{adminName,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingroomAddrAdminByIds" parameterType="java.util.Map">
+        update tbl_mt_meetingroom_addr_admin
+        <set>
+            <if test="meetingroomAddrAdmin.id != null" >
+                id = #{meetingroomAddrAdmin.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomAddrAdmin.addrId != null" >
+                addr_id = #{meetingroomAddrAdmin.addrId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomAddrAdmin.adminNo != null" >
+                admin_no = #{meetingroomAddrAdmin.adminNo,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingroomAddrAdmin.adminName != null" >
+                admin_name = #{meetingroomAddrAdmin.adminName,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>

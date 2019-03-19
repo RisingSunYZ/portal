@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.addrbook.ITopContactsDao" >
+    <resultMap id="TopContactsMap" type="com.dragon.portal.model.addrbook.TopContacts" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="owner_no" property="ownerNo" jdbcType="VARCHAR" />
+        
+        <result column="contact_no" property="contactNo" jdbcType="VARCHAR" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        owner_no,
+        contact_no,
+        sort_no,
+        remark,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="ownerNo!=null and ownerNo!=''">
+        and owner_no = #{ownerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="contactNo!=null and contactNo!=''">
+        and contact_no = #{contactNo,jdbcType=VARCHAR}
+        </if>
+        <if test="sortNo!=null">
+        and sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="remark!=null and remark!=''">
+        and remark = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getTopContactsById" resultMap="TopContactsMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_top_contacts
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.addrbook.TopContacts" resultMap="TopContactsMap">
+        select * from tbl_pt_top_contacts where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.addrbook.TopContacts" resultMap="TopContactsMap">
+        select * from tbl_pt_top_contacts where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.addrbook.TopContacts" resultType="int">
+        select count(1) from tbl_pt_top_contacts where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertTopContacts" parameterType="com.dragon.portal.model.addrbook.TopContacts"  >
+        insert into tbl_pt_top_contacts (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{ownerNo,jdbcType=VARCHAR},
+        #{contactNo,jdbcType=VARCHAR},
+        #{sortNo,jdbcType=INTEGER},
+        #{remark,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delTopContactsById" parameterType="java.lang.String" >
+        delete from tbl_pt_top_contacts
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delTopContactsByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_top_contacts
+        where id in(${ids}) 
+    </delete>
+    
+    <!-- 批量移除常用联系人 -->
+    <update id="updateBatchTopContactsByList" parameterType="java.util.List">
+    	<foreach collection="list" item="item" index="index" open=""
+			close=";" separator=";">
+			UPDATE tbl_pt_top_contacts
+			<set>
+				<if test="item.updateTime != null">
+					update_time = #{item.updateTime,jdbcType=TIMESTAMP},
+				</if>
+				<if test="item.updator != null">
+					updator = #{item.updator,jdbcType=VARCHAR},
+				</if>
+				<if test="item.delFlag != null">
+					del_flag = #{item.delFlag,jdbcType=INTEGER},
+				</if>
+			</set>
+			where owner_no = #{item.ownerNo,jdbcType=VARCHAR} 
+			and contact_no = #{item.contactNo,jdbcType=VARCHAR}
+		</foreach>
+    </update>
+    
+    <update id="updateTopContacts" parameterType="com.dragon.portal.model.addrbook.TopContacts" >
+        update tbl_pt_top_contacts
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerNo != null" >
+                owner_no = #{ownerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="contactNo != null" >
+                contact_no = #{contactNo,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateTopContactsByIds" parameterType="java.util.Map">
+        update tbl_pt_top_contacts
+        <set>
+            <if test="topContacts.id != null" >
+                id = #{topContacts.id,jdbcType=VARCHAR},
+            </if>
+            <if test="topContacts.ownerNo != null" >
+                owner_no = #{topContacts.ownerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="topContacts.contactNo != null" >
+                contact_no = #{topContacts.contactNo,jdbcType=VARCHAR},
+            </if>
+            <if test="topContacts.sortNo != null" >
+                sort_no = #{topContacts.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="topContacts.remark != null" >
+                remark = #{topContacts.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="topContacts.createTime != null" >
+                create_time = #{topContacts.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="topContacts.creator != null" >
+                creator = #{topContacts.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="topContacts.updateTime != null" >
+                update_time = #{topContacts.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="topContacts.updator != null" >
+                updator = #{topContacts.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="topContacts.delFlag != null" >
+                del_flag = #{topContacts.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 批量添加常用联系人 -->
+    <insert id="insertAddTopContacts" parameterType="java.util.List">
+        insert into tbl_pt_top_contacts (
+            id,owner_no,contact_no,sort_no,
+            create_time,creator,update_time,updator,del_flag)
+        values 
+        <foreach collection="list" item="item" index="index" separator="," >  
+	        (
+	        #{item.id,jdbcType=VARCHAR},
+            #{item.ownerNo,jdbcType=VARCHAR},
+            #{item.contactNo,jdbcType=VARCHAR},
+            #{item.sortNo,jdbcType=INTEGER},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.creator,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.updator,jdbcType=VARCHAR},
+            #{item.delFlag,jdbcType=INTEGER}
+	        )
+        </foreach>
+    </insert>
+    
+    <!-- 查询工号是否已经存在通讯录中，如果存在则查询出来，不存在则返回空 -->
+    <select id="getTopContactsByNo" resultMap="TopContactsMap" parameterType="java.util.Map">
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_top_contacts
+        <where>
+            <if test="ownerNo != ''" >
+                owner_no = #{ownerNo,jdbcType=VARCHAR}
+            </if>
+            <if test="contactNo != ''" >
+                and contact_no = #{contactNo,jdbcType=VARCHAR}
+            </if>
+        </where> 
+    </select>
+</mapper>

@@ -1,12 +1,15 @@
 package com.dragon.portal.service.redis;
 
 
+import com.dragon.portal.constant.PortalConstant;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +26,25 @@ public class RedisService {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+
+    /**
+     * | 把对象根据key保存到Redis中
+     *
+     * @param key
+     *            对象key
+     * @param t
+     *            对象值
+     * @param ttl
+     *            对象在redis中的生命周期
+     * @param timeUnit
+     *            时间单位
+     */
+    public void put(String key, String t, int ttl, TimeUnit timeUnit) {
+        if (StringUtils.isNotBlank(key)) {
+            redisTemplate.opsForValue().set(PortalConstant.SYSTEM_SN + key, t, ttl, timeUnit);
+        }
+    }
 
     /**
      * 写入缓存
@@ -226,4 +248,18 @@ public class RedisService {
             return null;
         }
     }
+    /**
+     *  获取 唯一增长值 key UNIQUE_ expireDate.toString()
+     * @param expireDate 过期时间
+     * @return
+     * @Description:
+     * @author v-zhaohaishan 2017年6月5日 下午3:40:04
+     */
+
+    public int getAtomicInterger(Date expireDate){
+        RedisAtomicInteger redisAtomicInteger = new RedisAtomicInteger("UNIQUE_"+expireDate.toString(),redisTemplate.getConnectionFactory());
+        redisAtomicInteger.expireAt(expireDate);
+        return redisAtomicInteger.incrementAndGet();
+    }
+
 }

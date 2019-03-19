@@ -79,11 +79,11 @@ case "$2" in
     ;;
   "test")
     ENVIRONMENT=test
-    PROPERTIES=classpath:/application.properties,/etc/config/flow/application-test.properties
+    PROPERTIES=classpath:/application.properties,/etc/config/portal/application-test.properties
     ;;
   "prod")
     ENVIRONMENT=prod
-    PROPERTIES=classpath:/application.properties,/etc/config/flow/application-prod.properties
+    PROPERTIES=classpath:/application.properties,/etc/config/portal/application-prod.properties
     ;;
   *)
     if [[ -n $2 ]]; then
