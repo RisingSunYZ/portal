@@ -27,6 +27,7 @@ import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.*;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,7 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
+ * 会议
  * @author ruanzg
  * @version 1.0
  * @Date 2019/2/27 16:33
@@ -122,7 +124,7 @@ public class MeetingController extends BaseController {
     public ReturnVo<Meeting> ajaxList(@ApiIgnore Meeting meeting,Query query,
             HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
-        PagerModel<Meeting> pm = null;
+        PagerModel<Meeting> pm;
         try {
             //获取登录用户信息
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
@@ -155,7 +157,7 @@ public class MeetingController extends BaseController {
     public ReturnVo<PagerModel<Meeting>> ajaxMyList(@ApiIgnore Meeting meeting,
             Query query,HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
-        PagerModel<Meeting> pm = null;
+        PagerModel<Meeting> pm;
         try {
             //获取登录用户信息
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
@@ -165,11 +167,11 @@ public class MeetingController extends BaseController {
                 pm = this.meetingService.getMyMeetingPagerModelByQuery(meeting, query);
                 if(null != pm){
                     List<Meeting> meetings = pm.getData();
-                    meetings = meetingService.getInitList(meetings,loginUser.getNo());
+                    meetingService.getInitList(meetings,loginUser.getNo());
                 }
+                returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+                returnVo.setData(pm);
             }
-            returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
-            returnVo.setData(pm);
         } catch (Exception e) {
             logger.error("MeetingController-ajaxMyList:"+e);
             e.printStackTrace();
@@ -199,7 +201,7 @@ public class MeetingController extends BaseController {
                 meeting.setEndTime(new Date());
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getData();
-                meetings = meetingService.getInitList(meetings,loginUser.getNo());
+                meetingService.getInitList(meetings,loginUser.getNo());
                 returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
             }
         } catch (Exception e) {
@@ -232,7 +234,7 @@ public class MeetingController extends BaseController {
                 meeting.setStatus(MeetingStatusEnum.MY_DRAFT.getCode());
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getData();
-                meetings = meetingService.getInitList(meetings,loginUser.getNo());
+                meetingService.getInitList(meetings,loginUser.getNo());
                 returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
             }
         } catch (Exception e) {
@@ -340,12 +342,12 @@ public class MeetingController extends BaseController {
                     List<MeetingFiles> meetingSummaryFiles = new ArrayList<>();
                     String fileName="";
                     String filePath="";
-                    if(meetingSummaryFilesTmp.size()>0){
+                    if(CollectionUtils.isNotEmpty(meetingSummaryFilesTmp)){
                         for(MeetingFiles f : meetingSummaryFilesTmp){
                             if(f.getUseType() == MeetingFileType.MEETING_SUMMARY_FILE.getCode()){
                                 meetingSummaryFiles.add(f);
-                                fileName=fileName+f.getFileName()+",";
-                                filePath=filePath+f.getFilePath()+",";
+                                fileName += f.getFileName()+",";
+                                filePath += f.getFilePath()+",";
                             }
                         }
                         if(StringUtils.isNotBlank(fileName)){
@@ -362,8 +364,9 @@ public class MeetingController extends BaseController {
                 }
                 map.put("meetingSummary", meetingSummary);
                 returnVo = new ReturnVo(ReturnCode.SUCCESS, "查询成功");
+                returnVo.setData(map);
             }
-            returnVo.setData(map);
+
         }catch (Exception e){
             logger.error("MeetingController-getSummaryMeeting",e);
         }
@@ -382,7 +385,6 @@ public class MeetingController extends BaseController {
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 String userNo=loginUser.getNo();
-                String userName=loginUser.getName();
                 if(StringUtils.isBlank(meetingSummary.getId())){
                     meetingSummary.setCreator(userNo);
                     meetingSummary.setUpdator(userNo);
@@ -413,9 +415,9 @@ public class MeetingController extends BaseController {
     @GetMapping("/getMeetingById/{id}")
     @ApiOperation("根据id查询会议")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "query",required = true),
+            @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "path",required = true),
     })
-    public ReturnVo getMeetingById(String id,HttpServletRequest request, HttpServletResponse response) {
+    public ReturnVo getMeetingById(@PathVariable String id,HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
         try {
             Map<String,Object>model = new HashMap<>();
@@ -508,27 +510,26 @@ public class MeetingController extends BaseController {
                     appointmentVO.setEmail(personnelApiVo.getEmail());
                     logger.info("发起人邮箱===》》》"+personnelApiVo.getEmail());
                     //会议日程---获取日程信息及接收人
-                    List<ScheduleEvent> scheduleEventList = new ArrayList<ScheduleEvent>();
-                    List<ScheduleEvent> scheduleList = new ArrayList<ScheduleEvent>();
+                    List<ScheduleEvent> scheduleEventList = new ArrayList<>();
+                    List<ScheduleEvent> scheduleList = new ArrayList<>();
                     //设置会议发起人日程
                     ScheduleEvent eventCreat = new ScheduleEvent();
                     eventCreat.setReceiveNo(userName);
                     scheduleEventList.add(eventCreat);
                     scheduleList.add(eventCreat);
 
-                    ScheduleEvent sh = null;
-                    List<String> newNos = new ArrayList<String>();
+                    ScheduleEvent sh;
+                    List<String> newNos = new ArrayList<>();
 
                     //设置会议参与人---必选人员邮箱地址
                     if(StringUtils.isNotBlank(meeting.getMandatoryPersonNo())){
-                        List<String> nos = new ArrayList<String>();
-                        List<String> mandatoryEmail = new ArrayList<String>();
+                        List<String> nos = new ArrayList<>();
+                        List<String> mandatoryEmail = new ArrayList<>();
                         String[] personNO = meeting.getMandatoryPersonNo().split(",");
                         for(String s : personNO){
-
                             if(s.contains("@")){
                                 mandatoryEmail.add(s.trim());
-                                System.out.println("必选人员邮箱===》》》"+s);
+                                logger.info("必选人员邮箱===》》》"+s);
                             }else{
                                 nos.add(s.trim());
                                 sh = new ScheduleEvent();
@@ -541,10 +542,8 @@ public class MeetingController extends BaseController {
                         if(nos.size()>0){
                             com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(nos);
                             List<PersonnelApiVo> personnelApiVos = returnVos.getDatas();
-                            if(personnelApiVos != null && personnelApiVos.size() > 0){
-                                for(PersonnelApiVo p : personnelApiVos){
-                                    mandatoryEmail.add(p.getEmail());
-                                }
+                            if(CollectionUtils.isNotEmpty(personnelApiVos)){
+                                personnelApiVos.forEach(p->mandatoryEmail.add(p.getEmail()));
                             }
                         }
                         appointmentVO.setMandatoryEmail(mandatoryEmail);//必选人员邮箱
@@ -557,7 +556,7 @@ public class MeetingController extends BaseController {
                         for(String s : personNO){
                             if(s.contains("@")){
                                 optionalEmail.add(s.trim());
-                                System.out.println("可选人员邮箱===》》》"+s);
+                                logger.info("可选人员邮箱===》》》"+s);
                             }else{
                                 optionalNos.add(s.trim());
                                 sh = new ScheduleEvent();
@@ -580,13 +579,11 @@ public class MeetingController extends BaseController {
                             newNos.add(s.trim());
                         }
                     }
-                    if(optionalNos.size() > 0){
+                    if(CollectionUtils.isNotEmpty(optionalNos)){
                         com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(optionalNos);
                         List<PersonnelApiVo> optionalApiVos = returnVos.getDatas();
-                        if(optionalApiVos != null && optionalApiVos.size()>0){
-                            for(PersonnelApiVo p : optionalApiVos){
-                                optionalEmail.add(p.getEmail());
-                            }
+                        if(CollectionUtils.isNotEmpty(optionalApiVos)){
+                            optionalApiVos.forEach(p->optionalEmail.add(p.getEmail()));
                         }
                     }
                     appointmentVO.setOptionalEmail(optionalEmail);//非必选人人员邮箱
