@@ -101,6 +101,16 @@ public class PortalConstant {
      */
     public static final String GDKQ_SN = "CSHR";
 
+    /**
+     * 无内容
+     */
+    public static final String NULL = "NULL";
+
+
+    /**
+     * 用户头像，Redis存储前缀
+     */
+    public static final String USER_HEAD_IMG = "USER_HEAD_IMG";
 
     // 流程图片文件类型
     public static final String WF_IMAGE = "png";
