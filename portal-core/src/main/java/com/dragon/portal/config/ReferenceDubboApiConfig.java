@@ -96,4 +96,9 @@ public class ReferenceDubboApiConfig {
         return sendSmsApi;
     }
 
+    @Bean
+    public IAreaApi getAreaApi() {
+        return areaApi;
+    }
+
 }
