@@ -3,7 +3,6 @@ package com.dragon.portal.service.user;
 
 import com.dragon.tools.vo.ReturnVo;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -51,12 +50,11 @@ public interface IUserLoginService{
 
     /**
      * 登录后-》修改密码
-     * @param password
-     * @param session
+     * @Param [oldPassword,password,session]
      * @return
      * @throws Exception
      */
-    public ReturnVo updatePwdAfterLogin(String password, HttpSession session) throws Exception;
+    public ReturnVo updatePwdAfterLogin(String oldPassword,String password, HttpSession session) throws Exception;
 
 
     /*
