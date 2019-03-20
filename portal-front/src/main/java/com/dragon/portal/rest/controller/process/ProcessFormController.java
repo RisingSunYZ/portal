@@ -695,7 +695,7 @@ public class ProcessFormController extends BaseController {
 				vo.setUserCode(user.getNo());
 				ReturnVo<String> rvo=flowApi.stopProcess(vo);
 				if(FlowConstant.SUCCESS.equals(rvo.getCode())){
-
+                    returnVo = new ReturnVo<String>(ReturnCode.SUCCESS, "操作成功");
 				}
 			}
 		} catch (Exception e) {
