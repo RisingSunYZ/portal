@@ -51,6 +51,7 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
                         "/rest/portal/news/ajaxListVo",
                         "/rest/portal/user/userLogin/login",
                         "/rest/portal/file-operation/*",
+                        "/rest/user/currentUser",
 
                         "/swagger-ui.html",
                         "/configuration/ui",
