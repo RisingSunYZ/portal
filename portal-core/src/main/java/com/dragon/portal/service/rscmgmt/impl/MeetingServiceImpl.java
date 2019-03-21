@@ -356,84 +356,10 @@ public class MeetingServiceImpl implements IMeetingService {
 			PersonnelApiVo personnelApiVo = person.getData();
 			appointmentVO.setEmail(personnelApiVo.getEmail());
 			logger.info("发起人邮箱===》》》"+personnelApiVo.getEmail());
-
-			//会议日程---获取日程信息及接收人
-			List<ScheduleEvent> scheduleEventList = new ArrayList<ScheduleEvent>();
-			ScheduleEvent sh = null;
-			List<String> newNos = new ArrayList<String>();
-
-			//设置会议参与人---必选人员邮箱地址
-			if(StringUtils.isNotBlank(meeting.getMandatoryPersonNo())){
-				List<String> nos = new ArrayList<String>();
-				List<String> mandatoryEmail = new ArrayList<String>();
-				String[] personNO = meeting.getMandatoryPersonNo().split(",");
-				for(String s : personNO){
-					if(s.contains("@")){
-						mandatoryEmail.add(s.trim());
-						System.out.println("必选人员邮箱===》》》"+s);
-					}else{
-						nos.add(s.trim());
-
-						sh = new ScheduleEvent();
-						sh.setReceiveNo(s.trim());
-						scheduleEventList.add(sh);
-						newNos.add(s.trim());
-					}
-				}
-				if(nos.size()>0){
-					com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(nos);
-					List<PersonnelApiVo> personnelApiVos = returnVos.getDatas();
-					if(personnelApiVos != null && personnelApiVos.size()>0){
-						for(PersonnelApiVo p : personnelApiVos){
-							mandatoryEmail.add(p.getEmail());
-						}
-					}
-				}
-				appointmentVO.setMandatoryEmail(mandatoryEmail);
-			}
-
-			//设置会议参与人---可选人员邮箱地址
-			List<String> optionalNos = new ArrayList<String>();
-			List<String> optionalEmail = new ArrayList<String>();
-			if(StringUtils.isNotBlank(meeting.getOptionalPersonNo())){
-				String[] personNO = meeting.getOptionalPersonNo().split(",");
-				for(String s : personNO){
-					if(s.contains("@")){
-						optionalEmail.add(s.trim());
-						System.out.println("可选人员邮箱===》》》"+s);
-					}else{
-						optionalNos.add(s.trim());
-
-						sh = new ScheduleEvent();
-						sh.setCreator(userNo);
-						sh.setUpdator(userNo);
-						sh.setReceiveNo(s.trim());
-						scheduleEventList.add(sh);
-						newNos.add(s.trim());
-					}
-				}
-			}
-			if(StringUtils.isNotBlank(meeting.getRecordPersonNo())){
-				String[] personNO = meeting.getRecordPersonNo().split(",");
-				for(String s : personNO){
-					optionalNos.add(s.trim());
-
-					sh = new ScheduleEvent();
-					sh.setReceiveNo(s.trim());
-					scheduleEventList.add(sh);
-					newNos.add(s.trim());
-				}
-			}
-			if(optionalNos.size()>0){
-				com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(optionalNos);
-				List<PersonnelApiVo> optionalApiVos = returnVos.getDatas();
-				if(optionalApiVos != null && optionalApiVos.size()>0){
-					for(PersonnelApiVo p : optionalApiVos){
-						optionalEmail.add(p.getEmail());
-					}
-				}
-			}
-			appointmentVO.setOptionalEmail(optionalEmail);
+            List<ScheduleEvent> scheduleEventList = new ArrayList<>();
+            List<String> newNos = new ArrayList<>();
+            //设置邮箱与日程事件
+			this.setMandatoryEmail(scheduleEventList,newNos,appointmentVO,meeting,userNo);
 
 			Map<String,Object> map=new HashMap<>();
 			String start = meeting.getMeetingTime()+" "+meeting.getStart()+":00";
@@ -534,26 +460,7 @@ public class MeetingServiceImpl implements IMeetingService {
 						if(mt.getStatus() == MeetingStatusEnum.MY_DRAFT.getCode()){
 							System.out.println("changeId===>>>"+meeting.getChangeId());
 							System.out.println("changeKey===>>>"+meeting.getChangeKey());
-							for(ScheduleEvent scheduleEvent : scheduleEventList){
-								scheduleEvent.setId(UUIDGenerator.generate());
-								scheduleEvent.setTitle(meeting.getTheme());
-								scheduleEvent.setAddress(meeting.getMeetingroomName());
-								scheduleEvent.setContent(meeting.getContent());
-								scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
-								scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
-
-								scheduleEvent.setCreator(userNo);
-								scheduleEvent.setCreateTime(new Date());
-								scheduleEvent.setUpdator(userNo);
-								scheduleEvent.setUpdateTime(new Date());
-
-								scheduleEvent.setDelFlag(1);
-								scheduleEvent.setType(2);
-								scheduleEvent.setIsAllDay(0);
-								scheduleEvent.setChangeId(meeting.getChangeId());
-								scheduleEvent.setChangeKey(meeting.getChangeKey());
-								scheduleEvent.setMeetingId(meeting.getId());
-							}
+							this.setScheduleEventList(scheduleEventList,meeting,start,end,userNo);
 							this.scheduleEventDao.insertScheduleEvents(scheduleEventList);
 							returnVo.setCode(ReturnCode.SUCCESS);
 							returnVo.setMsg("发送成功！");
@@ -793,5 +700,134 @@ public class MeetingServiceImpl implements IMeetingService {
 		}
 		return meetings;
 	}
+
+    /**
+     * 设置必选人员email
+     * @param appointmentVO
+     * @param meeting
+     */
+    public void setMandatoryEmail(List<ScheduleEvent>scheduleEventList,List<String>newNos,AppointmentVO appointmentVO,Meeting meeting,String userNo){
+        ScheduleEvent sh;
+
+        //设置会议参与人---必选人员邮箱地址
+        if(StringUtils.isNotBlank(meeting.getMandatoryPersonNo())){
+            List<String> nos = new ArrayList<>();
+            List<String> mandatoryEmail = new ArrayList<>();
+            String[] personNO = meeting.getMandatoryPersonNo().split(",");
+            for(String s : personNO){
+                if(s.contains("@")){
+                    mandatoryEmail.add(s.trim());
+                    logger.info("必选人员邮箱===》》》"+s);
+                }else{
+                    nos.add(s.trim());
+
+                    sh = new ScheduleEvent();
+                    sh.setReceiveNo(s.trim());
+                    scheduleEventList.add(sh);
+                    newNos.add(s.trim());
+                }
+            }
+            if(CollectionUtils.isNotEmpty(nos)){
+                com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(nos);
+                List<PersonnelApiVo> personnelApiVos = returnVos.getDatas();
+                if(CollectionUtils.isNotEmpty(personnelApiVos)){
+                    personnelApiVos.forEach(p->mandatoryEmail.add(p.getEmail()));
+                }
+            }
+            appointmentVO.setMandatoryEmail(mandatoryEmail);
+        }
+        //设置会议参与人---可选人员邮箱地址
+        List<String> optionalNos = new ArrayList<>();
+        List<String> optionalEmail = new ArrayList<>();
+        if(StringUtils.isNotBlank(meeting.getOptionalPersonNo())){
+            String[] personNO = meeting.getOptionalPersonNo().split(",");
+            for(String s : personNO){
+                if(s.contains("@")){
+                    optionalEmail.add(s.trim());
+                    logger.info("可选人员邮箱===》》》"+s);
+                }else{
+                    optionalNos.add(s.trim());
+                    sh = new ScheduleEvent();
+                    sh.setCreator(userNo);
+                    sh.setUpdator(userNo);
+                    sh.setReceiveNo(s.trim());
+                    scheduleEventList.add(sh);
+                    newNos.add(s.trim());
+                }
+            }
+        }
+        if(StringUtils.isNotBlank(meeting.getRecordPersonNo())){
+            String[] personNO = meeting.getRecordPersonNo().split(",");
+            for(String s : personNO){
+                optionalNos.add(s.trim());
+                sh = new ScheduleEvent();
+                sh.setReceiveNo(s.trim());
+                scheduleEventList.add(sh);
+                newNos.add(s.trim());
+            }
+        }
+        if(CollectionUtils.isNotEmpty(optionalNos)){
+            com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(optionalNos);
+            List<PersonnelApiVo> optionalApiVos = returnVos.getDatas();
+            if(CollectionUtils.isNotEmpty(optionalApiVos)){
+                optionalApiVos.forEach(p->optionalEmail.add(p.getEmail()));
+            }
+        }
+        appointmentVO.setOptionalEmail(optionalEmail);
+    }
+
+    /**
+     * 设置日程事件信息
+     * @param scheduleEventList,vo,meeting,start,end,userNo
+     */
+    public void setScheduleEventList(List<ScheduleEvent>scheduleEventList,AppointmentVO vo ,Meeting meeting,String start,String end,String userNo){
+        for(ScheduleEvent scheduleEvent : scheduleEventList){
+            scheduleEvent.setId(UUIDGenerator.generate());
+            scheduleEvent.setTitle(meeting.getTheme());
+            scheduleEvent.setAddress(meeting.getMeetingroomName());
+            scheduleEvent.setContent(meeting.getContent());
+            scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
+            scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
+
+            scheduleEvent.setCreator(userNo);
+            scheduleEvent.setCreateTime(new Date());
+            scheduleEvent.setUpdator(userNo);
+            scheduleEvent.setUpdateTime(new Date());
+
+            scheduleEvent.setDelFlag(1);
+            scheduleEvent.setType(2);
+            scheduleEvent.setIsAllDay(0);
+            scheduleEvent.setChangeId(vo.getChangeId());
+            scheduleEvent.setChangeKey(vo.getChangeKey());
+            scheduleEvent.setMeetingId(meeting.getId());
+        }
+    }
+
+    /**
+     * 设置日程事件信息
+     * @param scheduleEventList,meeting,start,end,userNo
+     */
+    public void setScheduleEventList(List<ScheduleEvent>scheduleEventList,Meeting meeting,String start,String end,String userNo){
+        for(ScheduleEvent scheduleEvent : scheduleEventList){
+            scheduleEvent.setId(UUIDGenerator.generate());
+            scheduleEvent.setTitle(meeting.getTheme());
+            scheduleEvent.setAddress(meeting.getMeetingroomName());
+            scheduleEvent.setContent(meeting.getContent());
+            scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
+            scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
+
+            scheduleEvent.setCreator(userNo);
+            scheduleEvent.setCreateTime(new Date());
+            scheduleEvent.setUpdator(userNo);
+            scheduleEvent.setUpdateTime(new Date());
+
+            scheduleEvent.setDelFlag(1);
+            scheduleEvent.setType(2);
+            scheduleEvent.setIsAllDay(0);
+            scheduleEvent.setChangeId(meeting.getChangeId());
+            scheduleEvent.setChangeKey(meeting.getChangeKey());
+            scheduleEvent.setMeetingId(meeting.getId());
+        }
+    }
 }
 

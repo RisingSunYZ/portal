@@ -17,7 +17,6 @@ import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.FileUtils;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.ftp.FtpTools;
-import com.dragon.tools.ftp.UploadUtils;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
@@ -27,6 +26,7 @@ import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.*;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
+ * 会议
  * @author ruanzg
  * @version 1.0
  * @Date 2019/2/27 16:33
@@ -75,8 +76,8 @@ public class MeetingController extends BaseController {
     @Resource
     private IScheduleEventService scheduleEventService;
     /**
-     * @param request
-     * @Description:新建、编辑会议页面数据保存
+     * @param meeting
+     * Description:新建、编辑会议页面数据保存
      */
     @PostMapping("/save")
     @ApiOperation("新建、编辑会议页面数据保存")
@@ -113,16 +114,16 @@ public class MeetingController extends BaseController {
 
 
     /**
-     * @param request
-     * @Description:加载待开会议页面数据
+     * @param meeting,query,request,response
+     * Description 加载待开会议页面数据
      */
     @GetMapping("/ajaxList")
     @ApiOperation("加载待开会议页面数据")
     @ApiImplicitParam(name="theme",value = "主题名称",dataType = "String",paramType = "query")
-    public ReturnVo<Meeting> ajaxList(@ApiIgnore Meeting meeting,Query query,
+    public ReturnVo<PagerModel<Meeting>> ajaxList(@ApiIgnore Meeting meeting,Query query,
             HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
-        PagerModel<Meeting> pm = null;
+        ReturnVo<PagerModel<Meeting>> returnVo = new ReturnVo<>(ReturnCode.FAIL,"查询失败");
+        PagerModel<Meeting> pm;
         try {
             //获取登录用户信息
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
@@ -133,7 +134,7 @@ public class MeetingController extends BaseController {
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getData();
                 meetingService.getInitList(meetings,loginUser.getNo());
-                returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+                returnVo = new ReturnVo<>(ReturnCode.SUCCESS,"查询成功");
                 returnVo.setData(pm);
             }
         } catch (Exception e) {
@@ -144,8 +145,8 @@ public class MeetingController extends BaseController {
     }
 
     /**
-     * @param request
-     * @Description:加载我的邀请页面数据
+     * @param meeting,request
+     * Description:加载我的邀请页面数据
      */
     @GetMapping("/ajaxMyList")
     @ApiOperation("加载我的邀请页面数据")
@@ -154,8 +155,8 @@ public class MeetingController extends BaseController {
     })
     public ReturnVo<PagerModel<Meeting>> ajaxMyList(@ApiIgnore Meeting meeting,
             Query query,HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
-        PagerModel<Meeting> pm = null;
+        ReturnVo<PagerModel<Meeting>> returnVo = new ReturnVo<>(ReturnCode.FAIL,"查询失败");
+        PagerModel<Meeting> pm;
         try {
             //获取登录用户信息
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
@@ -165,11 +166,11 @@ public class MeetingController extends BaseController {
                 pm = this.meetingService.getMyMeetingPagerModelByQuery(meeting, query);
                 if(null != pm){
                     List<Meeting> meetings = pm.getData();
-                    meetings = meetingService.getInitList(meetings,loginUser.getNo());
+                    meetingService.getInitList(meetings,loginUser.getNo());
                 }
+                returnVo = new ReturnVo<>(ReturnCode.SUCCESS,"查询成功");
+                returnVo.setData(pm);
             }
-            returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
-            returnVo.setData(pm);
         } catch (Exception e) {
             logger.error("MeetingController-ajaxMyList:"+e);
             e.printStackTrace();
@@ -178,29 +179,28 @@ public class MeetingController extends BaseController {
     }
 
     /**
-     * @param query
-     * @param request
-     * @Description:加载历史会议页面数据
+     * param query
+     * param request
+     * Description:加载历史会议页面数据
      */
     @GetMapping("/ajaxHistoryList")
     @ApiOperation("加载历史会议页面数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name="theme",value = "主题名称",dataType = "String",paramType = "query"),
     })
-    public ReturnVo ajaxHistoryList(@ApiIgnore Meeting meeting, Query query, HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
+    public ReturnVo<PagerModel<Meeting>> ajaxHistoryList(@ApiIgnore Meeting meeting, Query query, HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo<PagerModel<Meeting>> returnVo = new ReturnVo<>(ReturnCode.FAIL,"查询失败");
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 meeting.setCreator(loginUser.getNo());
-//                meeting.setStatus(MeetingStatusEnum.ALREADY_HELD.getCode());
                 meeting.setEndTime(new Date());
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getData();
-                meetings = meetingService.getInitList(meetings,loginUser.getNo());
-                returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+                meetingService.getInitList(meetings,loginUser.getNo());
+                returnVo = new ReturnVo<>(ReturnCode.SUCCESS,"查询成功");
             }
         } catch (Exception e) {
             logger.error("MeetingController-ajaxHistoryList:",e);
@@ -212,17 +212,17 @@ public class MeetingController extends BaseController {
 
     /**
      * @param meeting
-     * @param query
-     * @param request
-     * @Description:加载我的草稿页面数据
+     * param query
+     * param request
+     * Description:加载我的草稿页面数据
      */
     @GetMapping("/ajaxMyDraftList")
     @ApiOperation("加载我的草稿页面数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name="theme",value = "主题名称",dataType = "String",paramType = "query"),
     })
-    public ReturnVo ajaxMyDraftList(@ApiIgnore Meeting meeting, Query query, HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
+    public ReturnVo<PagerModel<Meeting>> ajaxMyDraftList(@ApiIgnore Meeting meeting, Query query, HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo<PagerModel<Meeting>> returnVo = new ReturnVo<>(ReturnCode.FAIL,"查询失败");
         PagerModel<Meeting> pm = null;
         try {
             //获取登录用户信息
@@ -232,8 +232,8 @@ public class MeetingController extends BaseController {
                 meeting.setStatus(MeetingStatusEnum.MY_DRAFT.getCode());
                 pm = this.meetingService.getPagerModelByQuery(meeting, query);
                 List<Meeting> meetings = pm.getData();
-                meetings = meetingService.getInitList(meetings,loginUser.getNo());
-                returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+                meetingService.getInitList(meetings,loginUser.getNo());
+                returnVo = new ReturnVo<>(ReturnCode.SUCCESS,"查询成功");
             }
         } catch (Exception e) {
             logger.error("MeetingController-ajaxHistoryList:"+e);
@@ -245,23 +245,23 @@ public class MeetingController extends BaseController {
 
     /**
      * 会议答复
-     * @return returnVo
-     * @Description:
-     * @author xietongjian 2017 上午10:52:14
+     * @return  returnVo
+     * Description:
+     * author xietongjian 2017 上午10:52:14
      */
-    @GetMapping("/reply")
+    @GetMapping("/reply/{meetingId}")
     @ApiOperation("根据会议id会议答复详情")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="meetingId",value = "会议id",dataType = "String",paramType = "query",required = true),
+            @ApiImplicitParam(name="meetingId",value = "会议id",dataType = "String",paramType = "path",required = true),
     })
-    public ReturnVo reply(@RequestParam String meetingId, HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo<MeetingReply> returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
+    public ReturnVo<MeetingReply> reply(@PathVariable String meetingId, HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo<MeetingReply> returnVo = new ReturnVo<>(ReturnCode.FAIL,"查询失败");
         UserSessionInfo loginUser = getUserSessionInfo(request,response);
         MeetingReply meetingReply =new MeetingReply();
         if(StringUtils.isNotBlank(meetingId)){
             try {
                 meetingReply =  meetingReplyService.getMeetingReplyByMeetingIdAndPersonNo(meetingId,loginUser.getNo());
-                returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+                returnVo = new ReturnVo<>(ReturnCode.SUCCESS,"查询成功");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -273,10 +273,9 @@ public class MeetingController extends BaseController {
     }
 
     /**
-     * 会议答复
-     * @return
-     * @Description:
-     * @author xietongjian 2017 上午10:52:14
+     * @return returnVo
+     * Description:会议答复
+     * author xietongjian 2017 上午10:52:14
      */
     @PostMapping("/saveReply")
     @ApiOperation("保存会议答复")
@@ -317,9 +316,8 @@ public class MeetingController extends BaseController {
     }
 
     /**
-     * 根据id查询会议纪要和附件
-     * @return
-     * @Description:
+     * @return returnVo
+     * Description:根据id查询会议纪要和附件
      */
     @GetMapping("/getSummaryMeeting")
     @ApiOperation("根据id查询会议纪要和附件")
@@ -327,7 +325,7 @@ public class MeetingController extends BaseController {
             @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "query",required = true),
     })
     public ReturnVo<Map<String,Object>> getSummaryMeeting(String id ,HttpServletRequest request,HttpServletResponse response){
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
+        ReturnVo<Map<String,Object>> returnVo = new ReturnVo<>(ReturnCode.FAIL, "查询失败");
         try{
             Map<String,Object>map = new HashMap<>();
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
@@ -338,20 +336,20 @@ public class MeetingController extends BaseController {
                     List<MeetingFiles> meetingSummaryFilesTmp = meetingFilesService.getMeetingFilesByMeetingId(id);
 
                     List<MeetingFiles> meetingSummaryFiles = new ArrayList<>();
-                    String fileName="";
-                    String filePath="";
-                    if(meetingSummaryFilesTmp.size()>0){
+                    StringBuilder fileName = new StringBuilder();
+                    StringBuilder filePath = new StringBuilder();
+                    if(CollectionUtils.isNotEmpty(meetingSummaryFilesTmp)){
                         for(MeetingFiles f : meetingSummaryFilesTmp){
-                            if(f.getUseType() == MeetingFileType.MEETING_SUMMARY_FILE.getCode()){
+                            if(f.getUseType().equals(MeetingFileType.MEETING_SUMMARY_FILE.getCode())){
                                 meetingSummaryFiles.add(f);
-                                fileName=fileName+f.getFileName()+",";
-                                filePath=filePath+f.getFilePath()+",";
+                                fileName.append(f.getFileName()).append(",");
+                                filePath.append(f.getFilePath()).append(",");
                             }
                         }
-                        if(StringUtils.isNotBlank(fileName)){
+                        if(StringUtils.isNotBlank(fileName.toString())){
                             meetingSummary.setFileName(fileName.substring(0, fileName.length()-1));
                         }
-                        if(StringUtils.isNotBlank(filePath)){
+                        if(StringUtils.isNotBlank(filePath.toString())){
                             meetingSummary.setFilePath(filePath.substring(0, filePath.length()-1));
                         }
                     }
@@ -361,9 +359,10 @@ public class MeetingController extends BaseController {
                     meetingSummary.setMeetingId(id);
                 }
                 map.put("meetingSummary", meetingSummary);
-                returnVo = new ReturnVo(ReturnCode.SUCCESS, "查询成功");
+                returnVo = new ReturnVo<>(ReturnCode.SUCCESS, "查询成功");
+                returnVo.setData(map);
             }
-            returnVo.setData(map);
+
         }catch (Exception e){
             logger.error("MeetingController-getSummaryMeeting",e);
         }
@@ -372,17 +371,16 @@ public class MeetingController extends BaseController {
 
     /**
      * @param request
-     * @Description:新建、编辑会议纪要页面数据保存
+     * Description:新建、编辑会议纪要页面数据保存
      */
     @PostMapping("/saveMeetingSummary")
     @ApiOperation("新建、编辑会议纪要页面数据保存")
-    public String saveMeetingSummary(@RequestBody MeetingSummary meetingSummary, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnVo saveMeetingSummary(@RequestBody MeetingSummary meetingSummary, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败");
         try {
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
             if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
                 String userNo=loginUser.getNo();
-                String userName=loginUser.getName();
                 if(StringUtils.isBlank(meetingSummary.getId())){
                     meetingSummary.setCreator(userNo);
                     meetingSummary.setUpdator(userNo);
@@ -402,21 +400,21 @@ public class MeetingController extends BaseController {
             logger.error("MeetingController-update:"+e);
             e.printStackTrace();
         }
-        return JsonUtils.toJson(returnVo);
+        return returnVo;
     }
 
     /**
      * @param id
-     * @param request
-     * @Description:根据id查询会议
+     * param request
+     * Description:根据id查询会议
      */
     @GetMapping("/getMeetingById/{id}")
     @ApiOperation("根据id查询会议")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "query",required = true),
+            @ApiImplicitParam(name="id",value = "会议id",dataType = "String",paramType = "path",required = true),
     })
-    public ReturnVo getMeetingById(String id,HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败");
+    public ReturnVo<Map<String,Object>> getMeetingById(@PathVariable String id,HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo<Map<String,Object>> returnVo = new ReturnVo<>(ReturnCode.FAIL, "查询失败");
         try {
             Map<String,Object>model = new HashMap<>();
             UserSessionInfo loginUser =  getUserSessionInfo(request,response);
@@ -425,19 +423,19 @@ public class MeetingController extends BaseController {
                     Meeting meeting = getMeetingPersonnel(id);
                     //设置编辑页面显示会议的附件
                     List<MeetingFiles> meetingFiles = meetingFilesService.getMeetingFilesByMeetingId(meeting.getId());
-                    String fileName="";
-                    String filePath="";
+                    StringBuilder fileName=new StringBuilder();
+                    StringBuilder filePath=new StringBuilder();
                     if(meetingFiles.size()>0){
                         for(MeetingFiles f : meetingFiles){
-                            if(f.getUseType() == MeetingFileType.MEETING_CONTENT_FILE.getCode()){
-                                fileName=fileName+f.getFileName()+",";
-                                filePath=filePath+f.getFilePath()+",";
+                            if(f.getUseType().equals(MeetingFileType.MEETING_CONTENT_FILE.getCode())){
+                                fileName.append(f.getFileName()).append(",");
+                                filePath.append(f.getFilePath()).append(",");
                             }
                         }
-                        if(StringUtils.isNotBlank(fileName)){
+                        if(StringUtils.isNotBlank(fileName.toString())){
                             meeting.setFileName(fileName.substring(0, fileName.length()-1));
                         }
-                        if(StringUtils.isNotBlank(filePath)){
+                        if(StringUtils.isNotBlank(filePath.toString())){
                             meeting.setFilePath(filePath.substring(0, filePath.length()-1));
                         }
                     }
@@ -445,7 +443,7 @@ public class MeetingController extends BaseController {
                     //获取会议开始时间和结束时间
                     String start=DateUtils.dateToString(meeting.getStartTime(), "yyyy-MM-dd HH:mm:ss");
                     String end =DateUtils.dateToString(meeting.getEndTime(), "yyyy-MM-dd HH:mm:ss");
-                    String meetingTime = start.substring(0, 10);;
+                    String meetingTime = start.substring(0, 10);
                     start =start.substring(11, 16);
                     end =end.substring(11, 16);
                     meeting.setMeetingTime(meetingTime);
@@ -456,16 +454,13 @@ public class MeetingController extends BaseController {
 
                     //设置会议回复记录
                     meeting.setUserNo(loginUser.getNo());
-                    List<MeetingReply> meetingReplys = meetingReplyService.getReplyByMeetingId(meeting.getId());
-                    for(MeetingReply mp : meetingReplys){
+                    List<MeetingReply> meetingReplyList = meetingReplyService.getReplyByMeetingId(meeting.getId());
+                    for(MeetingReply mp : meetingReplyList){
                         mp.setUpdateTimeStr(DateUtils.dateToString(mp.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
                         mp.setReplyStatusStr(mp.getReplyStatusStr());
                     }
-                    meeting.setCount(meetingReplys.size());
-                    meeting.setReplyList(meetingReplys);
-
-                    List<Meeting> meetings =new ArrayList<Meeting>();
-                    meetings.add(meeting);
+                    meeting.setCount(meetingReplyList.size());
+                    meeting.setReplyList(meetingReplyList);
 
                     model.put("meeting", meeting);
                     model.put("mandatoryPersonList", meeting.getMandatoryPersonList());
@@ -478,7 +473,7 @@ public class MeetingController extends BaseController {
                     meeting.setStatus(MeetingStatusEnum.MY_DRAFT.getCode());
                     model.put("meeting", meeting);
                 }
-                returnVo = new ReturnVo(ReturnCode.SUCCESS, "查询成功");
+                returnVo = new ReturnVo<>(ReturnCode.SUCCESS, "查询成功");
             }
             returnVo.setData(model);
         } catch (Exception e) {
@@ -488,9 +483,8 @@ public class MeetingController extends BaseController {
     }
 
     /**
-     * @param meeting
-     * @param request
-     * @Description: 新建会议发送会议邀请(先保存会议再发送邮件日程)和发送会议更新
+     * @param meeting,request
+     * Description: 新建会议发送会议邀请(先保存会议再发送邮件日程)和发送会议更新
      */
     @PostMapping("/sendInvitation")
     @ApiOperation("新建会议发送会议邀请(先保存会议再发送邮件日程)和发送会议更新")
@@ -508,90 +502,18 @@ public class MeetingController extends BaseController {
                     appointmentVO.setEmail(personnelApiVo.getEmail());
                     logger.info("发起人邮箱===》》》"+personnelApiVo.getEmail());
                     //会议日程---获取日程信息及接收人
-                    List<ScheduleEvent> scheduleEventList = new ArrayList<ScheduleEvent>();
-                    List<ScheduleEvent> scheduleList = new ArrayList<ScheduleEvent>();
+                    List<ScheduleEvent> scheduleEventList = new ArrayList<>();
+                    List<ScheduleEvent> scheduleList = new ArrayList<>();
                     //设置会议发起人日程
-                    ScheduleEvent eventCreat = new ScheduleEvent();
-                    eventCreat.setReceiveNo(userName);
-                    scheduleEventList.add(eventCreat);
-                    scheduleList.add(eventCreat);
+                    ScheduleEvent eventCreate = new ScheduleEvent();
+                    eventCreate.setReceiveNo(userName);
+                    scheduleEventList.add(eventCreate);
+                    scheduleList.add(eventCreate);
+                    List<String> newNos = new ArrayList<>();
+                    //设置邮箱与日程事件
+                    meetingService.setMandatoryEmail(scheduleEventList,newNos,appointmentVO,meeting,userName);
 
-                    ScheduleEvent sh = null;
-                    List<String> newNos = new ArrayList<String>();
-
-                    //设置会议参与人---必选人员邮箱地址
-                    if(StringUtils.isNotBlank(meeting.getMandatoryPersonNo())){
-                        List<String> nos = new ArrayList<String>();
-                        List<String> mandatoryEmail = new ArrayList<String>();
-                        String[] personNO = meeting.getMandatoryPersonNo().split(",");
-                        for(String s : personNO){
-
-                            if(s.contains("@")){
-                                mandatoryEmail.add(s.trim());
-                                System.out.println("必选人员邮箱===》》》"+s);
-                            }else{
-                                nos.add(s.trim());
-                                sh = new ScheduleEvent();
-                                sh.setReceiveNo(s.trim());
-
-                                scheduleEventList.add(sh);
-                                newNos.add(s.trim());
-                            }
-                        }
-                        if(nos.size()>0){
-                            com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(nos);
-                            List<PersonnelApiVo> personnelApiVos = returnVos.getDatas();
-                            if(personnelApiVos != null && personnelApiVos.size() > 0){
-                                for(PersonnelApiVo p : personnelApiVos){
-                                    mandatoryEmail.add(p.getEmail());
-                                }
-                            }
-                        }
-                        appointmentVO.setMandatoryEmail(mandatoryEmail);//必选人员邮箱
-                    }
-                    //设置会议参与人---可选人员邮箱地址
-                    List<String> optionalNos = new ArrayList<String>();
-                    List<String> optionalEmail = new ArrayList<String>();
-                    if(StringUtils.isNotBlank(meeting.getOptionalPersonNo())){
-                        String[] personNO = meeting.getOptionalPersonNo().split(",");
-                        for(String s : personNO){
-                            if(s.contains("@")){
-                                optionalEmail.add(s.trim());
-                                System.out.println("可选人员邮箱===》》》"+s);
-                            }else{
-                                optionalNos.add(s.trim());
-                                sh = new ScheduleEvent();
-                                sh.setCreator(userName);
-                                sh.setUpdator(userName);
-                                sh.setReceiveNo(s.trim());
-                                scheduleEventList.add(sh);
-                                newNos.add(s.trim());
-                            }
-                        }
-                    }
-                    //设置记录人员
-                    if(StringUtils.isNotBlank(meeting.getRecordPersonNo())){
-                        String[] personNO = meeting.getRecordPersonNo().split(",");
-                        for(String s : personNO){
-                            optionalNos.add(s.trim());
-                            sh = new ScheduleEvent();
-                            sh.setReceiveNo(s.trim());
-                            scheduleEventList.add(sh);
-                            newNos.add(s.trim());
-                        }
-                    }
-                    if(optionalNos.size() > 0){
-                        com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVos = personnelApi.getPersonnelApiVoByNos(optionalNos);
-                        List<PersonnelApiVo> optionalApiVos = returnVos.getDatas();
-                        if(optionalApiVos != null && optionalApiVos.size()>0){
-                            for(PersonnelApiVo p : optionalApiVos){
-                                optionalEmail.add(p.getEmail());
-                            }
-                        }
-                    }
-                    appointmentVO.setOptionalEmail(optionalEmail);//非必选人人员邮箱
-
-                    Map<String,Object> map = new HashMap<String,Object>();
+                    Map<String,Object> map = new HashMap<>();
                     String start = meeting.getMeetingTime()+" "+meeting.getStart()+":00";
                     String end = meeting.getMeetingTime()+" "+meeting.getEnd()+":00";
                     appointmentVO.setAddress(meeting.getMeetingroomName());
@@ -602,19 +524,25 @@ public class MeetingController extends BaseController {
                     appointmentVO.setEnd(end);
 
                     //将附件添加到内容中
-                    String contentStr = meeting.getContent();
-                    if(StringUtils.isNotBlank(contentStr)){
-                        contentStr = contentStr +"<br/>";
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(meeting.getContent());
+                    if(StringUtils.isNotBlank(meeting.getContent())){
+                        sb.append(meeting.getContent()).append("<br/>");
                     }
                     String[] fileNames = meeting.getFileName().trim().split(",");
                     String[] filePaths = meeting.getFilePath().trim().split(",");
                     String path =commonProperties.getFtpHost();
                     if(filePaths.length>0){
                         for(int i =0;i<filePaths.length;i++){
-                            contentStr = contentStr +"<a href=\""+path+filePaths[i]+"\">"+fileNames[i]+"</a>&nbsp;&nbsp;";
+                            sb.append("<a href=\"")
+                                    .append(path)
+                                    .append(filePaths[i])
+                                    .append("\">")
+                                    .append(fileNames[i])
+                                    .append("</a>&nbsp;&nbsp;");
                         }
                     }
-                    appointmentVO.setContent(contentStr);
+                    appointmentVO.setContent(sb.toString());
                     //判断当前用户是否与可选,必选，记录人重复
                     for(ScheduleEvent scheduleEvent : scheduleEventList){
                         if(!scheduleList.get(0).getReceiveNo().equals(scheduleEvent.getReceiveNo())){
@@ -631,33 +559,14 @@ public class MeetingController extends BaseController {
                         logger.info("必选人员邮箱"+appointmentVO.getMandatoryEmail());
                         logger.info("可选人员邮箱"+appointmentVO.getOptionalEmail());
                         ReturnVo<AppointmentVO> returnVoApp = metingComponent.sendMeetingInvitation(appointmentVO);
-                        if(returnVoApp.getCode() == ReturnCode.SUCCESS){
+                        if(returnVoApp.getCode().equals( ReturnCode.SUCCESS)){
                             AppointmentVO vo = returnVoApp.getData();
                             meeting.setChangeId(vo.getChangeId());
                             meeting.setChangeKey(vo.getChangeKey());
                             this.meetingService.insertMeeting(meeting);
-
-                            for(ScheduleEvent scheduleEvent : scheduleList){
-                                scheduleEvent.setId(UUIDGenerator.generate());
-                                scheduleEvent.setTitle(meeting.getTheme());
-                                scheduleEvent.setAddress(meeting.getMeetingroomName());
-                                scheduleEvent.setContent(meeting.getContent());
-                                scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
-                                scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
-
-                                scheduleEvent.setCreator(userName);
-                                scheduleEvent.setCreateTime(new Date());
-                                scheduleEvent.setUpdator(userName);
-                                scheduleEvent.setUpdateTime(new Date());
-
-                                scheduleEvent.setDelFlag(1);
-                                scheduleEvent.setType(2);
-                                scheduleEvent.setIsAllDay(0);
-                                scheduleEvent.setChangeId(vo.getChangeId());
-                                scheduleEvent.setChangeKey(vo.getChangeKey());
-                                scheduleEvent.setMeetingId(meeting.getId());
-
-                            }
+                            //设置日程事件
+                            this.meetingService.setScheduleEventList(scheduleEventList,vo,meeting,start,end,userName);
+                            //保存日程事件
                             this.scheduleEventService.insertScheduleEvents(scheduleList);
                             returnVo = new ReturnVo(ReturnCode.SUCCESS, "发送成功");
                         }
@@ -675,11 +584,11 @@ public class MeetingController extends BaseController {
                             appointmentVO.setChangeId(mt.getChangeId());
                             appointmentVO.setChangeKey(mt.getChangeKey());
                         }
-                        ReturnVo<AppointmentVO> returnVoApp = null;
+                        ReturnVo<AppointmentVO> returnVoApp;
 
-                        if(mt.getStatus() == MeetingStatusEnum.MY_DRAFT.getCode()){
+                        if(mt.getStatus().equals( MeetingStatusEnum.MY_DRAFT.getCode())){
                             returnVoApp = metingComponent.sendMeetingInvitation(appointmentVO);
-                            if(returnVoApp.getCode()== ReturnCode.SUCCESS){
+                            if(returnVoApp.getCode().equals(ReturnCode.SUCCESS)){
                                 AppointmentVO vo = returnVoApp.getData();
                                 meeting.setChangeId(vo.getChangeId());
                                 meeting.setChangeKey(vo.getChangeKey());
@@ -688,46 +597,24 @@ public class MeetingController extends BaseController {
                             returnVoApp = metingComponent.editMeetingInvitation(appointmentVO);
                         }
                         if(returnVoApp != null){
-                            if(returnVoApp.getCode() == ReturnCode.SUCCESS){
+                            if(returnVoApp.getCode() .equals( ReturnCode.SUCCESS)){
                                 this.meetingService.updateMeeting(meeting);
                                 //发送会议邀请或会议更新插入会让日程
-                                List addEvent =new ArrayList();
-                                String editEventId = "";
-                                String delEventId = "";
-                                if(mt.getStatus() == MeetingStatusEnum.MY_DRAFT.getCode()){
+                                List<ScheduleEvent> addEvent =new ArrayList<>();
+                                StringBuilder editEventId = new StringBuilder();
+                                StringBuilder delEventId = new StringBuilder();
+                                if(mt.getStatus() .equals( MeetingStatusEnum.MY_DRAFT.getCode())){
                                     System.out.println("changeId===>>>"+meeting.getChangeId());
                                     System.out.println("changeKey===>>>"+meeting.getChangeKey());
 
-                                    for(ScheduleEvent scheduleEvent : scheduleList){
-                                        scheduleEvent.setId(UUIDGenerator.generate());
-                                        scheduleEvent.setTitle(meeting.getTheme());
-                                        scheduleEvent.setAddress(meeting.getMeetingroomName());
-                                        scheduleEvent.setContent(meeting.getContent());
-                                        scheduleEvent.setStartTime(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
-                                        scheduleEvent.setEndTime(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
-
-                                        scheduleEvent.setCreator(userName);
-                                        scheduleEvent.setCreateTime(new Date());
-                                        scheduleEvent.setUpdator(userName);
-                                        scheduleEvent.setUpdateTime(new Date());
-
-                                        scheduleEvent.setDelFlag(1);
-                                        scheduleEvent.setType(2);
-                                        scheduleEvent.setIsAllDay(0);
-                                        scheduleEvent.setChangeId(meeting.getChangeId());
-                                        scheduleEvent.setChangeKey(meeting.getChangeKey());
-                                        scheduleEvent.setMeetingId(meeting.getId());
-
-                                    }
+                                    this.meetingService.setScheduleEventList(scheduleEventList,meeting,start,end,userName);
                                     this.scheduleEventService.insertScheduleEvents(scheduleList);
                                     returnVo = new ReturnVo(ReturnCode.SUCCESS, "发送成功");
                                 }else{//发送会议更新时，根据所选人员添加、删除、修改日程
                                     List<ScheduleEvent> events = this.scheduleEventService.getScheduleEventByMeetingId(meeting.getId());
-                                    Map oldEvent = new HashMap();
-                                    if(events.size()>0){
-                                        for(int i=0;i<events.size();i++){
-                                            oldEvent.put(events.get(i).getReceiveNo(), events.get(i));
-                                        }
+                                    Map<String,Object> oldEvent = new HashMap<>();
+                                    if(CollectionUtils.isNotEmpty(events)){
+                                        events.forEach(event->oldEvent.put(event.getReceiveNo(),event));
                                     }
                                     //日程修改的属性
                                     ScheduleEvent updateSchdule = new ScheduleEvent();
@@ -739,13 +626,13 @@ public class MeetingController extends BaseController {
                                     updateSchdule.setUpdator(userName);
                                     updateSchdule.setUpdateTime(new Date());
 
-                                    for(int i=0;i<newNos.size();i++){
-                                        if(oldEvent.get(newNos.get(i)) !=null){//需要修改的日程
-                                            ScheduleEvent editSchedule = (ScheduleEvent)oldEvent.get(newNos.get(i));
-                                            editEventId = editEventId + editSchedule.getId()+",";
-                                            oldEvent.remove(newNos.get(i));
+                                    newNos.forEach(newNo->{
+                                        if(oldEvent.get(newNo) !=null){//需要修改的日程
+                                            ScheduleEvent editSchedule = (ScheduleEvent)oldEvent.get(newNo);
+                                            editEventId.append(editSchedule.getId()).append(",");
+                                            oldEvent.remove(newNo);
                                         }else{//需要添加的日程
-                                            if(oldEvent.get(newNos.get(i)) == null){
+                                            if(oldEvent.get(newNo) == null){
                                                 ScheduleEvent addSchedule = new ScheduleEvent();
                                                 addSchedule.setId(UUIDGenerator.generate());
                                                 addSchedule.setTitle(meeting.getTheme());
@@ -758,7 +645,7 @@ public class MeetingController extends BaseController {
                                                 addSchedule.setCreateTime(new Date());
                                                 addSchedule.setUpdator(userName);
                                                 addSchedule.setUpdateTime(new Date());
-                                                addSchedule.setReceiveNo(newNos.get(i));
+                                                addSchedule.setReceiveNo(newNo);
 
                                                 addSchedule.setDelFlag(1);
                                                 addSchedule.setType(2);
@@ -769,19 +656,19 @@ public class MeetingController extends BaseController {
                                                 addEvent.add(addSchedule);
                                             }
                                         }
-                                    }
-                                    for (Object key : oldEvent.keySet()) {//要删除的日程id
-                                        ScheduleEvent s = (ScheduleEvent)oldEvent.get(key);
-                                        delEventId = delEventId + s.getId()+",";
+                                    });
+                                    for (Map.Entry entry : oldEvent.entrySet()) {//要删除的日程id
+                                        ScheduleEvent s = (ScheduleEvent)entry.getValue();
+                                        delEventId.append(s.getId()).append(",");
                                     }
 
-                                    if(StringUtils.isNotBlank(delEventId)){
-                                        this.scheduleEventService.delScheduleEventByIds(delEventId.substring(0, delEventId.length()-1));
+                                    if(StringUtils.isNotBlank(delEventId.toString())){
+                                        this.scheduleEventService.delScheduleEventByIds(delEventId.toString().substring(0, delEventId.toString().length()-1));
                                     }
-                                    if(StringUtils.isNotBlank(editEventId)){
-                                        this.scheduleEventService.updateScheduleEventByIds(editEventId, updateSchdule);
+                                    if(StringUtils.isNotBlank(editEventId.toString())){
+                                        this.scheduleEventService.updateScheduleEventByIds(editEventId.toString(), updateSchdule);
                                     }
-                                    if(addEvent.size()>0){
+                                    if(CollectionUtils.isNotEmpty(addEvent)){
                                         this.scheduleEventService.insertScheduleEvents(addEvent);
                                     }
                                     returnVo = new ReturnVo(ReturnCode.SUCCESS, "发送成功");
@@ -837,27 +724,25 @@ public class MeetingController extends BaseController {
     }
 
     /**
-     *@Description 上传会议附件
-     *@param
-     *@return
-     *@Author  tuzhili
-     *@Date  2018/5/15 13:42
-     *@Copyright 浙江亚厦股份有限公司 2017-2018 版权所有
+     * Description 上传会议附件
+     * param file,filePath
+     * @return
+     * Author  tuzhili
+     * @Date  2018/5/15 13:42
+     * Copyright 浙江亚厦股份有限公司 2017-2018 版权所有
+     *
      */
     @PostMapping(value = "/uploadImage",headers="content-type=multipart/form-data")
     @ApiOperation("上传会议附件")
     public String uploadImage(@ApiParam MultipartFile file, String filePath){
-        String fileName = "";
-        String destFilePath = "";
-        Boolean result = false;
+        String destFilePath;
+        Boolean result;
         try{
             filePath = StringUtils.isBlank(filePath)?"p":filePath;
             // 获得文件：
             if(null != file){
                 // FTP上传文件
-                String fileExtension = UploadUtils.getExtension(file.getOriginalFilename());
-                fileName = UUIDGenerator.generate() + "." + fileExtension;
-
+//               UploadUtils.getExtension(file.getOriginalFilename());
                 String  path = "/" + filePath + FileUtils.getDateFmtFilePath()+"/";
 
                 InputStream inputStream = new ByteArrayInputStream(file.getBytes());
@@ -876,9 +761,8 @@ public class MeetingController extends BaseController {
     }
 
     /**
-     * @param id
-     * @param request
-     * @Description:删除记录人
+     * @param id,request
+     * Description:删除记录人
      */
     @GetMapping("/delPersonnel/{id}")
     @ApiOperation("删除记录人")
@@ -905,9 +789,8 @@ public class MeetingController extends BaseController {
     }
 
     /**
-     * @param meetingPersonnel
-     * @param request
-     * @Description:新增记录人
+     * @param meetingPersonnel,request
+     * Description:新增记录人
      */
     @PostMapping("/insertPersonnel")
     @ApiOperation("保存记录人")
@@ -944,41 +827,48 @@ public class MeetingController extends BaseController {
         try {
             meeting = this.meetingService.getMeetingById(id);
             List<MeetingPersonnel> meetingPersonnel = meetingPersonnelService.getMeetingPersonnelByMeetingId(meeting.getId());
-            //必选人员工号
-            String mandatoryPersonNo="";
-            //必选人员
-            String mandatoryPersonName="";
-            //可选人员工号
-            String optionalPersonNo="";
-            //可选人员
-            String optionalPersonName="";
-            //记录人员工号
-            String recordPersonNo="";
-            //记录人员
-            String recordPersonName="";
+
+            StringBuilder mandatoryPersonNoStr = new StringBuilder();
+            StringBuilder mandatoryPersonNameStr = new StringBuilder();
+            StringBuilder optionalPersonNoStr = new StringBuilder();
+            StringBuilder optionalPersonNameStr  =  new StringBuilder();
+            StringBuilder recordPersonNoStr = new StringBuilder();
+            StringBuilder recordPersonNameStr  =  new StringBuilder();
 
 
             //设置参加会议人员
-            List<MeetingPersonnel> mandatoryPersonList = new ArrayList<MeetingPersonnel>();
-            List<MeetingPersonnel> optionalPersonList = new ArrayList<MeetingPersonnel>();
-            if(meetingPersonnel != null && meetingPersonnel.size()>0){
-                for(MeetingPersonnel p : meetingPersonnel){
+            List<MeetingPersonnel> mandatoryPersonList = new ArrayList<>();
+            List<MeetingPersonnel> optionalPersonList = new ArrayList<>();
+            if(CollectionUtils.isNotEmpty(meetingPersonnel)){
+                meetingPersonnel.forEach(p->{
                     p.setNo(p.getPersonNo());
                     p.setName(p.getPersonName());
                     if(MeetingPersonnelType.MANDATORY.getCode().equals(p.getPersonType())){
-                        mandatoryPersonNo = mandatoryPersonNo + p.getPersonNo() + ",";
-                        mandatoryPersonName = mandatoryPersonName + p.getPersonName() + ",";
+                        mandatoryPersonNoStr.append(p.getPersonNo()).append(",");
+                        mandatoryPersonNameStr.append(p.getPersonName()).append(",");
                         mandatoryPersonList.add(p);
                     }else if(MeetingPersonnelType.OPTIONAL.getCode().equals(p.getPersonType())){
-                        optionalPersonNo = optionalPersonNo + p.getPersonNo() + ",";
-                        optionalPersonName = optionalPersonName + p.getPersonName() + ",";
+                        optionalPersonNoStr.append(p.getPersonNo()).append(",");
+                        optionalPersonNameStr.append(p.getPersonName()).append(",");
                         optionalPersonList.add(p);
                     }else if(MeetingPersonnelType.RECORD.getCode().equals(p.getPersonType())){
-                        recordPersonNo = recordPersonNo + p.getPersonNo() + ",";
-                        recordPersonName = recordPersonName + p.getPersonName() + ",";
+                        recordPersonNoStr.append(p.getPersonNo()).append(",");
+                        recordPersonNameStr.append(p.getPersonName()).append(",");
                     }
-                }
+                });
             }
+            //必选人员工号
+            String mandatoryPersonNo= mandatoryPersonNoStr.toString();
+            //必选人员
+            String mandatoryPersonName=mandatoryPersonNameStr.toString();
+            //可选人员工号
+            String optionalPersonNo=optionalPersonNoStr.toString();
+            //可选人员
+            String optionalPersonName=optionalPersonNameStr.toString();
+            //记录人员工号
+            String recordPersonNo=recordPersonNoStr.toString();
+            //记录人员
+            String recordPersonName=recordPersonNameStr.toString();
             //设置显示会议的必选人员，可选人员，记录人员
             if(StringUtils.isNotBlank(mandatoryPersonNo)){
                 meeting.setMandatoryPersonNo(mandatoryPersonNo.substring(0, mandatoryPersonNo.length()-1));
@@ -1009,7 +899,6 @@ public class MeetingController extends BaseController {
 
     /**
      * 我的草稿页面删除草稿
-     * @param id
      */
     @GetMapping("/delMyDraft/{id}")
     @ApiOperation("我的草稿页面删除草稿")
