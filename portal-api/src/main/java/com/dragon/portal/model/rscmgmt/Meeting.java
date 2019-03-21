@@ -10,17 +10,12 @@ import java.util.List;
 
 
 /**
- * @Title:会议管理
- * @Description:
- * @Author:XTJ
- * @Since:2017-03-31 16:24:28
- * @Version:1.1.0
- * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
- */
-/**
- * @author v-luozongfang
- *
- */
+ * @Author YangZhao
+ * @Description 会议管理
+ * @Date 14:32 2019/3/20
+ * @Param
+ * @return
+ **/
 @ApiModel(value="meeting 会议管理",description="会议管理对象Meeting")
 public class Meeting extends BaseModel implements Serializable{
     

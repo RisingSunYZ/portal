@@ -5,12 +5,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.mhome.tools.common.UUIDGenerator;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
 import com.dragon.portal.dao.rscmgmt.IMeetingroomConftoolsDao;
 import com.dragon.portal.dao.rscmgmt.IMeetingroomDao;
 import com.dragon.portal.model.rscmgmt.Meetingroom;
@@ -140,7 +140,7 @@ public class MeetingroomServiceImpl implements IMeetingroomService {
 			this.meetingroomDao.updateMeetingroomByIds(ids, meetingroom);
 		}
 	}
-	
+
 	/**
 	 * 将"1,2,3,4,5..."这种形式的字符串转成"'1','2','3','4'..."这种形式
 	 * @param strs
@@ -169,7 +169,11 @@ public class MeetingroomServiceImpl implements IMeetingroomService {
 	public PagerModel<MeetingroomViewVo> getPagerModelByQuery(MeetingroomViewVo meetingroomViewVo, Query query)
 			throws Exception {
 		if(null != meetingroomViewVo && null != query){
-			PagerModel<MeetingroomViewVo> pm = this.meetingroomDao.getPagerModelByQuery(meetingroomViewVo, query);
+			PagerModel<MeetingroomViewVo> pm = null;
+			if(meetingroomViewVo.getIsAdmin()!=null){
+				pm = this.meetingroomDao.getPagerModelVoByQueryOfAdmin(meetingroomViewVo, query);
+			}
+			pm = this.meetingroomDao.getPagerModelVoByQuery(meetingroomViewVo, query);
 			for(MeetingroomViewVo temp : pm.getRows()){
 				List<MeetingroomTools> mrToolsList = meetingroomToolsService.selectMeetingRoomTollsBymeetingRoomId(temp.getMeetingroomId());
 				List<MeetingroomApprover> approverList = meetingroomToolsService.selectAppoverListBymeetingRoomId(temp.getMeetingroomId());

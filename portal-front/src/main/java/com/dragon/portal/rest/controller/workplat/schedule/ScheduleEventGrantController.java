@@ -6,20 +6,13 @@ import com.dragon.portal.service.schedule.IScheduleEventGrantService;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
-import com.mhome.tools.common.JsonUtils;
 import com.mhome.tools.common.UUIDGenerator;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
-import com.mhome.tools.vo.SimpleReturnVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import jdk.nashorn.internal.ir.ReturnNode;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -32,12 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Title:日程事件授权Controller
- * @Description:
- * @Author:XTJ
- * @Since:2017-05-23 10:51:11
+ * @Description:日程事件授权Controller
+ * @Author:YangZhao
+ * @Since:2019/3/20 14:09
  * @Version:1.1.0
- * yright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
+ * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2018 ~ 2026 版权所有
  */
 @RestController
 @RequestMapping("/rest/portal/scheduleGrant/")

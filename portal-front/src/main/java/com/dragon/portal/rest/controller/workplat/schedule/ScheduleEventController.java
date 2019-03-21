@@ -24,14 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-
 /**
- * @Title:日程事件Controller
- * @Description:
- * @Author:XTJ
- * @Since:2017-05-23 10:28:50
+ * @Description:日程事件Controller
+ * @Author:YangZhao
+ * @Since:2019/3/20 14:09
  * @Version:1.1.0
- * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
+ * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2018 ~ 2026 版权所有
  */
 @RestController
 @RequestMapping("/rest/portal/schedule/")
