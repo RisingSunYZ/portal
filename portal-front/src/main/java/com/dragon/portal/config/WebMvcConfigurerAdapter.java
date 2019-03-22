@@ -44,12 +44,11 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
-                        "/portal/user/userLogin/**",
                         "/flow/form/**",
                         "/favicon.ico",
                         "/rest/index/**",
                         "/rest/portal/news/ajaxListVo",
-                        "/rest/portal/user/userLogin/login",
+                        "/rest/portal/user/userLogin/**",
                         "/rest/portal/file-operation/*",
                         "/rest/user/currentUser",
 
