@@ -5,7 +5,11 @@ import { ProcessSelector } from '../Selector';
 import { changeParam, getConfig, nullToZero } from '@/utils/utils';
 import styles from "./index.less"
 
-class DiagramImgObj  extends PureComponent{
+/**
+ * 流程图组件
+ */
+class DiagramImgModal  extends PureComponent{
+  state = { diagramModalWidth:'50%' };
   // 设置图片弹窗的宽度
   setDiagramModalWidth = ()=>{
     const { processDiagramImgUrl } = this.props;
@@ -39,29 +43,46 @@ class DiagramImgObj  extends PureComponent{
   };
 
   render(){
-    const {processDiagramImgUrl, processDiagramData, formTitle} = this.props;
+    const {processDiagramImgUrl, handleOk, handleCancel, visibleDiagramModal, processDiagramData, formTitle} = this.props;
     return  (
-      <div>
-        <img alt={formTitle} onLoad={this.setDiagramModalWidth.bind(this)} src={processDiagramImgUrl} />
-        {
-          processDiagramData && processDiagramData.length>0?(processDiagramData.map((item) =>{
+      <Modal
+        title="流程图"
+        width={this.state.diagramModalWidth}
+        keyboard="true"
+        maskClosable="true"
+        visible={visibleDiagramModal}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        bodyStyle={{ overflowX:'auto',position:"relative",padding:"0px 20px 30px 0px", minHeight:'200px'}}
+        footer={[
+          <Button key="back" type="primary" onClick={handleCancel}>关闭</Button>
+        ]}
+      >
+        <div>
+          <img alt={formTitle} onLoad={this.setDiagramModalWidth.bind(this)} src={processDiagramImgUrl} />
+          {
+            processDiagramData && processDiagramData.length>0?(processDiagramData.map((item) =>{
 
-            return (
-              <Popover
-                trigger="hover"
-                key={item.id}
-                content={this.flowNodeContent(item)}
-              >
-                <div style={{position:"absolute",top:item.y,left:item.x,width:item.width ,height:item.height}} />
-              </Popover>
-            )
-          })):null
-        }
-      </div>
+              return (
+                <Popover
+                  trigger="hover"
+                  key={item.id}
+                  content={this.flowNodeContent(item)}
+                >
+                  <div style={{position:"absolute",top:item.y,left:item.x,width:item.width ,height:item.height}} />
+                </Popover>
+              )
+            })):null
+          }
+        </div>
+      </Modal>
     );
   }
 }
 
+/**
+ * 流程基本操作按钮式组件
+ */
 @connect(({ processForm, loading }) => ({
   processForm,
   loading: loading.models.processForm,
@@ -296,21 +317,14 @@ class ProcessBaseAction extends Component {
         <ActionBtn />
         <PrintBtn />
         <FlowChartBtn />
-        <Modal
-          title="流程图"
-          width={this.state.diagramModalWidth}
-          okText=""
-          maskClosable="true"
-          visible={visibleDiagramModal}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          bodyStyle={{ overflowX:'auto',position:"relative",padding:"0px 20px 30px 0px"}}
-          footer={[
-            <Button key="back" type="primary" onClick={this.handleCancel}>关闭</Button>
-          ]}
-        >
-          <DiagramImgObj processDiagramData={processDiagramData} processDiagramImgUrl={processDiagramImgUrl} formTitle={formInfo.formTitle} />
-        </Modal>
+        <DiagramImgModal
+          visibleDiagramModal={visibleDiagramModal}
+          processDiagramData={processDiagramData}
+          processDiagramImgUrl={processDiagramImgUrl}
+          formTitle={formInfo.formTitle}
+          handleOk={this.handleOk}
+          handleCancel={this.handleCancel}
+        />
       </Fragment>
     );
   }
