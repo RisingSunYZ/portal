@@ -3,6 +3,8 @@ package com.dragon.portal.model.rscmgmt;
 import java.io.Serializable;
 
 import com.dragon.tools.common.BaseModel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @Title:会议室配置用具项
@@ -12,6 +14,7 @@ import com.dragon.tools.common.BaseModel;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
  */
+@ApiModel(value="会议室配置用具项",description="会议室配置用具项")
 public class MeetingroomTools extends BaseModel implements Serializable{
     
     /**
@@ -22,21 +25,25 @@ public class MeetingroomTools extends BaseModel implements Serializable{
 	/**
      * id
      */
+    @ApiModelProperty(value="id",name="id")
     private String id;
     
     /**
      * 名称
      */
+    @ApiModelProperty(value="名称",name="name")
     private String name;
     
     /**
      * 描述
      */
+    @ApiModelProperty(value="描述",name="remark")
     private String remark;
     
     /**
      * 排序号
      */
+    @ApiModelProperty(value="排序号",name="sortNo")
     private Integer sortNo;
     
     
@@ -45,11 +52,13 @@ public class MeetingroomTools extends BaseModel implements Serializable{
      * 0-表示不在这个会议室中
      * 1-表示在这个会议室中
      */
+    @ApiModelProperty(value="临时变量判断",name="temporaryJudge")
     private Integer temporaryJudge;
     
     /**
      * 其他配置项内容
      */
+    @ApiModelProperty(value="其他配置项内容",name="otherConfitem")
     private String otherConfitem;
     
 

@@ -13,6 +13,7 @@ public class PortalConstant {
     public static final Integer NO_DELETE_FLAG = 1;
 
 
+
     /**
      * 用户Cookie相关的key
      */
@@ -101,6 +102,16 @@ public class PortalConstant {
      */
     public static final String GDKQ_SN = "CSHR";
 
+    /**
+     * 无内容
+     */
+    public static final String NULL = "NULL";
+
+
+    /**
+     * 用户头像，Redis存储前缀
+     */
+    public static final String USER_HEAD_IMG = "USER_HEAD_IMG";
 
     // 流程图片文件类型
     public static final String WF_IMAGE = "png";
@@ -297,15 +308,15 @@ public class PortalConstant {
     public static final String[] WF_FLOW_LEVEL_FIELDNAMES = {"状态", "序号", "单位名称", "一级部门", "上级部门", "提交部门", "部门负责人", "区域公司一级部门负责人", "区域副总", "区域总经理", "中心副总", "中心总经理", "单位总经理", "集团分管领导", "创建时间", "更新时间"};
 
     /**用户账号*/
-    public static final String USER_UID = "uid";
+    public static final String SESSION_USER_UID = "uid";
     /**用户*/
-    public static final String SYS_USER = "sys_user";
+    public static final String SESSION_SYS_USER = "sys_user";
     /**临时用户账号*/
-    public static final String TEMPORARY_USER_UID = "temporaryUserUid";
+    public static final String SESSION_TEMPORARY_USER_UID = "temporaryUserUid";
     /**用户验证码*/
-    public static final String VERIFICATION_CODE = "verificationCode";
+    public static final String SESSION_VERIFICATION_CODE = "verificationCode";
     /**用户验证结果*/
-    public static final String CHECK_CODE_FLAG = "checkCodeFlag";
+    public static final String SESSION_CHECK_CODE_FLAG = "checkCodeFlag";
     //**********************************
 
     /** 普通分割符 */
@@ -315,4 +326,11 @@ public class PortalConstant {
 
     /** 最大分页显示的数据 */
     public static final Integer MAX_PAGE_SIZE = 10000;
+
+    /** 是 */
+    public static final Integer YES = 1;
+
+    /** 否 */
+    public static final Integer NO = 0;
+
 }

@@ -86,7 +86,7 @@ public class UserLoginServiceImpl implements IUserLoginService {
 			returnVo.setData(user);
 
 			//保存session
-			session.setAttribute(PortalConstant.USER_UID, user.getUserName());
+			session.setAttribute(PortalConstant.SESSION_USER_UID, user.getUserName());
 			// session.setAttribute(PortalConstant.SYS_USER, user);
 			this.loginCallback(user.getUserNo(),session);
 		}
@@ -109,10 +109,10 @@ public class UserLoginServiceImpl implements IUserLoginService {
 			String mobile = user.getMobile();
 			String code = String.valueOf((int)((Math.random()*9+1)*100000));
 
-			session.setAttribute(PortalConstant.VERIFICATION_CODE, code);
-			session.setAttribute(PortalConstant.TEMPORARY_USER_UID,userNo);//记录工号，后续验证时使用
+			session.setAttribute(PortalConstant.SESSION_VERIFICATION_CODE, code);
+			session.setAttribute(PortalConstant.SESSION_TEMPORARY_USER_UID,userNo);//记录工号，后续验证时使用
 			//将生成的验证码 存入redis 10分钟过期
-			redisService.set(userNo+"-"+PortalConstant.VERIFICATION_CODE, code,900l);
+			redisService.set(userNo+"-"+PortalConstant.SESSION_VERIFICATION_CODE, code,900l);
 			//发短信
 			SmsInfo smsInfo = new SmsInfo(commonProperties.getSmsMobileCode());
 			smsInfo.setType(SmsModeTypeEnum.PROMPT.getType());
@@ -140,12 +140,12 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	public ReturnVo getVerificationCodeCheck(String code, HttpSession session) throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"短信验证码不正确!");
 		//临时用户
-		String userNo = (String)session.getAttribute(PortalConstant.TEMPORARY_USER_UID);
+		String userNo = (String)session.getAttribute(PortalConstant.SESSION_TEMPORARY_USER_UID);
 		if(StringUtils.isNotEmpty(userNo)) {
-			String verificationCode = (String) redisService.get(userNo + "-"+PortalConstant.VERIFICATION_CODE);
+			String verificationCode = (String) redisService.get(userNo + "-"+PortalConstant.SESSION_VERIFICATION_CODE);
 			if (StringUtils.isNotEmpty(code) && StringUtils.trim(code).equals(verificationCode)) {
 				//记录当前用户已通过手机短信校验
-				redisService.set(userNo+"-"+PortalConstant.CHECK_CODE_FLAG,PortalConstant.SUCCESS,900l);//
+				redisService.set(userNo+"-"+PortalConstant.SESSION_CHECK_CODE_FLAG,PortalConstant.SUCCESS,900l);//
 				returnVo = new ReturnVo(ReturnCode.SUCCESS, "验证码成功！");
 			}
 		}
@@ -162,10 +162,10 @@ public class UserLoginServiceImpl implements IUserLoginService {
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"修改失败！");
 
 		//手机验证时记录的工号
-		String userNo = (String)session.getAttribute(PortalConstant.TEMPORARY_USER_UID);
+		String userNo = (String)session.getAttribute(PortalConstant.SESSION_TEMPORARY_USER_UID);
 		if(StringUtils.isNotEmpty(userNo)) {
 			//获取手机验证码校验记录
-			String checkCodeFlag = (String) redisService.get(userNo + "-"+PortalConstant.CHECK_CODE_FLAG);
+			String checkCodeFlag = (String) redisService.get(userNo + "-"+PortalConstant.SESSION_CHECK_CODE_FLAG);
 			List<UserLogin> userLoginList = userLoginDao.getUserLoginByUserName(userNo);
 			if (CollectionUtils.isNotEmpty(userLoginList) && PortalConstant.SUCCESS.equals(checkCodeFlag)) {
                 UserLogin user = userLoginList.get(0);
@@ -186,10 +186,10 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	 * @return
 	 * @throws Exception
 	 */
-	public ReturnVo updatePwdAfterLogin(String password, HttpSession session) throws Exception{
+	public ReturnVo updatePwdAfterLogin(String oldPassword,String password, HttpSession session) throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"修改失败！");
 		//获取登录后的工号
-		String userNo = (String)session.getAttribute(PortalConstant.USER_UID);
+		String userNo = (String)session.getAttribute(PortalConstant.SESSION_USER_UID);
 		if(StringUtils.isNotEmpty(userNo)) {
 			List<UserLogin> userLoginList = userLoginDao.getUserLoginByUserName(userNo);
 			if (CollectionUtils.isNotEmpty(userLoginList)) {
@@ -228,7 +228,7 @@ public class UserLoginServiceImpl implements IUserLoginService {
 					}
 					UserSessionInfo user = genUserSessionInfo(personVo);
 					user.setLeaderDeptList(leaderDeptList);
-					session.setAttribute(PortalConstant.SYS_USER, user);
+					session.setAttribute(PortalConstant.SESSION_SYS_USER, user);
 					returnVo = new ReturnVo(ReturnCode.SUCCESS,"用户信息存储Session成功！");
 				}
 			}else{

@@ -3,6 +3,8 @@ package com.dragon.portal.model.rscmgmt;
 import java.io.Serializable;
 
 import com.dragon.tools.common.BaseModel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @Title:会议室-审批人
@@ -12,6 +14,7 @@ import com.dragon.tools.common.BaseModel;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
  */
+@ApiModel(value="会议室-审批人",description="会议室-审批人")
 public class MeetingroomApprover extends BaseModel implements Serializable{
     
     /**
@@ -22,19 +25,22 @@ public class MeetingroomApprover extends BaseModel implements Serializable{
 	/**
      * id
      */
+    @ApiModelProperty(value="id",name="id")
     private String id;
     
     /**
      * 会议室ID
      */
+    @ApiModelProperty(value="会议室ID",name="mettingroomId")
     private String mettingroomId;
     
     /**
      * 审批人工号
      */
+    @ApiModelProperty(value="审批人工号",name="approverNo")
     private String approverNo;
-    
-    
+
+    @ApiModelProperty(value="审批人",name="approverName")
     private String approverName;
     
     public String getId() {

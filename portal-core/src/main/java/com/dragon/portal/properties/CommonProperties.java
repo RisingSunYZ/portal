@@ -2,6 +2,7 @@ package com.dragon.portal.properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * @Description: 获取配置文件变量的公共方法
@@ -10,8 +11,12 @@ import org.springframework.context.annotation.Configuration;
  * @Version: 1.1.0
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
+@PropertySource(value="classpath:/dict.properties")
 @Configuration
 public class CommonProperties {
+
+    @Value("${ysportal.manager.url}")
+    private String ysportalManagerURL;
 
     // ############################# FTP 配置信息 start #############################
     @Value("${ftp.ip}")
@@ -95,6 +100,20 @@ public class CommonProperties {
     private String developerNo;
 
 
+    @Value("${finance.email.sn}")
+    private String financeEmailSn;
+
+    @Value("${finance.email.type}")
+    private String financeEmailType;
+
+    @Value("${finance.email.subject}")
+    private String financeEmailSubject;
+
+    @Value("${finance.email.fromEmail}")
+    private  String financeEmailFromEmail;
+
+    public String getYsportalManagerURL() { return ysportalManagerURL; }
+
     /**
      * 是否启用第三方登录
      */
@@ -161,6 +180,14 @@ public class CommonProperties {
     public String getDeveloperNo() {
         return developerNo;
     }
+
+    public String getFinanceEmailFromEmail() { return financeEmailFromEmail; }
+
+    public String getFinanceEmailSn() { return financeEmailSn; }
+
+    public String getFinanceEmailSubject() { return financeEmailSubject; }
+
+    public String getFinanceEmailType() { return financeEmailType; }
 
     public String getIdmLogoutUrl() {
         return idmLogoutUrl;

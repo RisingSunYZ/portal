@@ -1,0 +1,68 @@
+@import '~antd/lib/style/themes/default.less';
+
+:global{
+  .wp-news-box{
+    position: relative;
+    .slick-dots{
+      position: absolute;
+      top: -35px;
+      right: 76px;
+      width: auto;
+      height: 18px;
+      li{
+        width: 18px;
+        height: 100%;
+        button{
+          width: 18px;
+          height: 100%;
+          line-height: 18px;
+          border-radius: 50%;
+          background-color: #C5C6CC;
+          margin-right: 4px;
+          font-size: 12px;
+          text-align: center;
+          color: #fff;
+          opacity: 1;
+        }
+        &.slick-active button{
+          width: 18px;
+          background-color: #515567;
+          color: #fff;
+        }
+      }
+    }
+    .news-list{
+      padding: 0 10px;
+      li{
+        line-height: 40px;
+        height: 40px;
+        font-size: 14px;
+        a{
+          display: inline-block;
+          vertical-align: middle;
+          height: 100%;
+          max-width: 570px;
+          overflow: hidden;
+          word-break: keep-all;
+          word-wrap: normal;
+          text-overflow: ellipsis;
+        }
+        i{
+          display: inline-block;
+          width: 4px;
+          height: 4px;
+          background: #494949;
+          border-radius: 2px;
+          vertical-align: middle;
+          margin: 0 6px;
+        }
+        span{
+          float: right;
+          margin-right: 4px;
+          color: #8C8C8C;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@import '~antd/lib/style/themes/default.less';
+/* You can add the following CSS to your project to make draggable area bigger */
+
+.treeMenuBox{
+  .treeMenu{
+    height: 596px;
+    overflow-x: hidden;
+    :global{
+      .ant-tree-node-content-wrapper{
+        width: calc(100% - 18px);
+        height:28px;
+        line-height:28px;
+      }
+    }
+  }
+}

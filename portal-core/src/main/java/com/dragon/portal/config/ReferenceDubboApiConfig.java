@@ -3,15 +3,19 @@ package com.dragon.portal.config;
 import com.dragon.flow.api.ICusFlowApi;
 import com.dragon.flow.api.IFlowApi;
 import com.ecnice.privilege.api.privilege.IPrivilegeApi;
+import com.mhome.se.api.ISendEmailApi;
 import com.mhome.se.api.ISendSmsApi;
 import com.ys.mis.api.IMisApi;
 import com.ys.mqpms.api.IMqPmsApi;
 import com.ys.pms.api.IPmsApi;
+import com.ys.ucenter.api.IAreaApi;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
 
 /**
  * @Description: 对接的dubbo接口
@@ -22,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ReferenceDubboApiConfig {
 
-    @Reference(version = "1.0",check = false)
+    @Reference(version = "1.0",check = false,timeout = 10000)
     private IFlowApi flowApi;
 
     @Reference(version = "1.0",check = false)
@@ -42,6 +46,8 @@ public class ReferenceDubboApiConfig {
 
     @Reference(version = "1.0",check = false)
     private IOrgApi orgApi;
+    @Reference(version = "1.0",check = false)
+    private IAreaApi areaApi;
 
     @Reference(version = "1.0",check = false)
     private IPrivilegeApi privilegeApi;
@@ -49,6 +55,8 @@ public class ReferenceDubboApiConfig {
     @Reference(version = "1.0",check = false)
     private ISendSmsApi sendSmsApi;
 
+    @Reference(version = "1.0",check = false)
+    private ISendEmailApi sendEmailApi;
 
     @Bean
     public IMisApi misApi() {
@@ -91,6 +99,13 @@ public class ReferenceDubboApiConfig {
     @Bean
     public ISendSmsApi sendSmsApi(){
         return sendSmsApi;
+    }
+
+    @Bean
+    public ISendEmailApi sendEmailApi() {return sendEmailApi;}
+    @Bean
+    public IAreaApi getAreaApi() {
+        return areaApi;
     }
 
 }

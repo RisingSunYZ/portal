@@ -1,0 +1,50 @@
+@import '~antd/lib/style/themes/default.less';
+
+.newsList{
+  line-height: 36px;
+  list-style: none;
+  padding: 0;
+  overflow: hidden;
+  margin: 0;
+  li{
+    padding: 0 15px;
+    border-right: 3px solid transparent;
+    overflow: hidden;
+    cursor: pointer;
+    span.content{
+      float: left;
+      width: 230px;
+      a{
+        display: block;
+        overflow: hidden;
+        white-space:nowrap;
+        text-overflow: ellipsis;
+        color: rgba(0,0,0,.65);
+      }
+    }
+    .pubTime{
+      float: right;
+      color: rgba(0,0,0,.45);
+    }
+    &:hover{
+      border-right: 3px solid #FFDE18;
+      span.content a,.pubTime{
+        color: @primary-color;
+        font-weight: 500;
+      }
+    }
+  }
+}
+:global{
+  .ant-card-head{
+    min-height: 30px;
+    font-size: 14px;
+    padding: 0 12px;
+    .ant-card-head-wrapper{
+      height: 34px;
+      .ant-card-head-title{
+        font-weight:500
+      }
+    }
+  }
+}

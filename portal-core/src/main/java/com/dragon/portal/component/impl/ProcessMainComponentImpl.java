@@ -14,6 +14,7 @@ import com.dragon.portal.vo.process.ProcessMainVo;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
+import com.sun.tools.javac.comp.Flow;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -127,6 +128,9 @@ public class ProcessMainComponentImpl implements IProcessMainComponent {
 			backVo.setUserCode(userNo);
 			backVo.setMessage(message);
 			returnVo = flowApi.revocationTask(backVo);
+			if(FlowConstant.SUCCESS.equals(returnVo.getCode())){
+				returnVo.setCode(ReturnCode.SUCCESS);
+			}
 		}else{
 			returnVo.setMsg("驳回人工号，实例id不能为空");
 		}

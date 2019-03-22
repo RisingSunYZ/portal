@@ -4,8 +4,8 @@ import com.dragon.portal.model.rscmgmt.MeetingroomApply;
 import com.dragon.portal.vo.rscmgmt.MeetingroomApplyVo;
 import com.dragon.portal.vo.rscmgmt.MeetingroomMyApplyVo;
 import com.dragon.portal.vo.rscmgmt.MeetingroomViewVo;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
 import com.mhome.tools.vo.SimpleReturnVo;
 
 import java.util.List;
@@ -175,5 +175,8 @@ public interface IMeetingroomApplyService {
 	 * @author v-zhaohaishan 2017年4月21日 下午2:44:29
 	 */
 	public int countMeetingroomApplyByMeetingroomId(String meetingroomId) throws Exception;
+
+
+	public void updateMeetingroomApplyStatusToExpireByList(List<MeetingroomApply> list) throws Exception;
 
 }

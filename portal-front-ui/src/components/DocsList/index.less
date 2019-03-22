@@ -1,0 +1,126 @@
+@import '~antd/lib/style/themes/default.less';
+
+.fileList{
+  .item{
+    margin-right:8px;
+    display:inline-block;
+    width:218px;
+    height:32px;
+    line-height:32px;
+    background:rgba(249,250,252,1);
+    overflow:hidden;
+    .fileIcon{
+      width:24px;
+      height:24px;
+      line-height:28px;
+      background:#36CFC9;
+      margin:4px;
+      border-radius:2px;
+      color:white;
+      svg {
+        display: inline-block;
+      }
+    }
+    .fileName{
+      float:left;
+      & > div{
+        height:32px;overflow:hidden;
+        width: 100%;
+      }
+      ul, ul.del{
+        width: 100%;
+        position:relative;
+        background:white;
+        height:0px;
+        overflow:hidden;
+        top:-32px;
+        margin:0;padding:0;
+        li{
+          display:inline-block;
+          list-style:none;
+          float:left;
+          box-sizing: border-box;
+          width:100%;
+          text-align:center;
+          cursor:pointer;
+        }
+        :hover{
+          background:rgba(233,245,251,1);
+          color:#1890FF;
+        }
+      }
+      ul.del{
+        li{
+          width:33.33%;
+        }
+      }
+    }
+  }:hover{
+    &.item .fileName ul{
+      height:32px;
+      transition: transform 0.35s;
+    }
+    &.item{
+      -webkit-box-shadow: 0px 0px 10px 0px #bbb;
+      -moz-box-shadow:    0px 0px 10px 0px #bbb;
+      box-shadow:         0px 0px 10px 0px #bbb;
+    }
+   }
+}
+
+.result {
+  text-align: center;
+  width: 72%;
+  margin: 0 auto;
+  @media screen and (max-width: @screen-xs) {
+    width: 100%;
+  }
+
+  .icon {
+    font-size: 72px;
+    line-height: 72px;
+    margin-bottom: 24px;
+
+    & > .success {
+      color: @success-color;
+    }
+
+    & > .error {
+      color: @error-color;
+    }
+  }
+
+  .title {
+    font-size: 24px;
+    color: @heading-color;
+    font-weight: 500;
+    line-height: 32px;
+    margin-bottom: 16px;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 22px;
+    color: @text-color-secondary;
+    margin-bottom: 24px;
+  }
+
+  .extra {
+    background: #fafafa;
+    padding: 24px 40px;
+    border-radius: @border-radius-sm;
+    text-align: left;
+
+    @media screen and (max-width: @screen-xs) {
+      padding: 18px 20px;
+    }
+  }
+
+  .actions {
+    margin-top: 32px;
+
+    button:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+}

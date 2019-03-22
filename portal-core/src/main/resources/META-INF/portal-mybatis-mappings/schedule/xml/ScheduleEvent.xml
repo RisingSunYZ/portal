@@ -290,12 +290,12 @@
     <select id="getScheduleEvenList" parameterType="java.util.Map" resultMap="ScheduleEventMap">
         select * from tbl_pt_schedule_event 
         where receive_no in (${personNos})
-        <if test="scheduleEvent.startTime != null and scheduleEvent.startTime!=''" >
+        <if test="scheduleEvent.startTime != null" >
            	<![CDATA[  
                  and start_time >= #{scheduleEvent.startTime,jdbcType=TIMESTAMP}
             ]]>
        	</if>
-        <if test="scheduleEvent.endTime != null and scheduleEvent.endTime!=''" >
+        <if test="scheduleEvent.endTime != null" >
             <![CDATA[  
                  and end_time <= #{scheduleEvent.endTime,jdbcType=TIMESTAMP}
             ]]>

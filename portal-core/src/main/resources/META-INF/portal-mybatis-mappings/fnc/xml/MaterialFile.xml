@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.fnc.IMaterialFileDao" >
+    <resultMap id="MaterialFileMap" type="com.dragon.portal.model.fnc.MaterialFile" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="type_id" property="typeId" jdbcType="VARCHAR" />
+        
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        
+        <result column="size" property="size" jdbcType="DOUBLE" />
+        
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="file_path" property="filePath" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        type_id,
+        name,
+        size,
+        remark,
+        status,
+        file_path,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="typeId!=null and typeId!=''">
+        and type_id = #{typeId,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+        and name = #{name,jdbcType=VARCHAR}
+        </if>
+        <if test="size!=null and size!=''">
+        and size = #{size,jdbcType=DOUBLE}
+        </if>
+        <if test="remark!=null and remark!=''">
+        and remark = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="filePath!=null and filePath!=''">
+        and file_path = #{filePath,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getMaterialFileById" resultMap="MaterialFileMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_finance_material_file
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.fnc.MaterialFile" resultMap="MaterialFileMap">
+        select * from tbl_finance_material_file where 1=1 
+        <include refid="where" />
+        order by create_time desc
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.fnc.MaterialFile" resultMap="MaterialFileMap">
+        select * from tbl_finance_material_file where 1=1 
+        <include refid="where" />
+		order by create_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.fnc.MaterialFile" resultType="int">
+        select count(1) from tbl_finance_material_file where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMaterialFile" parameterType="com.dragon.portal.model.fnc.MaterialFile"  >
+        insert into tbl_finance_material_file (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{typeId,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{size,jdbcType=DOUBLE},
+        #{remark,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
+        #{filePath,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delMaterialFileById" parameterType="java.lang.String" >
+        delete from tbl_finance_material_file
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMaterialFileByIds" parameterType="java.lang.String" >
+        delete from tbl_finance_material_file
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMaterialFile" parameterType="com.dragon.portal.model.fnc.MaterialFile" >
+        update tbl_finance_material_file
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null" >
+                type_id = #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null" >
+                size = #{size,jdbcType=DOUBLE},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="filePath != null" >
+                file_path = #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMaterialFileByIds" parameterType="java.util.Map">
+        update tbl_finance_material_file
+        <set>
+            <if test="materialFile.id != null" >
+                id = #{materialFile.id,jdbcType=VARCHAR},
+            </if>
+            <if test="materialFile.typeId != null" >
+                type_id = #{materialFile.typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="materialFile.name != null" >
+                name = #{materialFile.name,jdbcType=VARCHAR},
+            </if>
+            <if test="materialFile.size != null" >
+                size = #{materialFile.size,jdbcType=DOUBLE},
+            </if>
+            <if test="materialFile.remark != null" >
+                remark = #{materialFile.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="materialFile.status != null" >
+                status = #{materialFile.status,jdbcType=INTEGER},
+            </if>
+            <if test="materialFile.filePath != null" >
+                file_path = #{materialFile.filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="materialFile.createTime != null" >
+                create_time = #{materialFile.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="materialFile.creator != null" >
+                creator = #{materialFile.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="materialFile.updateTime != null" >
+                update_time = #{materialFile.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="materialFile.updator != null" >
+                updator = #{materialFile.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="materialFile.delFlag != null" >
+                del_flag = #{materialFile.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+</mapper>

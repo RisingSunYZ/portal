@@ -1,0 +1,155 @@
+@import '~antd/lib/style/themes/default.less';
+
+:global{
+  .adminBox{
+    width: 224px;
+    text-align: left;
+    font-size:14px;
+    font-weight:400;
+    color:rgba(0,0,0,0.85);
+    background: #F7F7F7;
+    img{
+      width: 76px;
+      height: 76px;
+      display: inline-block;
+      margin: 2px;
+      vertical-align: top;
+    }
+    .msg{
+      display: inline-block;
+      width: 134px;
+      vertical-align: top;
+      padding: 4px 16px;
+      line-height: 24px;
+      p{
+        margin: 0;
+        .levelTip{
+          display: inline-block;
+          text-align: center;
+          width: 40px;
+          height: 16px;
+          line-height: 14px;
+          border-radius:8px;
+          border:1px solid rgba(52,215,23,0.35);
+          background: rgba(40,199,12,1);
+          color: #fff;
+          margin-left: 12px;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+  .fwContainer{
+    padding-top: 20px;
+    margin: 0 42px;
+    .subOrgContainer{
+      position: relative;
+      .subOrgBox{
+        height: 170px;
+        overflow: hidden;
+      }
+      .anticon{
+        cursor: pointer;
+        position: absolute;
+        top: 70px;
+        &.anticon-left{
+          left: -51px;
+        }
+        &.anticon-right{
+          right: -51px;
+        }
+      }
+    }
+    .orgContainer{
+      padding: 16px 7px;
+      display: inline-block;
+      .orgBox{
+        width: 190px;
+        height: 134px;
+        overflow: hidden;
+        cursor: pointer;
+        box-shadow:0 0 9px 0 rgba(206,206,206,0.5);
+        .headBox{
+          height: 78px;
+          padding: 10px 0;
+          text-align: center;
+          .title{
+            font-size:20px;
+            height:30px;
+            margin-bottom: 5px;
+            color: rgba(0,0,0,0.85);
+            overflow: hidden;
+            word-break: keep-all;
+            text-overflow: ellipsis;
+          }
+          .number{
+            font-size: 18px;
+            color: @primary-color;
+          }
+        }
+        .adminBox{
+          width: 100%;
+          img{
+            width: 52px;
+            height: 52px;
+          }
+          .mag{
+            padding: 4px 8px;
+          }
+        }
+      }
+      &.active .orgBox{
+        box-shadow:0 0 9px 0 #5CB1FF;
+      }
+    }
+    .fwFirstLevel{
+      text-align: center;
+    }
+    .deptTitle{
+      text-align: center;
+      margin-top: 16px;
+      h5{
+        font-size: 20px;
+        color: #333;
+        font-weight: 500;
+      }
+      p{
+        color: @primary-color;
+        margin: 0;
+      }
+    }
+  }
+  .memberContainer{
+    .mmList{
+      margin: 0 7px;
+    }
+    .memberBox{
+      display: inline-block;
+      padding: 8px 0;
+      .adminBox{
+        cursor: pointer;
+        box-shadow:0 0 9px 0 rgba(206,206,206,0.5);
+        .msg{
+          width: 144px;
+        }
+      }
+    }
+  }
+}
+.authorizedTotal{
+  background:rgba(24,144,255,0.08);
+  margin: 16px 0;
+  h5{
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+  }
+  p{
+    font-size: 14px;
+  }
+}
+.ellipsis{
+  overflow: hidden;
+  word-break: keep-all;
+  text-overflow: ellipsis;
+}

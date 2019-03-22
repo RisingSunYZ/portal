@@ -23,15 +23,16 @@ import com.dragon.portal.service.rscmgmt.IMeetingroomService;
 import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.utils.DateAndWeekUtils;
 import com.dragon.portal.vo.rscmgmt.*;
-import com.dragon.tools.common.ReadProperty;
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.ys.tools.common.ReturnCode;
 import com.ys.tools.vo.ReturnVo;
 import com.mhome.se.api.ISendSmsApi;
 import com.mhome.se.eum.SmsModeTypeEnum;
 import com.mhome.se.model.sms.SmsInfo;
 import com.mhome.tools.common.UUIDGenerator;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
 import com.mhome.tools.vo.SimpleReturnVo;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
@@ -150,7 +151,10 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
         ids = this.converString(ids);
         if (StringUtils.isNotBlank(ids) && null != meetingroomApply) {
             meetingroomApply.setUpdateTime(new Date());
-            this.meetingroomApplyDao.updateMeetingroomApplyByIds(ids, meetingroomApply);
+            Map<String,Object> params = new HashMap<>();
+            params.put("ids", ids);
+            params.put("meetingroomApply", meetingroomApply);
+            this.meetingroomApplyDao.updateMeetingroomApplyByIds(params);
         }
     }
 
@@ -190,7 +194,7 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
             MeetingroomApplyViewVo meetingroomApplyViewVo = new MeetingroomApplyViewVo();
             meetingroomApplyViewVo.setApplyDateStr(CommUtils.getDateString(startDate, sdf));
             meetingroomApplyViewVo.setWeekDay("" + DateAndWeekUtils.getWeek(meetingroomApplyViewVo.getApplyDateStr()));
-            List<MeetingroomApplyItemViewVo> applyItemVo = meetingroomApplyDao.getAllByDateAndMeetingId(meetingroomApplyViewVo.getApplyDateStr(), meetingroomViewVo.getMeetingroomId(), proposerNo);
+            List<MeetingroomApplyItemViewVo> applyItemVo = this.getAllByDateAndMeetingId(meetingroomApplyViewVo.getApplyDateStr(), meetingroomViewVo.getMeetingroomId(), proposerNo);
             meetingroomApplyViewVo.setApplyItemVo(applyItemVo);
             applyVos.add(meetingroomApplyViewVo);
             startDate = CommUtils.getStringToDate(DateAndWeekUtils.addDay(CommUtils.getDateString(startDate, sdf), 1), sdf);
@@ -198,6 +202,30 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
         meetingroomViewVo.setApplyVos(applyVos);
         return meetingroomViewVo;
 
+    }
+
+    private List<MeetingroomApplyItemViewVo> getAllByDateAndMeetingId(String applyDateStr,String meetingroomId,String proposerNo) throws Exception{
+        Map<String,Object> params = new HashMap<String, Object>();
+        params.put("applyDateStr", applyDateStr);
+        params.put("applyNextDateStr", DateAndWeekUtils.addDay(applyDateStr,1));
+        params.put("meetingroomId", meetingroomId);
+        params.put("proposerNo", proposerNo);
+        List<MeetingroomApplyItemViewVo> itemViewVos = new ArrayList<MeetingroomApplyItemViewVo>();
+        List<MeetingroomApply> applies = this.meetingroomApplyDao.getAllByDateAndMeetingId(params);
+        for(MeetingroomApply temp:applies){
+            if(temp.getStatus()== MeetingApplyStatusEnum.APPROVE.getCode()||temp.getStatus()==MeetingApplyStatusEnum.WAIT_APPROVE.getCode()){
+                MeetingroomApplyItemViewVo itemViewVo = new MeetingroomApplyItemViewVo();
+                itemViewVo.setStatus(temp.getStatus());
+                itemViewVo.setApplyNo(temp.getApplyNo());
+                itemViewVo.setApplyDateStr(applyDateStr);
+                itemViewVo.setStartTimeStr(com.ys.ucenter.utils.CommUtils.getDateString(temp.getStartTime(), "HH:mm"));
+                itemViewVo.setEndTimeStr(com.ys.ucenter.utils.CommUtils.getDateString(temp.getEndTime(), "HH:mm").equals("00:00")?"24:00": com.ys.ucenter.utils.CommUtils.getDateString(temp.getEndTime(), "HH:mm"));
+                itemViewVo.setApplyPersonNo(temp.getProposerNo());
+                itemViewVo.setApplyPersonName(temp.getProposerName());
+                itemViewVos.add(itemViewVo);
+            }
+        }
+        return itemViewVos;
     }
 
 
@@ -376,7 +404,12 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
             MeetingroomApply meetingroomApply, Query query) throws Exception {
 
         PagerModel<MeetingroomMyApplyVo> MeetingroomMyApplyVoPm = new PagerModel<MeetingroomMyApplyVo>();
-        PagerModel<MeetingroomApply> pm = meetingroomApplyDao.getPagerModelByQueryOfMyApply(meetingroomApply, query);
+        Page<MeetingroomApply> page = null;
+        PageHelper.startPage(query.getInitPageIndex(),query.getPageSize());
+        page = meetingroomApplyDao.getPagerModelByQueryOfMyApply(meetingroomApply);
+
+        PagerModel<MeetingroomApply> pm = new PagerModel<>();
+        pm.setRows(page);
 
         //更新过期状态
         updateMeetingroomApplyStatusToExpireByList(pm.getRows());
@@ -697,7 +730,8 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
      * @Description:
      * @author v-zhaohaishan 2017年4月21日 上午10:08:25
      */
-    private void updateMeetingroomApplyStatusToExpireByList(List<MeetingroomApply> list) throws Exception {
+    @Override
+    public void updateMeetingroomApplyStatusToExpireByList(List<MeetingroomApply> list) throws Exception {
         MeetingroomApply meetingroomApply = new MeetingroomApply();
         meetingroomApply.setStatus(MeetingApplyStatusEnum.EXPIRE.getCode());
         StringBuffer ids = new StringBuffer();

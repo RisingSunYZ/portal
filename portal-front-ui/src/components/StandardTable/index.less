@@ -1,0 +1,25 @@
+@import '~antd/lib/style/themes/default.less';
+
+.standardTable {
+  :global {
+    .ant-table-pagination {
+      margin-top: 24px;
+    }
+    .ant-table-fixed-header .ant-table-scroll .ant-table-header {
+      overflow: hidden;
+      margin-bottom: 0!important;
+    }
+    .ant-table-pagination.ant-pagination {
+      display: table;
+      margin: 16px auto 0 auto;
+      float: none;
+    }
+    .ant-table-thead>tr>th {
+      font-weight: 600;
+    }
+  }
+
+  .tableAlert {
+    margin-bottom: 16px;
+  }
+}
