@@ -176,4 +176,7 @@ public interface IMeetingroomApplyService {
 	 */
 	public int countMeetingroomApplyByMeetingroomId(String meetingroomId) throws Exception;
 
+
+	public void updateMeetingroomApplyStatusToExpireByList(List<MeetingroomApply> list) throws Exception;
+
 }

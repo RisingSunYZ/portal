@@ -3,33 +3,42 @@ package com.dragon.portal.rest.controller.rscmgmt;
 import com.dragon.flow.api.IFlowApi;
 import com.dragon.portal.component.IProcessMainComponent;
 import com.dragon.portal.constant.PortalConstant;
+import com.dragon.portal.model.rscmgmt.Meetingroom;
+import com.dragon.portal.model.rscmgmt.MeetingroomAddr;
+import com.dragon.portal.model.rscmgmt.MeetingroomApply;
+import com.dragon.portal.model.rscmgmt.MeetingroomTools;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.rscmgmt.IMeetingroomAddrService;
 import com.dragon.portal.service.rscmgmt.IMeetingroomApplyService;
 import com.dragon.portal.service.rscmgmt.IMeetingroomService;
 import com.dragon.portal.service.rscmgmt.IMeetingroomToolsService;
+import com.dragon.portal.vo.rscmgmt.MeetingroomApplyVo;
+import com.dragon.portal.vo.rscmgmt.MeetingroomMyApplyVo;
 import com.dragon.portal.vo.rscmgmt.MeetingroomViewVo;
 import com.dragon.portal.vo.user.UserSessionInfo;
+import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
-import com.ys.tools.vo.ReturnVo;
+import com.dragon.tools.vo.ReturnVo;
+import com.mhome.tools.vo.SimpleReturnVo;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
+import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.user.Department;
+import com.ys.ucenter.model.vo.PersonnelApiVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description:会议室申请表Controller
@@ -62,62 +71,73 @@ public class MeetingroomApplyController extends BaseController {
 //    private IMeetingroomApproverDao IMeetingroomApproverDao;
     @Resource
     IProcessMainComponent processMainComponent;
-    //列表
-//    @RequestMapping("/list")
-//    public String list(ModelMap model, String sessionId, HttpServletRequest request, HttpServletResponse response) {
-//        model.addAttribute("sessionId", sessionId);
-//        try {
-//            UserSessionInfo loginUser = getUserSessionInfo(request, response);
-//            if (null != loginUser) {
-//                model.put("loginUser", loginUser);
-//            }
-//            //查询会议室地点数据
-//            MeetingroomAddr meetingroomAddr = new MeetingroomAddr();
-//            meetingroomAddr.setDelFlag(PortalConstant.NO_DELETE_FLAG);
-//            List<MeetingroomAddr> meetingroomAddrs = meetingroomAddrService.getAll(meetingroomAddr);
-//            //加载会议室用具
-//            MeetingroomTools toolQuery = new MeetingroomTools();
-//            toolQuery.setDelFlag(PortalConstant.NO_DELETE_FLAG);
-//            List<MeetingroomTools> meetingroomTools = this.meetingroomToolsService.getAll(toolQuery);
-//            model.put("meetingroomTools", JsonUtils.toJson(meetingroomTools));
-//            model.put("meetingroomAddrs", JsonUtils.toJson(meetingroomAddrs));
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-list:" + e);
-//            e.printStackTrace();
-//        }
-//
-//        return "/rscmgmt/meeting/meetingroom_list";
-//    }
-//
-//    //申请会议室、调整会议时间
-//    @RequestMapping("/apply_room")
-//    public String apply_room(ModelMap model, String mrId, String applyNo, String sessionId, HttpServletRequest request, HttpServletResponse response) {
-//        UserSessionInfo loginUser = getUserSessionInfo(request, response);
-//        try {
-//            //如果是修改，判断申请单号是否为空，如果不为空则为修改读取数据
-//            if (StringUtils.isNotBlank(applyNo)) {
-//                MeetingroomApplyVo meetingroomApplyVo = this.meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
-//                if (null != meetingroomApplyVo) {
-//                    mrId = meetingroomApplyVo.getMeetingroomId();
-//                }
-//                model.put("applyVo", meetingroomApplyVo);
-//            }
-//            Meetingroom meetingroom = meetingroomService.getMeetingroomById(mrId);
-//            if (null != meetingroom) {
-//                MeetingroomAddr meetingroomAddr = meetingroomAddrService.getMeetingroomAddrById(meetingroom.getAddrId());
-//                model.put("meetingroomAddr", meetingroomAddr);
-//            }
-//            model.put("loginUser", loginUser);
-//
-//            model.put("meetingroom", meetingroom);
-//            model.put("currentDateTime", new Date());
-//            model.addAttribute("sessionId", sessionId);
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-apply_room:" + e);
-//            e.printStackTrace();
-//        }
-//        return "/rscmgmt/meeting/meetingroom_apply_input";
-//    }
+
+    /**
+     * @Author YangZhao
+     * @Description 获取会议室地点以及用具
+     * @Date 19:09 2019/3/21
+     * @Param []
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    @GetMapping("/getMeetingAddrsTools")
+    @ApiOperation("获取会议室地点以及用具")
+    public Map<String,Object> getMeetingAddrsTools() {
+        Map<String,Object> res = new HashMap<>();
+        try {
+            //查询会议室地点数据
+            MeetingroomAddr meetingroomAddr = new MeetingroomAddr();
+            meetingroomAddr.setDelFlag(PortalConstant.NO_DELETE_FLAG);
+            List<MeetingroomAddr> meetingroomAddrs = meetingroomAddrService.getAll(meetingroomAddr);
+            //加载会议室用具
+            MeetingroomTools toolQuery = new MeetingroomTools();
+            toolQuery.setDelFlag(PortalConstant.NO_DELETE_FLAG);
+            List<MeetingroomTools> meetingroomTools = this.meetingroomToolsService.getAll(toolQuery);
+            res.put("meetingroomTools", meetingroomTools);
+            res.put("meetingroomAddrs", meetingroomAddrs);
+        } catch (Exception e) {
+            logger.error("MeetingroomApplyController-getMeetingAddrsTools-获取会议室地点以及用具失败:" + e);
+            e.printStackTrace();
+        }
+
+        return res;
+    }
+
+    /**
+     * @Author YangZhao
+     * @Description 获取申请会议室详情
+     * @Date 9:41 2019/3/22
+     * @Param [mrId, applyNo, request, response]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    @GetMapping("/apply_room")
+    @ApiOperation("获取申请会议室详情")
+    public Map<String,Object> apply_room(String mrId, String applyNo,@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+        UserSessionInfo loginUser = getUserSessionInfo(request, response);
+        Map<String,Object> res = new HashedMap();
+        try {
+            //如果是修改，判断申请单号是否为空，如果不为空则为修改读取数据
+            if (StringUtils.isNotBlank(applyNo)) {
+                MeetingroomApplyVo meetingroomApplyVo = this.meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
+                if (null != meetingroomApplyVo) {
+                    mrId = meetingroomApplyVo.getMeetingroomId();
+                }
+                res.put("applyVo", meetingroomApplyVo);
+            }
+            Meetingroom meetingroom = meetingroomService.getMeetingroomById(mrId);
+            if (null != meetingroom) {
+                MeetingroomAddr meetingroomAddr = meetingroomAddrService.getMeetingroomAddrById(meetingroom.getAddrId());
+                res.put("meetingroomAddr", meetingroomAddr);
+            }
+
+            res.put("loginUser", loginUser);
+            res.put("meetingroom", meetingroom);
+            res.put("currentDateTime", new Date());
+        } catch (Exception e) {
+            logger.error("MeetingroomApplyController-apply_room-申请会议室、调整会议时间异常:" + e);
+            e.printStackTrace();
+        }
+        return res;
+    }
 
     /**
      * @Author YangZhao
@@ -126,9 +146,9 @@ public class MeetingroomApplyController extends BaseController {
      * @Param [request, response, pageNumber, pageSize, meetingroomViewVo, query, sessionId]
      * @return java.lang.String
      **/
-    @GetMapping("/ajaxList")
+    @PostMapping("/ajaxList")
     @ApiOperation("加载会议室数据(根据当前用户所在部门开放权限)")
-    public PagerModel<MeetingroomViewVo> ajaxList(@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response,MeetingroomViewVo meetingroomViewVo, Query query) {
+    public PagerModel<MeetingroomViewVo> ajaxList(@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response,@RequestBody MeetingroomViewVo meetingroomViewVo, Query query) {
         PagerModel<MeetingroomViewVo> meetingRoomViewPm = new PagerModel<>();
         try {
             UserSessionInfo user = this.getUserSessionInfo(request, response);
@@ -154,30 +174,27 @@ public class MeetingroomApplyController extends BaseController {
     }
 
     /**
-     * 根据日期加载会议室申请数据
-     *
-     * @param meetingroomViewVo
-     * @param query
-     * @param sessionId
-     * @return
-     * @Description:
-     * @author xietongjian 2017 下午7:26:37
-     */
-//    @ResponseBody
-//    @RequestMapping("/ajaxApplyList")
-//    public String ajaxApplyList(HttpServletRequest request, HttpServletResponse response, MeetingroomViewVo meetingroomViewVo, Query query, String sessionId) {
-//        MeetingroomViewVo meetingRoomViewPm = new MeetingroomViewVo();
-//        try {
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            if (null != user && StringUtils.isNotBlank(user.getNo())) {
-//                meetingRoomViewPm = this.meetingroomApplyService.getMeetingroomViewVoByMeetroomId(meetingroomViewVo, user.getNo());
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-ajaxApplyList:" + e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(meetingRoomViewPm);
-//    }
+     * @Author YangZhao
+     * @Description 根据日期加载会议室申请数据
+     * @Date 16:44 2019/3/21
+     * @Param [request, response, meetingroomViewVo]
+     * @return com.dragon.portal.vo.rscmgmt.MeetingroomViewVo
+     **/
+    @PostMapping("/ajaxApplyList")
+    @ApiOperation("根据日期加载会议室申请数据")
+    public MeetingroomViewVo ajaxApplyList(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response,@RequestBody MeetingroomViewVo meetingroomViewVo) {
+        MeetingroomViewVo meetingRoomViewPm = new MeetingroomViewVo();
+        try {
+            UserSessionInfo user = this.getUserSessionInfo(request, response);
+            if (null != user && StringUtils.isNotBlank(user.getNo())) {
+                meetingRoomViewPm = this.meetingroomApplyService.getMeetingroomViewVoByMeetroomId(meetingroomViewVo, user.getNo());
+            }
+        } catch (Exception e) {
+            logger.error("MeetingroomApplyController-ajaxApplyList-根据日期加载会议室申请数据异常:" + e);
+            e.printStackTrace();
+        }
+        return meetingRoomViewPm;
+    }
 //
 //    //添加、修改的UI
 //    @RequestMapping("/input")
@@ -194,42 +211,56 @@ public class MeetingroomApplyController extends BaseController {
 //        return "/rscmgmt/meetingroom_apply_input";
 //    }
 //
-//    //保存
-//    @ResponseBody
-//    @RequestMapping("/save")
-//    public String save(HttpServletRequest request, HttpServletResponse response, MeetingroomApplyVo meetingroomApplyVo, String sessionId) {
-//        SimpleReturnVo returnVo = new SimpleReturnVo(ERROR, "修改失败");
-//        try {
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            if (null != user && StringUtils.isNotBlank(user.getNo())) {
-//                ReturnVo<PersonnelApiVo> rVo = this.personnelApi.getPersonnelApiVoByNo(user.getNo());
-//                if (null != rVo && UcenterConstant.SUCCESS == rVo.getCode()) {
-//                    PersonnelApiVo personnel = rVo.getData();
-//                    String userName = user.getNo();
-//                    Meetingroom mr = this.meetingroomService.getMeetingroomById(meetingroomApplyVo.getMeetingroomId());
-//                    MeetingroomAddr mrAddr = meetingroomAddrService.getMeetingroomAddrById(mr.getAddrId());
-//                    meetingroomApplyVo.setProposerNo(userName);
-//                    meetingroomApplyVo.setProposerName(user.getName());
-//                    meetingroomApplyVo.setDeptId(personnel.getDeptId());
-//                    meetingroomApplyVo.setDeptName(personnel.getDeptName());
-//                    meetingroomApplyVo.setDetailAddress(mrAddr.getAddress() + "-" + mr.getFloorNum() + "楼-" + mr.getName());
-//                    if (StringUtils.isBlank(meetingroomApplyVo.getId())) {
-//                        //添加申请会议室
-//                        returnVo = this.meetingroomApplyService.insertMeetingroomApplyByCycle(meetingroomApplyVo);
-//                    } else {
-//                        //修改申请会议室
-//                        returnVo = this.meetingroomApplyService.updateMeetingroomApplyByCycle(meetingroomApplyVo);
-//                    }
-//                }
-//            } else {
-//                returnVo = new SimpleReturnVo(ERROR, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-save:" + e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(returnVo);
-//    }
+    /**
+     * @Author YangZhao
+     * @Description 会议室添加修改
+     * @Date 10:14 2019/3/22
+     * @Param [request, response, meetingroomApplyVo]
+     * @return com.dragon.tools.vo.ReturnVo
+     **/
+    @PostMapping("/save")
+    @ApiOperation("会议室添加修改")
+    public ReturnVo save(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response,@RequestBody MeetingroomApplyVo meetingroomApplyVo) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改失败");
+        SimpleReturnVo simpleReturnVo = new SimpleReturnVo(com.ys.tools.common.ReturnCode.FAIL, "修改失败");
+        try {
+            UserSessionInfo user = this.getUserSessionInfo(request, response);
+            if (null != user && StringUtils.isNotBlank(user.getNo())) {
+                com.ys.tools.vo.ReturnVo<PersonnelApiVo> rVo = this.personnelApi.getPersonnelApiVoByNo(user.getNo());
+                if (null != rVo && UcenterConstant.SUCCESS == rVo.getCode()) {
+                    PersonnelApiVo personnel = rVo.getData();
+                    String userName = user.getNo();
+                    Meetingroom mr = this.meetingroomService.getMeetingroomById(meetingroomApplyVo.getMeetingroomId());
+                    MeetingroomAddr mrAddr = meetingroomAddrService.getMeetingroomAddrById(mr.getAddrId());
+                    meetingroomApplyVo.setProposerNo(userName);
+                    meetingroomApplyVo.setProposerName(user.getName());
+                    meetingroomApplyVo.setDeptId(personnel.getDeptId());
+                    meetingroomApplyVo.setDeptName(personnel.getDeptName());
+                    meetingroomApplyVo.setDetailAddress(mrAddr.getAddress() + "-" + mr.getFloorNum() + "楼-" + mr.getName());
+                    if (StringUtils.isBlank(meetingroomApplyVo.getId())) {
+                        //添加申请会议室
+                        simpleReturnVo = this.meetingroomApplyService.insertMeetingroomApplyByCycle(meetingroomApplyVo);
+                    } else {
+                        //修改申请会议室
+                        simpleReturnVo = this.meetingroomApplyService.updateMeetingroomApplyByCycle(meetingroomApplyVo);
+                    }
+
+                    if(com.ys.tools.common.ReturnCode.SUCCESS == simpleReturnVo.getResponseCode()){
+                        returnVo.setCode(ReturnCode.SUCCESS);
+                    }else{
+                        returnVo.setCode(ReturnCode.FAIL);
+                    }
+                    returnVo.setMsg(simpleReturnVo.getResponseMsg());
+                }
+            } else {
+                returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
+            }
+        } catch (Exception e) {
+            logger.error("MeetingroomApplyController-save-修改会议室数据失败:" + e);
+            e.printStackTrace();
+        }
+        return returnVo;
+    }
 //
 //    //我的申请列表
 //    @RequestMapping("/myApplyList")
@@ -243,24 +274,27 @@ public class MeetingroomApplyController extends BaseController {
 //        return "/rscmgmt/meeting/meetingroom_myapply_list";
 //    }
 //
-//    //我的申请加载数据
-//    @ResponseBody
-//    @RequestMapping("/myApplyAjaxList")
-//    public String myApplyAjaxList(ModelMap model, MeetingroomApply meetingRoomApply, Query query, HttpServletRequest request, HttpServletResponse response, String sessionId) {
-//        PagerModel<MeetingroomMyApplyVo> myApplyPm = new PagerModel<MeetingroomMyApplyVo>();
-//        try {
-//            query.setPageIndex(Integer.parseInt(query.getPage()));
-//            query.setPageNumber(Integer.parseInt(query.getPage()));
-//            query.setPageSize(query.getRows());
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            meetingRoomApply.setProposerNo(user.getNo());
-//            myApplyPm = this.meetingroomApplyService.getPagerModelByMeetingroomMyApplyVo(meetingRoomApply, query);
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-myApplyAjaxList:" + e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(myApplyPm);
-//    }
+    /**
+     * @Author YangZhao
+     * @Description //查询我的申请加载数据
+     * @Date 19:13 2019/3/21
+     * @Param [model, meetingRoomApply, query, request, response, sessionId]
+     * @return java.lang.String
+     **/
+    @PostMapping("/myApplyAjaxList")
+    @ApiOperation("查询我的申请加载数据")
+    public PagerModel<MeetingroomMyApplyVo> myApplyAjaxList(@RequestBody MeetingroomApply meetingRoomApply, Query query,@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+        PagerModel<MeetingroomMyApplyVo> myApplyPm = new PagerModel<>();
+        try {
+            UserSessionInfo user = this.getUserSessionInfo(request, response);
+            meetingRoomApply.setProposerNo(user.getNo());
+            myApplyPm = this.meetingroomApplyService.getPagerModelByMeetingroomMyApplyVo(meetingRoomApply, query);
+        } catch (Exception e) {
+            logger.error("MeetingroomApplyController-myApplyAjaxList-查询我的申请加载数据失败:" + e);
+            e.printStackTrace();
+        }
+        return myApplyPm;
+    }
 //
 //    /**
 //     * 取消申请
@@ -349,7 +383,7 @@ public class MeetingroomApplyController extends BaseController {
     private List<String> getRangeDeftId(String deptId) {
         if (StringUtils.isNotBlank(deptId)) {
             List<String> rangeDeftId = new ArrayList<String>();
-            ReturnVo<Department> Departments = orgApi.getAllParentsDeptById(deptId);
+            com.ys.tools.vo.ReturnVo<Department> Departments = orgApi.getAllParentsDeptById(deptId);
             for (Department temp : Departments.getDatas()) {
                 rangeDeftId.add(temp.getId());
             }

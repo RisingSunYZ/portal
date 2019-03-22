@@ -5,18 +5,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.dragon.portal.model.rscmgmt.*;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.mhome.tools.common.UUIDGenerator;
 import com.dragon.portal.dao.rscmgmt.IMeetingroomConftoolsDao;
 import com.dragon.portal.dao.rscmgmt.IMeetingroomDao;
-import com.dragon.portal.model.rscmgmt.Meetingroom;
-import com.dragon.portal.model.rscmgmt.MeetingroomApprover;
-import com.dragon.portal.model.rscmgmt.MeetingroomConftools;
-import com.dragon.portal.model.rscmgmt.MeetingroomTools;
 import com.dragon.portal.service.rscmgmt.IMeetingroomConftoolsService;
 import com.dragon.portal.service.rscmgmt.IMeetingroomService;
 import com.dragon.portal.service.rscmgmt.IMeetingroomToolsService;
@@ -169,11 +168,14 @@ public class MeetingroomServiceImpl implements IMeetingroomService {
 	public PagerModel<MeetingroomViewVo> getPagerModelByQuery(MeetingroomViewVo meetingroomViewVo, Query query)
 			throws Exception {
 		if(null != meetingroomViewVo && null != query){
-			PagerModel<MeetingroomViewVo> pm = null;
+			Page<MeetingroomViewVo> page = null;
+
+			PageHelper.startPage(query.getInitPageIndex(),query.getPageSize());
 			if(meetingroomViewVo.getIsAdmin()!=null){
-				pm = this.meetingroomDao.getPagerModelVoByQueryOfAdmin(meetingroomViewVo, query);
+				page = this.meetingroomDao.getPagerModelVoByQueryOfAdmin(meetingroomViewVo);
 			}
-			pm = this.meetingroomDao.getPagerModelVoByQuery(meetingroomViewVo, query);
+			page = this.meetingroomDao.getPagerModelVoByQuery(meetingroomViewVo);
+			PagerModel<MeetingroomViewVo> pm = new PagerModel<>(page);
 			for(MeetingroomViewVo temp : pm.getRows()){
 				List<MeetingroomTools> mrToolsList = meetingroomToolsService.selectMeetingRoomTollsBymeetingRoomId(temp.getMeetingroomId());
 				List<MeetingroomApprover> approverList = meetingroomToolsService.selectAppoverListBymeetingRoomId(temp.getMeetingroomId());

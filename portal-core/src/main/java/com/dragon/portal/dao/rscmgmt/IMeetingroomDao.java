@@ -6,6 +6,7 @@ import com.dragon.portal.model.rscmgmt.Meetingroom;
 import com.dragon.portal.vo.rscmgmt.MeetingroomViewVo;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -70,7 +71,7 @@ public interface IMeetingroomDao {
 	 * @Param [meetingroomViewVo, query]
 	 * @return com.dragon.tools.pager.PagerModel<com.dragon.portal.vo.rscmgmt.MeetingroomViewVo>
 	 **/
-	public PagerModel<MeetingroomViewVo> getPagerModelVoByQueryOfAdmin(MeetingroomViewVo meetingroomViewVo, Query query) throws Exception;
+	public Page<MeetingroomViewVo> getPagerModelVoByQueryOfAdmin(MeetingroomViewVo meetingroomViewVo) throws Exception;
 
 
 	/**
@@ -80,7 +81,7 @@ public interface IMeetingroomDao {
 	 * @Param [meetingroomViewVo, query]
 	 * @return com.dragon.tools.pager.PagerModel<com.dragon.portal.vo.rscmgmt.MeetingroomViewVo>
 	 **/
-	public PagerModel<MeetingroomViewVo> getPagerModelVoByQuery(MeetingroomViewVo meetingroomViewVo, Query query) throws Exception;
+	public Page<MeetingroomViewVo> getPagerModelVoByQuery(MeetingroomViewVo meetingroomViewVo) throws Exception;
 	
 
 	/**
