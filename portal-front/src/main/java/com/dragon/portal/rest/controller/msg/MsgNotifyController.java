@@ -151,7 +151,7 @@ public class MsgNotifyController extends BaseController {
 				if (!MisConstant.SUCCESS.equals(rVo.getCode())) {
 					logger.error("调用接口失败" + rVo.getMsg());
 				}else{
-					returnVo = new ReturnVo(ReturnCode.FAIL,"查询成功");
+					returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
 					returnVo.setData(rVo.getData());
 				}
 			}

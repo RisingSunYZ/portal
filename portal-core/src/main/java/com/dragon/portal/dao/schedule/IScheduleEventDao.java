@@ -5,6 +5,7 @@ import com.dragon.tools.pager.Query;
 import com.dragon.portal.model.schedule.ScheduleEvent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Title:日程事件Dao接口
@@ -87,10 +88,11 @@ public interface IScheduleEventDao {
 
 	/**
 	 * 根据条件查询日程
-	 * @param scheduleEvent
+	 * @param params
+	 * @return
 	 * @throws Exception
 	 */
-	public List<ScheduleEvent> getScheduleEvenList(ScheduleEvent scheduleEvent, String personNos) throws Exception;
+	public List<ScheduleEvent> getScheduleEvenList(Map<String,Object> params) throws Exception;
 	
 	/**
 	 * 批量添加日程信息
