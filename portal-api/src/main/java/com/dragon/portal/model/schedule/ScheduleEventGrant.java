@@ -1,6 +1,8 @@
 package com.dragon.portal.model.schedule;
 
 import com.dragon.tools.common.BaseModel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -15,16 +17,19 @@ import java.util.List;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
  */
+@ApiModel(value="日程事件授权 ScheduleEventGrant",description="日程事件授权 ScheduleEventGrant")
 public class ScheduleEventGrant extends BaseModel implements Serializable{
     
     /**
      * 主键
      */
+	@ApiModelProperty(value="id",name="id")
     private String id;
     
     /**
      * 授权用户工号
      */
+	@ApiModelProperty(value="授权用户工号",name="grantPersonNo")
     private String grantPersonNo;
 
 	@Override
@@ -50,37 +55,47 @@ public class ScheduleEventGrant extends BaseModel implements Serializable{
 	/**
      * 授权用户名称
      */
+	@ApiModelProperty(value="授权用户名称",name="grantPersonName")
     private String grantPersonName;
     
     /**
      * 被授权用户工号
      */
+	@ApiModelProperty(value="被授权用户工号",name="grantedPersonNo")
     private String grantedPersonNo;
    
     
     /**
      * 被授权用户名称
      */
+	@ApiModelProperty(value="被授权用户名称",name="grantedPersonName")
     private String grantedPersonName;
     
     /**
      * 授权类型（0：只读；1：编辑）
      */
+	@ApiModelProperty(value="授权类型（0：只读；1：编辑）",name="grantType")
     private Integer grantType;
     
     //页面传递过来的对应授权类型
+	@ApiModelProperty(value="页面传递过来的对应授权类型",name="autoType")
     private String autoType;
     
     //页面授权类型显示
+	@ApiModelProperty(value="页面授权类型显示",name="grantTypeStr")
     private String grantTypeStr;
     
     //当前用户工号和名称
+	@ApiModelProperty(value="当前用户工号",name="no")
     private String no;
+	@ApiModelProperty(value="当前用户名称",name="name")
     private String name;
     
     //需要添加的日程授权权限
+	@ApiModelProperty(value="需要添加的日程授权权限",name="scheduleEventGrantsNew")
     private List<ScheduleEventGrant> scheduleEventGrantsNew;
     //需要修改的日程授权权限
+	@ApiModelProperty(value="需要修改的日程授权权限",name="scheduleEventGrantsEdit")
     private List<ScheduleEventGrant> scheduleEventGrantsEdit;
     
 

@@ -2,10 +2,12 @@ package com.dragon.portal.dao.rscmgmt;
 
 import com.dragon.portal.model.rscmgmt.MeetingroomApply;
 import com.dragon.portal.vo.rscmgmt.MeetingroomApplyItemViewVo;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
+import com.github.pagehelper.Page;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -47,7 +49,7 @@ public interface IMeetingroomApplyDao {
 	 * @Description:
 	 * @author v-zhaohaishan 2017年4月22日 上午11:02:13
 	 */
-	public List<MeetingroomApplyItemViewVo> getAllByDateAndMeetingId(String applyDateStr,String meetingroomId,String proposerNo) throws Exception;
+	public List<MeetingroomApply> getAllByDateAndMeetingId(Map<String,Object> params) throws Exception;
 
 	/**
 	 * 分页查询会议室申请表MeetingroomApply
@@ -108,7 +110,7 @@ public interface IMeetingroomApplyDao {
 	 * @throws Exception
 	 * @Description:
 	 */
-	public void updateMeetingroomApplyByIds(String ids,MeetingroomApply meetingroomApply) throws Exception;
+	public void updateMeetingroomApplyByIds(Map<String,Object> map) throws Exception;
 	/**
 	 * 查询在开始和结束时间内是否有记录
 	 * @param startTime
@@ -130,15 +132,13 @@ public interface IMeetingroomApplyDao {
 	public void insertMeetingroomApplyByList(List<MeetingroomApply> list) throws Exception;
 	
 	/**
-	 * 
-	 * @param meetingroomApply
-	 * @param query
-	 * @return
-	 * @throws Exception
-	 * @Description:
-	 * @author v-zhaohaishan 2017年4月20日 上午8:44:07
-	 */
-	public PagerModel<MeetingroomApply> getPagerModelByQueryOfMyApply(MeetingroomApply meetingroomApply, Query query) throws Exception;
+	 * @Author YangZhao
+	 * @Description
+	 * @Date 19:17 2019/3/21
+	 * @Param [meetingroomApply]
+	 * @return com.github.pagehelper.Page<com.dragon.portal.model.rscmgmt.MeetingroomApply>
+	 **/
+	public Page<MeetingroomApply> getPagerModelByQueryOfMyApply(MeetingroomApply meetingroomApply) throws Exception;
 	/**
 	 * 获取
 	 * @param meetingroomApply

@@ -2,8 +2,8 @@ package com.dragon.portal.service.rscmgmt;
 
 import com.dragon.portal.model.rscmgmt.Meetingroom;
 import com.dragon.portal.vo.rscmgmt.MeetingroomViewVo;
-import com.mhome.tools.pager.PagerModel;
-import com.mhome.tools.pager.Query;
+import com.dragon.tools.pager.PagerModel;
+import com.dragon.tools.pager.Query;
 
 import java.util.List;
 
