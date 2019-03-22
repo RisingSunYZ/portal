@@ -1,6 +1,8 @@
 package com.dragon.portal.service.rscmgmt;
 
+import com.dragon.portal.model.rscmgmt.AppointmentVO;
 import com.dragon.portal.model.rscmgmt.Meeting;
+import com.dragon.portal.model.schedule.ScheduleEvent;
 import com.dragon.tools.vo.ReturnVo;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
@@ -113,4 +115,25 @@ public interface IMeetingService {
 	 * @return
 	 */
 	public List<Meeting> getInitList(List<Meeting> meetings,String userNo);
+
+	/**
+	 * 设置必选人员email
+	 * @param appointmentVO
+	 * @param meeting
+	 */
+	public void setMandatoryEmail(List<ScheduleEvent>scheduleEventList, List<String>newNos, AppointmentVO appointmentVO, Meeting meeting, String userNo);
+
+	/**
+	 * 设置日程事件信息
+	 * @param scheduleEventList,vo,meeting,start,end,userNo
+	 */
+	public void setScheduleEventList(List<ScheduleEvent>scheduleEventList,AppointmentVO vo ,Meeting meeting,String start,String end,String userNo);
+
+	/**
+	 * 设置日程事件信息
+	 * @param scheduleEventList,meeting,start,end,userNo
+	 */
+	public void setScheduleEventList(List<ScheduleEvent>scheduleEventList ,Meeting meeting,String start,String end,String userNo);
+
+
 }

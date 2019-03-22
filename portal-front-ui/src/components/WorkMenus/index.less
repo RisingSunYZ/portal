@@ -1,0 +1,30 @@
+
+.menuWraper{
+  //font-size: 16px;
+  :global {
+    .ant-col-4{
+      text-align: center;
+      a {
+        color:rgba(0, 0, 0, 0.65);
+        br + span {
+          position: absolute;
+          top: 55px;
+          left: 28%;
+        };
+        span.schedule{
+          left: 36%;
+        }
+        span.mail{
+          left: 33%;
+        }
+        &:hover {
+          color:#1890FF;
+          span.ant-avatar {
+            width:45px;
+            height:45px;
+          }
+        }
+      };
+    }
+  }
+}

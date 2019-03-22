@@ -1,0 +1,141 @@
+@import '~antd/lib/style/themes/default.less';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
+  background: #f0f2f5;
+}
+
+.content {
+  padding: 32px 0;
+  flex: 1;
+}
+
+@media (min-width: @screen-md-min) {
+  .container {
+    background-repeat: no-repeat;
+    background-position: center 110px;
+    background-size: 100%;
+  }
+
+  .content {
+    padding: 0px 0 24px 0;
+  }
+}
+
+.top {
+  width: 100%;
+  background:blue;
+}
+
+.header {
+  margin:auto;
+  width:1200px;
+  height: 44px;
+  line-height: 44px;
+  a {
+    text-decoration: none;
+  }
+}
+.contentBox{
+  margin: 0 auto;
+  height: 100%;
+  width:1200px;
+  padding-top:16px !important;
+  padding-bottom: 20px;
+  background: #f0f2f5;
+}
+
+
+.maxLayout{
+  .contentBox{
+    width:100%;
+  }
+  :global{
+    .ant-layout-header{
+      >div{
+        >div{
+          width:100%;
+        }
+      }
+    }
+  }
+
+}
+
+.logo {
+  height: 44px;
+  vertical-align: top;
+  margin-right: 16px;
+}
+
+.title {
+  font-size: 33px;
+  color: @heading-color;
+  font-family: 'Myriad Pro', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  position: relative;
+  top: 2px;
+}
+
+.desc {
+  font-size: @font-size-base;
+  color: @text-color-secondary;
+  margin-top: 12px;
+  margin-bottom: 40px;
+}
+:global{
+  .ant-table-pagination.ant-pagination{
+    display: block;
+    text-align: center;
+    float: none!important;
+    margin: 16px auto!important;
+    .ant-pagination-item-active{
+      border: 1px solid @primary-color;
+      background-color: @primary-color;
+      a{
+        color: #fff;
+      }
+    }
+  }
+  .ucenter-box{
+    .title-box{
+      padding: 16px 24px 0;
+      .page-title{
+        font-size:20px;
+        font-weight: 600;
+        color: #333;
+        line-height: 32px;
+        padding: 16px 0 8px 0;
+      }
+      & + .ant-tabs{
+        background-color: #F0F2F5;
+        & > .ant-tabs-bar {
+          & > .ant-tabs-nav-container {
+            margin-bottom: 0;
+            background-color: #fff;
+            padding: 0 24px;
+          }
+        }
+        & > .ant-tabs-content{
+          background-color: #fff;
+          & > .ant-tabs-tabpane{
+            padding: 0 24px;
+            background-color: #fff;
+          }
+        }
+      }
+    }
+    .cardTitle{
+      height: 50px;
+      line-height: 50px;
+      font-size: 16px;
+      color:rgba(0,0,0,0.85);
+      font-weight: 800;
+      position: relative;
+      margin: 0;
+    }
+  }
+}

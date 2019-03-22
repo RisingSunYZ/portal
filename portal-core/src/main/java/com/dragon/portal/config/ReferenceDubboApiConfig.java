@@ -3,6 +3,7 @@ package com.dragon.portal.config;
 import com.dragon.flow.api.ICusFlowApi;
 import com.dragon.flow.api.IFlowApi;
 import com.ecnice.privilege.api.privilege.IPrivilegeApi;
+import com.mhome.se.api.ISendEmailApi;
 import com.mhome.se.api.ISendSmsApi;
 import com.ys.mis.api.IMisApi;
 import com.ys.mqpms.api.IMqPmsApi;
@@ -13,6 +14,8 @@ import com.ys.ucenter.api.IPersonnelApi;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
 
 /**
  * @Description: 对接的dubbo接口
@@ -52,6 +55,8 @@ public class ReferenceDubboApiConfig {
     @Reference(version = "1.0",check = false)
     private ISendSmsApi sendSmsApi;
 
+    @Reference(version = "1.0",check = false)
+    private ISendEmailApi sendEmailApi;
 
     @Bean
     public IMisApi misApi() {
@@ -96,6 +101,8 @@ public class ReferenceDubboApiConfig {
         return sendSmsApi;
     }
 
+    @Bean
+    public ISendEmailApi sendEmailApi() {return sendEmailApi;}
     @Bean
     public IAreaApi getAreaApi() {
         return areaApi;
