@@ -13,6 +13,7 @@ public class PortalConstant {
     public static final Integer NO_DELETE_FLAG = 1;
 
 
+
     /**
      * 用户Cookie相关的key
      */
@@ -325,4 +326,11 @@ public class PortalConstant {
 
     /** 最大分页显示的数据 */
     public static final Integer MAX_PAGE_SIZE = 10000;
+
+    /** 是 */
+    public static final Integer YES = 1;
+
+    /** 否 */
+    public static final Integer NO = 0;
+
 }

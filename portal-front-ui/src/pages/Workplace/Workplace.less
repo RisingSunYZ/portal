@@ -1,0 +1,77 @@
+@import '~antd/lib/style/themes/default.less';
+
+.calendarBox{
+  text-align: center;
+  color: #333;
+  h4{
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 44px;
+  }
+  span{
+    font-size: 14px;
+  }
+}
+:global{
+  .wp-news-box .slick-dots {
+    top: -26px;
+  }
+  .marginBottom{
+    margin-bottom: 16px;
+  }
+  .marginBottomSm{
+    margin-bottom: 8px;
+  }
+  .marginBottomLg{
+    margin-bottom: 32px;
+  }
+  #sysBox {
+    vertical-align: top;
+    width: 630px;
+    position: relative;
+    margin: 40px 25px;
+    .anticon {
+      position: absolute;
+      top: 50%;
+      margin-top: -12px;
+      cursor: pointer;
+      &:hover {
+        color: #999 !important;
+        transition: ease-in-out .3s;
+      }
+      &.anticon-left {
+        left: -24px;
+      }
+      &.anticon-right {
+        right: -24px;
+      }
+    }
+    .sys-view {
+      height: 85px;
+      overflow: hidden;
+      .sys-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        li {
+          display: inline-block;
+          width: 105px;
+          vertical-align: top;
+          & > a {
+            display: block;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+            color: #333;
+            text-align: center;
+            border-radius: 3px;
+          }
+          p{
+            text-align: center;
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}

@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 @Configuration
 public class ReferenceDubboApiConfig {
 
-    @Reference(version = "1.0",check = false)
+    @Reference(version = "1.0",check = false,timeout = 10000)
     private IFlowApi flowApi;
 
     @Reference(version = "1.0",check = false)

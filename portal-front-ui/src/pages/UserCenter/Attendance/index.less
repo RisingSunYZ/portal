@@ -1,0 +1,216 @@
+@import '~antd/lib/style/themes/default.less';
+
+.name {
+  width:112px;
+  height:20px;
+  font-size:16px;
+  font-weight:900;
+  color:rgba(0,0,0,0.85);
+  line-height:22px;
+}
+.bz{
+  background: rgb(14, 101, 175);
+  height: 20px;
+  width: 4px;
+  display: inline-block;
+  position: relative;
+  top: 4px;
+  border-radius: 2px;
+}
+.detail {
+  p {
+    margin-bottom: 8px;
+    position: relative;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+.quesImg{
+  height: 130px;
+}
+:global{
+  .atds-date-box{
+    height: 86px;
+    .ads-cell{
+      width: 72px;
+      height: 72px;
+      margin: 7px auto;
+      cursor: pointer;
+      &:hover{
+        background: rgba(24,144,255,0.5);
+        .date-number{
+          color: #fff;
+        }
+      }
+      .date-number{
+        text-align: center;
+        font-size: 20px;
+        font-weight: 400;
+        color: #333;
+        line-height: 42px;
+        margin: 0;
+      }
+      .type-tip{
+        display: block;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        margin: 8px auto;
+      }
+      .work{
+        width: 100%;
+        height: 30px;
+      }
+    }
+  }
+  .ant-fullcalendar-last-month-cell .date-number,.ant-fullcalendar-next-month-btn-day .date-number{
+    color: rgba(0,0,0,0.25)!important;
+  }
+  .btnWarning{
+    font-size: 14px;
+    color: #FAAD14;
+    cursor: pointer;
+    float: right;
+    margin-top: 10px;
+  }
+  .ant-fullcalendar-header{
+    display: none;
+  }
+  .ant-fullcalendar-column-header .ant-fullcalendar-column-header-inner{
+    font-size: 20px;
+    color:rgba(24,144,255,0.5);
+    line-height: 60px;
+    text-align: center;
+  }
+  .work-normal .type-tip{
+    background-color: #52C41A;
+  }
+  .work-unusual .type-tip{
+    background-color: #F5222D;
+  }
+  .work-out .type-tip{
+    background-color: #FAAD14;
+  }
+  .ques-info{
+    width: 260px;
+    list-style: none;
+    padding: 0;
+    margin: 0 10px;
+    color: #777;
+    font-size: 14px;
+    overflow: hidden;
+    p{
+      margin: 0;
+    }
+  }
+  .ques-info li{
+    border-top: 1px dotted #e5e5e5;
+    padding-top: 5px;
+    padding-bottom: 7px;
+    margin-top: -1px;
+    position: relative;
+    text-align: left;
+  }
+  .ques-info span{
+    color: #333;
+    line-height: 28px;
+  }
+  .appeal-box{
+    clear: both;
+    text-align: center;
+    line-height: 38px;
+  }
+  .ques-info .appeal-btn{
+    color: #0e65af;
+    position: absolute;
+    top: 5px;
+    right: 0;
+    cursor: pointer;
+  }
+  .ques-info .appeal-result{
+    cursor: default;
+    color: #777;
+    position: absolute;
+    top: 5px;
+    right: 0;
+  }
+  .number {
+    text-align: center;
+    font-size:20px;
+    font-weight: 500;
+    color: #000;
+  }
+
+}
+.atdsDateBox{
+  padding: 0;
+  :global{
+    .ant-popover-inner-content{
+      padding: 0;
+    }
+  }
+}
+.tipList{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  line-height: 32px;
+  li{
+    display: inline-block;
+    width: 60px;
+    font-size:14px;
+    color:rgba(0,0,0,0.85);
+    i{
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+      &.normal{
+        background: #52C41A;
+      }
+      &.unusual{
+        background-color: #F5222D;
+      }
+      &.out{
+        background-color: #FAAD14;
+      }
+    }
+  }
+}
+.timeShow{
+  font-size: 14px;
+  text-align: center;
+  p{
+    margin: 0;
+  }
+}
+.headBox{
+  text-align: center;
+}
+.dateHead{
+  display: block;
+  width: 50px;
+  color: #52C41A;
+}
+.ptzt {
+  font-size:14px;
+  font-weight:400;
+  color:rgba(0,0,0,0.85);
+}
+
+.green{
+  .number;
+  color: #1DC711;
+}
+.error{
+  .number;
+  color: @error-color;
+}
+.warning{
+  .number;
+  color: @warning-color;
+}
+

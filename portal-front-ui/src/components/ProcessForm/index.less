@@ -1,0 +1,130 @@
+@import '~antd/lib/style/themes/default.less';
+
+//@page {
+//  size: landscape;
+//}
+.headerList {
+  margin-bottom: 4px;
+  .item {
+    width: 300px;
+  }
+}
+
+h5{
+  font-weight:600;
+  font-size:15px;
+}
+
+.card {
+  float: left;
+  font-weight: bold;
+}
+
+.approveTool {
+  .approveBtn {
+    margin: 8px 8px 0px 0px;
+    background: #1890FF;
+    color: #fff;
+    border-color: transparent;
+  }
+  .printBtn {
+    margin: 8px 8px 10px 0px;
+    float: right;
+  }
+  :global {
+    .ant-card-body {
+      padding: 14px 24px 0;
+    }
+  }
+  .approveStateBox {
+    width: 120px;
+    height: 88px;
+    background: RGBA(201, 220, 251, 0.6);
+    border-radius: 4px;
+    text-align: center;
+    padding-top: 17px;
+    .approveIcon {
+      margin-right: 8px;
+    }
+    span {
+      font-weight: bold;
+    }
+  }
+}
+
+.ownerInfo {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 36px;
+  li {
+    float: left;
+    list-style: none;
+    margin: 0 10px 0 0;
+    padding: 0 6px;
+    border: 1px solid #d9d9d9;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+}
+
+.rowHeight {
+  line-height: 32px;
+}
+
+.timeLineBox {
+  :global {
+    .ant-timeline-item-content {
+      margin-left: 25px;
+      padding-left: 0;
+    }
+    .ant-row {
+      background: #f0f0f0;
+      line-height: 50px;
+    }
+  }
+}
+:global{
+  .ant-card-head-title {
+    font-weight: 600;
+  }
+}
+
+.collapse {
+  :global {
+    .ant-collapse-header {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 16px 16px 16px 50px;
+    }
+    .ant-timeline-item-head-custom {
+      top: 20px;
+      background: #f0f0f0;
+      padding: 0;
+      width: 80px;
+      line-height: 50px;
+      height: 50px;
+    }
+  }
+}
+
+.fuyan {
+  :global {
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 16px;
+    }
+    .ant-card-body {
+      padding: 0;
+    }
+  }
+}
+.fuyan_timeline {
+  :global {
+    .ant-row {
+      background: initial;
+      line-height: 32px;
+    }
+  }
+}

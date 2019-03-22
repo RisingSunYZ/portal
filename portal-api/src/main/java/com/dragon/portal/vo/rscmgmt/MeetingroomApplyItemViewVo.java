@@ -1,5 +1,8 @@
 package com.dragon.portal.vo.rscmgmt;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -11,6 +14,7 @@ import java.io.Serializable;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
  */
+@ApiModel(value="会议室申请Vo",description="会议室申请Vo")
 public class MeetingroomApplyItemViewVo implements Serializable{
 	
 	/**
@@ -21,36 +25,43 @@ public class MeetingroomApplyItemViewVo implements Serializable{
 	/**
 	 * 申请状态
 	 */
+	@ApiModelProperty(value="申请状态",name="status")
 	private Integer status;
 	
 	/**
 	 * 申请单号
 	 */
+	@ApiModelProperty(value="申请单号",name="applyNo")
 	private String applyNo;
 	
 	/**
 	 * 申请日期
 	 */
+	@ApiModelProperty(value="申请日期",name="applyDateStr")
 	private String applyDateStr;
 	
 	/**
 	 * 开始时间
 	 */
+	@ApiModelProperty(value="开始时间",name="startTimeStr")
 	private String startTimeStr;
 	
 	/**
 	 * 结束时间
 	 */
+	@ApiModelProperty(value="结束时间",name="endTimeStr")
 	private String endTimeStr;
 	
 	/**
 	 * 申请人 工号
 	 */
+	@ApiModelProperty(value="申请人 工号",name="applyPersonNo")
 	private String applyPersonNo;
 	
 	/**
 	 * 申请人 姓名
 	 */
+	@ApiModelProperty(value="申请人 姓名",name="applyPersonName")
 	private String applyPersonName;
 
 	public Integer getStatus() {

@@ -1,0 +1,37 @@
+@import '~antd/lib/style/themes/default.less';
+
+.headBox{
+  width: 122px;
+  height: 122px;
+}
+:global{
+  .postTimeLine{
+    .ant-timeline{
+      padding-left: 110px;
+      color: rgba(0,0,0,.85);
+      &-item{
+        padding: 0 0 50px;
+        .timeLine{
+          position: absolute;
+          left: -120px;
+          width: 100px;
+        }
+        .textLine{
+          position: absolute;
+          top: -10px;
+          margin-left: 30px;
+          padding: 0 40px 0 14px;
+          line-height: 40px;
+        }
+      }
+      &.ant-timeline-reverse li:first-child{
+        color: #1890FF;
+        padding: 0 0 62px;
+        .textLine{
+          box-shadow:0 4px 12px 0 rgba(0,0,0,0.15);
+          border-radius:4px;
+        }
+      }
+    }
+  }
+}

@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Title:日程事件Service实现
@@ -127,7 +129,10 @@ public class ScheduleEventServiceImpl implements IScheduleEventService {
 	@Override
 	public List<ScheduleEvent> getScheduleEvenList(ScheduleEvent scheduleEvent,String personNos) throws Exception {
 		personNos = this.converString(personNos);
-		return null != scheduleEvent ? this.scheduleEventDao.getScheduleEvenList(scheduleEvent,personNos) : null;
+		Map<String,Object> params = new HashMap<String, Object>();
+		params.put("personNos", personNos);
+		params.put("scheduleEvent", scheduleEvent);
+		return null != scheduleEvent ? this.scheduleEventDao.getScheduleEvenList(params) : null;
 	}
 
 	@Override

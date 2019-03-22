@@ -2,19 +2,20 @@ package com.dragon.portal.vo.rscmgmt;
 
 import com.dragon.portal.model.rscmgmt.MeetingroomApprover;
 import com.dragon.portal.model.rscmgmt.MeetingroomTools;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * 会议室前台展示列表
- * @Title:
- * @Description:
- * @Author:xietongjian
- * @Since:2017年4月17日 上午8:52:32
- * @Version:1.1.0
- * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
- */
+ * @Author YangZhao
+ * @Description 会议室前台展示列表
+ * @Date 14:32 2019/3/20
+ * @Param
+ * @return
+ **/
+@ApiModel(value="会议室前台展示列表",description="会议室前台展示列表")
 public class MeetingroomViewVo implements Serializable{
 	
 	/**
@@ -25,116 +26,140 @@ public class MeetingroomViewVo implements Serializable{
     /**
      * 会议室ID
      */
+	@ApiModelProperty(value="会议室ID",name="meetingroomId")
     private String meetingroomId;
     
     /**
      * 会议室名称
      */
+	@ApiModelProperty(value="会议室名称",name="meetingroomName")
     private String meetingroomName;
     
     /**
      * 会议室图片
      */
+	@ApiModelProperty(value="会议室图片",name="roomImg")
     private String roomImg;
     
     /**
      * 允许时期性申请
      */
+	@ApiModelProperty(value="允许时期性申请",name="isCyclicity")
     private Integer isCyclicity;
     
     /**
      * 是否需要审批
      */
+	@ApiModelProperty(value="是否需要审批",name="needApproval")
     private Integer needApproval;
     
     /**
      * 排序号
      */
+	@ApiModelProperty(value="排序号",name="sortNo")
     private Integer sortNo;
     
     /**
      * 会议室状态（1：启用；0：停用）
      */
+	@ApiModelProperty(value="会议室状态（1：启用；0：停用）",name="status")
     private Integer status;
     
     /**
      * 会议室地点ID
      */
+	@ApiModelProperty(value="会议室地点ID",name="meetingroomAddrId")
     private String meetingroomAddrId;
     
     /**
      * 会议室地点名称
      */
+	@ApiModelProperty(value="会议室地点名称",name="meetingroomAddrName")
     private String meetingroomAddrName;
     
     /**
      * 楼层
      */
+	@ApiModelProperty(value="楼层",name="floorNum")
     private String floorNum;
     
     /**
      * 可容纳人数
      */
+	@ApiModelProperty(value="可容纳人数",name="personNum")
     private Integer personNum;
     
     /**
      * 配置选项
      */
+	@ApiModelProperty(value="配置选项",name="tools")
     private List<MeetingroomTools> tools;
     
     /**
      * 会议室申请记录
      */
+	@ApiModelProperty(value="会议室申请记录",name="applyVos")
     private List<MeetingroomApplyViewVo> applyVos;
     
     /**
      * 可容纳人数最小值
      */
+	@ApiModelProperty(value="可容纳人数最小值",name="personNumMin")
     private Integer personNumMin;
     
     /**
      * 可容纳人数最大值
      */
+	@ApiModelProperty(value="可容纳人数最大值",name="personNumMax")
     private Integer personNumMax;
 
     /**
      * 会议室配置选项
      */
+	@ApiModelProperty(value="会议室配置选项",name="confTools")
     private List<String> confTools;
     
     /**
      * 以逗号分隔的会议室配置项ID字符串
      */
+	@ApiModelProperty(value="以逗号分隔的会议室配置项ID字符串",name="confToolsStr")
     private String confToolsStr;
         
     /**
      * 开始日期
      */
+	@ApiModelProperty(value="开始日期",name="startDateStr")
     private String startDateStr;
     /**
      * 结束日期
      */
+	@ApiModelProperty(value="结束日期",name="endDateStr")
     private String endDateStr;
 
     /**
      * 1有部门范围限制  0无部门范围限制
      */
+	@ApiModelProperty(value="1有部门范围限制  0无部门范围限制",name="isOpenRange")
     private Integer isOpenRange;
     /**
      * 员工 部门id 集合
      */
+	@ApiModelProperty(value="员工 部门id 集合",name="rangeDeftId")
     private List<String> rangeDeftId;
     /**
      * 是否是超级管理员
      */
+	@ApiModelProperty(value="是否是超级管理员",name="isAdmin")
     private Integer isAdmin;
     /**
      * 管理员No
      */
+	@ApiModelProperty(value="管理员No",name="adminNo")
     private String adminNo;
     /**
      * 审批人
      */
+	@ApiModelProperty(value="审批人",name="approver")
     private List<MeetingroomApprover> approver;
     
 	

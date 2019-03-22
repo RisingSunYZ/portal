@@ -1,0 +1,56 @@
+@import '~antd/lib/style/themes/default.less';
+.treeHeader {
+  height: 35px;
+  border-bottom: 2px solid #0E65AF;
+  .titles {
+    color: #0E65B5;
+    font-weight: 600;
+    font-size: 14px;
+  }
+}
+.colHeader{
+  margin-left:19px;
+  .icon{
+    color: #2775B7;
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .text{
+    color: #333;
+    font-size: 12px;
+    text-align: right;
+    vertical-align: middle;
+    display: inline-block;
+    margin: 0 0 6px 7px;
+  }
+
+}
+
+.colHeader:hover {
+  cursor: pointer;
+  color: #2B6EA7;
+}
+
+.treeMenu{
+  //background: #F0F0F0;
+}
+
+:global{
+  .antd-pro-components-common-header-index-header .antd-pro-components-common-header-index-main > a {
+    position:relative;
+    left: -327px;
+  }
+  .antd-pro-layouts-basic-layout-contentBox {
+    margin: 0;
+  }
+  .antd-pro-layouts-basic-layout-contentBox >div {
+    width: 1900px;
+  }
+  .ant-layout-header,.ant-layout-sider{
+    background:#fff;
+  }
+  .antd-pro-pages-workplace-components-tree-menu-index-treeMenuBox,
+  .antd-pro-pages-workplace-components-tree-menu-index-treeMenu{
+    height: 780px !important;
+  }
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>亚厦股份</title>
+  <link rel="icon" href="/favicon.png" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="/assets/js/libs/layer/skin/layer.css" />
+  <link rel="stylesheet" type="text/css" href="/assets/js/libs/viewer/viewer.css" />
+  <link rel="stylesheet" type="text/css" href="/assets/css/easyui.css" />
+
+  <script src="/assets/js/libs/jquery-1.8.3.min.js" ></script>
+  <script src="/assets/js/libs/jquery.easyui.min.js" ></script>
+  <script src="/assets/js/libs/layer/layer.js" ></script>
+  <script src="/assets/js/libs/viewer/viewer.js" ></script>
+  <script src="/assets/js/libs/idangerous.swiper.min.js" ></script>
+
+<script>
+    // 验证浏览器版本
+    function validBrowser(){
+        var flag = true;
+        var ua = navigator.userAgent.toLowerCase();
+        var isIE = ua.indexOf("msie")>-1;
+        if(isIE){
+          flag = false;
+        }
+        if(!flag){
+          $("#root").removeAttr("id");
+          var contentUrl = '/nonsupportBrowser.jhtml';
+          //示范一个公告层
+          layer.open({
+            type: 2
+            ,title: false //不显示标题栏
+            ,closeBtn: false
+            ,area: ['600px', '300px']
+            ,shade: 0.8
+            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+            ,resize: false
+            ,btnAlign: 'c'
+            ,moveType: 1 //拖拽模式，0或者1
+            ,content: contentUrl
+            ,success: function(layero){
+
+            }
+          });
+        }
+        return flag;
+    }
+    $(function(){
+      validBrowser();
+    });
+  </script>
+</head>
+<body>
+  <noscript>Sorry, we need js to run correctly!</noscript>
+  <div id="portalMainContent"></div>
+</body>
+</html>

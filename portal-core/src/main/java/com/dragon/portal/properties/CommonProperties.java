@@ -181,6 +181,14 @@ public class CommonProperties {
         return developerNo;
     }
 
+    public String getFinanceEmailFromEmail() { return financeEmailFromEmail; }
+
+    public String getFinanceEmailSn() { return financeEmailSn; }
+
+    public String getFinanceEmailSubject() { return financeEmailSubject; }
+
+    public String getFinanceEmailType() { return financeEmailType; }
+
     public String getIdmLogoutUrl() {
         return idmLogoutUrl;
     }
@@ -197,13 +205,6 @@ public class CommonProperties {
         this.idmUrl = idmUrl;
     }
 
-    public String getFinanceEmailFromEmail() { return financeEmailFromEmail; }
-
-    public String getFinanceEmailSn() { return financeEmailSn; }
-
-    public String getFinanceEmailSubject() { return financeEmailSubject; }
-
-    public String getFinanceEmailType() { return financeEmailType; }
 
     public String getLoginSwitch() {
         return loginSwitch;
