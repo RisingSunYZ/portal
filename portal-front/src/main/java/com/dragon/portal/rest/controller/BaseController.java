@@ -42,6 +42,10 @@ public class BaseController {
     @Autowired
     private CommonProperties commonProperties;
 
+    //部分继承Controller需要使用，现添加至此
+    public final int ERROR = 0;
+    public final int SUCCESS = 1;
+    public final int WEIGTH_ERROR = 2;
 
     /**
      * 获取当前登录信息
