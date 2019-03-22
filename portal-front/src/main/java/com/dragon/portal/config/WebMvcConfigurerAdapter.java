@@ -48,9 +48,9 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
                         "/flow/form/**",
                         "/favicon.ico",
                         "/rest/index/**",
-                        "/rest/user/currentUser",
                         "/rest/portal/news/ajaxListVo",
                         "/rest/portal/user/userLogin/login",
+                        "/rest/portal/file-operation/*",
 
                         "/swagger-ui.html",
                         "/configuration/ui",

@@ -7,6 +7,7 @@ import com.mhome.se.api.ISendSmsApi;
 import com.ys.mis.api.IMisApi;
 import com.ys.mqpms.api.IMqPmsApi;
 import com.ys.pms.api.IPmsApi;
+import com.ys.ucenter.api.IAreaApi;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
 import org.apache.dubbo.config.annotation.Reference;
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ReferenceDubboApiConfig {
 
-    @Reference(version = "1.0",check = false)
+    @Reference(version = "1.0",check = false,timeout = 10000)
     private IFlowApi flowApi;
 
     @Reference(version = "1.0",check = false)
@@ -42,6 +43,8 @@ public class ReferenceDubboApiConfig {
 
     @Reference(version = "1.0",check = false)
     private IOrgApi orgApi;
+    @Reference(version = "1.0",check = false)
+    private IAreaApi areaApi;
 
     @Reference(version = "1.0",check = false)
     private IPrivilegeApi privilegeApi;
@@ -91,6 +94,11 @@ public class ReferenceDubboApiConfig {
     @Bean
     public ISendSmsApi sendSmsApi(){
         return sendSmsApi;
+    }
+
+    @Bean
+    public IAreaApi getAreaApi() {
+        return areaApi;
     }
 
 }
