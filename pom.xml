@@ -13,11 +13,12 @@
     <artifactId>portal</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>portal-front-ui</module>
         <module>portal-api</module>
         <module>portal-core</module>
         <module>portal-manager</module>
         <module>portal-server</module>
-        <module>portal-front</module>
+        <module>portal-front-rest</module>
     </modules>
     <build>
         <plugins>

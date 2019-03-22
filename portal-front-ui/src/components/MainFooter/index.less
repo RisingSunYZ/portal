@@ -1,0 +1,76 @@
+@import '~antd/lib/style/themes/default.less';
+
+.mainFooter {
+  font: 12px/1.5 "\5FAE\8F6F\96C5\9ED1","Microsoft Yahei",arial,"Hiragino Sans GB",tahoma,"\5B8B\4F53";
+  max-width: 100%;
+  min-width: 1200px;
+  height: 100px;
+  background: #424242;
+  clear: both;
+  text-align: center;
+  font-size: 14px;
+  color: #b6b6b6;
+  .footerIntro{
+    width:1200px;
+    margin:auto;
+    padding-top: 24px;
+    .footerLeft{
+      display: inline-block;
+      float: left;
+      .footerKind{
+        display: block;
+        text-align: left;
+      }
+      .footerComp{
+        display: inline-block;
+        overflow: hidden;
+        margin-top: 20px;
+        margin-left: -10px;
+        padding: 0;
+        list-style: none;
+        li{
+          float: left;
+          border-right: 2px solid #b6b6b6;
+          margin-right: -2px;
+          line-height: 14px;
+          a{
+            color: #b6b6b6;
+            padding: 0 10px;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+    .footerRight{
+      float: right;
+      font-size: 12px;
+      p{
+        width:210px;
+        height:20px;
+        margin-bottom: 16px;
+      }
+    }
+  }
+
+  .links {
+    margin-bottom: 8px;
+
+    a {
+      color: @text-color-secondary;
+      transition: all 0.3s;
+
+      &:not(:last-child) {
+        margin-right: 40px;
+      }
+
+      &:hover {
+        color: @text-color;
+      }
+    }
+  }
+
+  .copyright {
+    color: @text-color-secondary;
+    font-size: @font-size-base;
+  }
+}
