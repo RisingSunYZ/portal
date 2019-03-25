@@ -330,18 +330,21 @@ public class ProcessListController extends BaseController {
         }
         return returnVo;
     }
-    @ApiOperation("表单模板列表")
+    @ApiOperation("删除草稿")
     @RequestMapping(value = "/delDraft",method = RequestMethod.POST)
-    public ReturnVo<Map<String, Object>> delDraft( @ApiParam(value = "流程参数对象") String businessKey, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnVo<Map<String, Object>> delDraft( @RequestBody @ApiParam(value = "流程参数对象") Map<String,String> map, HttpServletRequest request, HttpServletResponse response) {
         ReturnVo<Map<String, Object>> returnVo = new ReturnVo<Map<String, Object>>(FlowConstant.ERROR, "删除失败");
         try {
-            ReturnVo<String> vo=flowApi.updateFormDraftStatus(businessKey, FormDraftStatusEnum.SC.getStatus());
-            if(FlowConstant.SUCCESS.equals(vo.getCode())){
-                Query query=new Query();
-                Map<String, Object> maps = getMyDraft(query,null,null, new FormDraft(), request, response);
-                returnVo = new ReturnVo<Map<String, Object>>(FlowConstant.SUCCESS, "删除成功");
-                returnVo.setData(maps);
+            if(map.containsKey("businessKey")){
+                ReturnVo<String> vo=flowApi.updateFormDraftStatus(map.get("businessKey"), FormDraftStatusEnum.SC.getStatus());
+                if(FlowConstant.SUCCESS.equals(vo.getCode())){
+                    Query query=new Query();
+                    Map<String, Object> maps = getMyDraft(query,null,null, new FormDraft(), request, response);
+                    returnVo = new ReturnVo<Map<String, Object>>(FlowConstant.SUCCESS, "删除成功");
+                    returnVo.setData(maps);
+                }
             }
+
         } catch (Exception e) {
             logger.error("ApplyController-delDraft:"+e);
             e.printStackTrace();
@@ -727,8 +730,8 @@ public class ProcessListController extends BaseController {
      * @param sessionId
      * @return
      */
-    @ApiIgnore
-    @RequestMapping("/export2Excel")
+    @GetMapping("/export2Excel")
+    @ApiOperation("根据条件导出表单查询结果")
     public String export2Excel(QueryTaskVo param, String formName, HttpServletResponse response, HttpServletRequest request, String sessionId){
         SimpleReturnVo returnVo = new SimpleReturnVo(FlowConstant.ERROR, "导出失败");
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
