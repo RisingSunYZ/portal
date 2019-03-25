@@ -1,9 +1,10 @@
 //YS首页——财务服务
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Tabs} from 'antd';
+import { Row, Col, Card, Tabs, Icon} from 'antd';
 import NewsBanner from '@/components/NewsBanner';
 import NewsNotice from '@/components/NewsNotice';
+import FileList from '@/components/FileList'
 import styles from './FncService.less';
 
 @connect(({ fncService, loading }) => ({
@@ -17,17 +18,25 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount() {
-    this.requestData();
+    this.downloadFile();
   }
 
-  requestData = () => {
+  downloadFile = (activeKey) => {
+    this.props.dispatch({
+      type: 'fncService/fetchMaterialFiles',
+      payload: {
+        typeId: activeKey || '8a8a8c3a5ec10cf2015f04049ce9033d',
+        page: 1,
+        rows: 10,
+      },
+    });
+  };
 
+  tabsChange = (activeKey) => {
+    this.downloadFile(activeKey);
   };
 
   render() {
-
-   const {fncService: { }} = this.props;
-
     const newsBannerStyle = {
       imgHeight: 224,
       iconTop: 90,
@@ -35,8 +44,12 @@ export default class TableList extends PureComponent {
       iconRightCurrent: 375,
     };
 
+    const {fncService: {materialFiles}} = this.props;
+
+    const files = materialFiles.data ? materialFiles.data : [];
+
     return (
-     <div>
+      <div>
         <Card bordered={false} bodyStyle={{padding: 0}} >
           <Row style={{height: 224}}>
             <Col span={9}>
@@ -73,18 +86,40 @@ export default class TableList extends PureComponent {
               </Tabs>
             </Col>
           </Row>
-          <Row>
-            <Tabs defaultActiveKey="e" >
-                <Tabs.TabPane tab="资料下载" key="f"  >
-                  Content of Tab Pane 1
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="其他" key="g" style={{marginLeft:200}}>
-                  Content of Tab Pane 1
-                </Tabs.TabPane>
+          <Row style={{paddingTop: 20}}>
+            <Tabs>
+              <Tabs.TabPane tab="资料下载" key="download" >
+                <Tabs onChange={this.tabsChange} tabBarExtraContent={<a> 更多> </a>}>
+                  <Tabs.TabPane tab="管理制度" key="8a8a8c3a5ec10cf2015f04049ce9033d" >
+                    <FileList files={files}/>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab="项目核算" key="8a8a8c3a5ec10cf2015ec2907a59000e" >
+                    <FileList files={files}/>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab="费用报销" key="8a8a8c3a5ec10cf2015ec2901e94000d" >
+                    <FileList files={files}/>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab="财务报告" key="8a8a8c3a5f04d252015f4d14027f0048" >
+                    <FileList files={files}/>
+                  </Tabs.TabPane>
+                </Tabs>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="其他" key="other" >
+                <Tabs >
+                  <Tabs.TabPane tab="联系我们" key="othera">
+                    <Icon type="calendar" theme="filled" /> <span>  部门：幕墙财务部</span>
+                    <Icon type="calendar" theme="filled" style={{marginLeft: 40}}/> <span>  联系人：谢静文</span>
+                    <Icon type="phone" theme="filled" style={{marginLeft: 40}}/> <span>  电话：0571-86413630</span>
+                    <Icon type="phone" theme="filled" style={{marginLeft: 40}}/> <span>  邮箱：xiejingwen@chinayasha.com</span>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab="意见与建议" key="otherb">
+                  </Tabs.TabPane>
+                </Tabs>
+              </Tabs.TabPane>
             </Tabs>
           </Row>
         </Card>
-     </div>
+      </div>
     );
   }
 }

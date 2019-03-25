@@ -1,20 +1,20 @@
 //YS首页——财务服务model
-import { getFncNotice} from '@/services/fncService';
+import { getMaterialFiles } from '@/services/fncService';
 import { message } from 'antd';
 
 export default {
 
   state: {
-    fncNotice:{},
+    materialFiles:{},
   },
 
   namespace: 'fncService',
 
   effects: {
-    *fetchFncNotice({ payload }, { call, put }) {
-      const response = yield call(getFncNotice, payload);
+    *fetchMaterialFiles({ payload }, { call, put }) {
+      const response = yield call(getMaterialFiles, payload);
       yield put({
-        type: 'saveFncNotice',
+        type: 'saveMaterialFiles',
         payload: response,
       });
     },
@@ -22,12 +22,17 @@ export default {
   },
 
   reducers: {
-    saveFncNotice(state, action) {
+    saveMaterialFiles(state, action) {
+      let data = action.payload.data.data;
+      for (let item of data) {
+        item.fileName = item.name;
+        item.fileUrl = item.filePath;
+        item.fileSize = item.size;
+      }
       return {
         ...state,
-        fncNotice: action.payload.data,
+        materialFiles: action.payload.data,
       };
     },
-
   },
 };

@@ -33,7 +33,7 @@ export async function removeRule(params) {
  * @param params
  * @returns {Promise<Object>}
  */
-export async function getFncNotice(params) {
-  return request(`/rest/portal/news/ajaxListVo?${stringify(params)}`);
+export async function getMaterialFiles(params) {
+  return request(`/rest/portal/fnc/ajaxListMaterialFile?${stringify(params)}`);
 }
 
