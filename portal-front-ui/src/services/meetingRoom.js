@@ -55,7 +55,7 @@ export async function sendInviteData(params) {
  * @returns {Promise<Object>}
  */
 export async function saveDraftData(params) {
-  // debugger;
+  debugger;
   return request('/rest/portal/rscmgmt/meeting/save', {
     method: 'POST',
     body: params,
@@ -99,5 +99,16 @@ export async function getMyInviteData(){
  * @returns {Promise<Object>}
  */
 export async function getInputData(params){
-  return request(`/rest/portal/rscmgmt/meeting/getMeetingById/${stringify(params.id)}`);
+  // debugger
+  return request(`/rest/portal/rscmgmt/meeting/getMeetingById/${params.id}`);
 }
+
+/**
+ *
+ * @returns {Promise<Object>}
+ * @constructor
+ */
+export async function DownloadPerList(){
+  // return request(`/rest/portal/rscmgmt/meeting/ajaxMyList`);
+}
+
