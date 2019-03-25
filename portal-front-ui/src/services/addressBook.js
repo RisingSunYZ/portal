@@ -9,17 +9,6 @@ export async function queryTopConcactData() {
   return request(`/rest/addrbook/addressBook/getTopContactsData`);
 }
 
-
-/**
- * 删除草稿
- * @param businessKey
- */
-export async function delDraft(params) {
-  return request(`/rest/process/list/delDraft.jhtml?${stringify(params)}`);
-}
-
-
-
 /**
  * 获取企业通讯录表单模板目录
  */

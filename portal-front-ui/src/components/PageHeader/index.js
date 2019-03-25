@@ -6,6 +6,9 @@ import BreadcrumbView from './breadcrumb';
 
 const { TabPane } = Tabs;
 export default class PageHeader extends PureComponent {
+  state = {
+    top: 50,
+  };
   onChange = key => {
     const { onTabChange } = this.props;
     if (onTabChange) {
@@ -79,6 +82,6 @@ export default class PageHeader extends PureComponent {
         </div>
       </div>
     )
-    return isAffix ? <Affix className={styles.affixBox}>{boxContent}</Affix> : boxContent;;
+    return isAffix ? <Affix offsetTop={this.state.top} className={styles.affixBox}>{boxContent}</Affix> : boxContent;
   }
 }
