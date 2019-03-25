@@ -34,10 +34,7 @@ import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.common.Area;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
@@ -333,8 +330,24 @@ public class ProcessListController extends BaseController {
         }
         return returnVo;
     }
-
-
+    @ApiOperation("表单模板列表")
+    @RequestMapping(value = "/delDraft",method = RequestMethod.POST)
+    public ReturnVo<Map<String, Object>> delDraft( @ApiParam(value = "流程参数对象") String businessKey, HttpServletRequest request, HttpServletResponse response) {
+        ReturnVo<Map<String, Object>> returnVo = new ReturnVo<Map<String, Object>>(FlowConstant.ERROR, "删除失败");
+        try {
+            ReturnVo<String> vo=flowApi.updateFormDraftStatus(businessKey, FormDraftStatusEnum.SC.getStatus());
+            if(FlowConstant.SUCCESS.equals(vo.getCode())){
+                Query query=new Query();
+                Map<String, Object> maps = getMyDraft(query,null,null, new FormDraft(), request, response);
+                returnVo = new ReturnVo<Map<String, Object>>(FlowConstant.SUCCESS, "删除成功");
+                returnVo.setData(maps);
+            }
+        } catch (Exception e) {
+            logger.error("ApplyController-delDraft:"+e);
+            e.printStackTrace();
+        }
+        return returnVo;
+    }
 
     /*
     *
@@ -342,42 +355,6 @@ public class ProcessListController extends BaseController {
      * @Description //TODO 表单模板目录
      * @Date 13:05 2019/3/13
      * @Param [model, wfCategoryVo, request, response]
-     * @return java.lang.String
-     **/
-    @GetMapping("/ajaxListWfCategory")
-    @ApiOperation("获取表单模板目录")
-    public ReturnVo ajaxListWfCategory(@ApiIgnore FlowCategory wfCategoryVo) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败!");
-        List<WfCategoryTree> wfCategoryTrees=new ArrayList<>();
-        try {
-            ReturnVo<List<FlowCategory>> vo=flowApi.getWfCategoryVoAll(wfCategoryVo);
-            if(null != vo && FlowConstant.SUCCESS.equals(vo.getCode()) && CollectionUtils.isNotEmpty(vo.getData())){
-                List<FlowCategory> list=vo.getData();
-                WfCategoryTree wfCategoryTree = new WfCategoryTree("myDraft","我的草稿","","my_draft");
-                wfCategoryTrees.add(wfCategoryTree);
-                for(FlowCategory vo2 : list){
-                    if(StringUtils.isBlank(vo2.getPid())){
-                        WfCategoryTree wfCategoryTree2 = new WfCategoryTree(vo2.getId(),vo2.getName(),vo2.getPid(),vo2.getCode());
-                        getChildren(vo2.getId(),wfCategoryTree2);
-                        wfCategoryTrees.add(wfCategoryTree2);
-                    }
-                }
-                returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功!",wfCategoryTrees);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("ProcessListController-ajaxListWfCategory-查询表单模板目录失败",e);
-        }
-        return returnVo;
-    }
-
-
-    /*
-    *
-     * @Author yangzhao
-     * @Description //TODO 表单模板列表
-     * @Date 13:23 2019/3/13
-     * @Param [model, modelVo, name, rows, query, page, request, response]
      * @return java.lang.String
      **/
     @ApiOperation("表单模板列表")
@@ -408,6 +385,42 @@ public class ProcessListController extends BaseController {
 
         return JsonUtils.toJson(pm.getRows());
     }
+
+    @GetMapping("/ajaxListWfCategory")
+    @ApiOperation("获取表单模板目录")
+    public ReturnVo ajaxListWfCategory(@ApiIgnore FlowCategory wfCategoryVo) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败!");
+        List<WfCategoryTree> wfCategoryTrees=new ArrayList<>();
+        try {
+            ReturnVo<List<FlowCategory>> vo=flowApi.getWfCategoryVoAll(wfCategoryVo);
+            if(null != vo && FlowConstant.SUCCESS.equals(vo.getCode()) && CollectionUtils.isNotEmpty(vo.getData())){
+                List<FlowCategory> list=vo.getData();
+                WfCategoryTree wfCategoryTree = new WfCategoryTree("myDraft","我的草稿","","my_draft");
+                wfCategoryTrees.add(wfCategoryTree);
+                for(FlowCategory vo2 : list){
+                    if(StringUtils.isBlank(vo2.getPid())){
+                        WfCategoryTree wfCategoryTree2 = new WfCategoryTree(vo2.getId(),vo2.getName(),vo2.getPid(),vo2.getCode());
+                        getChildren(vo2.getId(),wfCategoryTree2);
+                        wfCategoryTrees.add(wfCategoryTree2);
+                    }
+                }
+                returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功!",wfCategoryTrees);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("ProcessListController-ajaxListWfCategory-查询表单模板目录失败",e);
+        }
+        return returnVo;
+    }
+
+    /*
+    *
+     * @Author yangzhao
+     * @Description //TODO 表单模板列表
+     * @Date 13:23 2019/3/13
+     * @Param [model, modelVo, name, rows, query, page, request, response]
+     * @return java.lang.String
+     **/
 
     /*
     *
