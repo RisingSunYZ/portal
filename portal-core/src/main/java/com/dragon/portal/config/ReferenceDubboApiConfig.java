@@ -102,10 +102,10 @@ public class ReferenceDubboApiConfig {
     }
 
     @Bean
-    public ISendEmailApi sendEmailApi() {return sendEmailApi;}
-    @Bean
     public IAreaApi getAreaApi() {
         return areaApi;
     }
 
+    @Bean
+    public ISendEmailApi sendEmailApi() {return sendEmailApi;}
 }
