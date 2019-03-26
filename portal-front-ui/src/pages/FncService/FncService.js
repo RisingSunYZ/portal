@@ -51,9 +51,6 @@ export default class TableList extends PureComponent {
   };
 
   handleOk = (e) => {
-    this.setState({
-      visible: false,
-    });
     const val = $('#input').val();
     const typeId = this.state.typeId;
     if (null == typeId || "" === typeId) {
@@ -70,6 +67,9 @@ export default class TableList extends PureComponent {
         typeId: typeId,
         content: val
       }
+    });
+    this.setState({
+      visible: false,
     });
   };
 
@@ -104,7 +104,7 @@ export default class TableList extends PureComponent {
     const files = materialFiles.data ? materialFiles.data : [];
 
     return (
-      <div>
+      <Fragment>
         <Card bordered={false} bodyStyle={{padding: 0}} >
           <Row style={{height: 224}}>
             <Col span={9}>
@@ -183,37 +183,29 @@ export default class TableList extends PureComponent {
               </Tabs.TabPane>
             </Tabs>
           </Row>
-          <Modal
-            title="意见与建议"
-            visible={this.state.visible}
-            onOk={this.handleOk}
-            onCancel={this.handleCancel}
-            destroyOnClose={true}
-          >
-           <Row>
-             <Col offset={2} span={4}>
-               意见分类：
-             </Col>
-             <Col span={10}>
-               <Select style={{ width: 300, marginTop:-10 }} defaultValue="请选择" onSelect={this.onSelect}>
-                 {selectOpt}
-               </Select>
-             </Col>
-           </Row>
-           <Row style={{marginTop: 20}}>
-             <Col offset={2} span={4}>
-               问题说明：
-             </Col>
-             <Col span={18}>
-               <Input.TextArea style={{width: 300, height:150}}  id="input"
-                                 placeholder="请给出您宝贵的意见，我们将用心处理对待:"
-               >
-               </Input.TextArea>
-             </Col>
-           </Row>
+          <Modal title="意见与建议" visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} destroyOnClose={true}>
+              <Row>
+               <Col offset={2} span={4}>
+                 意见分类：
+               </Col>
+               <Col span={10}>
+                 <Select style={{ width: 300, marginTop:-10 }} defaultValue="请选择" onSelect={this.onSelect}>
+                   {selectOpt}
+                 </Select>
+               </Col>
+             </Row>
+             <Row style={{marginTop: 20}}>
+                <Col offset={2} span={4}>
+                   问题说明：
+                </Col>
+                <Col span={18}>
+                   <Input.TextArea style={{width: 300, height:150}}  id="input" placeholder="请给出您宝贵的意见，我们将用心处理对待:">
+                   </Input.TextArea>
+                 </Col>
+             </Row>
           </Modal>
         </Card>
-      </div>
+      </Fragment>
     );
   }
 }
