@@ -360,7 +360,16 @@ export default class MeetingRoom extends PureComponent {
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>会议纪要：</Col>
-                    <Col span={20}>{item.summaryContent}</Col>
+                    <Col span={20}>
+                      <span>{item.summaryContent}我发过呢个呢个 </span>
+                      <div style={{margin: '10px 0'}}>
+                        <a href={"/portal-ui/workplace/meeting-room/:tab/meeting-summary/"+item.id}>
+                          <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
+                          <span>编辑</span>
+                        </a>
+                      </div>
+                      <div style={{color:'#2596FF',fontSize:12}}> 劳务招标平台工作计划表V1.0.xlsx;{item.meetingSummaryFiles}</div>
+                    </Col>
                   </Row>
                   <Row className={styles.BotCount}>
                     <Col>回执意见<span>(共{item.count}条)</span></Col>

@@ -274,7 +274,7 @@ debugger;
     // console.log(2222222);
     // console.log(meeting);
     console.log(mandatoryPersonList)
-    // const dataArr = [name:"",no:""]
+
 
     return (
       <PageHeaderWrapper>
@@ -431,7 +431,7 @@ debugger;
               <Col span={6}>
                 <Form.Item>
                   {form.getFieldDecorator('files', {
-                    initialValue:files
+                    // initialValue:files
                   })(
                     <Upload {...uploadProps}>
                       <Button>

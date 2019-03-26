@@ -112,3 +112,11 @@ export async function DownloadPerList(){
   // return request(`/rest/portal/rscmgmt/meeting/ajaxMyList`);
 }
 
+
+export async function getUploadSummary(params) {
+  // debugger;
+  return request('/rest/portal/rscmgmt/meeting/saveMeetingSummary', {
+    method: 'POST',
+    body: params,
+  });
+}

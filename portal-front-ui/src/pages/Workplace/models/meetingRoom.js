@@ -9,7 +9,8 @@ import {
   getMyInviteData,
   getInputData,
   getRecordPer,
-  DownloadPerList
+  DownloadPerList,
+  getUploadSummary
 } from '../../../services/meetingRoom';
 import { message } from 'antd';
 
@@ -282,7 +283,25 @@ export default {
       //   payload:payload
       // });
       if(callback) callback(response);
+    },
+
+    /**
+     * 点击编辑 保存 会议纪要 和附件
+     * @param payload
+     * @param callback
+     * @param call
+     * @param put
+     * @returns {IterableIterator<*>}
+     */
+    *getUploadSummary({payload,callback},{call,put}){
+      const response=yield(getUploadSummary, payload);
+      yield put ({
+        type:'saveUploadSum',
+        payload: response
+      });
+      if(callback) callback(response);
     }
+
   },
 
   reducers: {
