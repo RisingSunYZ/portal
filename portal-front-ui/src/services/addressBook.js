@@ -29,7 +29,21 @@ export async function getModelList(params) {
  * @returns {Promise<Object>}
  */
 export async function addContactPerData(params) {
+
   return request('/rest/addrbook/addressBook/addTopContacts', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+/**
+ * 点击 删除 常用联系人
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function delContactPerData(params) {
+
+  return request('/rest/addrbook/addressBook/delTopContacts', {
     method: 'POST',
     body: params,
   });

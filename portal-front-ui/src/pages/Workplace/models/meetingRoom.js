@@ -269,7 +269,7 @@ export default {
 
 
     /**
-     * 下载 参会人员列表
+     * 查看下 下载 参会人员列表
      * @param payload
      * @param callback
      * @param call
