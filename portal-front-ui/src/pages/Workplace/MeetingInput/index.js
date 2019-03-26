@@ -82,7 +82,9 @@ export default class MeetingInput extends PureComponent {
   selectCallback = datas => {
     const { setFieldsValue } = this.props.form;
     this.setState({ selectedPersons: datas });
-    setFieldsValue({ creatorName: datas[0].name });
+    if(datas.length>0){
+      setFieldsValue({ creatorName: datas[0].name });
+    }
   };
 
 

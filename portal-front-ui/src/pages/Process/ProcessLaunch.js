@@ -420,6 +420,7 @@ export default class ProcessLaunch extends React.Component {
 
     return (
       <PageHeaderWrapper
+        isAffix
         logo={<img alt="流程中心" src={formLogo} />}
         title={<TitleAction formInfo={formInfo} />}
         action={<Action doFormFn={this.doFormFn.bind(this)} />}

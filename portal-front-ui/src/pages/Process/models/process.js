@@ -250,6 +250,7 @@ export default {
       return {
         ...state,
         todoData: res,
+        data:res,
         disabled:false,
       };
     },
@@ -272,6 +273,7 @@ export default {
       return {
         ...state,
         alreadyDoData: res,
+        data:res,
         disabled:false,
       };
     },
@@ -287,6 +289,7 @@ export default {
       return {
         ...state,
         alreadySendData: res,
+        data:res,
         disabled:false,
       };
     },

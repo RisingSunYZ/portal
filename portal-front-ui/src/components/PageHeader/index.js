@@ -1,20 +1,28 @@
-import React, { PureComponent } from 'react';
-import { Tabs, Skeleton,Affix } from 'antd';
+import React, {PureComponent} from 'react';
+import {Tabs, Skeleton, Affix} from 'antd';
 import classNames from 'classnames';
 import styles from './index.less';
 import BreadcrumbView from './breadcrumb';
 
-const { TabPane } = Tabs;
+const {TabPane} = Tabs;
 export default class PageHeader extends PureComponent {
   state = {
-    top: 50,
+    top: 0,
+    height: "auto",
   };
   onChange = key => {
-    const { onTabChange } = this.props;
+    const {onTabChange} = this.props;
     if (onTabChange) {
       onTabChange(key);
     }
   };
+  changeFixHeight = (affixed) => {
+    if (affixed) {
+      this.setState({height: "138px"})
+    } else {
+      this.setState({height: "auto"})
+    }
+  }
 
   render() {
     const {
@@ -49,8 +57,8 @@ export default class PageHeader extends PureComponent {
             loading={loading}
             title={false}
             active
-            paragraph={{ rows: 3 }}
-            avatar={{ size: 'large', shape: 'circle' }}
+            paragraph={{rows: 3}}
+            avatar={{size: 'large', shape: 'circle'}}
           >
             {hiddenBreadcrumb ? null : <BreadcrumbView {...this.props} />}
             <div className={styles.detail}>
@@ -74,7 +82,7 @@ export default class PageHeader extends PureComponent {
                 tabBarExtraContent={tabBarExtraContent}
               >
                 {tabList.map(item => (
-                  <TabPane tab={item.tab} key={item.key} />
+                  <TabPane tab={item.tab} key={item.key}/>
                 ))}
               </Tabs>
             ) : null}
@@ -82,6 +90,7 @@ export default class PageHeader extends PureComponent {
         </div>
       </div>
     )
-    return isAffix ? <Affix offsetTop={this.state.top} className={styles.affixBox}>{boxContent}</Affix> : boxContent;
+    return isAffix ? <Affix offsetTop={this.state.top} onChange={this.changeFixHeight} className={styles.affixBox}
+                            style={{height: this.state.height}}>{boxContent}</Affix> : boxContent;
   }
 }
