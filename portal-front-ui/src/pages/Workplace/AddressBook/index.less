@@ -8,6 +8,11 @@
     font-size: 14px;
   }
 }
+.colHeader:hover {
+  cursor: pointer;
+  color: #2B6EA7;
+}
+
 .colHeader{
   margin-left:19px;
   .icon{
@@ -23,17 +28,18 @@
     display: inline-block;
     margin: 0 0 6px 7px;
   }
-
 }
 
-.colHeader:hover {
-  cursor: pointer;
-  color: #2B6EA7;
+.setDisable{
+  opacity: 0.4;
+  cursor:not-allowed;
 }
+
 
 .treeMenu{
   //background: #F0F0F0;
 }
+
 
 :global{
   .antd-pro-components-common-header-index-header .antd-pro-components-common-header-index-main > a {
@@ -52,5 +58,19 @@
   .antd-pro-pages-workplace-components-tree-menu-index-treeMenuBox,
   .antd-pro-pages-workplace-components-tree-menu-index-treeMenu{
     height: 780px !important;
+  }
+
+  .ant-table-wrapper{
+    padding-left: 20px;
+  }
+  .ant-table-thead > tr >th >div{
+    font-weight: 600;
+  }
+
+  .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body .ant-table-tbody >tr:nth-child(2n){
+    background:#F5F5F5;
+  }
+  .ant-table-scroll{
+    border:1px solid #E6E6E6;
   }
 }

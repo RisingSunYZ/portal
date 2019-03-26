@@ -6,7 +6,8 @@ import {
   delDraft,
   getModelList,
   getFormDataList,
-  addContactPerData
+  addContactPerData,
+  delContactPerData
 } from '../../../services/addressBook';
 import router from 'umi/router';
 import { message } from 'antd';
@@ -115,10 +116,24 @@ export default {
      */
     *addContactPer({payload},{call, put}){
       const response= yield call(addContactPerData,{payload});
+      if(response.code=='100'){
+        message.success(response.msg)
+      }
       yield put({
-        type:'save',
+        type:'savePer',
         payload:response
       })
+    },
+
+    *delContactPer({payload},{call, put}){
+      const response= yield call(delContactPerData,{payload});
+      if(response.code=='100'){
+        message.success(response.msg)
+      }
+      // yield put({
+      //   type:'savePer',
+      //   payload:response
+      // })
     },
 
     *queryAlreadySend({ payload }, { call, put }) {
@@ -215,7 +230,9 @@ export default {
         systems: action.payload,
       };
     },
-    save(state, action) {
+
+    savePer(state, action) {
+
       return {
         ...state,
         data: action.payload,
