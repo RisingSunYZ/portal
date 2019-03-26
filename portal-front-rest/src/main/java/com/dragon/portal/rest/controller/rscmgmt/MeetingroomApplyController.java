@@ -1,12 +1,14 @@
 package com.dragon.portal.rest.controller.rscmgmt;
 
 import com.dragon.flow.api.IFlowApi;
-import com.dragon.portal.component.IProcessMainComponent;
+import com.dragon.flow.enm.flowable.run.CommentTypeEnum;
+import com.dragon.flow.enm.flowable.run.ProcessStatusEnum;
+import com.dragon.flow.vo.flowable.api.CompleteTaskApiVo;
+import com.dragon.flow.vo.flowable.api.EndApiVo;
 import com.dragon.portal.constant.PortalConstant;
-import com.dragon.portal.model.rscmgmt.Meetingroom;
-import com.dragon.portal.model.rscmgmt.MeetingroomAddr;
-import com.dragon.portal.model.rscmgmt.MeetingroomApply;
-import com.dragon.portal.model.rscmgmt.MeetingroomTools;
+import com.dragon.portal.dao.rscmgmt.IMeetingroomApproverDao;
+import com.dragon.portal.enm.metting.MeetingApplyStatusEnum;
+import com.dragon.portal.model.rscmgmt.*;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.rscmgmt.IMeetingroomAddrService;
 import com.dragon.portal.service.rscmgmt.IMeetingroomApplyService;
@@ -31,7 +33,6 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -67,10 +68,8 @@ public class MeetingroomApplyController extends BaseController {
     private IOrgApi orgApi;
     @Resource
     private IFlowApi flowApi;
-//    @Resource
-//    private IMeetingroomApproverDao IMeetingroomApproverDao;
     @Resource
-    IProcessMainComponent processMainComponent;
+    private IMeetingroomApproverDao meetingroomApproverDao;
 
     /**
      * @Author YangZhao
@@ -195,22 +194,30 @@ public class MeetingroomApplyController extends BaseController {
         }
         return meetingRoomViewPm;
     }
-//
-//    //添加、修改的UI
-//    @RequestMapping("/input")
-//    public String input(ModelMap model, String id, String sessionId) {
-//        try {
-//            if (StringUtils.isNotBlank(id)) {
-//                MeetingroomApply meetingroomApply = this.meetingroomApplyService.getMeetingroomApplyById(id);
-//                model.addAttribute("meetingroomApply", meetingroomApply);
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-input:" + e);
-//            e.printStackTrace();
-//        }
-//        return "/rscmgmt/meetingroom_apply_input";
-//    }
-//
+
+   /**
+    * @Author YangZhao
+    * @Description  通过Id获取会议室申请信息
+    * @Date 16:28 2019/3/22
+    * @Param [model, id, sessionId]
+    * @return java.lang.String
+    **/
+    @GetMapping("/getMeetingroomApplyById")
+    @ApiOperation("通过Id获取会议室申请信息")
+    public ReturnVo input(String id) {
+        ReturnVo vo = new ReturnVo(ReturnCode.FAIL,"通过Id获取会议室申请信息失败");
+        try {
+            if (StringUtils.isNotBlank(id)) {
+                MeetingroomApply meetingroomApply = this.meetingroomApplyService.getMeetingroomApplyById(id);
+                vo = new ReturnVo(ReturnCode.SUCCESS,"通过Id获取会议室申请信息成功",meetingroomApply);
+                return vo;
+            }
+        } catch (Exception e) {
+            logger.error("MeetingroomApplyController-getMeetingroomApplyById-通过Id获取会议室申请信息失败:" + e);
+            e.printStackTrace();
+        }
+        return vo;
+    }
     /**
      * @Author YangZhao
      * @Description 会议室添加修改
@@ -261,19 +268,7 @@ public class MeetingroomApplyController extends BaseController {
         }
         return returnVo;
     }
-//
-//    //我的申请列表
-//    @RequestMapping("/myApplyList")
-//    public String myApplyList(ModelMap model, String sessionId) {
-//        model.addAttribute("sessionId", sessionId);
-//        try {
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return "/rscmgmt/meeting/meetingroom_myapply_list";
-//    }
-//
+
     /**
      * @Author YangZhao
      * @Description //查询我的申请加载数据
@@ -295,91 +290,8 @@ public class MeetingroomApplyController extends BaseController {
         }
         return myApplyPm;
     }
-//
-//    /**
-//     * 取消申请
-//     *
-//     * @param request
-//     * @param applyNo
-//     * @param sessionId
-//     * @return
-//     * @Description:
-//     * @author xietongjian 2017 下午8:29:02
-//     */
-//    @RequestMapping("/cancelApply")
-//    public String cancelApply(ModelMap model, HttpServletRequest request, String applyNo, String sessionId) {
-//
-//
-//        return "/rscmgmt/meeting/meetingroom_cancelapply";
-//    }
-//
-//    //修改状态
-//    @ResponseBody
-//    @RequestMapping("/updateStatus")
-//    public String updateStatus(HttpServletRequest request, HttpServletResponse response, String applyNo, String cancelRemark, Integer status, String sessionId) {
-//        SimpleReturnVo returnVo = new SimpleReturnVo(ERROR, "修改状态失败");
-//        try {
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            if (null != user && StringUtils.isNotBlank(user.getNo())) {
-//                MeetingroomApplyVo meetingroomApplyVo = new MeetingroomApplyVo();
-//                meetingroomApplyVo.setApplyNo(applyNo);
-//                meetingroomApplyVo.setProposerNo(user.getNo());
-//                meetingroomApplyVo.setProposerNo(user.getName());
-//                meetingroomApplyVo.setStatus(MeetingApplyStatusEnum.CANCEL.getCode());
-//                meetingroomApplyVo.setMessage(cancelRemark);
-//                this.meetingroomApplyService.updateMeetingroomApplyStatus(meetingroomApplyVo);
-//                MeetingroomApplyVo meetingRoom = meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
-//                try {
-//                    if (StringUtils.isNotBlank(meetingRoom.getTaskId())) {
-//                        EndApiVo vo = new EndApiVo();
-//                        vo.setProcessInstanceId(meetingRoom.getTaskId());
-//                        vo.setMessage(ProcessStatusEnum.ZZ.getMsg());
-//                        vo.setUserCode(user.getNo());
-//                        flowApi.stopProcess(vo);//取消的时候终止流程
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//                returnVo = new SimpleReturnVo(SUCCESS, "取消申请成功！");
-//            } else {
-//                returnVo = new SimpleReturnVo(ERROR, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-updateStatus:" + e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(returnVo);
-//    }
-//
-//
-//    //删除
-//    @ResponseBody
-//    @RequestMapping("/dels")
-//    public String dels(HttpServletRequest request, HttpServletResponse response, String ids, String sessionId) {
-//        SimpleReturnVo returnVo = new SimpleReturnVo(ERROR, "删除失败");
-//        try {
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            if (null != user && StringUtils.isNotBlank(user.getNo())) {
-//                String userName = user.getNo();
-//                if (StringUtils.isNotBlank(ids)) {
-//                    MeetingroomApply meetingroomApply = new MeetingroomApply();
-//                    meetingroomApply.setUpdator(userName);
-//                    meetingroomApply.setDelFlag(PortalConstant.DEL_FLAG);
-//                    this.meetingroomApplyService.updateMeetingroomApplyByIds(ids, meetingroomApply);//逻辑删除
-//                    //this.meetingroomApplyService.delMeetingroomApplyByIds(ids); //物理删除
-//                }
-//                returnVo = new SimpleReturnVo(SUCCESS, "删除成功");
-//            } else {
-//                returnVo = new SimpleReturnVo(ERROR, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-dels:" + e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(returnVo);
-//    }
-//
+
+
     private List<String> getRangeDeftId(String deptId) {
         if (StringUtils.isNotBlank(deptId)) {
             List<String> rangeDeftId = new ArrayList<String>();
@@ -392,191 +304,95 @@ public class MeetingroomApplyController extends BaseController {
             return null;
         }
     }
-//
-//    /**
-//     * 方法描述：取消流程
-//     * @param request
-//     * @param response
-//     * @param applyNo
-//     * @param sessionId
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping("/cancelProcess")
-//    public String cancelProcess(HttpServletRequest request, HttpServletResponse response, String applyNo, String sessionId) {
-//        SimpleReturnVo returnVo = new SimpleReturnVo(ERROR, "修改状态失败");
-//        try {
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            if (null != user && StringUtils.isNotBlank(user.getNo())) {
-//                MeetingroomApplyVo meetingRoom = meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
-//                EndApiVo vo = new EndApiVo();
-//                vo.setProcessInstanceId(meetingRoom.getTaskId());
-//                vo.setMessage(ProcessStatusEnum.ZZ.getMsg());
-//                vo.setUserCode(user.getNo());
-//                com.dragon.tools.vo.ReturnVo<String> vo2= flowApi.stopProcess(vo);//取消的时候终止流程
-//                if (FlowConstant.SUCCESS.equals(vo2.getCode())) {
-//                    returnVo.setResponseCode(PortalConstant.SUCCESS);
-//                    returnVo.setResponseMsg("流程终止成功");
-//                }
-//            } else {
-//                returnVo = new SimpleReturnVo(ERROR, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-cancelProcess:" + e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(returnVo);
-//    }
-//
-//
-//    /**
-//     * 方法描述：重新发起流程
-//     * @param request
-//     * @param response
-//     * @param applyNo
-//     * @param sessionId
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping("/submitProcess")
-//    public String submitProcess(HttpServletRequest request, HttpServletResponse response, String applyNo, String sessionId) {
-//        SimpleReturnVo returnVo = new SimpleReturnVo(ERROR, "修改状态失败");
-//        try {
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            if (null != user && StringUtils.isNotBlank(user.getNo())) {
-//                MeetingroomApplyVo meetingRoom = meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
-//                meetingRoom.setStatus(MeetingApplyStatusEnum.WAIT_APPROVE.getCode());
-//                meetingroomApplyService.updateMeetingroomApplyStatus(meetingRoom);
-//                CompleteTaskApiVo params = new CompleteTaskApiVo();
-//                params.setType(CommentTypeEnum.CXTJ);
-//                params.setUserCode(user.getNo());
-//                params.setProcessInstanceId(meetingRoom.getTaskId());
-//
-//                MeetingroomApprover meetingroomApproverWhere = new MeetingroomApprover();
-//                meetingroomApproverWhere.setMettingroomId(meetingRoom.getMeetingroomId());
-//                List<MeetingroomApprover> MeetingroomApproverList = IMeetingroomApproverDao.getAll(meetingroomApproverWhere);
-//                Map<String, Object> variables = new HashMap<String, Object>();
-//                List<String> userIds = new ArrayList<String>();
-//                for (MeetingroomApprover temp : MeetingroomApproverList) {
-//                    userIds.add(temp.getApproverNo());
-//                }
-//                variables.put("userIds", userIds);
-//
-//                params.setVariables(variables);
-//                flowApi.completeTask(params);
-//                returnVo = new SimpleReturnVo(SUCCESS, "发起流程成功！");
-//            } else {
-//                returnVo = new SimpleReturnVo(ERROR, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-submitProcess:" + e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(returnVo);
-//    }
-//
-//    /**
-//    * 方法描述：撤回流程
-//    * @param request
-//    * @param response
-//    * @param applyNo
-//    * @param sessionId
-//    * @return
-//    */
-//    @ResponseBody
-//    @RequestMapping("/pullBackProcess")
-//    public String pullBackProcess(HttpServletRequest request, HttpServletResponse response, String applyNo, String sessionId) {
-//        SimpleReturnVo returnVo = new SimpleReturnVo(ERROR, "修改状态失败");
-//        try {
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            if (null != user && StringUtils.isNotBlank(user.getNo())) {
-//                MeetingroomApplyVo meetingRoom = meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
-//                meetingRoom.setStatus(MeetingApplyStatusEnum.REVOKE.getCode());
-//                meetingroomApplyService.updateMeetingroomApplyStatus(meetingRoom);
-//                String taskId = "";
-//                //根据流程实列查询流程实列和流程定义信息
-//                com.dragon.tools.vo.ReturnVo<ActReProcdefExtendVo> rVo = flowApi.getPInfoByPId(meetingRoom.getTaskId());
-//                if (FlowConstant.SUCCESS.equals(rVo.getCode())) {
-//                    if (StringUtils.isBlank(rVo.getData().getTaskId())) {
-//                        returnVo = new SimpleReturnVo(ERROR, "撤销失败,taskId为空");
-//                        return JsonUtils.toJson(returnVo);
-//                    } else {
-//                        ReturnVo<String> revokeVo=processMainComponent.revoke(user.getNo(),rVo.getData().getTaskId(),null);
-//                        returnVo = new SimpleReturnVo(revokeVo.getCode(), revokeVo.getMsg());
-//                    }
-//                } else {
-//                    logger.error("调用 OA 【oaApi.getPInfoByPId()】 接口异常！" + rVo.getMsg());
-//                }
-//            } else {
-//                returnVo = new SimpleReturnVo(ERROR, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-pullBackProcess:" + e);
-//            e.printStackTrace();
-//        }
-//        return JsonUtils.toJson(returnVo);
-//    }
-//
-//    /**
-//     * 方法描述：取消申请(没有发起流程的)
-//     * @param request
-//     * @param response
-//     * @param applyNo
-//     * @param sessionId
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping("/updateMeetingroomStatus")
-//    public String updateMeetingroomStatus(HttpServletRequest request, HttpServletResponse response, String applyNo,String sessionId) {
-//    	SimpleReturnVo returnVo = new SimpleReturnVo(ERROR, "终止失败");
-//    	try {
-//            UserSessionInfo user = this.getUserSessionInfo(request, response);
-//            if (null != user && StringUtils.isNotBlank(user.getNo())) {
-//                MeetingroomApplyVo meetingRoom = meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
-//                MeetingroomApplyVo meetingroomApplyVo = new MeetingroomApplyVo();
-//                meetingroomApplyVo.setApplyNo(applyNo);
-//                meetingroomApplyVo.setProposerNo(user.getNo());
-//                meetingroomApplyVo.setProposerNo(user.getName());
-//                meetingroomApplyVo.setStatus(MeetingApplyStatusEnum.END.getCode());
-//                this.meetingroomApplyService.updateMeetingroomApplyStatus(meetingroomApplyVo);
-//                try {
-//                    if (StringUtils.isNotBlank(meetingRoom.getTaskId())) {
-//                        EndApiVo vo = new EndApiVo();
-//                        vo.setProcessInstanceId(meetingRoom.getTaskId());
-//                        vo.setMessage(ProcessStatusEnum.ZZ.getMsg());
-//                        vo.setUserCode(user.getNo());
-//                        flowApi.stopProcess(vo);//取消的时候终止流程
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//                returnVo = new SimpleReturnVo(SUCCESS, "取消申请成功！");
-//            } else {
-//                returnVo = new SimpleReturnVo(ERROR, "用户信息获取失败，请重新登录");
-//            }
-//        } catch (Exception e) {
-//            logger.error("MeetingroomApplyController-updateMeetingroomStatus:" + e);
-//            e.printStackTrace();
-//        }
-//    	 return JsonUtils.toJson(returnVo);
-//    }
-//
-//    @RequestMapping(value = "/userInfo")
-//    public String userInfo(ModelMap model, HttpServletRequest request, HttpServletResponse response, String userNo){
-//        try {
-//            if(StringUtils.isNotBlank(userNo)){
-//                ReturnVo<PersonnelApiVo> returnVo = personnelApi.getPersonnelApiVoByNo(userNo);
-//                if(UcenterConstant.SUCCESS == returnVo.getCode().intValue()){
-//                    PersonnelApiVo personVo = returnVo.getData();
-//                    model.put("personVo", personVo);
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error("调用MDM查询用户信息接口异常！" + e);
-//        }
-//        return "/common/common-userinfo";
-//    }
 
+
+
+    /**
+     * @Author YangZhao
+     * @Description 重新发起流程
+     * @Date 11:26 2019/3/25
+     * @Param [request, response, applyNo]
+     * @return com.dragon.tools.vo.ReturnVo
+     **/
+    @PostMapping("/submitProcess")
+    @ApiOperation("重新发起流程")
+    public ReturnVo submitProcess(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response, String applyNo) {
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "修改状态失败");
+        try {
+            UserSessionInfo user = this.getUserSessionInfo(request, response);
+            if (null != user && StringUtils.isNotBlank(user.getNo())) {
+                MeetingroomApplyVo meetingRoom = meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
+                meetingRoom.setStatus(MeetingApplyStatusEnum.WAIT_APPROVE.getCode());
+                meetingroomApplyService.updateMeetingroomApplyStatus(meetingRoom);
+                CompleteTaskApiVo params = new CompleteTaskApiVo();
+                params.setType(CommentTypeEnum.CXTJ);
+                params.setUserCode(user.getNo());
+                params.setProcessInstanceId(meetingRoom.getTaskId());
+
+                MeetingroomApprover meetingroomApproverWhere = new MeetingroomApprover();
+                meetingroomApproverWhere.setMettingroomId(meetingRoom.getMeetingroomId());
+                List<MeetingroomApprover> MeetingroomApproverList = meetingroomApproverDao.getAll(meetingroomApproverWhere);
+                Map<String, Object> variables = new HashMap<String, Object>();
+                List<String> userIds = new ArrayList<String>();
+                for (MeetingroomApprover temp : MeetingroomApproverList) {
+                    userIds.add(temp.getApproverNo());
+                }
+                variables.put("userIds", userIds);
+
+                params.setVariables(variables);
+                flowApi.completeTask(params);
+                returnVo = new ReturnVo(ReturnCode.SUCCESS, "发起流程成功！");
+            } else {
+                returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
+            }
+        } catch (Exception e) {
+            logger.error("MeetingroomApplyController-submitProcess-重新发起流程失败:" + e);
+            e.printStackTrace();
+        }
+        return returnVo;
+    }
+
+    /**
+     * @Author YangZhao
+     * @Description 取消申请(没有发起流程的)
+     * @Date 16:34 2019/3/22
+     * @Param [request, response, applyNo]
+     * @return java.lang.String
+     **/
+    @PostMapping("/updateMeetingroomStatus")
+    @ApiOperation("取消申请(没有发起流程的)")
+    public ReturnVo updateMeetingroomStatus(HttpServletRequest request, HttpServletResponse response, String applyNo) {
+    	ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "终止失败");
+    	try {
+            UserSessionInfo user = this.getUserSessionInfo(request, response);
+            if (null != user && StringUtils.isNotBlank(user.getNo())) {
+                MeetingroomApplyVo meetingRoom = meetingroomApplyService.getMeetingroomApplyByApplyNo(applyNo);
+                MeetingroomApplyVo meetingroomApplyVo = new MeetingroomApplyVo();
+                meetingroomApplyVo.setApplyNo(applyNo);
+                meetingroomApplyVo.setProposerNo(user.getNo());
+                meetingroomApplyVo.setProposerNo(user.getName());
+                meetingroomApplyVo.setStatus(MeetingApplyStatusEnum.END.getCode());
+                this.meetingroomApplyService.updateMeetingroomApplyStatus(meetingroomApplyVo);
+                try {
+                    if (StringUtils.isNotBlank(meetingRoom.getTaskId())) {
+                        EndApiVo vo = new EndApiVo();
+                        vo.setProcessInstanceId(meetingRoom.getTaskId());
+                        vo.setMessage(ProcessStatusEnum.ZZ.getMsg());
+                        vo.setUserCode(user.getNo());
+                        flowApi.stopProcess(vo);//取消的时候终止流程
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                returnVo = new ReturnVo(ReturnCode.SUCCESS, "取消申请成功！");
+            } else {
+                returnVo = new ReturnVo(ReturnCode.FAIL, "用户信息获取失败，请重新登录");
+            }
+        } catch (Exception e) {
+            logger.error("MeetingroomApplyController-updateMeetingroomStatus-取消申请失败:" + e);
+            e.printStackTrace();
+        }
+    	 return returnVo;
+    }
 
 }
