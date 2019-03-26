@@ -1,82 +1,19 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Tabs, Icon, Row, Col, Card, Menu, Input, Dropdown, List,Layout, Radio, Tree, Table  } from 'antd';
+import { Tabs, Icon, Row, Col, Card, Menu, Drawer,Button ,Modal, Input, Dropdown, List,Layout, Radio, Tree, Table  } from 'antd';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from './index.less';
 import TreeMenu from '../components/TreeMenu';
 import DeptTree from '../components/DeptTree/DeptTree';
-
+import { message } from 'antd';
 const TreeNode = Tree.TreeNode;
 
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
 const { Header, Sider, Content } = Layout;
 
-// let nos = '';
-
-const columns = [{
-    title: '姓名',
-    dataIndex: 'name',
-    width: 150
- },
-  {
-    title: '工号',
-    dataIndex: 'jobNum',
-    width: 150
- },
-  {
-    title: '企业邮箱',
-    dataIndex: 'email',
-  },
-  {
-    title: '单位',
-    dataIndex: 'address',
-  },
-  {
-    title: '部门',
-    dataIndex: 'department',
-  },
-  {
-    title: '岗位',
-    dataIndex: 'post',
-  },
-  {
-    title: '短号',
-    dataIndex: 'shortNum',
- }];
 
 
-const data = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
-
-
-
-
-function getFormType(url) {
-  var formType = '0';
-  if (url) {
-    var reg = new RegExp('(^|)formType=([^&]*)(|$)');
-    var array = url.match(reg);
-    if (array) {
-      formType = array[2];
-    }
-  }
-  return formType;
-}
-function nullToZero(param) {
-  if (!param) {
-    return '0';
-  } else {
-    return param;
-  }
-}
 @connect(({ addressBook, loading }) => ({
   addressBook,
   loading: loading.models.addressBook,
@@ -86,10 +23,28 @@ export default class AddressBook extends PureComponent {
   searchFormObj = {};
   state = {
     selectedKey: '',
-    selectTableKeys: [],
-
+    selectedRowKeys: [],
+    visibleDrawer: false,
+    visible:false ,//弹窗初始化状态
+    ModalTextAdd:''
   };
 
+  componentDidMount(){
+
+  }
+
+  //展示隐藏抽屉
+  showDrawer = () => {
+    this.setState({
+      visibleDrawer: true,
+    });
+  };
+
+  onClose = () => {
+    this.setState({
+      visibleDrawer: false,
+    });
+  };
 
   selectNode(selectedKeys, e) {
     if (e.selected) {
@@ -104,14 +59,8 @@ export default class AddressBook extends PureComponent {
     }
   }
 
-  getSelectedRowKeys = () => {
-    const { selectedUser } = this.state;
-    const userNos = [];
-    selectedUser.map((user)=>{
-      userNos.push(user.no);
-    });
-    return userNos;
-  };
+
+
   doSearch(modelName) {
     this.searchFormObj.name = modelName;
     //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
@@ -133,18 +82,87 @@ export default class AddressBook extends PureComponent {
     });
   }
 
+
   // 添加到常用联系人
-  addContactPer = ()=>{
+  addContactPer = ()=> {
     const { dispatch }=this.props;
-    // console.log(nos);
-    debugger;
-    dispatch({
-      type:'addressBook/addContactPer',
-      payload:this.state.selectTableKeys
-    })
+    const { selectedRowKeys  }=this.state;
+    const hasSelected = selectedRowKeys.length >0;
+    console.log(hasSelected);
+    // debugger;
+    if(!hasSelected){
+      //点击显示 弹出框
+      this.setState({
+        visible: true,
+        ModalTextAdd:'请勾选要添加的项！'
+      });
+      //间隔一段时间，让弹出框消失
+      setTimeout(() => {
+        this.setState({
+          visible: false,
+        });
+      }, 500);
+      return;
 
-
+    }else{
+      dispatch({
+        type:'addressBook/addContactPer',
+        payload:selectedRowKeys
+      })
+    }
   };
+
+  //移除常用联系人
+  delContactPer = ()=> {
+    const { dispatch }=this.props;
+    const { selectedRowKeys  }=this.state;
+    const hasSelected = selectedRowKeys.length >0;
+    console.log(hasSelected);
+    // debugger;
+    if(!hasSelected){
+      // message.error('请选择！')
+      //点击显示 弹出框
+      this.setState({
+        visible: true,
+        ModalTextAdd:'请先勾选要移除的项！'
+      });
+      //间隔一段时间，让弹出框消失
+      setTimeout(() => {
+        this.setState({
+          visible: false,
+        });
+      }, 500);
+      return;
+
+    }else{
+      dispatch({
+        type:'addressBook/delContactPer',
+        payload: selectedRowKeys
+      })
+    }
+  };
+
+  //发送邮件
+  sendEmail= ()=>{
+    const { selectedRowKeys  }=this.state;
+    const hasSelected = selectedRowKeys.length >0;
+    // console.log(hasSelected);
+    if(!hasSelected){
+      //点击显示 弹出框
+      this.setState({
+        visible: true,
+        ModalTextAdd:'请先勾选邮件发送对象！'
+      });
+      //间隔一段时间，让弹出框消失
+      setTimeout(() => {
+        this.setState({
+          visible: false,
+        });
+      }, 500);
+      return;
+    }
+  };
+
 
   handleTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -174,40 +192,63 @@ export default class AddressBook extends PureComponent {
 
   };
 
+
+  onSelectChange=(selectedRowKeys, selectedRows) => {
+      let nos = '';
+      for(let i=0;i<selectedRowKeys.length; i++){
+      nos += selectedRowKeys[i]+",";
+    }
+    if(nos.length>0) nos=nos.substr(0,nos.length-1);
+
+    this.setState({selectedRowKeys:nos})
+    console.log(nos)
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  }
+
   render() {
     const {
       addressBook: { list, data ,pagination},
       loading,
     } = this.props;
-    //  console.log(list)
-    // console.log(5555555)
+    const { selectedRowKeys,visible ,ModalTextAdd }=this.state;
 
-    // const rowSelection = {
-    //   type: multiple ? 'checkbox' : 'radio',
-    //   selectedRowKeys: this.getSelectedRowKeys(),
-    //   onSelect: this.updateSelectedRow,
-    //   onSelectAll: this.updateSelectedRows
-    // };
+    const hasSelected = selectedRowKeys.length > 0;
+    // console.log(hasSelected)
+    // console.log(55)
+
+    const columns = [{
+      title: '姓名',
+      dataIndex: 'name',
+      width: 150
+    },
+      {
+        title: '工号',
+        dataIndex: 'jobNum',
+        width: 150
+      },
+      {
+        title: '企业邮箱',
+        dataIndex: 'email',
+      },
+      {
+        title: '单位',
+        dataIndex: 'address',
+      },
+      {
+        title: '部门',
+        dataIndex: 'department',
+      },
+      {
+        title: '岗位',
+        dataIndex: 'post',
+      },
+      {
+        title: '短号',
+        dataIndex: 'shortNum',
+      }];
 
     const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        let nos = '';
-        // nos+= selectedRowKeys+ ','
-        for(let i=0;i<selectedRows.length; i++){
-          nos+=selectedRows[i].no+",";
-          if(nos.length>0){
-            nos=nos.substr(0,nos.length-1);
-          }
-        }
-
-        this.setState({
-          selectTableKeys: nos
-        })
-
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-
-
-      },
+      onChange: this.onSelectChange,
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User', // Column configuration not to be checked
         name: record.name,
@@ -233,19 +274,55 @@ export default class AddressBook extends PureComponent {
                 {
                  this.state.selectedKey == 'TOP-CONTACTS' ? (
                    <Col span={1} className={styles.colHeader}>
-                      <Icon type="delete" className={styles.icon}/>
-                      <span className={styles.text}>移除</span>
+                     {!hasSelected ? (
+                       <div onClick={this.delContactPer} className={styles.setDisable}>
+                         <Icon type="delete" className={styles.icon}/>
+                         <span className={styles.text}>移除</span>
+                       </div>
+                     ):(
+                       <div onClick={this.delContactPer}>
+                         <Icon type="delete" className={styles.icon}/>
+                         <span className={styles.text}>移除</span>
+                       </div>
+                     )}
                    </Col>
                  ) : (
                   <Col span={2} className={styles.colHeader}>
-                   <Icon type="plus" className={styles.icon}/>
-                   <span className={styles.text} onClick={this.addContactPer}>添加到常用联系人</span>
+                    {!hasSelected ? (
+                      <div onClick={this.addContactPer} className={styles.setDisable}>
+                        <Icon type="plus" className={styles.icon}/>
+                        <span className={styles.text}>添加到常用联系人</span>
+                      </div>
+                    ):(
+                      <div onClick={this.addContactPer}>
+                        <Icon type="plus" className={styles.icon}/>
+                        <span className={styles.text}>添加到常用联系人</span>
+                      </div>
+                    )}
+                    <Modal
+                      visible={visible}
+                      footer={null}
+                      closable={false}
+                      centered
+                      bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
+                      maskStyle={{backgroundColor:'#E6E6E6'}}>
+                      <p>{ModalTextAdd}</p>
+                    </Modal>
                   </Col>
                  )
                }
                  <Col span={2} className={styles.colHeader}>
-                   <Icon type="mail" className={styles.icon}/>
-                   <span className={styles.text}>发邮件</span>
+                   {!hasSelected ? (
+                     <div onClick={this.sendEmail} className={styles.setDisable}>
+                       <Icon type="mail" className={styles.icon}/>
+                       <span className={styles.text}>发邮件</span>
+                     </div>
+                   ):(
+                     <div onClick={this.sendEmail}>
+                       <Icon type="mail" className={styles.icon}/>
+                       <span className={styles.text}>发邮件</span>
+                     </div>
+                   )}
                  </Col>
                  <Col span={4}>
                    <Search placeholder="姓名/部门名称" onSearch={value => console.log(value)} style={{position:'relative',top: -8}}/>
@@ -266,7 +343,7 @@ export default class AddressBook extends PureComponent {
                 size="middle"
                 rowKey="no"
                 rowSelection={rowSelection}
-                // onChange={this.handleTableChange}
+                onChange={this.handleTableChange}
               />
             </Content>
           </Layout>

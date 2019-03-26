@@ -221,7 +221,7 @@ debugger;
 
       // 调用公共方法
       this.commonMethod(fieldsValue);
-debugger;
+
       dispatch({
         type:'meetingRoom/saveDrafts',
         payload:{...fieldsValue},
@@ -452,6 +452,7 @@ debugger;
                   visible={visible}
                   footer={null}
                   closable={false}
+                  centered
                   bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
                   maskStyle={{backgroundColor:'#E6E6E6'}}>
                   <p>{ModalTextSave}</p>
