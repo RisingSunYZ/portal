@@ -342,7 +342,7 @@ export default {
     },
 
     delDraftCallback(state, action) {
-      if (action.payload.code == "101") {
+      if (action.payload.code == "0") {
         message.error('删除失败');
       } else {
         message.success('删除成功');

@@ -142,15 +142,18 @@ class UserSelect extends Component {
   };
 
   openUserWindow = () => {
-    const { disabled } = this.props;
+    const { disabled,value } = this.props;
     if(disabled) return false;
     this.setState({
       visible: true,
+      selectedUser: value || [],
+      oldSelected: value || [],
     })
   };
 
   getSelectedRowKeys = () => {
     const { selectedUser } = this.state;
+    // debugger
     const userNos = [];
     selectedUser.map((user)=>{
       userNos.push(user.no);
@@ -240,6 +243,7 @@ class UserSelect extends Component {
   };
 
   createPersonList = list => {
+    // debugger
     const { disabled } = this.props;
     return list.map((person) => (
       <Tag key={person.no} closable={!disabled} onClose={()=>this.handleDelPerson(person, true)}>{person.name}</Tag>
@@ -339,7 +343,7 @@ class UserSelect extends Component {
         ) : (
           <div id={id} className={`user-sel-view ${className||''}`} style={{width, ...styles}}>
             <div className="person-list">
-              {this.createPersonList(oldSelected)}
+              {this.createPersonList(value)}
             </div>
             <a className="addon" onClick={this.openUserWindow}>
               {multiple ? <Icon type="team" /> : <Icon type="user" />}

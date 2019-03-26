@@ -203,7 +203,7 @@ class ProcessSearch extends PureComponent {
             creator: this.state.selectedPersons.length ? this.state.selectedPersons[0].no : null,
           };
           this.transParams(formData);
-          var url = getConfig().domain+'/portal/flow/export2Excel.jhtml?' + stringify(formData);
+          var url = '/rest/process/list/export2Excel?' + stringify(formData);
           location.href = url;
           return true;
         } else {

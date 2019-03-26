@@ -85,7 +85,10 @@ export async function queryDrafts(params) {
  * @param businessKey
  */
 export async function delDraft(params) {
-  return request(`/rest/process/list/delDraft?${stringify(params)}`);
+  return request('/rest/process/list/delDraft', {
+    method: 'POST',
+    body:params,
+  });
 }
 
 /**

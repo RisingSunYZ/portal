@@ -145,9 +145,14 @@ export default [
             component: './Workplace/MeetingRoom'
           },
           {
-            path: '/workplace/meeting-room/:tab/meeting-input',
+            path: '/workplace/meeting-room/:tab/meeting-input/:meetId',
             name: 'meeting-room',
             component: './Workplace/MeetingInput'
+          },
+          {
+            path: '/workplace/meeting-room/:tab/meeting-summary/:id',
+            name: 'meeting-room',
+            component: './Workplace/MeetingSummary'
           }
         ]
       },

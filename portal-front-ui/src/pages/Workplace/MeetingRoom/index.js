@@ -12,8 +12,6 @@ const Search = Input.Search;
 const { Meta } = Card;
 
 
-
-
 @connect(({ meetingRoom, loading }) => ({
   meetingRoom,
   loading: loading.models.meetingRoom,
@@ -173,7 +171,17 @@ export default class MeetingRoom extends PureComponent {
     this.setState({
       visibleModal: false,
     });
-  }
+  };
+
+
+  //导出参会人员
+  downLoad = ()=> {
+    const { dispatch }=this.props;
+    dispatch({
+      type: 'meetingRoom/getDownloadPerList',
+      payload:{}
+    })
+  };
 
   /**
    * 点击 查看 显示内容
@@ -192,11 +200,39 @@ export default class MeetingRoom extends PureComponent {
     });
   };
 
-  formatterGetTime=(createTime,endTime)=>{
-    const d1= new Date(createTime).getTime();
+
+  calculationTime=(startTime)=>{
+    const d1= new Date(startTime).getTime();
     const d2= new Date().getTime();
-    return (d2-d1)>0
-  }
+    return d1>d2
+  };
+
+  formatterGetTime(startTime,endTime){
+    const d1 = new Date(startTime).getTime();
+    const d3 = new Date(endTime).getTime();
+    const d2 = new Date().getTime();
+    const day = Math.floor((d1 - d2) / 1000 / 3600 / 24);
+    let hour = Math.floor(((d1 - d2) / 1000 / 3600) % 24);
+    hour = hour < 10 ? '0' + hour : hour;
+    let minute = Math.floor(((d1 - d2) / 1000 / 60) % 60);
+    minute = minute < 10 ? '0' + minute : minute;
+    let second = Math.floor(((d1 - d2) / 1000) % 60);
+    second = second < 10 ? '0' + second : second;
+    const time = day + '天' + hour + ':' + minute + ':'+ second;
+    return  d1>d2 ?  (<span style={{ color:'#FF3D00',fontSize:12}}>
+                        <Icon type="clock-circle" theme="filled" />&nbsp;&nbsp;
+                        <span>距离开会时间还有{time}</span>
+                      </span>)
+                      : (d2>d1&&d3>d2)?
+                            (<span style={{ color:'#FF3D00',fontSize:12}}>
+                                <Icon type="clock-circle" theme="filled" />&nbsp;&nbsp;
+                                <span>会议正在进行中...</span>
+                            </span>)
+                          :(<span>
+                              <Icon type="clock-circle" theme="filled"  style={{color: '#8C8C8C',fontSize:12}}/>&nbsp;&nbsp;
+                              <span style={{color:'#333',fontSize:14}}>已结束</span>
+                            </span>);
+  };
 
   render() {
     const {
@@ -206,7 +242,7 @@ export default class MeetingRoom extends PureComponent {
     } = this.props;
     const { visible ,visibleModal,type}=this.state;
     const tab = match.params.tab ? match.params.tab:1;
-    console.log(2222222222)
+    const cardType = this.state.cardType?this.state.cardType:tab;
 
     const a=(cardType)=>{
       if(this.state.cardType==2){
@@ -223,55 +259,50 @@ export default class MeetingRoom extends PureComponent {
             <li className={styles.liTitle}>{item.theme}</li>
             <li className={styles.liTop}>{item.creatorName}  &nbsp;{(item.creatorDept)}</li>
             <li className={styles.liBot}>
-              <span className={styles.liDate}>{simpleFormatDate(item.createTime)}</span>&nbsp;&nbsp;&nbsp;
+              <span className={styles.liDate}>{simpleFormatDate(item.startTime)}</span>&nbsp;&nbsp;&nbsp;
               <span className={styles.liTime}>{simpleFormatTime(item.startTime)}-{simpleFormatTime(item.endTime)}</span>&nbsp;&nbsp;
-              { (this.state.cardType == 1 ||this.state.cardType == 2||this.state.cardType == 3 ) ?
-                (
-                  <span style={{color:'#FF3D00',fontSize:12}}>
-                    <Icon type="clock-circle" theme="filled" />
-                    <span>会议正在进行中...</span>
-                  </span>
-                ):
+              { (cardType == 1 ||cardType == 2||cardType == 3 ) ?
+                this.formatterGetTime(item.startTime,item.endTime) :
                 (<Icon type="delete" theme="twoTone" className={styles.del} onClick={()=>this.showDeleteConfirm(1,item.id)}/>)}
-
-              {/*<Icon type="delete" theme="twoTone" className={styles.del} onClick={()=>this.showDeleteConfirm(1,item.id)}/>*/}
             </li>
           </ul>
           <div className={styles.descRight}>
             <ul style={{padding:0}}>
               { item.recordPersonName==null ?
-                (<li style={{color:"#2596FF"}} >
+                (<li style={{color:"#2596FF",marginRight:6}} >
                   <Icon type="setting" theme="filled" />
                   <UserSelect
                     type="button"
                     width='80px'
                     multiple={false}
                     showText="设置记录人"
-                    style={{paddingLeft:0}}
                     onChange={(a)=>{this.selectCallback(a,item.id)}}
                   />
                 </li>)
-                : (<li>
-                  记录人：{item.recordPersonName}&nbsp;&nbsp;
+              :(
+                <li style={{marginRight:0}}>
+                  <span>记录人：{item.recordPersonName}</span>&nbsp;&nbsp;
                   <Icon type="delete" className={styles.icon} onClick={()=>this.showDeleteConfirm(2,item.id)}/>
+                  <Modal
+                    title="信息"
+                    centered
+                    visible={this.state.visibleModal}
+                    onOk={()=>this.handleOk(this.state.modelId,type)}
+                    onCancel={this.handleCancel}
+                    width={356}
+                  >
+                    {this.state.type==1?(<p>确定删除会议?</p>):(<p>确定删除记录人吗?</p>)}
+                  </Modal>
                 </li>)
               }
-              <li>
-                <a href={"/portal-ui/workplace/meeting-room/meeting-input/:id"}>
-                  <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
-                  <span>编辑</span>
-                </a>
-                <Modal
-                  title="信息"
-                  centered
-                  visible={this.state.visibleModal}
-                  onOk={()=>this.handleOk(this.state.modelId,type)}
-                  onCancel={this.handleCancel}
-                  width={356}
-                >
-                  {this.state.type==1?(<p>确定删除会议?</p>):(<p>确定删除记录人吗?</p>)}
-                </Modal>
-              </li>
+              {(cardType == 4||((cardType == 1 ||cardType == 2||cardType == 3) && this.calculationTime(item.startTime) )) ? (
+                <li style={{marginLeft:20}}>
+                  <a href={"/portal-ui/workplace/meeting-room/:tab/meeting-input/"+item.id}>
+                    <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
+                    <span>编辑</span>
+                  </a>
+                </li>
+              ):('') }
             </ul>
             <div className={styles.view} onClick={()=>this.handleView(item.id)}>
               {this.state.visibleId.indexOf(item.id)!=-1 ?
@@ -302,7 +333,16 @@ export default class MeetingRoom extends PureComponent {
                 <div className={styles.cardBot} style={{display:this.state.visibleId.indexOf(item.id)!=-1 ? '':'none'}}>
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>参会人员：</Col>
-                    <Col span={20}>{item.personList}</Col>
+                    <Col span={20}>
+                      <div>
+                        {item.mandatoryPersonName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {item.optionalPersonList.length>0 ? (<span>可选人员 ( {item.optionalPersonName} ) </span>):('')}&nbsp;&nbsp;
+                        <span style={{color:'#2596FF',fontSize:'12px',cursor:'pointer'}} onClick={this.downLoad}>
+                          <Icon type="file" theme="filled" />
+                          <span>导出参会人员</span>
+                        </span>
+                      </div>
+                    </Col>
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>会议室：</Col>
@@ -313,8 +353,23 @@ export default class MeetingRoom extends PureComponent {
                     <Col span={20}>{item.content}</Col>
                   </Row>
                   <Row className={styles.rows}>
+                    <Col span={24} style={{left:30,fontSize:18}}>
+                      <Icon type="paper-clip" />
+                      <span style={{color:'#2596FF',fontSize:12,cursor:'pointer'}}>{item.meetingFiles} 业务经理调整任务(1).docx; </span>
+                    </Col>
+                  </Row>
+                  <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>会议纪要：</Col>
-                    <Col span={20}>{item.summaryContent }</Col>
+                    <Col span={20}>
+                      <span>{item.summaryContent}我发过呢个呢个 </span>
+                      <div style={{margin: '10px 0'}}>
+                        <a href={"/portal-ui/workplace/meeting-room/:tab/meeting-summary/"+item.id}>
+                          <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
+                          <span>编辑</span>
+                        </a>
+                      </div>
+                      <div style={{color:'#2596FF',fontSize:12}}> 劳务招标平台工作计划表V1.0.xlsx;{item.meetingSummaryFiles}</div>
+                    </Col>
                   </Row>
                   <Row className={styles.BotCount}>
                     <Col>回执意见<span>(共{item.count}条)</span></Col>
@@ -330,7 +385,7 @@ export default class MeetingRoom extends PureComponent {
       <PageHeaderWrapper>
         <Row className={styles.navRight}>
           <Col span={3} className={styles.rights}>
-            <a href={"/portal-ui/workplace/meeting-room/:tab/meeting-input"}>
+            <a href={"/portal-ui/workplace/meeting-room/:tab/meeting-input/:meetId"}>
               <Icon type="plus" className={styles.icon}/>
               <span className={styles.text}>新建会议</span>
             </a>

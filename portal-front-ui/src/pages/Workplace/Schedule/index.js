@@ -1,9 +1,9 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Calendar, Icon, Row, Col, Menu, Dropdown, Table, Input, Card, Modal } from 'antd';
-import BigCalendar from 'react-big-calendar';
+// import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+// import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styles from './index.less';
 const localizer = BigCalendar.momentLocalizer(moment);
 @connect(({ schedule, user, loading }) => ({

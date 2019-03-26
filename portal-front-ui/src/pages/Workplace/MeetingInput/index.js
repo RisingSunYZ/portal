@@ -41,20 +41,15 @@ export default class MeetingInput extends PureComponent {
 
   componentDidMount(){
     const {dispatch, match, form }=this.props;
-    form.validateFields((err, fieldsValue)=>{
-      if(err) return;
-      // debugger;
-      if(match.params.id!="" && match.params.id!=undefined){
-        dispatch({
-          type:'meetingRoom/loadInput',
-          payload:{
-            id:match.params.id,
-            ...fieldsValue
-          }
-        })
-      }
-
-    })
+    // debugger
+    if(match.params.meetId!="" && match.params.meetId!=undefined){
+      dispatch({
+        type:'meetingRoom/loadInput',
+        payload:{
+          id:match.params.meetId
+        }
+      })
+    }
   }
 
   onEditorStateChange = (editorState) => {
@@ -100,38 +95,52 @@ export default class MeetingInput extends PureComponent {
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
     // 格式化 必选人员
-    let mandaPer=fieldsValue.mandatoryPersonName;
+    let mandaPer=fieldsValue.mandatoryPersonList;
     let str="";
+    let mandaNo = "";
     for(let i=0; i<mandaPer.length;i++){
       str += mandaPer[i].name+ ',';
+      mandaNo+=mandaPer[i].no+ ',';
     }
     if(str.length>0) str=str.substr(0,str.length-1);
+    if(mandaNo.length>0) mandaNo=mandaNo.substr(0,mandaNo.length-1)
     fieldsValue.mandatoryPersonName=str;
+    fieldsValue.mandatoryPersonNo = mandaNo
 
+debugger;
     // 格式化 可选人员
-    let optionPer=fieldsValue.optionalPersonName;
+    let optionPer=fieldsValue.optionalPersonList;
     let str0="";
-    for(let i=0; i<optionPer.length;i++){
-      str0 += optionPer[i].name + ",";
+    let optionNo = "";
+    if(fieldsValue.optionalPersonList){
+      for(let i=0; i<optionPer.length;i++){
+        str0 += optionPer[i].name + ",";
+        optionNo+= optionPer[i].no+","
+      }
     }
     if(str0.length>0) str0=str0.substr(0,str0.length-1);
+    if(optionNo.length>0) optionNo=optionNo.substr(0,optionNo.length-1);
     fieldsValue.optionalPersonName =str0;
+    fieldsValue.optionalPersonNo = optionNo;
 
     // 格式化 记录人
     let recordPer =fieldsValue.recordPersonName;
     let str1="";
-    for(let i=0;i<recordPer.length;i++){
-      str1+= recordPer[i].name;
+    let recordNo="";
+    if(fieldsValue.recordPersonName){
+        str1+= recordPer[0].name;
+        recordNo+=recordPer[0].no;
     }
     fieldsValue.recordPersonName=str1;
+    fieldsValue.recordPersonNo = recordNo;
 
     console.log(fieldsValue);
     console.log(6666666666666);
     fieldsValue.meetingTime = moment(fieldsValue.meetingTime).format('YYYY-MM-DD');
     if(fieldsValue.meetingTime ==="Invalid date") fieldsValue.meetingTime="";
-    fieldsValue.start = moment(fieldsValue.start).format('h:mm');
+    fieldsValue.start = moment(fieldsValue.start).format('HH:mm');
     if(fieldsValue.start === "Invalid date") fieldsValue.start= "";
-    fieldsValue.end = moment(fieldsValue.end).format('h:mm');
+    fieldsValue.end = moment(fieldsValue.end).format('HH:mm');
     if(fieldsValue.end === "Invalid date") fieldsValue.end= "";
 
     //  给表单添加 fileName，filePath
@@ -154,8 +163,8 @@ export default class MeetingInput extends PureComponent {
     form.validateFields((err, fieldsValue)=>{
       console.log(fieldsValue)
       if(err) return;
-
-      if(fieldsValue.theme=="" || fieldsValue.mandatoryPersonName=="" || fieldsValue.meetingroomName==""){
+     // debugger;
+      if(fieldsValue.theme==undefined || fieldsValue.mandatoryPersonName==undefined || fieldsValue.meetingroomName==undefined){
         //点击显示 弹出框
         this.setState({
           visible: true,
@@ -175,8 +184,9 @@ export default class MeetingInput extends PureComponent {
       this.commonMethod(fieldsValue);
 
       dispatch({
+
         type:'meetingRoom/sendInvites',
-        payload:{...fieldsValue},
+        payload:{...fieldsValue },
         callback: res => {
           if (res.code == '100') {
             form.resetFields();
@@ -191,8 +201,9 @@ export default class MeetingInput extends PureComponent {
   saveDraft=()=>{
     const {dispatch ,form}=this.props;
     form.validateFields((err, fieldsValue) => {
+      // debugger
       if (err) return;
-      if(fieldsValue.theme==""){
+      if(fieldsValue.theme==undefined){
         //点击显示 弹出框
         this.setState({
           visible: true,
@@ -210,14 +221,14 @@ export default class MeetingInput extends PureComponent {
 
       // 调用公共方法
       this.commonMethod(fieldsValue);
-
+debugger;
       dispatch({
         type:'meetingRoom/saveDrafts',
         payload:{...fieldsValue},
         callback: res => {
           // debugger
           if (res.code == '100') {
-            form.resetFields();
+            // form.resetFields();
             window.location.href = '/workplace/meeting-room/4'
           }
         },
@@ -227,12 +238,13 @@ export default class MeetingInput extends PureComponent {
 
   render() {
     const {
-      meetingRoom: { list, data ,meeting ,files},
+      meetingRoom: { list, data ,meeting,mandatoryPersonList,optionalPersonList ,files},
       loading,
       dispatch,
       form,
     } = this.props;
-
+    console.log(meeting);
+    console.log(88888888888);
     const { visible, editorState, ModalTextSave  }=this.state;
 
 
@@ -261,6 +273,8 @@ export default class MeetingInput extends PureComponent {
     };
     // console.log(2222222);
     // console.log(meeting);
+    console.log(mandatoryPersonList)
+
 
     return (
       <PageHeaderWrapper>
@@ -273,7 +287,7 @@ export default class MeetingInput extends PureComponent {
               <Col span={24}>
                 <FormItem label='id' colon={false} style={{display:'none'}} >
                   {form.getFieldDecorator('id', {
-                    initialValue: meeting.id?meeting.id:"",
+                    initialValue: meeting.id ? meeting.id:"",
                   })
                   (<Input type={'hidden'} style={{width:"100%"}} placeholder="请输入" />)}
                 </FormItem>
@@ -281,21 +295,21 @@ export default class MeetingInput extends PureComponent {
                   {form.getFieldDecorator('status', {
                     initialValue: 1,
                   })
-                  (<Input type={'hidden'} style={{width:"100%"}} placeholder="请输入" />)}
+                  (<Input type={'hidden'} style={{width:"100%"}}  placeholder="请输入" />)}
                 </FormItem>
                 <FormItem label='必选人员' colon={false}>
-                  {form.getFieldDecorator('mandatoryPersonName', {
-                    initialValue: "",
+                  {form.getFieldDecorator('mandatoryPersonList', {
+                    initialValue: mandatoryPersonList,
                   })(<UserSelect
                     required={true}
                     type="input"
                     width='1080px'
-                    // onChange={(a)=>{this.selectCallback(a)}}
+                    onChange={(a)=>{this.selectCallback(a)}}
                   />)}
                 </FormItem>
                 <FormItem label='必选人员工号' colon={false} style={{display:'none'}}>
                   {form.getFieldDecorator('mandatoryPersonNo', {
-                    initialValue: "",
+                    initialValue: meeting.mandatoryPersonNo ,
                   })
                   (<Input type={'hidden'} style={{width:"100%"}} placeholder="请输入" />)}
                 </FormItem>
@@ -304,8 +318,8 @@ export default class MeetingInput extends PureComponent {
             <Row className={styles.rows}>
               <Col span={24}>
                 <FormItem label='可选人员' colon={false}>
-                  {form.getFieldDecorator('optionalPersonName', {
-                    initialValue: "",
+                  {form.getFieldDecorator('optionalPersonList', {
+                    initialValue: optionalPersonList,
                   })
                   (<UserSelect
                     type="input"
@@ -315,7 +329,7 @@ export default class MeetingInput extends PureComponent {
                 </FormItem>
                 <FormItem label='可选人员工号' colon={false} style={{display:'none'}}>
                   {form.getFieldDecorator('optionalPersonNo', {
-                    initialValue: "",
+                    initialValue: meeting.optionalPersonNo,
                   })
                   (<Input type={'hidden'} style={{width:"100%"}} placeholder="请输入" />)}
                 </FormItem>
@@ -325,7 +339,7 @@ export default class MeetingInput extends PureComponent {
               <Col span={24}>
                 <FormItem label='会议主题' colon={false}>
                   {form.getFieldDecorator('theme', {
-                    initialValue: "",
+                    initialValue: meeting.theme,
                   })(<Input placeholder="请输入会议主题" style={{width: '1081px'}}/>)}
                 </FormItem>
               </Col>
@@ -334,14 +348,14 @@ export default class MeetingInput extends PureComponent {
               <Col span={12}>
                 <FormItem label='会议室' colon={false} labelCol={{ span: 4 }} wrapperCol={{ span:16 }}>
                   {form.getFieldDecorator('meetingroomName', {
-                    initialValue: "",
+                    initialValue: meeting.meetingroomName,
                   })(<Input placeholder="请输入会议室" style={{width: '400px'}}/>)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label='记录人' colon={false}>
                   {form.getFieldDecorator('recordPersonName', {
-                    initialValue: "",
+                    initialValue: [{name:meeting.recordPersonName,no:meeting.recordPersonNo}],
                   })
                   (<UserSelect
                     type="input"
@@ -352,7 +366,7 @@ export default class MeetingInput extends PureComponent {
                 </FormItem>
                 <FormItem label='记录人员工号' colon={false} style={{display:'none'}}>
                   {form.getFieldDecorator('recordPersonNo', {
-                    initialValue: "",
+                    initialValue: meeting.recordPersonNo ,
                   })
                   (<Input type={'hidden'} style={{width:"100%"}} placeholder="请输入" />)}
                 </FormItem>
@@ -397,7 +411,7 @@ export default class MeetingInput extends PureComponent {
               <Col span={24}>
                 <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
                   {form.getFieldDecorator('content', {
-                    initialValue: "",
+                    initialValue: meeting.content,
                   })(
                     <div style={{width:1100,height:600}}>
                       <Editor
@@ -417,7 +431,7 @@ export default class MeetingInput extends PureComponent {
               <Col span={6}>
                 <Form.Item>
                   {form.getFieldDecorator('files', {
-                    initialValue:files
+                    // initialValue:files
                   })(
                     <Upload {...uploadProps}>
                       <Button>

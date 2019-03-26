@@ -8,7 +8,9 @@ import {
   getDraftData,
   getMyInviteData,
   getInputData,
-  getRecordPer
+  getRecordPer,
+  DownloadPerList,
+  getUploadSummary
 } from '../../../services/meetingRoom';
 import { message } from 'antd';
 
@@ -32,7 +34,9 @@ export default {
 
     delPerson: [],
     files:[],
-    meeting:{}
+    meeting:{},
+    mandatoryPersonList:[],
+    optionalPersonList:[],
   },
 
   namespace: 'meetingRoom',
@@ -121,7 +125,7 @@ export default {
       const response= yield call(getInputData,payload);
       yield put({
         type: 'saveMeetingData',
-        payload:payload
+        payload:response.data
       });
       if(callback) callback(response);
     },
@@ -253,7 +257,7 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *saveDrafts({payload,callback},{call,put}){
-      // debugger;
+      debugger;
       const response = yield call(saveDraftData,payload);
       console.log(11111111);
       // yield put({
@@ -261,7 +265,43 @@ export default {
       //   payload:payload
       // });
       if(callback) callback(response);
+    },
+
+
+    /**
+     * 下载 参会人员列表
+     * @param payload
+     * @param callback
+     * @param call
+     * @param put
+     * @returns {IterableIterator<*>}
+     */
+    *getDownloadPerList({payload,callback},{call,put}){
+      const response = yield call(DownloadPerList,payload);
+      // yield put({
+      //   type: 'saveDraftData',
+      //   payload:payload
+      // });
+      if(callback) callback(response);
+    },
+
+    /**
+     * 点击编辑 保存 会议纪要 和附件
+     * @param payload
+     * @param callback
+     * @param call
+     * @param put
+     * @returns {IterableIterator<*>}
+     */
+    *getUploadSummary({payload,callback},{call,put}){
+      const response=yield(getUploadSummary, payload);
+      yield put ({
+        type:'saveUploadSum',
+        payload: response
+      });
+      if(callback) callback(response);
     }
+
   },
 
   reducers: {
@@ -317,7 +357,7 @@ export default {
      */
     delDraftRecordById(state, action) {
       const id=action.payload.id;
-      debugger;
+      // debugger;
       return {
         ...state,
         delPerson: action.payload.recordPersonName
@@ -331,11 +371,15 @@ export default {
         meeting: action.payload
       };
     },
+
+
     saveMeetingData(state, action) {
       const meeting = action.payload
       return {
         ...state,
-        meeting,
+        ...meeting,
+        mandatoryPersonList:meeting.mandatoryPersonList,
+        optionalPersonList:meeting.optionalPersonList
       };
     },
 
