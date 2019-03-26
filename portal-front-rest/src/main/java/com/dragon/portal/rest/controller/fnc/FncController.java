@@ -15,12 +15,12 @@ import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import net.sf.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * @Title:财务服务
@@ -146,13 +147,14 @@ public class FncController extends BaseController {
      * @author zhaohaishan 2017年9月6日 下午3:55:54
      */
     @ResponseBody
-    @GetMapping("/addOpinion")
+    @RequestMapping("/addOpinion")
     @ApiOperation("添加建议")
     @ApiImplicitParams({})
-    public ReturnVo addOpinion(HttpServletRequest request, HttpServletResponse response, String content, String typeId){
+    public ReturnVo addOpinion(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,String> map){
         // TODO Auto-generated method stub
         ReturnVo returnVo = new ReturnVo<>(ReturnCode.FAIL, "意见提出失败，请联系管理员！");
-
+        String typeId = map.get("typeId");
+        String content = map.get("content");
         UserSessionInfo session = this.getUserSessionInfo(request,response);
         OpinionType opinionTypeById = null;
         try {
@@ -168,7 +170,6 @@ public class FncController extends BaseController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
         Opinion opinion = new Opinion();
         opinion.setContent(content);
         opinion.setTypeId(typeId);
@@ -281,7 +282,7 @@ public class FncController extends BaseController {
                 fileName = java.net.URLEncoder.encode(materialFileById.getName(), "UTF-8");
             } else {
                 //非IE浏览器的处理：
-                fileName = new String(materialFileById.getName().getBytes("UTF-8"),"ISO-8859-1");
+                fileName = new String(materialFileById.getName().getBytes("UTF-8"),"iso-8859-1");
             }
             String path = materialFileById.getFilePath();
             URL url = new URL(ftpHost+path);
@@ -290,8 +291,7 @@ public class FncController extends BaseController {
             conn.connect();
             InputStream is = conn.getInputStream(); //得到网络返回的输入流
             response.setContentType("application/force-download");// 设置强制下载不打开
-            response.addHeader("Content-Disposition",
-                    "attachment;fileName=" + fileName);// 设置文件名
+            response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);// 设置文件名
             byte[] buffer = new byte[1024];
             bis = new BufferedInputStream(is);
             OutputStream os = response.getOutputStream();

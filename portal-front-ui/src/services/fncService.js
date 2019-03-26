@@ -37,3 +37,26 @@ export async function getMaterialFiles(params) {
   return request(`/rest/portal/fnc/ajaxListMaterialFile?${stringify(params)}`);
 }
 
+/**
+ * 获取意见与建议页面内下拉框选项数据
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function getOpinion(params) {
+  return request(`/rest/portal/fnc/getOpinionPage`);
+}
+
+/**
+ * 添加建议
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function addOpinions(params) {
+  return request('/rest/portal/fnc/addOpinion', {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
+
