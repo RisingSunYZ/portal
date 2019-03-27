@@ -33,7 +33,7 @@ export default class CommonHeader extends PureComponent {
     return (
       <div className={styles.header}>
         <div className={styles.main}>
-          <Link to={"/main/workplace"}><img src={logo} alt="亚厦股份" title="亚厦股份" /></Link>
+          <a href="/"><img src={logo} alt="亚厦股份" title="亚厦股份" /></a>
         </div>
       </div>
     );

@@ -4,7 +4,7 @@ import { message } from 'antd';
 
 export function getConfig() {
   const config = {
-    domain:'http://hometest.chinayasha.com',
+    domain:'http://homedev.chinayasha.com',
     appName: 'eip',
     appVision: '0.1',
     appAuthor: 'xietongjian',

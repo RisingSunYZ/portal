@@ -3,6 +3,7 @@ import pathToRegexp from 'path-to-regexp';
 import { Breadcrumb } from 'antd';
 import styles from './index.less';
 import { urlToList } from '../_utils/pathTools';
+import {getConfig} from "@/utils/utils";
 
 export const getBreadcrumb = (breadcrumbNameMap, url) => {
   let breadcrumb = breadcrumbNameMap[url];
@@ -19,6 +20,8 @@ export const getBreadcrumb = (breadcrumbNameMap, url) => {
 export default class BreadcrumbView extends PureComponent {
   state = {
     breadcrumb: null,
+    key:"",
+    url:""
   };
 
   componentDidMount() {
@@ -56,6 +59,7 @@ export default class BreadcrumbView extends PureComponent {
   // Generated according to props
   conversionFromProps = () => {
     const { breadcrumbList, breadcrumbSeparator, itemRender, linkElement = 'a' } = this.props;
+
     return (
       <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
         {breadcrumbList.map(item => {
@@ -77,6 +81,9 @@ export default class BreadcrumbView extends PureComponent {
       </Breadcrumb>
     );
   };
+  setBreadcrumbHeaderState=()=>{
+
+  }
 
   conversionFromLocation = (routerLocation, breadcrumbNameMap) => {
     const { breadcrumbSeparator, home, itemRender, linkElement = 'a' } = this.props;
@@ -103,14 +110,14 @@ export default class BreadcrumbView extends PureComponent {
     // Add home breadcrumbs to your head
     extraBreadcrumbItems.unshift(
       <Breadcrumb.Item key="home">
-        您所在的位置：
-        {createElement(
-          linkElement,
-          {
-            [linkElement === 'a' ? 'href' : 'to']: '/',
-          },
-          home || 'Home'
-        )}
+        您所在的位置：<a href={ getConfig().domain+"/main.jhtml"}>工作台</a>
+        {/*{createElement(*/}
+          {/*linkElement,*/}
+          {/*{*/}
+            {/*[linkElement === 'a' ? 'href' : 'to']: '/',*/}
+          {/*},*/}
+          {/*home || 'Home'*/}
+        {/*)}*/}
       </Breadcrumb.Item>
     );
     return (

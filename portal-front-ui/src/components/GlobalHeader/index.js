@@ -194,7 +194,7 @@ export default class GlobalHeader extends PureComponent {
                   <Avatar
                     size="large"
                     className={styles.avatar}
-                    src={currentUser.userImgUrl}
+                    src={getConfig().domain + currentUser.userImgUrl}
                   />
                   <span className={styles.name}>
                     {currentUser.name}({currentUser.no})

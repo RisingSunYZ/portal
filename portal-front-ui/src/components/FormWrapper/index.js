@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, message } from 'antd';
+import { Card, message, Skeleton } from 'antd';
 import styles from './index.less';
 import { getConfig } from '../../utils/utils';
 
@@ -119,20 +119,22 @@ export default class FormBox extends React.Component {
     }
     // 根据ID获取iframe对象
     const ifr = this.refs.processFormIframe;
-    ifr.onload = function() {
-      _this.setState({ loadingForm: false });
-      // 解决打开高度太高的页面后再打开高度较小页面滚动条不收缩
-      ifr.style.height = '0px';
-      const iDoc = ifr.contentDocument || ifr.document;
-      if(iDoc)iDoc.body.style.overflowY="hidden";
-      let height = calcPageHeight(iDoc);
-      setFormIframeHeight(height, ifr);
-      clearInterval(_this.Intervaltimer);
-      _this.Intervaltimer = setInterval(function() {
-        let h = calcPageHeight(iDoc);
-        setFormIframeHeight(h, ifr);
-      }, 500);
-    };
+    if(ifr){
+      ifr.onload =()=> {
+        _this.setState({ loadingForm: false });
+        // 解决打开高度太高的页面后再打开高度较小页面滚动条不收缩
+        ifr.style.height = '0px';
+        const iDoc = ifr.contentDocument || ifr.document;
+        if(iDoc)iDoc.body.style.overflowY="hidden";
+        let height = calcPageHeight(iDoc);
+        setFormIframeHeight(height, ifr);
+        clearInterval(_this.Intervaltimer);
+        _this.Intervaltimer = setInterval(function() {
+          let h = calcPageHeight(iDoc);
+          setFormIframeHeight(h, ifr);
+        }, 500);
+      };
+    }
   };
 
   componentWillUnmount() {
@@ -141,7 +143,10 @@ export default class FormBox extends React.Component {
 
   render() {
     const { props:{ src }, state} = this;
-    const iframeSrc  = `${src}&flowFileBasePath=${getConfig().ftpHost}&flowFileViewPath=${getConfig().filePreviewPath}`;
+    const iframeSrc  = `//homedev.chinayasha.com${src}&flowFileBasePath=${getConfig().ftpHost}&flowFileViewPath=${getConfig().filePreviewPath}`;
+
+    const isLoading = src?false:true;
+
     return (
       <Card title="表单内容" className={styles.formMainBox} bordered={false} headStyle={{ height:'46px',lineHeight:'46px',padding:'0 24px',fontWeight:'bold' }}>
         <Card
@@ -149,14 +154,19 @@ export default class FormBox extends React.Component {
           bordered={false}
           className={styles.formMainLoadingBox}
         />
-        <iframe
-          title="formIframeBox"
-          id="formData"
-          ref="processFormIframe"
-          src={iframeSrc}
-          style={{ height: state.iframeHeight }}
-          className={styles.formContentBox}
-        />
+        {
+          <Skeleton loading={isLoading} active paragraph={{rows:18}} >
+            <iframe
+              title="formIframeBox"
+              id="formData"
+              ref="processFormIframe"
+              src={iframeSrc}
+              style={{ height: state.iframeHeight }}
+              className={styles.formContentBox}
+            />
+          </Skeleton>
+        }
+
       </Card>
     );
   }
