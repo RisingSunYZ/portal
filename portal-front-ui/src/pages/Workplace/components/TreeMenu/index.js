@@ -82,7 +82,7 @@ export default class TreeMenu extends PureComponent {
       data.map(item => {
         if (item.orgTreeApiVos && item.orgTreeApiVos.length) {
           return (
-            <TreeNode key={item.id} title={item.text}>
+            <TreeNode key={item.id} title={item.text} companyId={item.companyId}>
               {loop(item.orgTreeApiVos)}
             </TreeNode>
           );

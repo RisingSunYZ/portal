@@ -35,6 +35,69 @@
   cursor:not-allowed;
 }
 
+// 设置抽屉
+.LeftBox{
+
+  .headerImg{
+    width:150px;
+    height: 150px;
+    overflow:hidden;
+    margin: 30px auto;
+    img{
+      width:150px;
+      height: 150px;
+    }
+  }
+  .perName{
+    text-align:center;
+    font-size: 16px;
+    font-weight: bold;
+    color:#0E65AF;
+  }
+  .perPost{
+    font-size: 12px;
+    font-weight: bold;
+    text-align:center;
+    margin:0;
+  }
+  .perUnit{
+    font-size: 12px;
+    text-align:center;
+  }
+  .btnGroup{
+    margin-top:50px;
+    text-align:center;
+    .btnEmail{
+      width:144px;
+      margin-top:20px;
+    }
+  }
+}
+
+.RightBox{
+  padding: 50px 0 0 130px;
+  .boxTopMsg{
+    border-bottom: 1px dotted #DEDEDE;
+    padding-bottom:20px;
+  }
+  .boxBotMsg{
+    padding-top: 20px;
+  }
+  ul{
+    margin:0;
+    padding:0;
+    li{
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 36px;
+      color:#333;
+      span{
+        font-weight:normal;
+      }
+    }
+  }
+}
+
 
 .treeMenu{
   //background: #F0F0F0;
@@ -72,5 +135,16 @@
   }
   .ant-table-scroll{
     border:1px solid #E6E6E6;
+  }
+
+  .ant-drawer-body{
+    padding: 0 24px 24px 0;
+  }
+
+  .ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper{
+    height:448px !important;
+    top: 180px !important;
+    box-shadow:none;
+    border: 1px solid #E6E6E6;
   }
 }

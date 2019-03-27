@@ -19,8 +19,8 @@ export async function queryTreeData() {
 /**
  * 查询通讯录人员数据
  */
-export async function getModelList(params) {
-  return request(`/rest/addrbook/addressBook/getPersonnelDataForBook?${stringify(params)}`);
+export async function getTableList(params) {
+  return request(`/rest/addrbook/addressBook/getPersonnelDataForBook?deptId=${params.deptId}&companyId=${params.companyId}&pageIndex=${params.pageIndex}&pageSize=${params.pageSize}`);
 }
 
 /**
@@ -29,10 +29,12 @@ export async function getModelList(params) {
  * @returns {Promise<Object>}
  */
 export async function addContactPerData(params) {
-
+  var formdata = new FormData();
+  const val = params.contactNo;
+  formdata.append("nos",val);
   return request('/rest/addrbook/addressBook/addTopContacts', {
     method: 'POST',
-    body: params,
+    body: formdata,
   });
 }
 
@@ -42,10 +44,12 @@ export async function addContactPerData(params) {
  * @returns {Promise<Object>}
  */
 export async function delContactPerData(params) {
-
+  var formdata = new FormData();
+  const val = params.contactNo;
+  formdata.append("nos",val);
   return request('/rest/addrbook/addressBook/delTopContacts', {
     method: 'POST',
-    body: params,
+    body: formdata,
   });
 }
 

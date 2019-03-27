@@ -1,9 +1,10 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Tabs, Icon, Row, Col, Card, Menu, Drawer,Button ,Modal, Input, Dropdown, List,Layout, Radio, Tree, Table  } from 'antd';
+import { Tabs, Icon, Row, Col, Card, Drawer,Button ,Modal, Input,Layout,Tree, Table  } from 'antd';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from './index.less';
 import TreeMenu from '../components/TreeMenu';
+import Link from 'umi/link';
 import DeptTree from '../components/DeptTree/DeptTree';
 import { message } from 'antd';
 const TreeNode = Tree.TreeNode;
@@ -20,17 +21,28 @@ const { Header, Sider, Content } = Layout;
 }))
 
 export default class AddressBook extends PureComponent {
-  searchFormObj = {};
+
   state = {
     selectedKey: '',
     selectedRowKeys: [],
     visibleDrawer: false,
     visible:false ,//弹窗初始化状态
-    ModalTextAdd:''
+    ModalTextAdd:'',
+    pagination: { pageIndex: 1, pageSize: 10 },
+    query:{}
   };
 
   componentDidMount(){
-
+    const { dispatch }=this.props;
+    // dispatch({
+    //   type: 'addressBook/getTableList',
+    //   payload: {
+    //     deptId: "1001K31000000002GLCT",
+    //     companyId:"0001K310000000008TK6",
+    //     pageIndex:1,
+    //     pageSize:10
+    //   },
+    // });
   }
 
   //展示隐藏抽屉
@@ -47,11 +59,16 @@ export default class AddressBook extends PureComponent {
   };
 
   selectNode(selectedKeys, e) {
+
     if (e.selected) {
-      this.searchFormObj.categoryId = selectedKeys[0];
       this.props.dispatch({
-        type: 'addressBook/getModelList',
-        payload: { categoryId: selectedKeys[0] },
+        type: 'addressBook/getTableList',
+        payload: {
+          deptId: selectedKeys[0],
+          companyId:e.selectedNodes[0].props.companyId,
+          pageIndex:0,
+          pageSize:10
+        },
       });
       this.setState({
         selectedKey: selectedKeys[0],
@@ -59,13 +76,26 @@ export default class AddressBook extends PureComponent {
     }
   }
 
+  // 点击分页改变时，触发的函数
+  handleTableChange = (pagination, filtersArg, sorter) => {
+
+    // this.selectNode(selectedKeys, e);
+    const { dispatch } = this.props;
+    const query = this.state.query;
+    query.pageIndex=pagination.current;
+    query.pageSize=pagination.pageSize;
+    dispatch({
+      type: 'addressBook/getTableList',
+      payload:query,
+    });
+  };
 
 
   doSearch(modelName) {
     this.searchFormObj.name = modelName;
     //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
     this.props.dispatch({
-      type: 'addressBook/getModelList',
+      type: 'addressBook/getTableList',
       payload: {
         name: modelName,
         categoryId: this.state.selectedKey == 'myDraft' ? this.state.selectedKey : '',
@@ -89,7 +119,6 @@ export default class AddressBook extends PureComponent {
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
     console.log(hasSelected);
-    // debugger;
     if(!hasSelected){
       //点击显示 弹出框
       this.setState({
@@ -107,7 +136,7 @@ export default class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/addContactPer',
-        payload:selectedRowKeys
+        payload:{contactNo:selectedRowKeys}
       })
     }
   };
@@ -118,9 +147,7 @@ export default class AddressBook extends PureComponent {
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
     console.log(hasSelected);
-    // debugger;
     if(!hasSelected){
-      // message.error('请选择！')
       //点击显示 弹出框
       this.setState({
         visible: true,
@@ -137,7 +164,7 @@ export default class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/delContactPer',
-        payload: selectedRowKeys
+        payload: {contactNo:selectedRowKeys}
       })
     }
   };
@@ -164,34 +191,6 @@ export default class AddressBook extends PureComponent {
   };
 
 
-  handleTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { keyword, deptId } = this.state;
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      page: pagination.current,
-      rows: pagination.pageSize,
-      keyword,
-      ...filters,
-      deptId,
-
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-
-    dispatch({
-      type: 'user/getAllUser',
-      payload: params,
-    });
-
-  };
-
 
   onSelectChange=(selectedRowKeys, selectedRows) => {
       let nos = '';
@@ -207,7 +206,7 @@ export default class AddressBook extends PureComponent {
 
   render() {
     const {
-      addressBook: { list, data ,pagination},
+      addressBook: { list,pagination },
       loading,
     } = this.props;
     const { selectedRowKeys,visible ,ModalTextAdd }=this.state;
@@ -335,15 +334,63 @@ export default class AddressBook extends PureComponent {
                    {/*/>*/}
                  </Col>
               </Row>
+              <Drawer
+                placement="right"
+                // mask={false}
+                closable={false}
+                onClose={this.onClose}
+                width={830}
+                visible={this.state.visibleDrawer}
+              >
+                <Row>
+                  <Col span={18} push={6}>
+                    <div className={styles.RightBox}>
+                      <ul className={styles.boxTopMsg}>
+                        <li>性别 ：<span>男</span></li>
+                        <li>部门 ：<span>亚厦集团</span></li>
+                        <li>岗位 ：<span>控股总裁兼集团总裁</span></li>
+                        <li>办公地址 ：<span></span></li>
+                      </ul>
+                      <ul className={styles.boxBotMsg}>
+                        <li>手机 ：<span>15332965269</span></li>
+                        <li>短号 ：<span>48878</span></li>
+                        <li>座机号码 ：<span>5366</span></li>
+                        <li>座机短号 ：<span>997777</span></li>
+                        <li>邮箱 ：<span></span></li>
+                      </ul>
+                    </div>
+                  </Col>
+                  <Col span={6} pull={18} style={{background:'#FAFAFA'}}>
+                    <div className={styles.LeftBox}>
+                      <div className={styles.headerImg}>
+                        <img src="http://file.chinayasha.com/p-head/2017/04/06/00002876.jpg" alt=""/>
+                      </div>
+                      <h5 className={styles.perName}>丁泽成</h5>
+                      <p className={styles.perPost}>控股总裁兼集团总裁</p>
+                      <p className={styles.perUnit}>亚厦集团</p>
+                      <div className={styles.btnGroup}>
+                        <Button type="primary">添加到常用联系人</Button>
+                        <Link to={'mailto:liuheng@chinayasha.com'}>
+                          <Button className={styles.btnEmail}>发邮件</Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </Drawer>
               <Table
                 columns={columns}
                 dataSource={list}
-                pagination={{showSizeChanger: true, showQuickJumper: true,...pagination}}
-                scroll={{ y: 260 }}
-                size="middle"
-                rowKey="no"
+                pagination={{pagination}}
+                scroll={{ y: 400 }}
                 rowSelection={rowSelection}
                 onChange={this.handleTableChange}
+                onRow={( ) => {
+                  return { onClick: (e) => {
+                    // e.currentTarget.getElementsByClassName("ant-checkbox-wrapper")[0].click();
+                    this.showDrawer()
+                  } }
+                }}
               />
             </Content>
           </Layout>
