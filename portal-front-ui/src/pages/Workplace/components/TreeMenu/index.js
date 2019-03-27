@@ -92,7 +92,7 @@ export default class TreeMenu extends PureComponent {
           let itemName=item.text;
           return (<TreeNode key={item.id} title={itemName} />);
         }
-        return <TreeNode key={item.id} title={item.text} />;
+        return <TreeNode key={item.id} title={item.text} companyId={item.companyId}/>;
       });
     return (
       <div id="components-tree-demo-draggable" className={styles.treeMenuBox}>
