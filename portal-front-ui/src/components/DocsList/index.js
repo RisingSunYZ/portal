@@ -1,10 +1,9 @@
 import React from 'react';
 import { Icon, Row, Col, Popover, Popconfirm, message } from 'antd';
 import styles from './index.less';
+import Link from 'umi/link';
 import {connect} from "dva/index";
-import {convertFileSize, fileDown, filePreview, nullToZero} from '../../utils/utils';
-// import conf from '../../config';
-import { routerRedux } from 'dva/router';
+import { nullToZero} from '@/utils/utils';
 
 
 @connect(({ processForm, loading }) => ({
@@ -44,19 +43,7 @@ export default class DocsList extends React.Component {
 
 
   processPreview = (o) => {
-
-
-    // routerRedux.push();
-
-    window.open('/ys/process/form/view/' +
-      nullToZero(o.refProcessDefinitionKey) +
-      '/' +
-      nullToZero(o.refProcessInstanceId) +
-      '/' +
-      nullToZero(o.refBusinessKey) +
-      '/' +
-      nullToZero(o.taskId) +'/0') ;
-
+    return  `/process/form/view/${nullToZero(o.refProcessDefinitionKey)}/${nullToZero(o.refProcessInstanceId)}/${nullToZero(o.refBusinessKey)}/${nullToZero(o.taskId)}/0`
   };
 
   componentWillReceiveProps(props) {
@@ -67,9 +54,11 @@ export default class DocsList extends React.Component {
 
   render() {
     // const { routerData, match, files } = this.props;
+
     return (
       <div className={styles.fileList}>
         {this.state.docsLists.map((post, index) => (
+
           <div key={post.id || index} className={styles.item}>
             <Row>
               <Col span={4}>
@@ -79,9 +68,11 @@ export default class DocsList extends React.Component {
                 <div style={{ textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{post.refName}</div>
                 <ul className={styles.del}>
                   <Popover content="预览">
-                    <li onClick={this.processPreview.bind(this,post)} style={{ width:this.state.showWidth }}>
-                      <Icon type="search" />
-                    </li>
+                    <Link to={ this.processPreview(post)} target="_blank">
+                      <li style={{ width:this.state.showWidth }}>
+                        <Icon type="search" />
+                      </li>
+                    </Link>
                   </Popover>
                   <Popover content="删除">
                     <Popconfirm

@@ -50,10 +50,10 @@ export default {
   targets: {
     ie: 11,
   },
-  publicPath: process.env.NODE_ENV === 'production' ? '/portal-ui/' : '/portal-ui/',
-  outputPath: '../../../../data/portal-ui',
+  publicPath: process.env.NODE_ENV === 'production' ? '/eip/' : '/eip/',
+  outputPath: '../../../../data/eip',
   mountElementId: 'portalMainContent',
-  base: '/portal-ui',
+  base: '/eip',
   // 路由配置
   routes: pageRoutes,
 
@@ -128,7 +128,7 @@ export default {
     },
   },
   manifest: {
-    basePath: '/portal-ui',
+    basePath: '/eip',
   },
 
   chainWebpack: webpackPlugin,

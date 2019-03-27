@@ -151,7 +151,9 @@ class ProcessSearch extends PureComponent {
   selectCallback = datas => {
     const { setFieldsValue } = this.props.form;
     this.setState({ selectedPersons: datas });
-    setFieldsValue({ creatorName: datas[0].name });
+    if(datas.length>0){
+      setFieldsValue({ creatorName: datas[0].name });
+    }
   };
 
   handleDel(businessKey) {
@@ -238,7 +240,7 @@ class ProcessSearch extends PureComponent {
               <Col span={8}>
                 <FormItem label="提交人" {...formItemLayout}>
                   {getFieldDecorator(`creatorName`, {
-                    initialValue: '',
+                    initialValue: [],
                     rules: [
                       {
                         required: false,

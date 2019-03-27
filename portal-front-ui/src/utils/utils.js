@@ -5,8 +5,7 @@ import { message } from 'antd';
 export function getConfig() {
   const config = {
     domain:'http://hometest.chinayasha.com',
-    localMain:'http://localhost:8001/portal-ui/main/workplace',
-    appName: 'portal-ui',
+    appName: 'eip',
     appVision: '0.1',
     appAuthor: 'xietongjian',
     email: 'xietongjian@chinayasha.com',
