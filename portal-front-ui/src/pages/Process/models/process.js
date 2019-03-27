@@ -402,10 +402,13 @@ export default {
         }
         // alert(location.pathname)
         // debugger location.pathname.search('/process/list') === -1
-        if(window.opener && window.opener.location.href.search('/process/list') !== -1){
-           window.close()
+        try{
+          if(window.opener && window.opener.location.href.search('/process/list') !== -1){
+            window.close()
+          }
+        }catch(e){
+          // console.error('=======================',e);
         }
-
       });
 
       return history.listen(({ pathname, search }) => {
