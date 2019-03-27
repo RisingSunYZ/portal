@@ -31,7 +31,7 @@ class LoginPage extends Component {
     //   callback: res => {
     //     // FIXME 此处可能会出现死循环
     //     // if (res.code == '100' ) {
-    //     //   router.push("/portal/main/workplace")
+      //     //   router.push("/portal/main/workplace")
     //     // }else{
     //     //      router.push("/user/login")
     //     // }

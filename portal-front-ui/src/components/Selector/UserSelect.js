@@ -343,7 +343,7 @@ class UserSelect extends Component {
         ) : (
           <div id={id} className={`user-sel-view ${className||''}`} style={{width, ...styles}}>
             <div className="person-list">
-              {this.createPersonList(value)}
+              {oldSelected.length>0?this.createPersonList(oldSelected):this.createPersonList(value)}
             </div>
             <a className="addon" onClick={this.openUserWindow}>
               {multiple ? <Icon type="team" /> : <Icon type="user" />}

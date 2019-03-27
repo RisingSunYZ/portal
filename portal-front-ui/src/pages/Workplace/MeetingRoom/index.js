@@ -1,7 +1,8 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Tabs, Icon, Row, Col,Input, Card, Modal } from 'antd';
-import styles from './index.less'
+import styles from './index.less';
+import Link from 'umi/link';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { getConfig, simpleFormatDate ,simpleFormatTime} from '../../../utils/utils';
 import { UserSelect } from '../../../components/Selector';
@@ -297,10 +298,10 @@ export default class MeetingRoom extends PureComponent {
               }
               {(cardType == 4||((cardType == 1 ||cardType == 2||cardType == 3) && this.calculationTime(item.startTime) )) ? (
                 <li style={{marginLeft:20}}>
-                  <a href={"/portal-ui/workplace/meeting-room/:tab/meeting-input/"+item.id}>
+                  <Link to={"/workplace/meeting-room/:tab/meeting-input/"+item.id}>
                     <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
                     <span>编辑</span>
-                  </a>
+                  </Link>
                 </li>
               ):('') }
             </ul>
@@ -363,10 +364,10 @@ export default class MeetingRoom extends PureComponent {
                     <Col span={20}>
                       <span>{item.summaryContent}我发过呢个呢个 </span>
                       <div style={{margin: '10px 0'}}>
-                        <a href={"/portal-ui/workplace/meeting-room/:tab/meeting-summary/"+item.id}>
+                        <Link to={"/workplace/meeting-room/:tab/meeting-summary/"+item.id}>
                           <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
                           <span>编辑</span>
-                        </a>
+                        </Link>
                       </div>
                       <div style={{color:'#2596FF',fontSize:12}}> 劳务招标平台工作计划表V1.0.xlsx;{item.meetingSummaryFiles}</div>
                     </Col>
@@ -385,10 +386,10 @@ export default class MeetingRoom extends PureComponent {
       <PageHeaderWrapper>
         <Row className={styles.navRight}>
           <Col span={3} className={styles.rights}>
-            <a href={"/portal-ui/workplace/meeting-room/:tab/meeting-input/:meetId"}>
+            <Link to={"/workplace/meeting-room/:tab/meeting-input/:meetId"}>
               <Icon type="plus" className={styles.icon}/>
               <span className={styles.text}>新建会议</span>
-            </a>
+            </Link>
           </Col>
           <Col span={5}>
             <Search placeholder="请搜索" onSearch={value => console.log(value)} style={{position:'relative',top: -8}}/>
