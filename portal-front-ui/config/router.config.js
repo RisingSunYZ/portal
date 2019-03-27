@@ -15,13 +15,12 @@ export default [
   {
     path: '/',
     // component: '../layouts/BasicLayout',
-    // Routes: ['src/pages/Authorized'],
     // authority: ['admin', 'user'],
     routes: [
       {
         path:"/",
-        redirect:"/main/workplace"
-
+        redirect:"/main/workplace",
+        // authority: ['admin', 'user']
       },
       {
         path: '/form',
@@ -86,6 +85,8 @@ export default [
         path: '/main',
         name: 'main',
         component: '../layouts/MainLayout',
+        // Routes: ['src/pages/Authorized'],
+        authority: ['admin', 'user'],
         routes: [
           {
             path: '/main',

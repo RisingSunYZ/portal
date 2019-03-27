@@ -1,9 +1,9 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { accountLogin,changePwd ,captchaCode, checkCaptchaCode,imgCaptchaCode,fakeAccount,checkPicCode,
-  logoutAccount,updateAccountInfo,logOutSyn } from '@/services/user';
+  logoutAccount,updateAccountInfo,logOutSyn,logOutIdmSyn } from '@/services/user';
 import { setAuthority } from '@/utils/authority';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery, getConfig } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
 import {message} from "antd/lib/index";
 
@@ -35,19 +35,26 @@ export default {
     },
 
 
-    /**
-     * 退出登录
-     * @param payload
-     * @param callback
-     * @param call
-     * @returns {IterableIterator<*>}
-     */
-      *logOut({ payload ,callback }, { call }) {
-
-      const response = yield call(logOutSyn, {});
+  /**
+   * 退出登录
+   * @param payload
+   * @param callback
+   * @param call
+   * @returns {IterableIterator<*>}
+   */
+    *logOut({ payload ,callback }, { call }) {
+      if(getConfig().idmLoginSwitch){
+        var img=document.createElement("iframe");
+        img.src=getConfig().idmLogoutUrl + "?t=" + Math.random();
+        img.style.width=0;
+        img.style.height=0;
+        img.style.border=0;
+        document.body.appendChild(img);
+      }
+      const response = yield call(logOutSyn);
       if(response.code=='100'){
         if (callback && typeof callback === 'function') {
-          callback(response)
+          callback(response);
         }
       }
     },

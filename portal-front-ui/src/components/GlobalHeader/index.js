@@ -44,11 +44,10 @@ export default class GlobalHeader extends PureComponent {
         // $('body').after(loginOutUrl);
         // window.location.href = getConfig().domain+'/main/hr-service';
         if (res.code == '100' ) {
-
+          // 判断如果是IDM，如果是IDM，将IDM也退出
           router.push({
             pathname:'/user/login',
           });
-
         }
       }
     });
