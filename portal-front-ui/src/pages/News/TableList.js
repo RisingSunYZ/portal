@@ -15,11 +15,11 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount () {
-    const { match: { params }, dispatch } = this.props;
+    const { location: { query }, dispatch } = this.props;
     dispatch({
       type: 'newsNotice/queryNoticeList',
       payload: {
-        typeSn: params.typeSn,
+        typeSn: query.typeSn,
         pageSize: 15,
         pageNum: 1,
       }
@@ -61,7 +61,7 @@ export default class TableList extends PureComponent {
 
     const {
       newsNotice:{ tblist },
-      match: { params }
+      location: { query }
     } = this.props;
     const columns = [
       {
@@ -70,7 +70,7 @@ export default class TableList extends PureComponent {
         key: 'title',
         width: 700,
         render: (text, record) => (
-          <a href={`/portal/news-notice/detail/notice/${params.typeSn}/${record.id}`} title={text} target="_blank">{text}</a>
+          <a href={`/portal/news-notice/detail/notice/${query.typeSn}/${record.id}`} title={text} target="_blank">{text}</a>
         )
       },
       {
@@ -91,12 +91,12 @@ export default class TableList extends PureComponent {
     ];
     return (
       <PageHeaderWrapper>
-        <Card bordered={false} bodyStyle={{padding: '16px 24px'}}>
-          <Row style={{marginBottom: 16}}>
-            <Col offset={19} span={5}>
-              <Input.Search placeholder="新闻/公告" onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} />
-            </Col>
-          </Row>
+        <Row style={{marginTop: -60}}>
+          <Col offset={18} span={5}>
+            <Input.Search placeholder="新闻/公告" onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} />
+          </Col>
+        </Row>
+        <Card bordered={false} bodyStyle={{padding: '16px '}} style={{marginTop:20}}>
           <Table
             bordered
             columns={columns}

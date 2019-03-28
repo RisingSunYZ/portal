@@ -16,6 +16,7 @@ export default class TableList extends PureComponent {
   state = {
     visible: false,
     typeId: '',
+    activeKey: 'finance_expense'
   };
 
   componentDidMount() {
@@ -42,6 +43,12 @@ export default class TableList extends PureComponent {
 
   tabsChange = (activeKey) => {
     this.downloadFile(activeKey);
+  };
+
+  expenseAndProChange = (activeKey) => {
+    this.setState({
+      activeKey: activeKey
+    })
   };
 
   adviceClick = () => {
@@ -103,6 +110,10 @@ export default class TableList extends PureComponent {
 
     const files = materialFiles.data ? materialFiles.data : [];
 
+    const path = () => {
+      return  "/news/basic-list/home_notice.jhtml?typeSn="+this.state.activeKey;
+    };
+
     return (
       <Fragment>
         <Card bordered={false} bodyStyle={{padding: 0}} >
@@ -115,7 +126,7 @@ export default class TableList extends PureComponent {
               </Card>
             </Col>
             <Col offset={1} span={14}>
-              <Tabs defaultActiveKey="a" tabBarExtraContent={<a> 更多> </a>}>
+              <Tabs defaultActiveKey="a" tabBarExtraContent={<a  href="/news/table-list/home_notice.jhtml?typeSn=finance_notice"> 更多> </a>}>
                 <Tabs.TabPane tab="财务公告" key="a">
                   <NewsNotice typeSn="finance_notice" pageSize={5}/>
                 </Tabs.TabPane>
@@ -124,18 +135,18 @@ export default class TableList extends PureComponent {
           </Row>
           <Row style={{paddingTop: 30}}>
             <Col span={9}>
-              <Tabs defaultActiveKey="b" tabBarExtraContent={<a> 更多> </a>} >
+              <Tabs defaultActiveKey="b" tabBarExtraContent={<a href="/news/basic-list/home_notice.jhtml?typeSn=finance_info"> 更多> </a>} >
                 <Tabs.TabPane tab="财经资讯" key="b">
                   <NewsNotice typeSn="finance_info" pageSize={7}/>
                 </Tabs.TabPane>
               </Tabs>
             </Col>
             <Col offset={1} span={14}>
-              <Tabs defaultActiveKey="c" tabBarExtraContent={<a> 更多> </a>} >
-                <Tabs.TabPane tab="费用报销专栏" key="c">
+              <Tabs onChange={this.expenseAndProChange} tabBarExtraContent={<a href={path()}> 更多> </a>} >
+                <Tabs.TabPane tab="费用报销专栏" key="finance_expense">
                   <NewsNotice typeSn="finance_expense" pageSize={7}/>
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="项目核算专栏" key="d">
+                <Tabs.TabPane tab="项目核算专栏" key="finance_pro">
                   <NewsNotice typeSn="finance_pro" pageSize={7}/>
                 </Tabs.TabPane>
               </Tabs>
@@ -146,16 +157,16 @@ export default class TableList extends PureComponent {
               <Tabs.TabPane tab="资料下载" key="download" >
                 <Tabs onChange={this.tabsChange} tabBarExtraContent={<a> 更多> </a>}>
                   <Tabs.TabPane tab="管理制度" key="8a8a8c3a5ec10cf2015f04049ce9033d" >
-                    <FileList files={files}/>
+                    <FileList files={files} showDel={false}/>
                   </Tabs.TabPane>
                   <Tabs.TabPane tab="项目核算" key="8a8a8c3a5ec10cf2015ec2907a59000e" >
-                    <FileList files={files}/>
+                    <FileList files={files} showDel={false}/>
                   </Tabs.TabPane>
                   <Tabs.TabPane tab="费用报销" key="8a8a8c3a5ec10cf2015ec2901e94000d" >
-                    <FileList files={files}/>
+                    <FileList files={files} showDel={false}/>
                   </Tabs.TabPane>
                   <Tabs.TabPane tab="财务报告" key="8a8a8c3a5f04d252015f4d14027f0048" >
-                    <FileList files={files}/>
+                    <FileList files={files} showDel={false}/>
                   </Tabs.TabPane>
                 </Tabs>
               </Tabs.TabPane>
