@@ -28,7 +28,8 @@ export default class AddressBook extends PureComponent {
     visible:false ,//弹窗初始化状态
     ModalTextAdd:'',
     pagination: { pageIndex: 0, pageSize: 10 },
-    query:{}
+    query:{},
+    nos:""
   };
 
   componentDidMount(){
@@ -107,8 +108,24 @@ export default class AddressBook extends PureComponent {
   };
 
 
+  onSelectChange=(selectedRowKeys, selectedRows) => {
+    let no = '';
+    for(let i=0;i<selectedRows.length; i++){
+      no += selectedRows[i].no+",";
+    }
+    if(no.length>0) no=no.substr(0,no.length-1);
+
+    this.setState({
+      selectedRowKeys,
+      nos:no
+    })
+    console.log(no)
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  }
+
   // 添加到常用联系人
   addContactPer = ()=> {
+    debugger;
     const { dispatch }=this.props;
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
@@ -130,7 +147,7 @@ export default class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/addContactPer',
-        payload:{contactNo:selectedRowKeys}
+        payload:{contactNo:this.state.nos}
       })
     }
   };
@@ -158,7 +175,7 @@ export default class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/delContactPer',
-        payload: {contactNo:selectedRowKeys}
+        payload: {contactNo:this.state.nos}
       })
     }
   };
@@ -186,17 +203,7 @@ export default class AddressBook extends PureComponent {
 
 
 
-  onSelectChange=(selectedRowKeys, selectedRows) => {
-      let nos = '';
-      for(let i=0;i<selectedRowKeys.length; i++){
-      nos += selectedRowKeys[i]+",";
-    }
-    if(nos.length>0) nos=nos.substr(0,nos.length-1);
 
-    this.setState({selectedRowKeys:nos})
-    console.log(nos)
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  }
 
   render() {
     const {
