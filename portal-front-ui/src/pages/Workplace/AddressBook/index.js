@@ -212,7 +212,11 @@ export default class AddressBook extends PureComponent {
     const columns = [{
       title: '姓名',
       dataIndex: 'name',
-      width: 150
+      width: 150,
+      render:(text,record)=> {
+        return record.gender == 1 ? <span><Icon type="smile" theme="twoTone"/> {text} </span> :
+          <span><Icon type="heart" theme="twoTone" twoToneColor="#eb2f96"/> {text} </span>
+      }
     },
       {
         title: '工号',

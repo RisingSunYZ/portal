@@ -1,6 +1,6 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Tabs, Icon, Row, Col,Input, Card, Modal } from 'antd';
+import { Tabs, Icon, Row, Col,Input, Card, Modal,Badge } from 'antd';
 import styles from './index.less';
 import Link from 'umi/link';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
@@ -19,7 +19,6 @@ const { Meta } = Card;
 }))
 
 export default class MeetingRoom extends PureComponent {
-  searchFormObj = {};
 
   state = {
     selectedKey: '',
@@ -27,7 +26,9 @@ export default class MeetingRoom extends PureComponent {
     visibleModal:false,
     type:1,
     modelId:"",
-    cardType:1
+    cardType:1,
+    pagination: { pageIndex: 0, pageSize: 10 },
+    query:{}
   };
 
   callback=(key)=> {
@@ -40,76 +41,96 @@ export default class MeetingRoom extends PureComponent {
   // 加载会议页面内容
   componentDidMount(){
     const {dispatch} =this.props;
-
+    const params={
+      pageIndex:this.state.pagination.pageIndex,
+      pageSize:this.state.pagination.pageSize
+    };
     //加载 历史会议 数据
     dispatch({
       type: 'meetingRoom/getHistoryData',
-      payload:{}
+      payload:params
     });
 
     //加载 待开会议 数据
     dispatch({
       type: 'meetingRoom/getWaitStartData',
-      payload:{}
+      payload:params
     });
 
     // 加载 我的草稿会议 数据
-
     dispatch({
       type: 'meetingRoom/getDraftData',
-      payload:{}
+      payload:params
     });
 
     // 加载 我的邀请会议 数据
     dispatch({
       type: 'meetingRoom/getMyInviteData',
-      payload:{}
+      payload:params
+    });
+
+    this.setState({
+      query:params
     })
   }
 
-  selectNode(selectedKeys, e) {
-    if (e.selected) {
-      this.searchFormObj.categoryId = selectedKeys[0];
-      this.props.dispatch({
-        type: 'meetingRoom/getModelList',
-        payload: { categoryId: selectedKeys[0] },
+  // 搜索会议
+  doSearchMeeting=(value)=> {
+
+    console.log(value);
+    const { dispatch }=this.props;
+    const cardType=this.state.cardType;
+    const params={
+      theme:value,
+      pageIndex:this.state.pagination.pageIndex,
+      pageSize:this.state.pagination.pageSize
+    };
+
+    if(cardType==1){
+      dispatch({
+        type: 'meetingRoom/getWaitStartData',
+        payload: params
       });
       this.setState({
-        selectedKey: selectedKeys[0],
+        query:params
+      })
+    }else if(cardType==2){
+      dispatch({
+        type: 'meetingRoom/getMyInviteData',
+        payload:params
       });
+      this.setState({
+        query:params
+      })
+    }else if(cardType==3){
+      dispatch({
+        type: 'meetingRoom/getHistoryData',
+        payload:params
+      });
+      this.setState({
+        query:params
+      })
+    }else{
+      dispatch({
+        type: 'meetingRoom/getDraftData',
+        payload:params
+      });
+      this.setState({
+        query:params
+      })
     }
-  }
-  doSearch(modelName) {
-    this.searchFormObj.name = modelName;
-    //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
-    this.props.dispatch({
-      type: 'meetingRoom/getModelList',
-      payload: {
-        name: modelName,
-        categoryId: this.state.selectedKey == 'myDraft' ? this.state.selectedKey : '',
-      },
-    });
-  }
+  };
 
-  handleDel(businessKey) {
-    this.props.dispatch({
-      type: 'meetingRoom/delDraft',
-      payload: {
-        businessKey: businessKey,
-      },
-    });
-  }
+
 
   selectCallback = (datas,id) => {
    const {dispatch} =this.props;
-   debugger;
    dispatch({
      type: 'meetingRoom/saveRecordPer',
      payload:{
        personName:datas[0].name,
        personNo:datas[0].no,
        meetingId:id,
-
      }
    });
   };
@@ -129,7 +150,6 @@ export default class MeetingRoom extends PureComponent {
 
   handleOk = (id,type) => {
     const { dispatch }=this.props;
-    // debugger;
     if(type==1){
 
       // 点击删除，删除草稿会议卡片
@@ -153,7 +173,6 @@ export default class MeetingRoom extends PureComponent {
       },100)
 
     } else if(type==2) {
-      debugger;
       // 点击删除，删除记录人
       dispatch({
         type:'meetingRoom/delRecordPerson',
@@ -241,20 +260,15 @@ export default class MeetingRoom extends PureComponent {
       loading,
       match
     } = this.props;
-    const { visible ,visibleModal,type}=this.state;
+    const { type}=this.state;
     const tab = match.params.tab ? match.params.tab:1;
     const cardType = this.state.cardType?this.state.cardType:tab;
 
-    const a=(cardType)=>{
-      if(this.state.cardType==2){
-
-      }
-    }
     const cardData=(item,cardType)=>{
       return (
         <div>
           <div className={styles.img}>
-            <img src="http://pic31.nipic.com/20130802/13163193_145819676170_2.jpg" style={{width:'100%' ,height: '100%'}}/>
+            <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553760114282&di=732bf7b82482ea4c9542111736406cd5&imgtype=0&src=http%3A%2F%2Fwww.zf3d.com%2FUpload%2Fzuopin%2Fs_QQ%25E6%2588%25AA%25E5%259B%25BE20160712094859_zf3d_201671294912428.jpg" style={{width:'100%' ,height: '100%'}}/>
           </div>
           <ul className={styles.descLeft}>
             <li className={styles.liTitle}>{item.theme}</li>
@@ -337,7 +351,7 @@ export default class MeetingRoom extends PureComponent {
                     <Col span={20}>
                       <div>
                         {item.mandatoryPersonName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        {item.optionalPersonList.length>0 ? (<span>可选人员 ( {item.optionalPersonName} ) </span>):('')}&nbsp;&nbsp;
+                        {item.optionalPersonList && item.optionalPersonList.length>0 ? (<span>可选人员 ( {item.optionalPersonName} ) </span>):('')}&nbsp;&nbsp;
                         <span style={{color:'#2596FF',fontSize:'12px',cursor:'pointer'}} onClick={this.downLoad}>
                           <Icon type="file" theme="filled" />
                           <span>导出参会人员</span>
@@ -392,11 +406,11 @@ export default class MeetingRoom extends PureComponent {
             </Link>
           </Col>
           <Col span={5}>
-            <Search placeholder="请搜索" onSearch={value => console.log(value)} style={{position:'relative',top: -8}}/>
+            <Search placeholder="请搜索" onSearch={this.doSearchMeeting} style={{position:'relative',top: -8}}/>
           </Col>
         </Row>
         <Tabs defaultActiveKey={tab} onChange={this.callback} type="card">
-          <TabPane tab="待开会议" key="1">
+          <TabPane tab={<span>待开会议<Badge count={listWait.length} style={{ backgroundColor: '#FF3D00', color: '#fff', boxShadow: '0 0 0 1px #d9d9d9 inset',left:4,top:-2 ,fontSize:16}} /></span>} key="1">
             {
               listWait!==undefined && listWait.length>0 ?
               loopCard(listWait,1):

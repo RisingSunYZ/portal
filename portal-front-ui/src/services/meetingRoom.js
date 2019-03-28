@@ -1,6 +1,4 @@
 import request from '../utils/request';
-import { stringify } from 'qs';
-
 
 /**
  * 删除记录人
@@ -19,7 +17,6 @@ export async function delRecordPersons(params){
  * @returns {Promise<Object>}
  */
 export async function getRecordPer(params) {
-  debugger;
   return request('/rest/portal/rscmgmt/meeting/insertPersonnel', {
     method: 'POST',
     body: params,
@@ -55,7 +52,6 @@ export async function sendInviteData(params) {
  * @returns {Promise<Object>}
  */
 export async function saveDraftData(params) {
-  debugger;
   return request('/rest/portal/rscmgmt/meeting/save', {
     method: 'POST',
     body: params,
@@ -66,32 +62,52 @@ export async function saveDraftData(params) {
  * 加载 历史会议 数据
  * @returns {Promise<Object>}
  */
-export async function getHistoryData(){
-  return request(`/rest/portal/rscmgmt/meeting/ajaxHistoryList`);
+export async function getHistoryData(params){
+  let data="";
+  for(var key in params){
+    data += key + '=' + params[key] + '&';
+  }
+  if(data.length>0) data=data.substr(0,data.length-1);
+  return request(`/rest/portal/rscmgmt/meeting/ajaxHistoryList?`+data);
 }
 
 /**
  * 加载 待开会议 数据
  * @returns {Promise<Object>}
  */
-export async function getWaitStartData(){
-  return request(`/rest/portal/rscmgmt/meeting/ajaxList`);
+export async function getWaitStartData(params){
+  let data="";
+  for(var key in params){
+    data += key + '=' + params[key] + '&';
+  }
+  if(data.length>0) data=data.substr(0,data.length-1);
+  return request(`/rest/portal/rscmgmt/meeting/ajaxList?`+data);
 }
 
 /**
  * 加载 我的草稿会议 数据
  * @returns {Promise<Object>}
  */
-export async function getDraftData(){
-  return request(`/rest/portal/rscmgmt/meeting/ajaxMyDraftList`);
+export async function getDraftData(params){
+  let data="";
+  for(var key in params){
+    data += key + '=' + params[key] + '&';
+  }
+  if(data.length>0) data=data.substr(0,data.length-1);
+  return request(`/rest/portal/rscmgmt/meeting/ajaxMyDraftList?`+data);
 }
 
 /**
  * 加载 我的邀请会议 数据
  * @returns {Promise<Object>}
  */
-export async function getMyInviteData(){
-  return request(`/rest/portal/rscmgmt/meeting/ajaxMyList`);
+export async function getMyInviteData(params){
+  let data="";
+  for(var key in params){
+    data += key + '=' + params[key] + '&';
+  }
+  if(data.length>0) data=data.substr(0,data.length-1);
+  return request(`/rest/portal/rscmgmt/meeting/ajaxMyList?`+data);
 }
 
 /**

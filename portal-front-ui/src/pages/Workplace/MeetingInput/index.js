@@ -109,7 +109,6 @@ export default class MeetingInput extends PureComponent {
     fieldsValue.mandatoryPersonName=str;
     fieldsValue.mandatoryPersonNo = mandaNo
 
-debugger;
     // 格式化 可选人员
     let optionPer=fieldsValue.optionalPersonList;
     let str0="";
@@ -166,7 +165,7 @@ debugger;
       console.log(fieldsValue)
       if(err) return;
      // debugger;
-      if(fieldsValue.theme==undefined || fieldsValue.mandatoryPersonName==undefined || fieldsValue.meetingroomName==undefined){
+      if(fieldsValue.theme==undefined || fieldsValue.mandatoryPersonName=="" || fieldsValue.meetingroomName==undefined){
         //点击显示 弹出框
         this.setState({
           visible: true,

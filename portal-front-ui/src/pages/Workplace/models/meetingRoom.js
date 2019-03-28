@@ -16,19 +16,19 @@ import { message } from 'antd';
 
 export default {
   state: {
-    draftData: {
+    draftData: {     //草稿会议数据
       listDraft: [],
     },
 
-    waitData:{
+    waitData:{      //代开会议数据
       listWait:[]
     },
 
-    historyData:{
+    historyData:{   //历史会议数据
       listHistory:[]
     },
 
-    inviteData:{
+    inviteData:{    //我的邀请数据
       listInvita:[]
     },
 
@@ -75,7 +75,6 @@ export default {
           payload:response.data.data
         })
       }
-
     },
 
     /**
