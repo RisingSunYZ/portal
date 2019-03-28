@@ -110,9 +110,7 @@ export default class TableList extends PureComponent {
 
     const files = materialFiles.data ? materialFiles.data : [];
 
-    const path = () => {
-      return  "/news/basic-list/home_notice.jhtml?typeSn="+this.state.activeKey;
-    };
+    const path = "/news/basic-list/home_notice.jhtml?typeSn="+this.state.activeKey;
 
     return (
       <Fragment>
@@ -142,7 +140,7 @@ export default class TableList extends PureComponent {
               </Tabs>
             </Col>
             <Col offset={1} span={14}>
-              <Tabs onChange={this.expenseAndProChange} tabBarExtraContent={<a href={path()}> 更多> </a>} >
+              <Tabs onChange={this.expenseAndProChange} tabBarExtraContent={<a href={path}> 更多> </a>} >
                 <Tabs.TabPane tab="费用报销专栏" key="finance_expense">
                   <NewsNotice typeSn="finance_expense" pageSize={7}/>
                 </Tabs.TabPane>
