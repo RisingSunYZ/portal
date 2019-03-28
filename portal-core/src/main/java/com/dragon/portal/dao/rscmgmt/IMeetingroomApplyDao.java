@@ -112,15 +112,13 @@ public interface IMeetingroomApplyDao {
 	 */
 	public void updateMeetingroomApplyByIds(Map<String,Object> map) throws Exception;
 	/**
-	 * 查询在开始和结束时间内是否有记录
-	 * @param startTime
-	 * @param endTime
-	 * @return
-	 * @throws Exception
-	 * @Description:
-	 * @author v-zhaohaishan 2017年4月17日 上午10:31:00
-	 */
-	public int countMeetingroomApplyByTime(String meetingroomId,String appluNo,String startTime,String endTime) throws Exception;
+	 * @Author YangZhao
+	 * @Description 查询在开始和结束时间内是否有记录
+	 * @Date 15:44 2019/3/22
+	 * @Param [map]
+	 * @return int
+	 **/
+	public int countMeetingroomApplyByTime(Map<String,Object> map) throws Exception;
 	
 	/**
 	 *  

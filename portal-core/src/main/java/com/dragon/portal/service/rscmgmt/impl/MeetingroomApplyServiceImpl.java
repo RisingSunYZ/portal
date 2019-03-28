@@ -38,6 +38,7 @@ import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.user.Department;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -277,26 +278,24 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
                 //日期加一天
                 startDate = CommUtils.getStringToDate(DateAndWeekUtils.addDay(CommUtils.getDateString(startDate, sdf), 1), sdf);
             }
-//			for(MeetingroomApply temp : meetingroomApplyList){
-//				temp.setTaskId(taskId);
-//			}
             //批量插入数据
-            this.meetingroomApplyDao.insertMeetingroomApplyByList(meetingroomApplyList);
-            //待神审批的会议审核发送工作流
-            if (meetingroomApplyList.get(0).getStatus() == MeetingApplyStatusEnum.WAIT_APPROVE.getCode()) {
-                //工作流
-                taskId = startOAProcessInstance(meetingroomApplyVo, applyNo);
-                MeetingroomApply meetingroomApply = new MeetingroomApply();
-                meetingroomApply.setApplyNo(meetingroomApplyVo.getApplyNo());
-                meetingroomApply.setTaskId(taskId);
-                meetingroomApplyDao.updateMeetingroomApplyByApplyNo(meetingroomApply);
+            if(CollectionUtils.isNotEmpty(meetingroomApplyList)){
+                this.meetingroomApplyDao.insertMeetingroomApplyByList(meetingroomApplyList);
+                //待神审批的会议审核发送工作流
+                if (meetingroomApplyList.get(0).getStatus() == MeetingApplyStatusEnum.WAIT_APPROVE.getCode()) {
+                    //工作流
+                    taskId = startOAProcessInstance(meetingroomApplyVo, applyNo);
+                    MeetingroomApply meetingroomApply = new MeetingroomApply();
+                    meetingroomApply.setApplyNo(meetingroomApplyVo.getApplyNo());
+                    meetingroomApply.setTaskId(taskId);
+                    meetingroomApplyDao.updateMeetingroomApplyByApplyNo(meetingroomApply);
+                }
             }
             //如果会议室不需要审批 发送短信
             if (meetingroomApplyVo.getStatus() == MeetingApplyStatusEnum.APPROVE.getCode()) {
                 //发短信
                 this.sendSmsInfo(meetingroomApplyVo);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             returnVo.setResponseMsg("申请会议室异常！");
@@ -374,7 +373,12 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
      * @author v-zhaohaishan 2017年4月17日 上午10:22:17
      */
     private boolean meetingroomValidate(String meetingroomId, String applyNo, String startTime, String endTime) throws Exception {
-        if (this.meetingroomApplyDao.countMeetingroomApplyByTime(meetingroomId, applyNo, startTime, endTime) > 0) {
+        Map<String,Object> params = new HashMap<String, Object>();
+        params.put("meetingroomId", meetingroomId);
+        params.put("startTime", startTime);
+        params.put("endTime", endTime);
+        params.put("applyNo", applyNo);
+        if (this.meetingroomApplyDao.countMeetingroomApplyByTime(params) > 0) {
             return false;
         }
         return true;

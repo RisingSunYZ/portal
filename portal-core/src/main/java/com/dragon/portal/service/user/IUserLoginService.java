@@ -3,6 +3,7 @@ package com.dragon.portal.service.user;
 
 import com.dragon.tools.vo.ReturnVo;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -21,7 +22,7 @@ public interface IUserLoginService{
      * @return
      * @throws Exception
      */
-    public ReturnVo updateCheckLogin(String username ,String password, HttpSession session)throws Exception;
+    public ReturnVo updateCheckLogin(String username ,String password, HttpSession session, HttpServletResponse response)throws Exception;
 
     /**
      * 获取手机验证码
@@ -65,6 +66,6 @@ public interface IUserLoginService{
      * @Param [password, session]
      * @return com.dragon.tools.vo.ReturnVo
      **/
-    public ReturnVo loginCallback(String userNo, HttpSession session) throws Exception;
+    public ReturnVo loginCallback(String userNo, HttpSession session, HttpServletResponse response) throws Exception;
 
 }

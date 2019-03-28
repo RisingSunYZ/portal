@@ -198,7 +198,7 @@ class BasicLayout extends React.PureComponent {
               ]}
               copyright={
                 <React.Fragment>
-                  Copyright <Icon type="copyright" /> 2018 亚厦股份技术开发部出品
+                  Copyright <Icon type="copyright" /> 2018 亚厦集团出品
                 </React.Fragment>
               }
             />

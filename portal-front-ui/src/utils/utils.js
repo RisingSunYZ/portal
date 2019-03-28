@@ -5,8 +5,7 @@ import { message } from 'antd';
 export function getConfig() {
   const config = {
     domain:'http://hometest.chinayasha.com',
-    localMain:'http://localhost:8001/portal-ui/main/workplace',
-    appName: 'portal-ui',
+    appName: 'eip',
     appVision: '0.1',
     appAuthor: 'xietongjian',
     email: 'xietongjian@chinayasha.com',
@@ -23,7 +22,8 @@ export function getConfig() {
     zsStaffId : '1815233',
     idmLoginSwitch : false,// 是否启用IDM登录
     idmBaseUrl:'https://idmtest.chinayasha.com:8443/siam/login',// IDM登录服务
-    idmLoginCallbackUrl:'http://portaldev.chinayasha.com:8889/rest/user/userLogin',// IDM登录回调URL
+    idmLoginCallbackUrl:'http://homedev.chinayasha.com/rest/user/userLogin',// IDM登录回调URL
+    idmLogoutUrl:'https://idmtest.chinayasha.com:8443/siam/logout',// IDM 退出请求地址
   };
 
   if(window.location.hostname.indexOf('hometest.chinayasha.com')!==-1){

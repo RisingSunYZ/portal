@@ -1,5 +1,7 @@
 import request from '../utils/request';
 import { stringify } from 'qs';
+import { getConfig } from '@/utils/utils';
+
 
 export async function query() {
   return request('/api/users');
@@ -42,6 +44,15 @@ export async function accountLogin(params) {
     method: 'POST',
     body: params,
   });
+}
+
+
+/**
+ * 退出登录 - IDM
+ * @returns {Promise<Object>}
+ */
+export async function logOutIdmSyn() {
+  return request(getConfig().idmLogoutUrl+"?t=" + Math.random(), {method:'GET'});
 }
 
 

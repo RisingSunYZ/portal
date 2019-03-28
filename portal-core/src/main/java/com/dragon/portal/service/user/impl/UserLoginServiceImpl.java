@@ -1,15 +1,21 @@
 
 package com.dragon.portal.service.user.impl;
 
+import com.dragon.portal.component.IUserLoginComponent;
 import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.dao.user.IUserLoginDao;
 import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.service.user.IUserLoginService;
+import com.dragon.portal.util.CryptUtils;
+import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
+import com.dragon.portal.vo.user.UserSessionRedisInfo;
+import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.MD5Util;
 import com.dragon.tools.common.ReturnCode;
+import com.dragon.tools.utils.CookiesUtil;
 import com.dragon.tools.vo.ReturnVo;
 import com.mhome.se.api.ISendSmsApi;
 import com.mhome.se.eum.SmsModeTypeEnum;
@@ -27,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +65,8 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	private IPersonnelApi personnelApi;
 	@Resource
 	private IOrgApi orgApi;
+	@Autowired
+	private IUserLoginComponent userLoginComponent;
 
 	private static Logger logger = Logger.getLogger(UserLoginServiceImpl.class);
 	/**
@@ -68,7 +77,7 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	 * @return
 	 * @throws Exception
 	 */
-	public ReturnVo updateCheckLogin(String username , String password, HttpSession session)throws Exception{
+	public ReturnVo updateCheckLogin(String username , String password, HttpSession session, HttpServletResponse response)throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"用户或密码错误！");
 		UserLogin userLogin = new UserLogin();
 		userLogin.setUserName(username);
@@ -88,7 +97,7 @@ public class UserLoginServiceImpl implements IUserLoginService {
 			//保存session
 			session.setAttribute(PortalConstant.SESSION_USER_UID, user.getUserName());
 			// session.setAttribute(PortalConstant.SYS_USER, user);
-			this.loginCallback(user.getUserNo(),session);
+			this.loginCallback(user.getUserNo(),session, response);
 		}
 		return returnVo;
 	}
@@ -211,7 +220,7 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	 * @return com.dragon.tools.vo.ReturnVo
 	 */
 	@Override
-	public ReturnVo loginCallback(String userNo, HttpSession session) throws Exception {
+	public ReturnVo loginCallback(String userNo, HttpSession session, HttpServletResponse response) throws Exception {
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"用户信息存储Session失败！");
 		if(StringUtils.isNotBlank(userNo)){
 			com.ys.tools.vo.ReturnVo<PersonnelApiVo> returnVoYs = this.personnelApi.getPersonnelApiVoByNo(userNo);
@@ -229,6 +238,8 @@ public class UserLoginServiceImpl implements IUserLoginService {
 					UserSessionInfo user = genUserSessionInfo(personVo);
 					user.setLeaderDeptList(leaderDeptList);
 					session.setAttribute(PortalConstant.SESSION_SYS_USER, user);
+					UserSessionRedisInfo urInfo = userLoginComponent.getUserSessionRedisInfos(session.getId(), userNo, response);
+					setPersonInfo(user, urInfo, leaderDeptList, response);
 					returnVo = new ReturnVo(ReturnCode.SUCCESS,"用户信息存储Session成功！");
 				}
 			}else{
@@ -236,6 +247,37 @@ public class UserLoginServiceImpl implements IUserLoginService {
 			}
 		}
 		return returnVo;
+	}
+
+	/**
+	 * 把用户登录信息保存到Redis中
+	 * @param leaderDeptList
+	 * @return
+	 */
+	private void setPersonInfo(UserSessionInfo u, UserSessionRedisInfo usIdInfo, List<LeaderDepartmentVo> leaderDeptList, HttpServletResponse response) {
+		if(!CommUtils.isNull(u)) {
+			String userStr = JsonUtils.toJson(u);
+
+			//设置用户信息到Redis中
+			usIdInfo.putValue(PortalConstant.SESSION_PERSON_INFO, userStr);
+			//设置用户领导部门集合到Redis中
+
+			if(CollectionUtils.isNotEmpty(leaderDeptList)){
+				String userLeaderDeptListStr = JsonUtils.toJson(leaderDeptList);
+				usIdInfo.putValue(PortalConstant.SESSION_PERSON_LEADERDEPT_INFO, userLeaderDeptListStr);
+			}
+
+			String urid = u.getNo();
+			try {
+				urid = CryptUtils.getCryPasswd(PortalConstant.USER_REDIS_ID_PREFIX+u.getNo());
+
+				CookiesUtil.crossDomainPut(response, PortalConstant.COOKIE_USERNAME, u.getNo());
+			} catch (Exception e) {
+				logger.error("用户工号加密异常！" + e);
+				e.printStackTrace();
+			}
+			userLoginComponent.putUserSessionRedisInfo(urid, usIdInfo);
+		}
 	}
 
 	/**
