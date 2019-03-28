@@ -74,6 +74,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/addrbook/': '' },
     },
+    '/website/tools/': {
+      target: 'http://homedev.chinayasha.com/website/tools/',
+      changeOrigin: true,
+      pathRewrite: { '^/website/tools/': '' },
+    },
     '/portal/': {
       target: 'http://hometest.chinayasha.com',
       changeOrigin: true,

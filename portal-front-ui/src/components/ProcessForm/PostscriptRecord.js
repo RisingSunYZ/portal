@@ -3,6 +3,7 @@ import styles from './index.less';
 import { Card, Timeline, Icon, Button, Input, Upload, Collapse  } from 'antd';
 import config from '../Exception/typeConfig';
 import classNames from 'classnames';
+import Plupload from "@/components/Plupload";
 import { message } from 'antd/lib/index';
 import PostscriptList from './PostscriptList';
 import { connect } from 'dva/index';
@@ -94,27 +95,12 @@ export default class PostscriptRecord extends Component {
     }
 
     // 上传组件相关属性配置
-    const uploadProps = {
-      name: 'file',
-      action: getConfig().domain + '/website/tools/fileUpload/uploadFile.jhtml?filePath=form',
-      multiple: true,
-      accept: '.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt,.pdf,image/jpg,image/jpeg,image/png,image/bmp',
-      showUploadList: false,
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          dispatch({
-            type: 'processForm/addPostScriptsFiles',
-            payload: info.file,
-          });
-        }
-        if (info.file.status === 'done' && info.file.response && info.file.response.responseCode == 1 ) {
-          message.success(`${info.file.name} 文件上传成功`);
-        } else if (info.file.status === 'error' || (info.file.response &&info.file.response.responseCode == 0)) {
-          message.error(`${info.file.name} 文件上传失败.`);
-        }
-      },
-      defaultFileList: fileLists,
-    };
+    const mime_types = [
+      { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
+      { title: 'Office files', extensions: 'pdf,txt,doc,docx,ppt,pptx,xls,xlsx' },
+      { title: 'Zip files', extensions: 'zip,rar' },
+      { title: 'Cad files', extensions: 'dwg' },
+    ];
 
     return (
       <Collapse onChange={this.changeKey.bind(this)} className={[styles.collapse,styles.fuyan]}  style={{ border:'none',marginBottom: 8 }} activeKey={ this.state.showPost >0 ? [ '1' ]: ['']}>
@@ -136,11 +122,10 @@ export default class PostscriptRecord extends Component {
               }}
               autosize={{ minRows: 2, maxRows: 6 }}
             />
-            <Upload style={{ display: this.props.print > 0  ? 'none' : '' }} {...uploadProps}>
-              <Button style={{ marginTop: '24px' }} icon="upload">
-                上传附件
-              </Button>
-            </Upload>
+
+            <div style={{ display: this.props.print > 0  ? 'none' : '',marginTop: '24px' }}>
+              <Plupload url={"/website/tools/fileUpload/uploadFile.jhtml?filePath=form"} saveDataCall={"processForm/addPostScriptsFiles"} idName={"addPostBtn"} mime_types={mime_types}>上传附件</Plupload>
+            </div>
             <div style={{ display: this.props.print > 0 ? 'none' : '',color:'rgba(0, 0, 0, .45)', margin:'16px 0' }}>
               支持扩展名：.rar .zip .doc .docx .pdf .jpg...
             </div>

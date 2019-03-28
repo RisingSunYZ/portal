@@ -470,6 +470,7 @@ export default {
         id: action.payload.uid,
         fileName: action.payload.name,
         fileUrl: action.payload.response ? action.payload.response.responseMsg : '',
+        // fileUrl: action.payload.response.responseMsg,
         fileSize: action.payload.size,
         ...action.payload,
       };

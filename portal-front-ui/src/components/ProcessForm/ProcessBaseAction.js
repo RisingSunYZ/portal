@@ -1,8 +1,9 @@
 import React, { Component, PureComponent, Fragment } from 'react';
-import { Button, Icon,Row,Col, Modal, Popover, Upload, message } from 'antd';
+import { Button, Icon,Row,Col, Modal, Popover, message } from 'antd';
 import { connect } from 'dva';
 import { ProcessSelector } from '../Selector';
 import { changeParam, getConfig, nullToZero } from '@/utils/utils';
+import Plupload from "@/components/Plupload";
 import styles from "./index.less"
 import router from 'umi/router';
 
@@ -179,16 +180,6 @@ class ProcessBaseAction extends Component {
     }
   };
 
-  handleUpload = () => {
-    const { fileList } = this.state;
-    const formData = new FormData();
-    fileList.forEach(file => {
-      formData.append('files[]', file);
-    });
-    // You can use any AJAX library you like
-    message.success('upload successfully.');
-  };
-
   selectProcess = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -225,43 +216,26 @@ class ProcessBaseAction extends Component {
       }
     }
 
-    // 上传组件相关属性配置
-    const uploadProps = {
-      name: 'file',
-      action: getConfig().domain + '/website/tools/fileUpload/uploadFile.jhtml?filePath=form',
-      multiple: true,
-      accept: '.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt,.pdf,image/jpg,image/jpeg,image/png,image/bmp',
-      showUploadList: false,
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          dispatch({
-            type: 'processForm/addProcessFile',
-            payload: info.file,
-          });
-        }
-        if (info.file.status === 'done' && info.file.response && info.file.response.responseCode == 1) {
-          message.success(`${info.file.name} 文件上传成功`);
-        } else if (info.file.status === 'error' || (info.file.response &&info.file.response.responseCode == 0)) {
-          message.error(`${info.file.name} 文件上传失败.`);
-        }
-      },
-      defaultFileList: fileLists,
-    };
-
     const ProcessTip = () => formInfo.formDesc ? (
       <Popover content={<div style={{ width: '200px' }}>{formInfo.formDesc}</div>}>
         <Icon style={{ color: '#3FA3FF', marginLeft: '12px' }} type="info-circle-o" />
       </Popover>
     ) : null;
 
+    // 上传组件相关属性配置
+    const mime_types = [
+      { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
+      { title: 'Office files', extensions: 'pdf,txt,doc,docx,ppt,pptx,xls,xlsx' },
+      { title: 'Zip files', extensions: 'zip,rar' },
+      { title: 'Cad files', extensions: 'dwg' },
+    ];
+
     const ActionBtn = () => {
       return this.props.actionType === 'launch'&& this.props.processForm.formType!='2' && this.props.processForm.formType!='3' ? (
         <Fragment>
           <Popover content="上传附件">
-            <span style={{ marginLeft: '8px' }}>
-              <Upload {...uploadProps}>
-                <Button icon="upload" />
-              </Upload>
+            <span style={{ marginLeft: '8px'}}>
+              <Plupload url={"/website/tools/fileUpload/uploadFile.jhtml?filePath=form"} saveDataCall={"processForm/addProcessFile"} idName={"btn"} mime_types={mime_types}/>
             </span>
           </Popover>
           <Popover content="关联流程">
