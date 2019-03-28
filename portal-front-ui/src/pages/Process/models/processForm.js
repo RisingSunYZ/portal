@@ -236,20 +236,7 @@ export default {
         );
       }
     },
-    * doPrint({ payload }, { call, put }) {
-      yield put(
-        router.push(
-          '/print/form/print/' +
-          payload.modelId +
-          '/' +
-          payload.instId +
-          '/' +
-          payload.bizId +
-          '/' +
-          payload.taskId
-        )
-      );
-    },
+
     * getBackNodes({ payload }, { call, put }) {
       const response = yield call(getBackNodes, payload);
       yield put({

@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { ProcessSelector } from '../Selector';
 import { changeParam, getConfig, nullToZero } from '@/utils/utils';
 import styles from "./index.less"
+import router from 'umi/router';
 
 /**
  * 流程图组件
@@ -127,7 +128,7 @@ class ProcessBaseAction extends Component {
 
   // 打印操作
   doPrint = () => {
-    const { dispatch } = this.props;
+    const { processForm:{modelId, instId, bizId, taskId} } = this.props;
 
     // 打印表单常量对象（特殊表单打印配置）
     const PrintObj = [
@@ -157,29 +158,25 @@ class ProcessBaseAction extends Component {
       }, // 离职证明打印模板
     ];
 
-    const modelKey = this.props.processForm.modelId;
+    let printOpenUrl = null;
     for (let i = 0; i < PrintObj.length; i++) {
-      if (PrintObj[i].modelKey === modelKey) {
+      if (PrintObj[i].modelKey === modelId) {
         let url = PrintObj[i].printUrl;
-        if (this.props.processForm.bizId) {
-          url = changeParam(url, 'bizId', this.props.processForm.bizId);
-          url = changeParam(url, 'modelKey', this.props.processForm.modelId);
-          url = changeParam(url, 'processInstId', this.props.processForm.instId);
+        if (bizId) {
+          url = changeParam(url, 'bizId', bizId);
+          url = changeParam(url, 'modelKey', modelId);
+          url = changeParam(url, 'processInstId', instId);
         }
-        window.open(url);
-        return;
+        printOpenUrl = url;
+        break;
       }
     }
-
-    dispatch({
-      type: 'processForm/doPrint',
-      payload: {
-        modelId: nullToZero(this.props.processForm.modelId),
-        instId: nullToZero(this.props.processForm.instId),
-        bizId: nullToZero(this.props.processForm.bizId),
-        taskId: nullToZero(this.props.processForm.taskId),
-      },
-    });
+    if(printOpenUrl){
+      window.open(printOpenUrl);
+    }else{
+      const printUrl = `/print/form/print/${modelId}/${instId}/${bizId}/${taskId}`;
+      router.push(printUrl);
+    }
   };
 
   handleUpload = () => {
@@ -281,17 +278,9 @@ class ProcessBaseAction extends Component {
       return this.props.processForm.formType!='2' && this.props.processForm.formType!='3' ?(<Popover content="打印">
         <Button
           target="_blank"
-          onClick={this.doPrint}
+          onClick={this.doPrint.bind(this)}
           icon="printer"
           style={{ marginLeft: '8px' }}
-        />
-        <Modal
-          title=""
-          width="100%"
-          visible={this.state.printVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          cancelText=""
         />
       </Popover>):null;
     };
