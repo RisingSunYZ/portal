@@ -20,7 +20,12 @@ export async function queryTreeData() {
  * 查询通讯录人员数据
  */
 export async function getTableList(params) {
-  return request(`/rest/addrbook/addressBook/getPersonnelDataForBook?deptId=${params.deptId}&companyId=${params.companyId}&pageIndex=${params.pageIndex}&pageSize=${params.pageSize}`);
+  let data="";
+  for(var key in params){
+    data+= key + '='+ params[key]+ '&';
+  }
+  if(data.length>0) data= data.substr(0,data.length-1);
+  return request(`/rest/addrbook/addressBook/getPersonnelDataForBook?`+data);
 }
 
 /**

@@ -5,13 +5,12 @@ import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from './index.less';
 import TreeMenu from '../components/TreeMenu';
 import Link from 'umi/link';
-import DeptTree from '../components/DeptTree/DeptTree';
 import { message } from 'antd';
-const TreeNode = Tree.TreeNode;
 
+const TreeNode = Tree.TreeNode;
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 
 
@@ -28,21 +27,21 @@ export default class AddressBook extends PureComponent {
     visibleDrawer: false,
     visible:false ,//弹窗初始化状态
     ModalTextAdd:'',
-    pagination: { pageIndex: 1, pageSize: 10 },
+    pagination: { pageIndex: 0, pageSize: 10 },
     query:{}
   };
 
   componentDidMount(){
     const { dispatch }=this.props;
-    // dispatch({
-    //   type: 'addressBook/getTableList',
-    //   payload: {
-    //     deptId: "1001K31000000002GLCT",
-    //     companyId:"0001K310000000008TK6",
-    //     pageIndex:1,
-    //     pageSize:10
-    //   },
-    // });
+    dispatch({
+      type: 'addressBook/getTableList',
+      payload: {
+        deptId: "1001K31000000002GLCT",
+        companyId:"0001K310000000008TK6",
+        pageIndex:0,
+        pageSize:10
+      },
+    });
   }
 
   //展示隐藏抽屉
@@ -59,27 +58,26 @@ export default class AddressBook extends PureComponent {
   };
 
   selectNode(selectedKeys, e) {
-
     if (e.selected) {
+      const params={
+        deptId: selectedKeys[0],
+        companyId:e.selectedNodes[0].props.companyId,
+        pageIndex:this.state.pagination.pageIndex,
+        pageSize:this.state.pagination.pageSize
+      };
       this.props.dispatch({
         type: 'addressBook/getTableList',
-        payload: {
-          deptId: selectedKeys[0],
-          companyId:e.selectedNodes[0].props.companyId,
-          pageIndex:0,
-          pageSize:10
-        },
+        payload: params
       });
       this.setState({
         selectedKey: selectedKeys[0],
+        query: params
       });
     }
   }
 
   // 点击分页改变时，触发的函数
   handleTableChange = (pagination, filtersArg, sorter) => {
-
-    // this.selectNode(selectedKeys, e);
     const { dispatch } = this.props;
     const query = this.state.query;
     query.pageIndex=pagination.current;
@@ -91,26 +89,22 @@ export default class AddressBook extends PureComponent {
   };
 
 
-  doSearch(modelName) {
-    this.searchFormObj.name = modelName;
-    //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
-    this.props.dispatch({
+  // 搜索table数据
+  doSearch=( value )=>{
+    const { dispatch } = this.props;
+    const params={
+        keyword: value,
+        pageIndex:this.state.pagination.pageIndex,
+        pageSize:this.state.pagination.pageSize
+      };
+    dispatch({
       type: 'addressBook/getTableList',
-      payload: {
-        name: modelName,
-        categoryId: this.state.selectedKey == 'myDraft' ? this.state.selectedKey : '',
-      },
+      payload:params
     });
-  }
-
-  handleDel(businessKey) {
-    this.props.dispatch({
-      type: 'addressBook/delDraft',
-      payload: {
-        businessKey: businessKey,
-      },
-    });
-  }
+    this.setState({
+      query:params
+    })
+  };
 
 
   // 添加到常用联系人
@@ -264,7 +258,6 @@ export default class AddressBook extends PureComponent {
                 headStyle={{ borderLeft: '1px solid #e5e5e5', borderRight: '1px solid #e5e5e5',borderBottom:'2px solid #0E65AF',color:'#0E65AF',fontSize:'14px' }}
                 bodyStyle={{ padding: '0' }}
               >
-                {/*<DeptTree onSelect={this.selectNode} />*/}
                 <TreeMenu onSelect={this.selectNode.bind(this)} />
               </Card>
             </Sider>
@@ -324,7 +317,7 @@ export default class AddressBook extends PureComponent {
                    )}
                  </Col>
                  <Col span={4}>
-                   <Search placeholder="姓名/部门名称" onSearch={value => console.log(value)} style={{position:'relative',top: -8}}/>
+                   <Search placeholder="姓名/部门名称" onSearch={this.doSearch} style={{position:'relative',top: -8}}/>
                    {/*<Search*/}
                    {/*placeholder={*/}
                    {/*this.state.selectedKey == 'TOP-CONTACTS' ? '搜索我的草稿' : '搜索流程模板'*/}
