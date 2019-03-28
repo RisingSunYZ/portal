@@ -27,12 +27,10 @@ export default {
     },
     *queryScheduleList({ payload }, { call, put }) {
       const response = yield call(queryScheduleList, payload);
-      if(response.code === "100"){
-        yield put({
-          type: 'saveScheduleList',
-          payload: response,
-        });
-      }
+      yield put({
+        type: 'saveScheduleList',
+        payload: response,
+      });
     },
     *queryScheduleInfo({ payload }, { call, put }) {
       const response = yield call(queryScheduleInfo, payload);
@@ -67,7 +65,7 @@ export default {
     saveScheduleList(state, action) {
       return {
         ...state,
-        scheduleList: action.payload.data
+        scheduleList: action.payload
       };
     },
     saveScheduleInfo(state, action) {

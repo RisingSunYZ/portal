@@ -1,9 +1,9 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Calendar, Icon, Row, Col, Menu, Dropdown, Table, Input, Card, Modal } from 'antd';
-// import BigCalendar from 'react-big-calendar';
+import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
-// import 'react-big-calendar/lib/css/react-big-calendar.css';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styles from './index.less';
 const localizer = BigCalendar.momentLocalizer(moment);
 @connect(({ schedule, user, loading }) => ({
@@ -21,8 +21,8 @@ export default class Schedule extends PureComponent {
   componentDidMount() {
     const { dispatch, user: { currentUser } } = this.props;
     const { currDate } = this.state;
-    const start = new Date(currDate.year(), currDate.month(), 1);
-    const end = new Date(currDate.year(), currDate.month(), currDate.daysInMonth());
+    const start = `${currDate.year()}-${currDate.month()+1}-1 00:00`;
+    const end = `${currDate.year()}-${currDate.month()+1}-${currDate.daysInMonth()} 23:59`;
     dispatch({
       type: 'schedule/queryScheduleList',
       payload: {
@@ -38,7 +38,6 @@ export default class Schedule extends PureComponent {
       schedule: { scheduleList }
     } = this.props;
     const { currDate } = this.state;
-
     return (
       <Fragment>
         <Card bordered={false} bodyStyle={{padding: 16}}>
@@ -52,8 +51,8 @@ export default class Schedule extends PureComponent {
                   className="schedule-container"
                   localizer={localizer}
                   events={scheduleList}
-                  startAccessor="start"
-                  endAccessor="end"
+                  startAccessor="startTime"
+                  endAccessor="endTime"
                   views={['month', 'week', 'day']}
                 />
               </div>
