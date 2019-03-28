@@ -17,11 +17,11 @@ export default class BasicList extends PureComponent {
   };
 
   componentDidMount () {
-    const { match: { params }, dispatch } = this.props;
+    const { location: { query }, dispatch } = this.props;
     dispatch({
       type: 'newsNotice/queryCompanyNewsList',
       payload: {
-        typeSn: params.typeSn,
+        typeSn: query.typeSn,
         pageSize: 15,
         pageNum: 1,
       }
@@ -29,14 +29,14 @@ export default class BasicList extends PureComponent {
   }
 
   searchHandle = (value) => {
-    const { match: { params }, dispatch } = this.props;
+    const { location: { query }, dispatch } = this.props;
     this.setState({
       searchText: value
     });
     dispatch({
       type: 'newsNotice/queryCompanyNewsList',
       payload: {
-        typeSn: params.typeSn,
+        typeSn: query.typeSn,
         pageNum: 1,
         pageSize: 15,
         title: value,
@@ -45,13 +45,13 @@ export default class BasicList extends PureComponent {
   };
 
   updateNewsTable = (pagination) =>{
-    const { match: { params }, dispatch } = this.props;
+    const { location: { query }, dispatch } = this.props;
     const { searchText } = this.state;
 
     dispatch({
       type: 'newsNotice/queryCompanyNewsList',
       payload: {
-        typeSn: params.typeSn,
+        typeSn: query.typeSn,
         pageNum: pagination.current,
         pageSize: pagination.pageSize,
         title: searchText,
@@ -65,6 +65,8 @@ export default class BasicList extends PureComponent {
       newsNotice:{ tblist }
     } = this.props;
 
+    const tableList = tblist.data ? (tblist.data.data ? tblist.data.data : []) : [];
+
     return (
       <PageHeaderWrapper>
         <Card bordered={false} bodyStyle={{padding: '16px 24px'}}>
@@ -75,7 +77,7 @@ export default class BasicList extends PureComponent {
           </Row>
           <List
             size="large"
-            dataSource={tblist.data}
+            dataSource={tableList}
             pagination={{
               pageSize: 15,
               total: tblist.total,
