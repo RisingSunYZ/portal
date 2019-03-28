@@ -69,12 +69,12 @@ export default class BasicList extends PureComponent {
 
     return (
       <PageHeaderWrapper>
-        <Card bordered={false} bodyStyle={{padding: '16px 24px'}}>
-          <Row style={{marginBottom: 16}}>
-            <Col offset={19} span={5}>
-              <Input.Search placeholder="新闻/公告" onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} />
-            </Col>
-          </Row>
+        <Row style={{marginTop: -60}}>
+          <Col offset={19} span={5}>
+            <Input.Search placeholder="新闻/公告" onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} />
+          </Col>
+        </Row>
+        <Card bordered={false} bodyStyle={{padding: '16px 24px'}} style={{marginTop: 18}}>
           <List
             size="large"
             dataSource={tableList}
