@@ -36,7 +36,7 @@ export default class FileList extends React.Component {
   }
   handelPreview(name, path){
     if(!path){
-      message.error("路径不存在，无法预览！")
+      message.error("路径不存在，无法预览！");
       return;
     }
     if("JPG,JPEG,GIF,BMP,PNG".indexOf(getFileExt(path).toUpperCase()) !== -1){
@@ -56,12 +56,12 @@ export default class FileList extends React.Component {
     this.setState({
       visibleImgBox: false,
     });
-  }
+  };
   handleCancel = (e) => {
     this.setState({
       visibleImgBox: false,
     });
-  }
+  };
 
   componentWillMount() {
     if(this.props.showDel === false){
@@ -93,7 +93,7 @@ export default class FileList extends React.Component {
 
     const formatFileIcon = (filePath)=>{
       return getFileIcon(getFileExt(filePath));
-    }
+    };
 
     return (
       <div className={styles.fileList}>
@@ -104,10 +104,20 @@ export default class FileList extends React.Component {
               <Col span={20} className={styles.fileName}>
                 <div style={{ textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{post.fileName}({convertFileSize(post.fileSize)})</div>
                 <ul className={styles.del}>
-                  <Popover content="下载"><li style={{ width:this.state.showWidth }} onClick={()=>fileDown(post.fileName, post.fileUrl)}><Icon type="download" /></li></Popover>
-                  <Popover content="预览"><li style={{ width:this.state.showWidth }} onClick={()=>this.handelPreview(post.fileName, post.fileUrl)}><Icon type="search" /></li></Popover>
+                  <Popover content="下载">
+                    <li style={{ width:this.state.showWidth }} onClick={()=>fileDown(post.fileName, post.fileUrl)}>
+                      <Icon type="download" />
+                    </li>
+                  </Popover>
+                  <Popover content="预览">
+                    <li style={{ width:this.state.showWidth }} onClick={()=>this.handelPreview(post.fileName, post.fileUrl)}>
+                      <Icon type="search" />
+                    </li>
+                  </Popover>
                   <Popover content="删除">
-                    <Popconfirm title="确定要删除吗?" onConfirm={this.confirm.bind(this, post.id, index)} onCancel={this.cancel} okText="确定" cancelText="取消">
+                    <Popconfirm title="确定要删除吗?" onConfirm={this.confirm.bind(this, post.id, index)}
+                                onCancel={this.cancel} okText="确定" cancelText="取消"
+                    >
                       <li style={{ display: this.state.showDel ? 'inline-block' : 'none'}} ><Icon type="delete" /></li>
                     </Popconfirm>
                   </Popover>

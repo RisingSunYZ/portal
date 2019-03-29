@@ -11,8 +11,8 @@ import org.springframework.context.annotation.PropertySource;
  * @Version: 1.1.0
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
-@PropertySource(value="classpath:/dict.properties")
 @Configuration
+@PropertySource(value="classpath:/dict.properties")
 public class CommonProperties {
 
     @Value("${ysportal.manager.url}")

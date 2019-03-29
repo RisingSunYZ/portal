@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { List, Avatar, Card, Row, Col, Input } from 'antd';
+import { List, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 import { getConfig } from '../../utils/utils';
@@ -80,7 +80,7 @@ export default class BasicList extends PureComponent {
             dataSource={tableList}
             pagination={{
               pageSize: 15,
-              total: tblist.total,
+              total: tableList.total,
               onChange: this.updateNewsTable
             }}
             renderItem={item => (

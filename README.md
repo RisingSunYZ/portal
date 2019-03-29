@@ -5,4 +5,5 @@
 http://127.0.0.1:8889/portal-front/swagger-ui.html
 http://127.0.0.1:8889/swagger-ui.html
 
+http://localhost:8001/portal-ui/main/fnc-service
 后台启动：PortalManagerApplication
