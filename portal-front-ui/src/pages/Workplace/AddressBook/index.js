@@ -29,7 +29,8 @@ export default class AddressBook extends PureComponent {
     ModalTextAdd:'',
     pagination: { pageIndex: 0, pageSize: 10 },
     query:{},
-    nos:""
+    nos:"",
+    personObj:{},
   };
 
   componentDidMount(){
@@ -44,13 +45,6 @@ export default class AddressBook extends PureComponent {
       },
     });
   }
-
-  //展示隐藏抽屉
-  showDrawer = () => {
-    this.setState({
-      visibleDrawer: true,
-    });
-  };
 
   onClose = () => {
     this.setState({
@@ -89,6 +83,14 @@ export default class AddressBook extends PureComponent {
     });
   };
 
+  showDrawer=(record)=>{
+    // console.log(record)
+    this.setState({
+      personObj:record,
+      visibleDrawer:true,
+    })
+
+  };
 
   // 搜索table数据
   doSearch=( value )=>{
@@ -125,7 +127,6 @@ export default class AddressBook extends PureComponent {
 
   // 添加到常用联系人
   addContactPer = ()=> {
-    debugger;
     const { dispatch }=this.props;
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
@@ -202,29 +203,27 @@ export default class AddressBook extends PureComponent {
   };
 
 
-
-
-
   render() {
     const {
       addressBook: { list,pagination },
       loading,
     } = this.props;
-    const { selectedRowKeys,visible ,ModalTextAdd }=this.state;
+    const { selectedRowKeys,visible ,ModalTextAdd, personObj }=this.state;
 
     const hasSelected = selectedRowKeys.length > 0;
     // console.log(hasSelected)
     // console.log(55)
 
-    const columns = [{
-      title: '姓名',
-      dataIndex: 'name',
-      width: 150,
-      render:(text,record)=> {
-        return record.gender == 1 ? <span><Icon type="smile" theme="twoTone"/> {text} </span> :
-          <span><Icon type="heart" theme="twoTone" twoToneColor="#eb2f96"/> {text} </span>
-      }
-    },
+    const columns = [
+      {
+        title: '姓名',
+        dataIndex: 'name',
+        width: 150,
+        render:(text,record)=> {
+          return record.gender === 1 ? <span><Icon type="smile" theme="twoTone"/> {text} </span> :
+            <span><Icon type="heart" theme="twoTone" twoToneColor="#eb2f96"/> {text} </span>
+        }
+      },
       {
         title: '工号',
         dataIndex: 'jobNum',
@@ -329,19 +328,11 @@ export default class AddressBook extends PureComponent {
                  </Col>
                  <Col span={4}>
                    <Search placeholder="姓名/部门名称" onSearch={this.doSearch} style={{position:'relative',top: -8}}/>
-                   {/*<Search*/}
-                   {/*placeholder={*/}
-                   {/*this.state.selectedKey == 'TOP-CONTACTS' ? '搜索我的草稿' : '搜索流程模板'*/}
-                   {/*}*/}
-                   {/*onSearch={this.doSearch.bind(this)}*/}
-                   {/*style={{ width: '100%' }}*/}
-                   {/*/>*/}
                  </Col>
               </Row>
               <Drawer
                 placement="right"
-                // mask={false}
-                closable={false}
+                mask={false}
                 onClose={this.onClose}
                 width={830}
                 visible={this.state.visibleDrawer}
@@ -350,28 +341,28 @@ export default class AddressBook extends PureComponent {
                   <Col span={18} push={6}>
                     <div className={styles.RightBox}>
                       <ul className={styles.boxTopMsg}>
-                        <li>性别 ：<span>男</span></li>
-                        <li>部门 ：<span>亚厦集团</span></li>
-                        <li>岗位 ：<span>控股总裁兼集团总裁</span></li>
-                        <li>办公地址 ：<span></span></li>
+                        <li>性别 ：<span>{personObj.gender===1?'男':'女'}</span></li>
+                        <li>部门 ：<span>{personObj.deptName}</span></li>
+                        <li>岗位 ：<span>{personObj.jobStation}</span></li>
+                        <li>办公地址 ：<span>{personObj.workAddress}</span></li>
                       </ul>
                       <ul className={styles.boxBotMsg}>
-                        <li>手机 ：<span>15332965269</span></li>
-                        <li>短号 ：<span>48878</span></li>
-                        <li>座机号码 ：<span>5366</span></li>
-                        <li>座机短号 ：<span>997777</span></li>
-                        <li>邮箱 ：<span></span></li>
+                        <li>手机 ：<span>{personObj.mobile}</span></li>
+                        <li>短号 ：<span>{personObj.shortPhone}</span></li>
+                        <li>座机号码 ：<span>{personObj.companyMobile}</span></li>
+                        <li>座机短号 ：<span>{personObj.shortWorkPhone}</span></li>
+                        <li>邮箱 ：<span>{personObj.email}</span></li>
                       </ul>
                     </div>
                   </Col>
                   <Col span={6} pull={18} style={{background:'#FAFAFA'}}>
                     <div className={styles.LeftBox}>
                       <div className={styles.headerImg}>
-                        <img src="http://file.chinayasha.com/p-head/2017/04/06/00002876.jpg" alt=""/>
+                        <img src={'http://file.chinayasha.com'+ personObj.headImg} alt=""/>
                       </div>
-                      <h5 className={styles.perName}>丁泽成</h5>
-                      <p className={styles.perPost}>控股总裁兼集团总裁</p>
-                      <p className={styles.perUnit}>亚厦集团</p>
+                      <h5 className={styles.perName}>{personObj.name}</h5>
+                      <p className={styles.perPost}>{personObj.jobStation}</p>
+                      <p className={styles.perUnit}>{personObj.deptName}</p>
                       <div className={styles.btnGroup}>
                         <Button type="primary">添加到常用联系人</Button>
                         <Link to={'mailto:liuheng@chinayasha.com'}>
@@ -389,11 +380,12 @@ export default class AddressBook extends PureComponent {
                 scroll={{ y: 400 }}
                 rowSelection={rowSelection}
                 onChange={this.handleTableChange}
-                onRow={( ) => {
-                  return { onClick: (e) => {
-                    // e.currentTarget.getElementsByClassName("ant-checkbox-wrapper")[0].click();
-                    this.showDrawer()
-                  } }
+                onRow={(record) => {
+                  return {
+                    onClick: (event) => {
+                      this.showDrawer(record)
+                    },       // 点击行
+                  };
                 }}
               />
             </Content>
@@ -402,4 +394,8 @@ export default class AddressBook extends PureComponent {
     );
   }
 }
+
+//http://file.chinayasha.com/p-head/2017/12/20/8a8a94aa6059716b016071f33d2002fb.jpg
+//http://file.chinayasha.com/p-head/2017/12/13/00000000602edd7001604f193af80543.jpg
+//http://hometest.chinayasha.com
 

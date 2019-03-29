@@ -76,8 +76,6 @@ export default class MeetingRoom extends PureComponent {
 
   // 搜索会议
   doSearchMeeting=(value)=> {
-
-    console.log(value);
     const { dispatch }=this.props;
     const cardType=this.state.cardType;
     const params={
