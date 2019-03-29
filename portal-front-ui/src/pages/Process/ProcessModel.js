@@ -5,6 +5,7 @@ import { Link } from 'dva/router';
 import styles from '../List/BasicList.less';
 import processStyle from './Process.less';
 import TreeMenu from '../../components/TreeMenu';
+import {stringify} from "qs";
 
 const TreeNode = Tree.TreeNode;
 
@@ -71,6 +72,16 @@ export default class ProcessModel extends PureComponent {
         businessKey: businessKey,
       },
     });
+  }
+  linkUrl = (item) => {
+    return  `/process/form/launch/${nullToZero(item.processDefinitionKey)}/${nullToZero(item.processInstanceId)}/${nullToZero(item.businessKey)}/${nullToZero(item.taskId)}/0`;
+  };
+
+  export=()=>{
+
+    var url = '/rest/process/list/exportProcessModel';
+    location.href = url;
+
   }
 
   render() {
@@ -168,23 +179,13 @@ export default class ProcessModel extends PureComponent {
                         </Popconfirm>,
                       ]}
                     >
-                      <Link
-                        to={
-                          '/process/form/launch/' +
-                          nullToZero(item.processDefinitionKey) +
-                          '/' +
-                          nullToZero(item.processInstanceId) +
-                          '/' +
-                          nullToZero(item.businessKey) +
-                          '/' +
-                          nullToZero(item.taskId) +
-                          '/0'
-                        }
-                        target="_blank"
-                      >
-                        {item.name}
-                      </Link>
-                      <span style={{ marginLeft: 20, color: '#A5A5A5' }}>{item.createTime}</span>
+                      <div className="ant-list-item-content">
+                        <Link to={this.linkUrl(item)} target="_blank">
+                          {item.name}
+                        </Link>
+                        <span style={{ marginLeft: 20, color: '#A5A5A5' }}>{item.createTime}</span>
+                      </div>
+
                     </List.Item>
                   )}
                 />
