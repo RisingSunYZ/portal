@@ -78,11 +78,9 @@ export default class ProcessModel extends PureComponent {
   };
 
   export=()=>{
-     alert("待修复")
-    // FIXME  do export
-    // var url = '/portal/api/process/exportProcessModel.jhtml';
-    // var url = '/rest/process/list/export2Excel?' + stringify(formData);
-    // location.href = url;
+
+    var url = '/rest/process/list/exportProcessModel';
+    location.href = url;
 
   }
 

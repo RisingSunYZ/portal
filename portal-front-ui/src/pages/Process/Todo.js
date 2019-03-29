@@ -322,7 +322,7 @@ class TodoList extends PureComponent {
         width: 60,
         key: 'processStatusName',
         render: text => (
-          <Tag style={{ width: 50, textAlign: 'center' }} color="volcano">
+          <Tag style={{ width: 60, textAlign: 'center' }} color="volcano">
             {text}
           </Tag>
         ),
