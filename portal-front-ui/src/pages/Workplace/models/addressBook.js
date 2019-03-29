@@ -10,11 +10,9 @@ import { message } from 'antd';
 
 export default {
   state: {
-    data: {
-      list: [],
-      pagination: {},
-      selectTableKeys:[]
-    },
+    list: [],
+    pagination: {},
+    selectTableKeys:[],
 
     treeData: [],
     draftCount: 0,
@@ -37,10 +35,11 @@ export default {
       }else{
         response = yield call(getTableList, payload);
       }
-
+      let list = Array.isArray(response.rows) ? response.rows : [];
+      let pagination={current:payload.pageIndex+1,pageSize:payload.pageSize,total:response.total};
       yield put({
         type: 'tableCallback',
-        payload: Array.isArray(response.rows) ? response.rows : [],
+        payload:{list:list,pagination:pagination},
       });
     },
 
@@ -88,10 +87,10 @@ export default {
       }
 
       const response2 = yield call(queryTopConcactData, payload);
-      yield put({
-        type: 'tableCallback',
-        payload: Array.isArray(response2.rows) ? response2.rows : [],
-      });
+      // yield put({
+      //   type: 'tableCallback',
+      //   payload: Array.isArray(response2.rows) ? response2.rows : [],
+      // });
     },
 
   },
@@ -109,7 +108,8 @@ export default {
     tableCallback(state, action) {
       return {
         ...state,
-        list: action.payload,
+        list:Array.isArray(action.payload.list)?action.payload.list:[],
+        pagination:action.payload.pagination!=undefined?action.payload.pagination:{}
       };
     },
 
