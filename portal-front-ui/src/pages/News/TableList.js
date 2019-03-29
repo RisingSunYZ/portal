@@ -27,14 +27,14 @@ export default class TableList extends PureComponent {
   }
 
   searchHandle = (value) => {
-    const { match: { params }, dispatch } = this.props;
+    const { location: { query }, dispatch } = this.props;
     this.setState({
       searchText: value
     });
     dispatch({
       type: 'newsNotice/queryNoticeList',
       payload: {
-        typeSn: params.typeSn,
+        typeSn: query.typeSn,
         pageNum: 1,
         pageSize: 15,
         title: value,
