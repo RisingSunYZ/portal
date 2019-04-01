@@ -120,7 +120,6 @@ export default class MeetingRoom extends PureComponent {
   };
 
 
-
   selectCallback = (datas,id) => {
    const {dispatch} =this.props;
    dispatch({

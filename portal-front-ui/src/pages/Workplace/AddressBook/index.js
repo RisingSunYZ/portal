@@ -265,143 +265,148 @@ export default class AddressBook extends PureComponent {
       }),
     };
 
+    const showDrawers=()=>{
+        return (
+          <Drawer
+            placement="right"
+            mask={false}
+            closable={true}
+            onClose={this.onClose}
+            width={830}
+            style={{position:'absolute',top:180}}
+            visible={this.state.visibleDrawer}
+          >
+            <Row>
+              <Col span={18} push={6}>
+                <div className={styles.RightBox}>
+                  <ul className={styles.boxTopMsg}>
+                    <li>性别 ：<span>{personObj.gender===1?'男':'女'}</span></li>
+                    <li>部门 ：<span>{personObj.deptName}</span></li>
+                    <li>岗位 ：<span>{personObj.jobStation}</span></li>
+                    <li>办公地址 ：<span>{personObj.workAddress}</span></li>
+                  </ul>
+                  <ul className={styles.boxBotMsg}>
+                    <li>手机 ：<span>{personObj.mobile}</span></li>
+                    <li>短号 ：<span>{personObj.shortPhone}</span></li>
+                    <li>座机号码 ：<span>{personObj.companyMobile}</span></li>
+                    <li>座机短号 ：<span>{personObj.shortWorkPhone}</span></li>
+                    <li>邮箱 ：<span>{personObj.email}</span></li>
+                  </ul>
+                </div>
+              </Col>
+              <Col span={6} pull={18} style={{background:'#FAFAFA'}}>
+                <div className={styles.LeftBox}>
+                  <div className={styles.headerImg}>
+                    <img src={'http://file.chinayasha.com'+ personObj.headImg} alt=""/>
+                  </div>
+                  <h5 className={styles.perName}>{personObj.name}</h5>
+                  <p className={styles.perPost}>{personObj.jobStation}</p>
+                  <p className={styles.perUnit}>{personObj.deptName}</p>
+                  <div className={styles.btnGroup}>
+                    <Button type="primary">添加到常用联系人</Button>
+                    <Link to={'mailto:'+personObj.email}>
+                      <Button className={styles.btnEmail}>发邮件</Button>
+                    </Link>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </Drawer>
+        )
+    };
+
+
     return (
         <PageHeaderWrapper>
-          <Content>
-            <Layout>
-              <Sider>
-                <Card
-                  title="企业通讯录"
-                  bordered={false}
-                  headStyle={{ borderLeft: '1px solid #e5e5e5', borderRight: '1px solid #e5e5e5',borderBottom:'2px solid #0E65AF',color:'#0E65AF',fontSize:'14px' }}
-                  bodyStyle={{ padding: '0' }}
-                >
-                  <TreeMenu
-                    onSelect={this.selectNode.bind(this)}
-                    defaultExpandedKeys={[ '1001K31000000002GLCT']}
-                    defaultSelectedKeys={[ '1001K31000000002GLCT']} />
-                </Card>
-              </Sider>
-              <Content>
-                <Row style={{marginTop:'12px'}}>
-                  {
-                    this.state.selectedKey == 'TOP-CONTACTS' ? (
-                      <Col span={1} className={styles.colHeader}>
-                        {!hasSelected ? (
-                          <div onClick={this.delContactPer} className={styles.setDisable}>
-                            <Icon type="delete" className={styles.icon}/>
-                            <span className={styles.text}>移除</span>
-                          </div>
-                        ):(
-                          <div onClick={this.delContactPer}>
-                            <Icon type="delete" className={styles.icon}/>
-                            <span className={styles.text}>移除</span>
-                          </div>
-                        )}
-                      </Col>
-                    ) : (
-                      <Col span={2} className={styles.colHeader}>
-                        {!hasSelected ? (
-                          <div onClick={this.addContactPer} className={styles.setDisable}>
-                            <Icon type="plus" className={styles.icon}/>
-                            <span className={styles.text}>添加到常用联系人</span>
-                          </div>
-                        ):(
-                          <div onClick={this.addContactPer}>
-                            <Icon type="plus" className={styles.icon}/>
-                            <span className={styles.text}>添加到常用联系人</span>
-                          </div>
-                        )}
-                        <Modal
-                          visible={visible}
-                          footer={null}
-                          closable={false}
-                          centered
-                          bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
-                          maskStyle={{backgroundColor:'#E6E6E6'}}>
-                          <p>{ModalTextAdd}</p>
-                        </Modal>
-                      </Col>
-                    )
-                  }
+          <Layout>
+            <Sider>
+              <Card
+                title="企业通讯录"
+                bordered={false}
+                headStyle={{ borderLeft: '1px solid #e5e5e5', borderRight: '1px solid #e5e5e5',borderBottom:'2px solid #0E65AF',color:'#0E65AF',fontSize:'14px' }}
+                bodyStyle={{ padding: '0' }}
+              >
+                <TreeMenu
+                  onSelect={this.selectNode.bind(this)}
+                  defaultExpandedKeys={[ '1001K31000000002GLCT']}
+                  defaultSelectedKeys={[ '1001K31000000002GLCT']} />
+              </Card>
+            </Sider>
+            <Content>
+              <Row style={{marginTop:'12px'}}>
+                {
+                 this.state.selectedKey == 'TOP-CONTACTS' ? (
+                   <Col span={1} className={styles.colHeader}>
+                     {!hasSelected ? (
+                       <div onClick={this.delContactPer} className={styles.setDisable}>
+                         <Icon type="delete" className={styles.icon}/>
+                         <span className={styles.text}>移除</span>
+                       </div>
+                     ):(
+                       <div onClick={this.delContactPer}>
+                         <Icon type="delete" className={styles.icon}/>
+                         <span className={styles.text}>移除</span>
+                       </div>
+                     )}
+                   </Col>
+                 ) : (
                   <Col span={2} className={styles.colHeader}>
                     {!hasSelected ? (
-                      <div onClick={this.sendEmail} className={styles.setDisable}>
-                        <Icon type="mail" className={styles.icon}/>
-                        <span className={styles.text}>发邮件</span>
+                      <div onClick={this.addContactPer} className={styles.setDisable}>
+                        <Icon type="plus" className={styles.icon}/>
+                        <span className={styles.text}>添加到常用联系人</span>
                       </div>
                     ):(
-                      <div onClick={this.sendEmail}>
-                        <Icon type="mail" className={styles.icon}/>
-                        <span className={styles.text}>发邮件</span>
+                      <div onClick={this.addContactPer}>
+                        <Icon type="plus" className={styles.icon}/>
+                        <span className={styles.text}>添加到常用联系人</span>
                       </div>
                     )}
+                    <Modal
+                      visible={visible}
+                      footer={null}
+                      closable={false}
+                      centered
+                      bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
+                      maskStyle={{backgroundColor:'#E6E6E6'}}>
+                      <p>{ModalTextAdd}</p>
+                    </Modal>
                   </Col>
-                  <Col span={4}>
-                    <Search placeholder="姓名/部门名称" onSearch={this.doSearch} style={{position:'relative',top: -8}}/>
-                  </Col>
-                </Row>
-                <Drawer
-                  placement="right"
-                  mask={false}
-                  closable={true}
-                  onClose={this.onClose}
-                  width={830}
-                  style={{position:'absolute',top:180}}
-                  visible={this.state.visibleDrawer}
-                >
-                  <Row>
-                    <Col span={18} push={6}>
-                      <div className={styles.RightBox}>
-                        <ul className={styles.boxTopMsg}>
-                          <li>性别 ：<span>{personObj.gender===1?'男':'女'}</span></li>
-                          <li>部门 ：<span>{personObj.deptName}</span></li>
-                          <li>岗位 ：<span>{personObj.jobStation}</span></li>
-                          <li>办公地址 ：<span>{personObj.workAddress}</span></li>
-                        </ul>
-                        <ul className={styles.boxBotMsg}>
-                          <li>手机 ：<span>{personObj.mobile}</span></li>
-                          <li>短号 ：<span>{personObj.shortPhone}</span></li>
-                          <li>座机号码 ：<span>{personObj.companyMobile}</span></li>
-                          <li>座机短号 ：<span>{personObj.shortWorkPhone}</span></li>
-                          <li>邮箱 ：<span>{personObj.email}</span></li>
-                        </ul>
-                      </div>
-                    </Col>
-                    <Col span={6} pull={18} style={{background:'#FAFAFA'}}>
-                      <div className={styles.LeftBox}>
-                        <div className={styles.headerImg}>
-                          <img src={'http://file.chinayasha.com'+ personObj.headImg} alt=""/>
-                        </div>
-                        <h5 className={styles.perName}>{personObj.name}</h5>
-                        <p className={styles.perPost}>{personObj.jobStation}</p>
-                        <p className={styles.perUnit}>{personObj.deptName}</p>
-                        <div className={styles.btnGroup}>
-                          <Button type="primary">添加到常用联系人</Button>
-                          <Link to={'mailto:'+personObj.email}>
-                            <Button className={styles.btnEmail}>发邮件</Button>
-                          </Link>
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-                </Drawer>
-                <Table
-                  columns={columns}
-                  dataSource={list}
-                  pagination={pagination}
-                  scroll={{ y: 640 }}
-                  rowSelection={rowSelection}
-                  onChange={this.handleTableChange}
-                  onRow={(record) => {
-                    return {
-                      onClick: (event) => {this.showDrawer(record) },       // 点击行
-                    };
-                  }}
-                />
-              </Content>
-            </Layout>
-          </Content>
+                 )
+               }
+                 <Col span={2} className={styles.colHeader}>
+                   {!hasSelected ? (
+                     <div onClick={this.sendEmail} className={styles.setDisable}>
+                       <Icon type="mail" className={styles.icon}/>
+                       <span className={styles.text}>发邮件</span>
+                     </div>
+                   ):(
+                     <div onClick={this.sendEmail}>
+                       <Icon type="mail" className={styles.icon}/>
+                       <span className={styles.text}>发邮件</span>
+                     </div>
+                   )}
+                 </Col>
+                 <Col span={4}>
+                   <Search placeholder="姓名/部门名称" onSearch={this.doSearch} style={{position:'relative',top: -8}}/>
+                 </Col>
+              </Row>
+              <Table
+                columns={columns}
+                dataSource={list}
+                pagination={pagination}
+                scroll={{ y: 640 }}
+                rowSelection={rowSelection}
+                onChange={this.handleTableChange}
+                onRow={(record) => {
+                  return {
+                    onClick: (event) => {this.showDrawer(record) },       // 点击行
+                  };
+                }}
+              />
+            </Content>
+          </Layout>
+          {showDrawers()}
         </PageHeaderWrapper>
     );
   }
