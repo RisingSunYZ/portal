@@ -1,6 +1,7 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Calendar, Icon, Row, Col, Menu, Dropdown, Table, Input, Card, Modal } from 'antd';
+import { Calendar, Icon, Row, Col, Menu, Dropdown, Popover, Input, Card, Modal } from 'antd';
+import ScheduleGrant from './ScheduleGrant';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -16,13 +17,27 @@ export default class Schedule extends PureComponent {
 
   state = {
     currDate: moment(),
+    view: 'month',
   };
 
   componentDidMount() {
+    this.queryEventByDate();
+  }
+
+  queryEventByDate = () => {
     const { dispatch, user: { currentUser } } = this.props;
-    const { currDate } = this.state;
-    const start = `${currDate.year()}-${currDate.month()+1}-1 00:00`;
-    const end = `${currDate.year()}-${currDate.month()+1}-${currDate.daysInMonth()} 23:59`;
+    const { view, currDate } = this.state;
+    let start, end;
+    if(view === 'month'){
+      start = `${moment(currDate).startOf('month').format('YYYY-MM-DD')} 00:00`;
+      end = `${moment(currDate).endOf('month').format('YYYY-MM-DD')} 23:59`;
+    }else if(view === 'week'){
+      start = `${moment(currDate).startOf('isoWeek').format('YYYY-MM-DD')} 00:00`;
+      end = `${moment(currDate).endOf('isoWeek').format('YYYY-MM-DD')} 23:59`;
+    }else if(view === 'day'){
+      start = `${moment(currDate).startOf('day').format('YYYY-MM-DD')} 00:00`;
+      end = `${moment(currDate).endOf('day').format('YYYY-MM-DD')} 23:59`;
+    }
     dispatch({
       type: 'schedule/queryScheduleList',
       payload: {
@@ -31,29 +46,70 @@ export default class Schedule extends PureComponent {
         end,
       }
     });
-  }
+  };
+
+  onViewChange = view => {
+    this.setState({
+      view,
+    });
+  };
+
+  renderEvent = ({ event }) => {
+    return (
+      <div className={`${styles.event} ${event.type === 2 ? styles.note : styles.meeting}`}>
+        <span>{event.title}</span>
+      </div>
+      )
+  };
+
+  onDateChange = d => {
+    const date = moment(d);
+    this.setState({
+      currDate: date
+    },()=>{
+      this.queryEventByDate();
+    });
+  };
+
+  onEventClick = event => {
+    console.log(event);
+  };
 
   render() {
     const {
       schedule: { scheduleList }
     } = this.props;
-    const { currDate } = this.state;
+    const { currDate, view } = this.state;
     return (
       <Fragment>
         <Card bordered={false} bodyStyle={{padding: 16}}>
+          <Row>
+            <Col span={24}>
+              <ScheduleGrant />
+            </Col>
+          </Row>
           <Row gutter={16}>
-            <Col span={6} style={{paddingTop: 40}}>
+            <Col span={6} style={{paddingTop: 10}}>
               <Calendar fullscreen={false} value={ currDate } />
             </Col>
             <Col span={18}>
               <div style={{height: 600}}>
                 <BigCalendar
+                  popup
                   className="schedule-container"
+                  date={currDate.toDate()}
                   localizer={localizer}
+                  view={view}
+                  onView={this.onViewChange}
                   events={scheduleList}
-                  startAccessor="startTime"
-                  endAccessor="endTime"
+                  startAccessor={e=>new Date(e.startTime)}
+                  endAccessor={e=>new Date(e.endTime)}
                   views={['month', 'week', 'day']}
+                  onNavigate={this.onDateChange}
+                  onSelectEvent={this.onEventClick}
+                  components={{
+                    event: this.renderEvent,
+                  }}
                 />
               </div>
             </Col>

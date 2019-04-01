@@ -1,5 +1,5 @@
 import {
-  queryScheduleEventGrant,
+  queryScheduleGrant,
   queryScheduleList,
   queryScheduleInfo,
   doSaveSchedule,
@@ -9,21 +9,22 @@ import { message } from 'antd';
 
 export default {
   state: {
-    scheduleGrant: {},
+    scheduleGrant: {
+      grantedPersonNos: '',
+      scheduleEventGrantList: [],
+    },
     scheduleList: [],
   },
 
   namespace: 'schedule',
 
   effects: {
-    *queryScheduleEventGrant({ payload }, { call, put }) {
-      const response = yield call(queryScheduleEventGrant, payload);
-      if(response.code === "100"){
-        yield put({
-          type: 'saveScheduleGrant',
-          payload: response,
-        });
-      }
+    *queryScheduleGrant({ payload }, { call, put }) {
+      const response = yield call(queryScheduleGrant, payload);
+      yield put({
+        type: 'saveScheduleGrant',
+        payload: response,
+      });
     },
     *queryScheduleList({ payload }, { call, put }) {
       const response = yield call(queryScheduleList, payload);
@@ -59,7 +60,7 @@ export default {
     saveScheduleGrant(state, action) {
       return {
         ...state,
-        scheduleGrant: action.payload.data
+        scheduleGrant: action.payload
       };
     },
     saveScheduleList(state, action) {

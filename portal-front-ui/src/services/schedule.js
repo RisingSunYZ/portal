@@ -11,8 +11,8 @@ export async function query() {
  * @returns {Promise<Object>}
  */
 
-export async function queryScheduleEventGrant(params) {
-  return request(`/rest/portal/schedule/getScheduleEventGrantByGrantedPersonNo?${stringify(params)}`);
+export async function queryScheduleGrant(params) {
+  return request(`/rest/portal/scheduleGrant/empower?${stringify(params)}`);
 }
 
 /**
