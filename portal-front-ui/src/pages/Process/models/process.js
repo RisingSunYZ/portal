@@ -124,6 +124,19 @@ export default {
           payload: response.data,
           pagination: payload,
         });
+      }else{
+        yield put({
+          type: 'queryFormDataList',
+          payload: {
+            list:[],
+            pagination:{
+              current: 0,
+              pageSize: 20,
+              total: 0,
+            }
+          },
+          pagination: payload,
+        });
       }
 
 
