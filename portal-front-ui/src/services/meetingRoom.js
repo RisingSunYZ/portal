@@ -119,14 +119,7 @@ export async function getInputData(params){
   return request(`/rest/portal/rscmgmt/meeting/getMeetingById/${params.id}`);
 }
 
-/**
- *查看下的 下载人员列表
- * @returns {Promise<Object>}
- * @constructor
- */
-export async function DownloadPerList(){
-  // return request(`/rest/portal/rscmgmt/meeting/ajaxMyList`);
-}
+
 
 /**
  * 点击编辑 保存会议纪要和上传附件

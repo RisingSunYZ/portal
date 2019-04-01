@@ -29,14 +29,12 @@ const FormItem = Form.Item;
 
 @Form.create()
 export default class MeetingInput extends PureComponent {
-  searchFormObj = {};
-
-
   state = {
     selectedKey: '',
     visible:false,
     editorState: EditorState.createEmpty(),
-    ModalTextSave:'会议主题不能为空！'
+    ModalTextSave:'会议主题不能为空！',
+    cardType:1
   };
 
   componentDidMount(){
@@ -58,26 +56,6 @@ export default class MeetingInput extends PureComponent {
     });
   };
 
-  doSearch(modelName) {
-    this.searchFormObj.name = modelName;
-    //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
-    this.props.dispatch({
-      type: 'meetingRoom/getModelList',
-      payload: {
-        name: modelName,
-        categoryId: this.state.selectedKey == 'myDraft' ? this.state.selectedKey : '',
-      },
-    });
-  }
-
-  handleDel(businessKey) {
-    this.props.dispatch({
-      type: 'meetingRoom/delDraft',
-      payload: {
-        businessKey: businessKey,
-      },
-    });
-  }
 
   selectCallback = datas => {
     const { setFieldsValue } = this.props.form;
@@ -87,12 +65,6 @@ export default class MeetingInput extends PureComponent {
     }
   };
 
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  }
 
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
@@ -157,10 +129,28 @@ export default class MeetingInput extends PureComponent {
     }
   }
 
-
+  // 发送更新
+  sendUpdate=()=>{
+    const { dispatch ,form, match }=this.props;
+    form.validateFields((err, fieldsValue)=>{
+      if(err) return;
+      // 调用公共方法
+      this.commonMethod(fieldsValue);
+      dispatch({
+        type:'meetingRoom/sendInvites',
+        payload:{...fieldsValue},
+        callback: res=>{
+          if(res.code=='100'){
+            window.location.href='/workplace/meeting-room/'+ match.params.tab
+          }
+        }
+      })
+    })
+  }
  // 发送邀请-按钮
   sendInvite =() =>{
-    const {dispatch ,form, meetingRoom:{files}  }=this.props;
+    debugger;
+    const {dispatch ,form , meetingRoom:{files}  }=this.props;
     form.validateFields((err, fieldsValue)=>{
       console.log(fieldsValue)
       if(err) return;
@@ -185,7 +175,6 @@ export default class MeetingInput extends PureComponent {
       this.commonMethod(fieldsValue);
 
       dispatch({
-
         type:'meetingRoom/sendInvites',
         payload:{...fieldsValue },
         callback: res => {
@@ -243,11 +232,14 @@ export default class MeetingInput extends PureComponent {
       loading,
       dispatch,
       form,
+      match
     } = this.props;
     console.log(meeting);
+    console.log(match.params.meetId)
+    console.log(match.params.tab)
     console.log(88888888888);
-    const { visible, editorState, ModalTextSave  }=this.state;
-
+    const { visible, editorState, ModalTextSave ,cardType }=this.state;
+    const tab = match.params.tab?match.params.tab:tab;
 
     // 上传组件相关属性配置
     const uploadProps = {
@@ -274,7 +266,6 @@ export default class MeetingInput extends PureComponent {
     };
     // console.log(2222222);
     // console.log(meeting);
-    console.log(mandatoryPersonList)
 
 
     return (
@@ -443,23 +434,31 @@ export default class MeetingInput extends PureComponent {
                 </Form.Item>
               </Col>
             </Row>
-            <Row className={styles.rows} style={{left:'414px'}}>
-              <Col span={3}>
-                <Button type="primary" onClick={this.sendInvite}>发送邀请</Button>
-              </Col>
-              <Col span={3}>
-                <Button onClick={this.saveDraft}>保存草稿</Button>
-                <Modal
-                  visible={visible}
-                  footer={null}
-                  closable={false}
-                  centered
-                  bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
-                  maskStyle={{backgroundColor:'#E6E6E6'}}>
-                  <p>{ModalTextSave}</p>
-                </Modal>
-              </Col>
-            </Row>
+            {((tab==1 || tab==2) && match.params.meetId != ':meetId') ? (
+              <Row className={styles.rows} style={{left:'535px'}}>
+                <Col span={3}>
+                  <Button type="primary" onClick={this.sendUpdate}>发送更新</Button>
+                </Col>
+              </Row>
+            ):(
+              <Row className={styles.rows} style={{left:'414px'}}>
+                <Col span={3}>
+                  <Button type="primary" onClick={this.sendInvite}>发送邀请</Button>
+                </Col>
+                <Col span={3}>
+                  <Button onClick={this.saveDraft}>保存草稿</Button>
+                  <Modal
+                    visible={visible}
+                    footer={null}
+                    closable={false}
+                    centered
+                    bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
+                    maskStyle={{backgroundColor:'#E6E6E6'}}>
+                    <p>{ModalTextSave}</p>
+                  </Modal>
+                </Col>
+              </Row>
+            )}
           </Form>
         </div>
       </PageHeaderWrapper>
