@@ -29,6 +29,8 @@ import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
@@ -38,6 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -921,4 +925,224 @@ public class MeetingController extends BaseController {
         return JsonUtils.toJson(returnVo);
     }
 
+    /**
+     * 导出参会人员
+     * @param response
+     * @param request
+     * @param id
+     */
+    @GetMapping("/ExportParticiPants")
+    @ApiOperation("导出参会人员")
+    public void ExportParticiPants(HttpServletResponse response,HttpServletRequest request,String id) {
+        try {
+            Meeting mt = this.meetingService.getMeetingById(id);
+            //获取参会人员
+            List<Meeting> meetings = null;
+            PagerModel<Meeting> pm = null;
+            com.ys.tools.vo.ReturnVo<PersonnelApiVo> persons = null;
+            Meeting meeting = new Meeting();
+            Query query = new Query(1);
+            UserSessionInfo loginUser =  getUserSessionInfo(request, response);
+            if (null != loginUser && StringUtils.isNotBlank(loginUser.getNo())) {
+                meeting.setCreator(mt.getCreator());
+                meeting.setId(id);
+                pm = this.meetingService.getMyMeetingPagerModelByQuery(meeting, query);
+                System.out.println("size===>>>" + pm.getData().size());
+                meetings = pm.getData();
+                List<String> nos = new ArrayList<String>();
+                List<MeetingPersonnel> mps = meetingPersonnelService.getRecordPerson(meetings);
+                if (mps != null && mps.size() > 0) {
+                    for (MeetingPersonnel mp : mps) {
+                        nos.add(mp.getPersonNo());
+                    }
+                }
+                persons = personnelApi.getPersonnelApiVoByNos(nos);
+//                if (null == persons || persons.getDatas().isEmpty()) {
+//                	return JsonUtils.toJson("Error");
+//                }
+                //创建HSSFWorkbook对象(excel的文档对象)
+                HSSFWorkbook wb = new HSSFWorkbook();
+                HSSFSheet sheet = wb.createSheet("会议签到表");
+                HSSFPrintSetup hps = sheet.getPrintSetup();
+                hps.setPaperSize((short) 9); // 设置A4纸
+
+                // 设置列宽
+                sheet.setColumnWidth(0, 2600);
+                sheet.setColumnWidth(1, 2800);
+                sheet.setColumnWidth(2, 2800);
+                sheet.setColumnWidth(3, 2800);
+                sheet.setColumnWidth(4, 3700);
+                sheet.setColumnWidth(5, 3700);
+                sheet.setColumnWidth(6, 4000);
+                // 设置标题字体
+                HSSFFont font = wb.createFont();
+                font.setFontName("宋体");
+                font.setFontHeightInPoints((short) 28);// 字体大小
+                font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);// 加粗
+                // 标题单元格样式
+                HSSFCellStyle headStyle = wb.createCellStyle();
+                headStyle.setFont(font);
+                headStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 左右居中
+                headStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 上下居中
+
+                // 设置字段字体
+                HSSFFont fieldFont = wb.createFont();
+                fieldFont.setFontName("宋体");
+                fieldFont.setFontHeightInPoints((short) 14);// 字体大小
+                fieldFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);// 加粗
+                // 字段单元格样式
+                HSSFCellStyle fieldStyle = wb.createCellStyle();
+                fieldStyle.setFont(fieldFont);
+                fieldStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 左右居中
+                fieldStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 上下居中
+                fieldStyle.setBorderLeft((short) 1);// 边框的大小
+                fieldStyle.setBorderRight((short) 1);
+                fieldStyle.setBorderTop((short) 1);
+                fieldStyle.setBorderBottom((short) 1);
+
+                // 设置字段内容字体
+                HSSFFont contentFont = wb.createFont();
+                contentFont.setFontName("宋体");
+                contentFont.setFontHeightInPoints((short) 12);// 字体大小
+                //contentFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);// 加粗
+                // 字段单元格样式
+                HSSFCellStyle contentStyle = wb.createCellStyle();
+                contentStyle.setFont(contentFont);
+                contentStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);// 左右居中
+                contentStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 上下居中
+                contentStyle.setWrapText(true);// 自动换行
+                contentStyle.setBorderLeft((short) 1);// 边框的大小
+                contentStyle.setBorderRight((short) 1);
+                contentStyle.setBorderTop((short) 1);
+                contentStyle.setBorderBottom((short) 1);
+
+                HSSFRow row1 = sheet.createRow(0);
+                // 设置行高
+                row1.setHeight((short) 1100);
+                HSSFCell cell = row1.createCell(0);
+                //设置单元格内容
+                cell.setCellValue("会议签到表");
+                cell.setCellStyle(headStyle);
+                //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 6));
+                //在sheet里创建第二行 及创建单元格并设置单元格内容
+                HSSFRow row2 = sheet.createRow(1);
+                row2.setHeight((short) 700);
+                HSSFCell row2_cell1 = row2.createCell(0);//创建第二行第一列
+                row2_cell1.setCellValue("主题");
+                row2_cell1.setCellStyle(fieldStyle);
+                HSSFCell row2_cell2 = row2.createCell(1);//创建第二行第二列
+                row2_cell2.setCellValue(pm.getData().get(0).getTheme());
+                row2_cell2.setCellStyle(contentStyle);
+
+                //设置第二行边框
+                HSSFCell row2_cell3 = row2.createCell(2);//创建第二行第三列
+                row2_cell3.setCellStyle(fieldStyle);
+                HSSFCell row2_cell4 = row2.createCell(3);//创建第二行第四列
+                row2_cell4.setCellStyle(fieldStyle);
+                HSSFCell row2_cell5 = row2.createCell(4);//创建第二行第五列
+                row2_cell5.setCellStyle(fieldStyle);
+                HSSFCell row2_cell6 = row2.createCell(5);//创建第二行第六列
+                row2_cell6.setCellStyle(fieldStyle);
+                HSSFCell row2_cell7 = row2.createCell(6);//创建第二行第七列
+                row2_cell7.setCellStyle(fieldStyle);
+                sheet.addMergedRegion(new CellRangeAddress(1, 1, 1, 6));//合并单元格
+
+                //在sheet里创建第三行
+                HSSFRow row3 = sheet.createRow(2);
+                row3.setHeight((short) 700);
+                HSSFCell row3_cell1 = row3.createCell(0);//创建第三行第一列
+                row3_cell1.setCellValue("地点");
+                row3_cell1.setCellStyle(fieldStyle);
+                HSSFCell row3_cell2 = row3.createCell(1);//创建第三行第二列
+                row3_cell2.setCellValue(pm.getData().get(0).getMeetingroomName());
+                row3_cell2.setCellStyle(contentStyle);
+                HSSFCell row3_cell5 = row3.createCell(4);//创建第三行第五列
+                row3_cell5.setCellValue("会议时间");
+                row3_cell5.setCellStyle(fieldStyle);
+                HSSFCell row3_cell6 = row3.createCell(5);//创建第三行第六列
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date dataTimeStart = pm.getData().get(0).getStartTime();
+                Date dataTimeEnd = pm.getData().get(0).getEndTime();
+                String startTime = sdf.format(dataTimeStart);
+                String endTime = sdf.format(dataTimeEnd);
+                String timeStr = startTime.substring(0, startTime.length() - 3) + "-" + endTime.substring(11, endTime.length() - 3);
+                row3_cell6.setCellValue(timeStr);
+                row3_cell6.setCellStyle(contentStyle);
+
+                //设置第三行边框
+                HSSFCell row3_cell3 = row3.createCell(2);//创建第三行第三列
+                row3_cell3.setCellStyle(fieldStyle);
+                HSSFCell row3_cell4 = row3.createCell(3);//创建第三行第四列
+                row3_cell4.setCellStyle(fieldStyle);
+                HSSFCell row3_cell7 = row3.createCell(6);//创建第三行第七列
+                row3_cell7.setCellStyle(fieldStyle);
+                sheet.addMergedRegion(new CellRangeAddress(2, 2, 1, 3));//合并单元格
+                sheet.addMergedRegion(new CellRangeAddress(2, 2, 5, 6));//合并单元格
+
+                //在sheet里创建第四行
+                HSSFRow row4 = sheet.createRow(3);
+                row4.setHeight((short) 700);
+                HSSFCell row4_cell1 = row4.createCell(0);//创建第四行第一列
+                row4_cell1.setCellValue("序号");
+                row4_cell1.setCellStyle(fieldStyle);
+                HSSFCell row4_cell2 = row4.createCell(1);//创建第四行第二列
+                row4_cell2.setCellValue("参会人");
+                row4_cell2.setCellStyle(fieldStyle);
+                HSSFCell row4_cell6 = row4.createCell(5);//创建第四行第六列
+                row4_cell6.setCellValue("联系方式");
+                row4_cell6.setCellStyle(fieldStyle);
+                HSSFCell row4_cell7 = row4.createCell(6);//创建第四行第七列
+                row4_cell7.setCellValue("签字");
+                row4_cell7.setCellStyle(fieldStyle);
+
+                //设置第四行边框
+                HSSFCell row4_cell3 = row4.createCell(2);//创建第四行第三列
+                row4_cell3.setCellStyle(fieldStyle);
+                HSSFCell row4_cell4 = row4.createCell(3);//创建第四行第四列
+                row4_cell4.setCellStyle(fieldStyle);
+                HSSFCell row4_cell5 = row4.createCell(4);//创建第四行第五列
+                row4_cell5.setCellStyle(fieldStyle);
+                sheet.addMergedRegion(new CellRangeAddress(3, 3, 1, 4));//合并单元格
+
+                //在sheet里创建人员列表
+                List<PersonnelApiVo> person = persons.getDatas();
+                for (int i = 0, len = person.size(); i < len; i++) {
+                    HSSFRow row = sheet.createRow(4 + i);
+                    row.setHeight((short) 700);
+                    HSSFCell row_cell1 = row.createCell(0);//创建第一列
+                    row_cell1.setCellValue(i + 1);
+                    row_cell1.setCellStyle(fieldStyle);
+                    HSSFCell row_cell2 = row.createCell(1);//创建第二列
+                    row_cell2.setCellValue(person.get(i).getName() + "(" + person.get(i).getCompanyName() + "-" + person.get(i).getDeptName() + ")");
+                    row_cell2.setCellStyle(contentStyle);
+                    HSSFCell row_cell6 = row.createCell(5);//创建第六列
+                    row_cell6.setCellValue(person.get(i).getMobile());
+                    row_cell6.setCellStyle(contentStyle);
+
+                    HSSFCell row_cell3 = row.createCell(2);//创建第三列
+                    row_cell3.setCellStyle(contentStyle);
+                    HSSFCell row_cell4 = row.createCell(3);//创建第四列
+                    row_cell4.setCellStyle(contentStyle);
+                    HSSFCell row_cell5 = row.createCell(4);//创建第五列
+                    row_cell5.setCellStyle(contentStyle);
+                    HSSFCell row_cell7 = row.createCell(6);//创建第七列
+                    row_cell7.setCellStyle(contentStyle);
+                    sheet.addMergedRegion(new CellRangeAddress(4 + i, 4 + i, 1, 4));//合并单元格
+                }
+                //输出Excel文件
+                OutputStream output = response.getOutputStream();
+                response.reset();
+                response.setHeader("Content-Disposition", "attachment;filename=" + new String("会议签到表.xls".getBytes("gb2312"), "ISO8859-1"));
+                response.setContentType("application/msexcel");
+                wb.write(output);
+                output.close();
+                output.flush();
+            }
+        } catch (Exception e) {
+            logger.error("MeetingController-ExportParticiPants:"+e);
+            e.printStackTrace();
+        }
+//		return JsonUtils.toJson("Success");
+    }
 }
