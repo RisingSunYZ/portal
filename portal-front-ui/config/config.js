@@ -51,7 +51,7 @@ export default {
     ie: 11,
   },
   publicPath: process.env.NODE_ENV === 'production' ? '/eip/' : '/eip/',
-  outputPath: '../../../../data/eip',
+  outputPath: '../../../data/eip',
   mountElementId: 'portalMainContent',
   base: '/eip',
   // 路由配置
@@ -74,6 +74,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/addrbook/': '' },
     },
+    '/website/tools/': {
+      target: 'http://homedev.chinayasha.com/website/tools/',
+      changeOrigin: true,
+      pathRewrite: { '^/website/tools/': '' },
+    },
     '/portal/': {
       target: 'http://hometest.chinayasha.com',
       changeOrigin: true,
@@ -86,13 +91,14 @@ export default {
       changeOrigin: true,
       // pathRewrite: { '^/protal/': '' },
     },
-    '/flow/form/': {
-      // target: 'http://10.10.20.87:8888', // 测试
-      // target: 'http://10.20.30.198:8888',// 开发
-      // 表单服务器
-      target: 'http://127.0.0.1:8889',
-      changeOrigin: true,
-    },
+    // '/flow/form/': {
+    //   // target: 'http://10.10.20.87:8888', // 测试
+    //   // target: 'http://10.20.30.198:8888',// 开发
+    //   // 表单服务器
+    //   target: 'http://127.0.0.1:8889/flow/form/',
+    //   pathRewrite: { '^/flow/form/': '' },
+    //   changeOrigin: true,
+    // },
     '/office/': {
       // 文档预览
       target: 'http://home.chinayasha.com',
