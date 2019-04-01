@@ -429,13 +429,13 @@ public class MeetingController extends BaseController {
                     List<MeetingFiles> meetingFiles = meetingFilesService.getMeetingFilesByMeetingId(meeting.getId());
                     StringBuilder fileName=new StringBuilder();
                     StringBuilder filePath=new StringBuilder();
-                    if(meetingFiles.size()>0){
-                        for(MeetingFiles f : meetingFiles){
-                            if(f.getUseType().equals(MeetingFileType.MEETING_CONTENT_FILE.getCode())){
+                    if(CollectionUtils.isNotEmpty(meetingFiles)){
+                        meetingFiles.forEach( f->{
+                            if(MeetingFileType.MEETING_CONTENT_FILE.getCode().equals(f.getUseType())){
                                 fileName.append(f.getFileName()).append(",");
                                 filePath.append(f.getFilePath()).append(",");
                             }
-                        }
+                        });
                         if(StringUtils.isNotBlank(fileName.toString())){
                             meeting.setFileName(fileName.substring(0, fileName.length()-1));
                         }
@@ -931,9 +931,10 @@ public class MeetingController extends BaseController {
      * @param request
      * @param id
      */
-    @GetMapping("/ExportParticiPants")
+    @GetMapping("/ExportParticiPants/{id}")
     @ApiOperation("导出参会人员")
-    public void ExportParticiPants(HttpServletResponse response,HttpServletRequest request,String id) {
+    @ApiImplicitParam(name = "id", value = "会议id", paramType = "path", required = true, dataType = "String")
+    public void ExportParticiPants(HttpServletResponse response,HttpServletRequest request,@PathVariable String id) {
         try {
             Meeting mt = this.meetingService.getMeetingById(id);
             //获取参会人员
@@ -1140,9 +1141,7 @@ public class MeetingController extends BaseController {
                 output.flush();
             }
         } catch (Exception e) {
-            logger.error("MeetingController-ExportParticiPants:"+e);
-            e.printStackTrace();
+            logger.error("MeetingController-ExportParticiPants-error:",e);
         }
-//		return JsonUtils.toJson("Success");
     }
 }
