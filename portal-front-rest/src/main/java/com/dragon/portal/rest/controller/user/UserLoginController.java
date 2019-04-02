@@ -7,6 +7,7 @@ import com.dragon.portal.model.user.UserLogin;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.user.IUserLoginService;
 import com.dragon.tools.common.ReturnCode;
+import com.dragon.tools.utils.CookiesUtil;
 import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description:
@@ -45,12 +49,14 @@ public class UserLoginController extends BaseController{
     @ApiOperation("登录")
     public ReturnVo<String> login(@ApiJsonObject({
             @ApiJsonProperty(key="userName",description = "用户名"),
-            @ApiJsonProperty(key="password",description = "密码")})@RequestBody UserLogin userLogin, HttpServletRequest request) {
+            @ApiJsonProperty(key="password",description = "密码")})@RequestBody UserLogin userLogin,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response) {
 
         HttpSession session = request.getSession();
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败！");
         try {
-            returnVo = userLoginService.updateCheckLogin(userLogin.getUserName(),userLogin.getPassword(),session);
+            returnVo = userLoginService.updateCheckLogin(userLogin.getUserName(),userLogin.getPassword(),session, response);
         } catch (Exception e) {
             logger.error("UserLoginController-login:", e);
             e.printStackTrace();
@@ -65,12 +71,14 @@ public class UserLoginController extends BaseController{
      */
     @GetMapping("/out")
     @ApiOperation("注销用户")
-    public ReturnVo out(HttpServletRequest request) {
+    public ReturnVo out(HttpServletRequest request, HttpServletResponse response) {
         ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL, "注销失败！");
         try {
             HttpSession session = request.getSession();
             session.removeAttribute(PortalConstant.SESSION_SYS_USER);
             session.removeAttribute(PortalConstant.SESSION_USER_UID);
+            CookiesUtil.removeAll(request, response);
+
             returnVo = new ReturnVo(ReturnCode.SUCCESS, "注销成功！");
         } catch (Exception e) {
             logger.error("UserLoginController-out:", e);

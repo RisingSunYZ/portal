@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, message } from 'antd';
+import { Card, message, Skeleton } from 'antd';
 import styles from './index.less';
 import { getConfig } from '../../utils/utils';
 
@@ -97,51 +97,55 @@ export default class FormBox extends React.Component {
     }
   }
 
+  calcPageHeight = (doc) => {
+    let height = 650;
+    try {
+      height = doc.body.scrollHeight > doc.body.clientHeight ? doc.body.scrollHeight : doc.body.clientHeight;
+    } catch (e) {}
+    return height;
+  };
+
+  setFormIframeHeight = (height, ifr) => {
+    if (height < 650) {
+      height = 650;
+    }
+    ifr.style.width = '1152px';
+    ifr.style.height = height + 'px';
+  };
+
   componentDidMount() {
-    const _this = this;
-    // 计算页面的实际高度，iframe自适应会用到
-    function calcPageHeight(doc) {
-      let height = 650;
-      try {
-        height = doc.body.scrollHeight || doc.body.clientHeight;
-        // var bodyheight = $(doc.body).height();
-        // var clientHeight = Math.max(doc.body.clientHeight, doc.documentElement.clientHeight);
-        // height = Math.max(bodyheight, clientHeight);
-      } catch (e) {}
-      return height;
-    }
-    function setFormIframeHeight(height, ifr) {
-      if (height < 650) {
-        height = 650;
-      }
-      ifr.style.width = '1152px';
-      ifr.style.height = height + 'px';
-    }
-    // 根据ID获取iframe对象
-    const ifr = this.refs.processFormIframe;
-    ifr.onload = function() {
-      _this.setState({ loadingForm: false });
-      // 解决打开高度太高的页面后再打开高度较小页面滚动条不收缩
-      ifr.style.height = '0px';
-      const iDoc = ifr.contentDocument || ifr.document;
-      if(iDoc)iDoc.body.style.overflowY="hidden";
-      let height = calcPageHeight(iDoc);
-      setFormIframeHeight(height, ifr);
-      clearInterval(_this.Intervaltimer);
-      _this.Intervaltimer = setInterval(function() {
-        let h = calcPageHeight(iDoc);
-        setFormIframeHeight(h, ifr);
-      }, 500);
-    };
   };
 
   componentWillUnmount() {
     clearInterval(this.Intervaltimer);
   }
 
+  calcFrameHeight = (e) => {
+    const ifr = e.currentTarget, _this = this;
+    _this.setState({ loadingForm: false });
+    // 解决打开高度太高的页面后再打开高度较小页面滚动条不收缩
+    ifr.style.height = '0px';
+    const iDoc = ifr.contentDocument || ifr.document;
+    try{
+      iDoc.body.style.overflowY="hidden";
+      iDoc.body.classList.add('reactFormData');
+    }catch (e) {
+    }
+    let height = _this.calcPageHeight(iDoc);
+    _this.setFormIframeHeight(height, ifr);
+    clearInterval(_this.Intervaltimer);
+    _this.Intervaltimer = setInterval(function() {
+      let h = _this.calcPageHeight(iDoc);
+      _this.setFormIframeHeight(h, ifr);
+    }, 500);
+  };
+
   render() {
     const { props:{ src }, state} = this;
-    const iframeSrc  = `${src}&flowFileBasePath=${getConfig().ftpHost}&flowFileViewPath=${getConfig().filePreviewPath}`;
+    const iframeSrc  = `${getConfig().domain}${src}&flowFileBasePath=${getConfig().ftpHost}&flowFileViewPath=${getConfig().filePreviewPath}`;
+
+    const isLoading = src?false:true;
+
     return (
       <Card title="表单内容" className={styles.formMainBox} bordered={false} headStyle={{ height:'46px',lineHeight:'46px',padding:'0 24px',fontWeight:'bold' }}>
         <Card
@@ -149,14 +153,20 @@ export default class FormBox extends React.Component {
           bordered={false}
           className={styles.formMainLoadingBox}
         />
-        <iframe
-          title="formIframeBox"
-          id="formData"
-          ref="processFormIframe"
-          src={iframeSrc}
-          style={{ height: state.iframeHeight }}
-          className={styles.formContentBox}
-        />
+        {
+          <Skeleton loading={isLoading} active paragraph={{rows:10}} >
+            <iframe
+              title="formIframeBox"
+              id="formData"
+              ref="processFormIframe"
+              src={iframeSrc}
+              style={{ height: 650 }}
+              className={styles.formContentBox}
+              onLoad={this.calcFrameHeight}
+            />
+          </Skeleton>
+        }
+
       </Card>
     );
   }

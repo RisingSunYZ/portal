@@ -10,10 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +36,18 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
                 .setUseTrailingSlashMatch(true);
     }
 
+    /**
+     * 跨域配置
+     */
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("*")
+                .allowedOrigins("*")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginCheckInterceptor)
@@ -51,6 +60,9 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
                         "/rest/portal/user/userLogin/**",
                         "/rest/portal/file-operation/*",
                         "/rest/user/currentUser",
+                        "/rest/user/userLogin",
+                        "/rest/process/form/generateDiagramImg",
+
 
                         "/swagger-ui.html",
                         "/configuration/ui",

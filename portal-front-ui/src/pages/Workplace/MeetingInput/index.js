@@ -2,6 +2,7 @@ import React, { Component, PureComponent, Fragment } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState ,convertToRaw} from 'draft-js';
 // import draftToHtml from 'draftjs-to-html';
+import Plupload from "@/components/Plupload";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { connect } from 'dva';
 import { Tabs, Form, Row, Col, Upload, message, Icon, DatePicker, TimePicker,Select, Button, Input, Card, Modal } from 'antd';
@@ -257,9 +258,9 @@ export default class MeetingInput extends PureComponent {
           });
         }
         if (info.file.status === 'done' && info.file.response && info.file.response.error == 0 ) {
-          message.success(`${info.file.name} 文件上传成功`);
+          message.success(`${info.file.name} 上传成功`);
         } else if (info.file.status === 'error' || (info.file.response &&info.file.response.error == 1)) {
-          message.error(`${info.file.name} 文件上传失败.`);
+          message.error(`${info.file.name} 上传失败.`);
         }
       },
       defaultFileList: files,
@@ -425,11 +426,7 @@ export default class MeetingInput extends PureComponent {
                   {form.getFieldDecorator('files', {
                     // initialValue:files
                   })(
-                    <Upload {...uploadProps}>
-                      <Button>
-                        <Icon type="upload" />上传文件
-                      </Button>
-                    </Upload>
+                    <Plupload url={"/rest/portal/rscmgmt/meeting/uploadImage"} saveDataCall={"meetingRoom/addFiles"} idName={"meetingBtn"} mime_types={mime_types}>上传文件</Plupload>
                   )}
                 </Form.Item>
               </Col>

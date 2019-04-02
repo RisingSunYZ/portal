@@ -178,16 +178,13 @@ public class NewsNoticeController extends BaseController {
                     resultMap.put("watermarkTxt", userSessionInfo.getName()+"_"+userSessionInfo.getNo());
                 }
             }
-            returnVo = new com.dragon.tools.vo.ReturnVo( ReturnCode.SUCCESS, "查询通知详情列表成功!", resultMap);
+            returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询通知详情列表成功!", resultMap);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("NewsNoticeController-noticeDetail:" + e);
         }
         return returnVo;
     }
-
-
-
 
 	/**
 	 *

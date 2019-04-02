@@ -1,9 +1,11 @@
 import React, { Component, PureComponent, Fragment } from 'react';
-import { Button, Icon,Row,Col, Modal, Popover, Upload, message } from 'antd';
+import { Button, Icon,Row,Col, Modal, Popover, message } from 'antd';
 import { connect } from 'dva';
 import { ProcessSelector } from '../Selector';
-import { changeParam, getConfig, nullToZero } from '@/utils/utils';
+import { changeParam, getConfig, nullToZero, fileDown } from '@/utils/utils';
+import Plupload from "@/components/Plupload";
 import styles from "./index.less"
+import router from 'umi/router';
 
 /**
  * 流程图组件
@@ -43,10 +45,10 @@ class DiagramImgModal  extends PureComponent{
   };
 
   render(){
-    const {processDiagramImgUrl, handleOk, handleCancel, visibleDiagramModal, processDiagramData, formTitle} = this.props;
+    const {processDiagramImgUrl, handleOk, handleCancel, handleDownImage, visibleDiagramModal, processDiagramData, formTitle} = this.props;
     return  (
       <Modal
-        title="流程图"
+        title={formTitle + ' - 流程图'}
         width={this.state.diagramModalWidth}
         keyboard="true"
         maskClosable="true"
@@ -55,7 +57,8 @@ class DiagramImgModal  extends PureComponent{
         onCancel={handleCancel}
         bodyStyle={{ overflowX:'auto',position:"relative",padding:"0px 20px 30px 0px", minHeight:'200px'}}
         footer={[
-          <Button key="back" type="primary" onClick={handleCancel}>关闭</Button>
+          <Button key="downImage" type="primary" onClick={handleDownImage}>导出图片</Button>,
+          <Button key="back" onClick={handleCancel}>关闭</Button>
         ]}
       >
         <div>
@@ -119,6 +122,12 @@ class ProcessBaseAction extends Component {
     });
   };
 
+  // 下载图片
+  handleDownImage = e => {
+    const { formInfo:{formTitle}, processForm:{ processDiagramImgUrl } } = this.props;
+    fileDown( formTitle + '-流程图.jpg', getConfig().domain + processDiagramImgUrl);
+  };
+
   // 收藏操作
   doCollect = () => {
     message.info('收藏成功！');
@@ -127,7 +136,7 @@ class ProcessBaseAction extends Component {
 
   // 打印操作
   doPrint = () => {
-    const { dispatch } = this.props;
+    const { processForm:{modelId, instId, bizId, taskId} } = this.props;
 
     // 打印表单常量对象（特殊表单打印配置）
     const PrintObj = [
@@ -157,39 +166,25 @@ class ProcessBaseAction extends Component {
       }, // 离职证明打印模板
     ];
 
-    const modelKey = this.props.processForm.modelId;
+    let printOpenUrl = null;
     for (let i = 0; i < PrintObj.length; i++) {
-      if (PrintObj[i].modelKey === modelKey) {
+      if (PrintObj[i].modelKey === modelId) {
         let url = PrintObj[i].printUrl;
-        if (this.props.processForm.bizId) {
-          url = changeParam(url, 'bizId', this.props.processForm.bizId);
-          url = changeParam(url, 'modelKey', this.props.processForm.modelId);
-          url = changeParam(url, 'processInstId', this.props.processForm.instId);
+        if (bizId) {
+          url = changeParam(url, 'bizId', bizId);
+          url = changeParam(url, 'modelKey', modelId);
+          url = changeParam(url, 'processInstId', instId);
         }
-        window.open(url);
-        return;
+        printOpenUrl = url;
+        break;
       }
     }
-
-    dispatch({
-      type: 'processForm/doPrint',
-      payload: {
-        modelId: nullToZero(this.props.processForm.modelId),
-        instId: nullToZero(this.props.processForm.instId),
-        bizId: nullToZero(this.props.processForm.bizId),
-        taskId: nullToZero(this.props.processForm.taskId),
-      },
-    });
-  };
-
-  handleUpload = () => {
-    const { fileList } = this.state;
-    const formData = new FormData();
-    fileList.forEach(file => {
-      formData.append('files[]', file);
-    });
-    // You can use any AJAX library you like
-    message.success('upload successfully.');
+    if(printOpenUrl){
+      window.open(printOpenUrl);
+    }else{
+      const printUrl = `/print/form/print/${modelId}/${instId}/${bizId}/${taskId}`;
+      router.push(printUrl);
+    }
   };
 
   selectProcess = () => {
@@ -228,43 +223,29 @@ class ProcessBaseAction extends Component {
       }
     }
 
-    // 上传组件相关属性配置
-    const uploadProps = {
-      name: 'file',
-      action: getConfig().domain + '/website/tools/fileUpload/uploadFile.jhtml?filePath=form',
-      multiple: true,
-      accept: '.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt,.pdf,image/jpg,image/jpeg,image/png,image/bmp',
-      showUploadList: false,
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          dispatch({
-            type: 'processForm/addProcessFile',
-            payload: info.file,
-          });
-        }
-        if (info.file.status === 'done' && info.file.response && info.file.response.responseCode == 1) {
-          message.success(`${info.file.name} 文件上传成功`);
-        } else if (info.file.status === 'error' || (info.file.response &&info.file.response.responseCode == 0)) {
-          message.error(`${info.file.name} 文件上传失败.`);
-        }
-      },
-      defaultFileList: fileLists,
-    };
-
     const ProcessTip = () => formInfo.formDesc ? (
       <Popover content={<div style={{ width: '200px' }}>{formInfo.formDesc}</div>}>
         <Icon style={{ color: '#3FA3FF', marginLeft: '12px' }} type="info-circle-o" />
       </Popover>
     ) : null;
 
+    // 上传组件相关属性配置
+    const mime_types = [
+      { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
+      { title: 'Office files', extensions: 'pdf,txt,doc,docx,ppt,pptx,xls,xlsx' },
+      { title: 'Zip files', extensions: 'zip,rar' },
+      { title: 'Cad files', extensions: 'dwg' },
+    ];
+
     const ActionBtn = () => {
       return this.props.actionType === 'launch'&& this.props.processForm.formType!='2' && this.props.processForm.formType!='3' ? (
         <Fragment>
           <Popover content="上传附件">
-            <span style={{ marginLeft: '8px' }}>
-              <Upload {...uploadProps}>
-                <Button icon="upload" />
-              </Upload>
+            <span style={{ marginLeft: '8px'}}>
+              <Plupload url={"/website/tools/fileUpload/uploadFile.jhtml?filePath=form"}
+                        saveDataCall={"processForm/addProcessFile"}
+                        idName={"btn"}
+                        mime_types={mime_types} />
             </span>
           </Popover>
           <Popover content="关联流程">
@@ -281,17 +262,9 @@ class ProcessBaseAction extends Component {
       return this.props.processForm.formType!='2' && this.props.processForm.formType!='3' ?(<Popover content="打印">
         <Button
           target="_blank"
-          onClick={this.doPrint}
+          onClick={this.doPrint.bind(this)}
           icon="printer"
           style={{ marginLeft: '8px' }}
-        />
-        <Modal
-          title=""
-          width="100%"
-          visible={this.state.printVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          cancelText=""
         />
       </Popover>):null;
     };
@@ -324,6 +297,7 @@ class ProcessBaseAction extends Component {
           formTitle={formInfo.formTitle}
           handleOk={this.handleOk}
           handleCancel={this.handleCancel}
+          handleDownImage={this.handleDownImage.bind(this)}
         />
       </Fragment>
     );

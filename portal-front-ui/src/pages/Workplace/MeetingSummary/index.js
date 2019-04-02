@@ -8,6 +8,8 @@ import { EditorState ,convertToRaw} from 'draft-js';
 // import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {message} from "antd/lib/index";
+import Plupload from "@/components/Plupload";
+
 
 
 const { Meta } = Card;
@@ -127,11 +129,7 @@ export default class MeetingSummary extends PureComponent {
                   {form.getFieldDecorator('files', {
                     initialValue:files
                   })(
-                    <Upload {...uploadProps}>
-                      <Button>
-                        <Icon type="upload" />上传文件
-                      </Button>
-                    </Upload>
+                    <Plupload url={"/rest/portal/rscmgmt/meeting/uploadImage"} saveDataCall={"meetingRoom/addFiles"} idName={"summaryBtn"} mime_types={mime_types}>上传文件</Plupload>
                   )}
                 </Form.Item>
               </Col>

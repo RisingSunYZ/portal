@@ -70,7 +70,7 @@ public class UserController extends BaseController {
                     IdmUser user = idmReturnEntity.getUser();
                     if(null != user){
                         //讲用户信息存储session
-                        ReturnVo returnVo = userLoginService.loginCallback(idmReturnEntity.getUser().getUid(), request.getSession());
+                        ReturnVo returnVo = userLoginService.loginCallback(idmReturnEntity.getUser().getUid(), request.getSession(), response);
                         if(ReturnCode.SUCCESS.equals(returnVo.getCode())){
                             response.getWriter().write("<script>top.location.href='"+environment.getProperty("idm.callback.success.url")+"'</script>"); // 授权认证成功，跳转到主页
                             return ;

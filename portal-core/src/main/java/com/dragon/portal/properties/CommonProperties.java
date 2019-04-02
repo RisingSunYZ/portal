@@ -205,6 +205,7 @@ public class CommonProperties {
         this.idmUrl = idmUrl;
     }
 
+
     public String getLoginSwitch() {
         return loginSwitch;
     }
