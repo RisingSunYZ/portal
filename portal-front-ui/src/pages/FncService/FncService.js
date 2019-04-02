@@ -153,7 +153,7 @@ export default class TableList extends PureComponent {
           <Row style={{paddingTop: 20}}>
             <Tabs>
               <Tabs.TabPane tab="资料下载" key="download" >
-                <Tabs onChange={this.tabsChange} tabBarExtraContent={<a> 更多> </a>}>
+                <Tabs onChange={this.tabsChange} tabBarExtraContent={<a href="/eip/fnc-service/material-filepage"> 更多> </a>}>
                   <Tabs.TabPane tab="管理制度" key="8a8a8c3a5ec10cf2015f04049ce9033d" >
                     <FileList files={files} showDel={false}/>
                   </Tabs.TabPane>

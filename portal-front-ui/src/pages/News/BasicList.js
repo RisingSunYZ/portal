@@ -1,3 +1,4 @@
+//实际效果详见  财经服务--财经资讯--更多（链接）
 import React, { PureComponent } from 'react';
 import { List, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
