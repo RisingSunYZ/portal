@@ -143,7 +143,7 @@ export default function request(url, option) {
         // window.g_app._store.dispatch({
         //   type: 'login/logout',
         // });
-        router.push('/user/login');
+        router.push('../');
         return;
       }
       // environment should not be used
