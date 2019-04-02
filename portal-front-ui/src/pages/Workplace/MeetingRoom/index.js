@@ -28,14 +28,16 @@ export default class MeetingRoom extends PureComponent {
     modelId:"",
     cardType:1,
     pagination: { pageIndex: 0, pageSize: 10 },
-    query:{}
+    query:{},
+    tab:1
   };
 
   callback=(key)=> {
     console.log(key);
     this.setState({
       cardType:key,
-    })
+    });
+
   }
 
   // 加载会议页面内容
@@ -192,26 +194,21 @@ export default class MeetingRoom extends PureComponent {
 
 
   //导出参会人员
-  downLoad = ()=> {
-    const { dispatch }=this.props;
-    dispatch({
-      type: 'meetingRoom/getDownloadPerList',
-      payload:{}
-    })
+  downLoadPerList = (id)=> {
+    window.location.href='/rest/portal/rscmgmt/meeting/ExportParticiPants/'+id;
   };
 
   /**
    * 点击 查看 显示内容
    */
-  handleView = (id) =>{
+  handleView = (tab,id) =>{
     let visibleIdStr = this.state.visibleId;
-    const index = visibleIdStr.indexOf(id);
+    const index = visibleIdStr.indexOf(tab+"-"+id);
     if(index!=-1){//如果包含id，则删除id
-      visibleIdStr = visibleIdStr.substr(0,index) + visibleIdStr.substr(index+id.length+1,visibleIdStr.length);
+      visibleIdStr = visibleIdStr.substr(0,index) + visibleIdStr.substr(index+(tab+"-"+id).length+1,visibleIdStr.length);
     }else{//不包含，则添加
-      visibleIdStr+=id+","
+      visibleIdStr+= tab+"-"+id+","
     }
-
     this.setState({
       visibleId:visibleIdStr,
     });
@@ -257,10 +254,9 @@ export default class MeetingRoom extends PureComponent {
       loading,
       match
     } = this.props;
-    const { type}=this.state;
-    const tab = match.params.tab ? match.params.tab:1;
-    const cardType = this.state.cardType?this.state.cardType:tab;
-
+    const { type }=this.state;
+    const tab = match.params.tab? match.params.tab:1;
+    console.log(tab);
     const cardData=(item,cardType)=>{
       return (
         <div>
@@ -309,19 +305,19 @@ export default class MeetingRoom extends PureComponent {
               }
               {(cardType == 4||((cardType == 1 ||cardType == 2||cardType == 3) && this.calculationTime(item.startTime) )) ? (
                 <li style={{marginLeft:20}}>
-                  <Link to={"/workplace/meeting-room/:tab/meeting-input/"+item.id}>
+                  <Link to={"/workplace/meeting-room/"+cardType+"/meeting-input/"+item.id}>
                     <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
                     <span>编辑</span>
                   </Link>
                 </li>
               ):('') }
             </ul>
-            <div className={styles.view} onClick={()=>this.handleView(item.id)}>
-              {this.state.visibleId.indexOf(item.id)!=-1 ?
+            <div className={styles.view} onClick={()=>this.handleView(tab,item.id)}>
+              {this.state.visibleId.indexOf(tab+"-"+item.id)!=-1 ?
                 (<Icon type="double-left" className={styles.iconViewTop}/>)
                 : (<Icon type="double-left" className={styles.iconViewBot}/>)
               }
-              &nbsp;&nbsp;<span>{this.state.visibleId.indexOf(item.id)!=-1 ? '收起':'查看'}</span>
+              &nbsp;&nbsp;<span>{this.state.visibleId.indexOf(tab+"-"+item.id)!=-1  ? '收起':'查看'}</span>
             </div>
           </div>
         </div>
@@ -342,14 +338,14 @@ export default class MeetingRoom extends PureComponent {
                     description={cardData(item,cardType)}
                   />
                 </Card>
-                <div className={styles.cardBot} style={{display:this.state.visibleId.indexOf(item.id)!=-1 ? '':'none'}}>
+                <div className={styles.cardBot} style={{display:this.state.visibleId.indexOf(tab+"-"+item.id)!=-1 ? '':'none'}}>
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>参会人员：</Col>
                     <Col span={20}>
                       <div>
                         {item.mandatoryPersonName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         {item.optionalPersonList && item.optionalPersonList.length>0 ? (<span>可选人员 ( {item.optionalPersonName} ) </span>):('')}&nbsp;&nbsp;
-                        <span style={{color:'#2596FF',fontSize:'12px',cursor:'pointer'}} onClick={this.downLoad}>
+                        <span style={{color:'#2596FF',fontSize:'12px',cursor:'pointer'}} onClick={()=>this.downLoadPerList(item.id)}>
                           <Icon type="file" theme="filled" />
                           <span>导出参会人员</span>
                         </span>
