@@ -1,6 +1,6 @@
 #!/bin/bash
 #这里可替换为你自己的执行程序，其他代码无需更改
-APP_NAME=portal-front.jar
+APP_NAME=portal-front-rest.jar
 ENVIRONMENT=dev
 PROPERTIES=classpath:/application.properties,classpath:/application-dev.properties
 DEBUG_MODE=0
