@@ -754,14 +754,14 @@ public class MeetingController extends BaseController {
                 //destFilePath = path + fileName;
                 destFilePath = path + file.getOriginalFilename();
 
-                return result?"{\"error\":0,\"fileName\":\""+file.getOriginalFilename()+"\",\"url\":\"" + destFilePath+"\"}":"{\"error\":1,\"message\":\"上传失败！\"}";
+                return result?"{\"code\":1,\"fileName\":\""+file.getOriginalFilename()+"\",\"url\":\"" + destFilePath+"\"}":"{\"code\":0,\"message\":\"上传失败！\"}";
             }
         }catch(Exception e){
             e.printStackTrace();
             logger.error("FileUploadController-uploadImage" + e.getMessage());
-            return "{\"error\":1,\"message\":\"上传失败！\"}";
+            return "{\"code\":0,\"message\":\"上传失败！\"}";
         }
-        return "{\"error\":1,\"message\":\"上传失败！\"}";
+        return "{\"code\":0,\"message\":\"上传失败！\"}";
     }
 
     /**
