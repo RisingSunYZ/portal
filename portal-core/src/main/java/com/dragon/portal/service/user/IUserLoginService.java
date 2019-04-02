@@ -1,6 +1,7 @@
 		
 package com.dragon.portal.service.user;
 
+import com.dragon.portal.model.user.UserLogin;
 import com.dragon.tools.vo.ReturnVo;
 
 import javax.servlet.http.HttpSession;
@@ -54,7 +55,7 @@ public interface IUserLoginService{
      * @return
      * @throws Exception
      */
-    public ReturnVo updatePwdAfterLogin(String oldPassword,String password, HttpSession session) throws Exception;
+    public ReturnVo updatePwdAfterLogin(String oldPassword,String password, String userNo) throws Exception;
 
 
     /*
@@ -66,5 +67,12 @@ public interface IUserLoginService{
      * @return com.dragon.tools.vo.ReturnVo
      **/
     public ReturnVo loginCallback(String userNo, HttpSession session) throws Exception;
+
+    /**
+     * 修改用户
+     * @param userLogin
+     * @throws Exception
+     */
+    public boolean updateUserLoginByNo(UserLogin userLogin)throws Exception;
 
 }

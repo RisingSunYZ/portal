@@ -7,8 +7,9 @@ import styles from './index.less';
 
 const FormItem = Form.Item;
 
-@connect(({ baseInfo, loading }) => ({
+@connect(({ baseInfo,user, loading }) => ({
   baseInfo,
+  user: user,
   loading: loading.models.baseInfo,
   submitting: loading.effects['form/submitRegularForm'],
 }))
@@ -22,7 +23,6 @@ class EditInfoForm extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'baseInfo/getBaseInfo',
-      payload: {},
     });
 
   }
@@ -44,7 +44,7 @@ class EditInfoForm extends PureComponent {
         type: 'baseInfo/saveBaseInfo',
         payload: values,
         callback: (data)=> {
-          if(data.code === 1){
+          if(data.code === '100'){
             this.showOkModel();
           }else{
             this.showErrorModel(data.msg);
@@ -125,7 +125,7 @@ class EditInfoForm extends PureComponent {
             <Col md={12} sm={24}>
               <FormItem {...formItemLayout} label="手机">
                 {getFieldDecorator('mobilePhone', {
-                  initialValue: profile.profile.workphone,
+                  initialValue: profile.mobilePhone,
                   rules: [
                     {
                       pattern: /^\d{11}$/,
@@ -138,7 +138,7 @@ class EditInfoForm extends PureComponent {
             <Col md={12} sm={24}>
               <FormItem {...formItemLayout} label="座机号码">
                 {getFieldDecorator('companyMobile', {
-                  initialValue: profile.profile.officephone,
+                  initialValue: profile.companyMobile,
                   rules: [
                     {
                       pattern: /^(0[0-9]\d+-)?(\d+)?$/,
@@ -153,7 +153,7 @@ class EditInfoForm extends PureComponent {
             <Col md={12} sm={24}>
               <FormItem {...formItemLayout} label="短号">
                 {getFieldDecorator('shortPhone', {
-                  initialValue: profile.profile.worklongphone,
+                  initialValue: profile.shortPhone,
                   rules: [
                     {
                       pattern: /^\d{6,}$/,
@@ -166,7 +166,7 @@ class EditInfoForm extends PureComponent {
             <Col md={12} sm={24}>
               <FormItem {...formItemLayout} label="座机短号">
                 {getFieldDecorator('shortWorkPhone', {
-                  initialValue: profile.profile.officeshortphone,
+                  initialValue: profile.shortWorkPhone,
                   rules: [
                     {
                       pattern: /^\d{6,}$/,
@@ -181,11 +181,11 @@ class EditInfoForm extends PureComponent {
             <Col md={12} sm={24}>
               <FormItem {...formItemLayout} label="QQ号">
                 {getFieldDecorator('qqNo',{
-                  initialValue: profile.profile.qq,
+                  initialValue: profile.qqNo,
                     rules: [
                         {
                           pattern: /^[1-9][0-9]{4,9}$/,
-                           message: '号码格式错误',
+                           message: 'QQ号格式错误',
                         },
                     ],
                 })(

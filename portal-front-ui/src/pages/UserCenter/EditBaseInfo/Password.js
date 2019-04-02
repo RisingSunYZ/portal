@@ -50,7 +50,7 @@ class EditPwdForm extends PureComponent {
 
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
-    if (value && value !== form.getFieldValue('newPwd')) {
+    if (value && value !== form.getFieldValue('password')) {
       callback('您两次输入的密码不一致!');
     } else {
       callback();
@@ -80,7 +80,7 @@ class EditPwdForm extends PureComponent {
 
   renderPasswordProgress = () => {
     const { form } = this.props;
-    const value = form.getFieldValue('newPwd');
+    const value = form.getFieldValue('password');
     const passwordStatus = this.getPasswordStatus();
     const percent = value && value.length ? (value.length * 10 > 100 ? 100 : value.length * 10) : 0;
     return (
@@ -97,7 +97,7 @@ class EditPwdForm extends PureComponent {
 
   getPasswordStatus = () => {
     const { form } = this.props;
-    const value = form.getFieldValue('newPwd');
+    const value = form.getFieldValue('password');
     if (value && value.length > 9) {
       return 'ok';
     }
@@ -121,8 +121,6 @@ class EditPwdForm extends PureComponent {
         type: 'baseInfo/saveUserPwd',
         payload: values,
         callback: (dt) => {
-          let loginOutUrl = '<img src="'+dt.data.logoutUrl+'" width="0" height="0" border="0" style="width:0;height:0;overflow:hidden;margin:0;padding:0;"/>';
-          $('#oldPwd').after(loginOutUrl);
           window.location.href = getConfig().domain+'/main.jhtml';
         }
       });
@@ -167,7 +165,7 @@ class EditPwdForm extends PureComponent {
       <Card bordered={false}>
         <Form onSubmit={this.saveMsg} hideRequiredMark style={{ marginTop: 100 }}>
           <FormItem {...formItemLayout} label="输入原密码">
-            {getFieldDecorator('oldPwd', {
+            {getFieldDecorator('oldPassword', {
               rules: [
                 {
                   required: true,
@@ -177,7 +175,7 @@ class EditPwdForm extends PureComponent {
             })(<Input type="password" placeholder="请输入原密码" />)}
           </FormItem>
           <FormItem {...formItemLayout} label="输入新密码">
-            {getFieldDecorator('newPwd', {
+            {getFieldDecorator('password', {
               rules: [
                 {
                   required: true,

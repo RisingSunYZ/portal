@@ -65,14 +65,63 @@ export async function changePwd(params) {
     body: params,
   });
 }
+/**
+ * 获取个人资料
+ */
+export async function getBaseInfo() {
+  return request(`/rest/portal/user/userLogin/getEditUserInfo`);
+}
+
+/**
+ * 个人资料 保存基本信息
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function saveBaseInfo(params) {
+  var formData = new FormData();
+  for(let key in params){
+    formData.append(key,params[key]);
+  }
+  return request('/rest/portal/user/userLogin/saveUserInfo', {
+    method: 'POST',
+    body: formData,
+  });
+}
+/**
+ * 个人资料-修改用户手机号
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function saveUserMobile(params) {
+  var formData = new FormData();
+  for(let key in params){
+    formData.append(key,params[key]);
+  }
+  return request('/rest/portal/user/userLogin/saveUserMobile', {
+    method: 'POST',
+    body: formData,
+  });
+}
+
+/**
+ * 个人资料--修改密码
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function updatePwdAfterLogin(params) {
+  return request('/rest/portal/user/userLogin/updatePwdAfterLogin', {
+    method: 'POST',
+    body: params,
+  });
+}
+
 
 /**
  * 获取短信验证码
- * @param params
  * @returns {Promise<void>}
  */
-export async function captchaCode(params) {
-  return request(`/rest/portal/user/userLogin/verificationCode?userNo=${params.userNo}`);
+export async function verificationCode() {
+  return request(`/rest/portal/user/userLogin/getVerificationCode`);
 }
 
 /**

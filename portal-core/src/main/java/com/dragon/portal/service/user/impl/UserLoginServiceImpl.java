@@ -110,9 +110,9 @@ public class UserLoginServiceImpl implements IUserLoginService {
 			String code = String.valueOf((int)((Math.random()*9+1)*100000));
 
 			session.setAttribute(PortalConstant.SESSION_VERIFICATION_CODE, code);
-			session.setAttribute(PortalConstant.SESSION_TEMPORARY_USER_UID,userNo);//记录工号，后续验证时使用
+			session.setAttribute(PortalConstant.SESSION_TEMPORARY_USER_UID,userNo);//记录工号，未登录短信验证时使用
 			//将生成的验证码 存入redis 10分钟过期
-			redisService.set(userNo+"-"+PortalConstant.SESSION_VERIFICATION_CODE, code,900l);
+			redisService.set(userNo+PortalConstant.SESSION_VERIFICATION_CODE, code,900l);
 			//发短信
 			SmsInfo smsInfo = new SmsInfo(commonProperties.getSmsMobileCode());
 			smsInfo.setType(SmsModeTypeEnum.PROMPT.getType());
@@ -142,7 +142,7 @@ public class UserLoginServiceImpl implements IUserLoginService {
 		//临时用户
 		String userNo = (String)session.getAttribute(PortalConstant.SESSION_TEMPORARY_USER_UID);
 		if(StringUtils.isNotEmpty(userNo)) {
-			String verificationCode = (String) redisService.get(userNo + "-"+PortalConstant.SESSION_VERIFICATION_CODE);
+			String verificationCode = (String) redisService.get(userNo + PortalConstant.SESSION_VERIFICATION_CODE);
 			if (StringUtils.isNotEmpty(code) && StringUtils.trim(code).equals(verificationCode)) {
 				//记录当前用户已通过手机短信校验
 				redisService.set(userNo+"-"+PortalConstant.SESSION_CHECK_CODE_FLAG,PortalConstant.SUCCESS,900l);//
@@ -182,23 +182,21 @@ public class UserLoginServiceImpl implements IUserLoginService {
 	/**
 	 * 登录后-》修改密码
      * @param password
-     * @param session
+     * @param userNo
 	 * @return
 	 * @throws Exception
 	 */
-	public ReturnVo updatePwdAfterLogin(String oldPassword,String password, HttpSession session) throws Exception{
+	public ReturnVo updatePwdAfterLogin(String oldPassword,String password, String userNo) throws Exception{
 		ReturnVo<UserLogin> returnVo = new ReturnVo(ReturnCode.FAIL,"修改失败！");
-		//获取登录后的工号
-		String userNo = (String)session.getAttribute(PortalConstant.SESSION_USER_UID);
-		if(StringUtils.isNotEmpty(userNo)) {
-			List<UserLogin> userLoginList = userLoginDao.getUserLoginByUserName(userNo);
-			if (CollectionUtils.isNotEmpty(userLoginList)) {
-                UserLogin user = userLoginList.get(0);
-                this.updatePwd(user, password);
-                returnVo = new ReturnVo(ReturnCode.SUCCESS, "修改成功！");
+		List<UserLogin> userLoginList = userLoginDao.getUserLoginByUserName(userNo);
+		if (CollectionUtils.isNotEmpty(userLoginList)) {
+			UserLogin user = userLoginList.get(0);
+			if(user.getPassword().equals(MD5Util.getMD5String(oldPassword))) {
+				this.updatePwd(user, password);
+				returnVo = new ReturnVo(ReturnCode.SUCCESS, "修改成功！");
+			}else{
+				returnVo.setMsg("原始密码不正确！");
 			}
-		}else{
-			returnVo.setMsg("用户已过期");
 		}
 		return returnVo;
 	}
@@ -285,6 +283,24 @@ public class UserLoginServiceImpl implements IUserLoginService {
 		}
 
 		return userInfo;
+	}
+
+	/**
+	 * 修改用户
+	 * @param userLogin
+	 * @throws Exception
+	 */
+	public boolean updateUserLoginByNo(UserLogin userLogin)throws Exception{
+		List<UserLogin> list = userLoginDao.getUserLoginByUserName(userLogin.getUserNo());
+		if(CollectionUtils.isNotEmpty(list)){
+			String id = list.get(0).getId();
+			if(StringUtils.isNotEmpty(id)){
+				userLogin.setId(id);
+				userLoginDao.updateUserLogin(userLogin);
+				return true;
+			}
+		}
+		return false;
 	}
 
 

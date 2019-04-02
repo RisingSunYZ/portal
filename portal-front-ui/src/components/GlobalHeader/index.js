@@ -17,6 +17,7 @@ import holidaySkin from '../../layouts/MainLayout.less';
 import { getConfig } from '../../utils/utils';
 import { connect } from 'dva';
 import router from "umi/router";
+import { Link } from 'dva/router';
 const SubMenu = Menu.SubMenu;
 @connect(({ global,baseInfo,user, loading }) => ({
   global,
@@ -108,22 +109,13 @@ export default class GlobalHeader extends PureComponent {
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item key="userInfo">
-          <a href={getConfig().domain + "/portal/user-center/edit"} target="_blank">
-            <Icon type="edit" />
-            编辑资料
-          </a>
+          <Link to="/user-center/edit/baseInfo"><Icon type="edit" />编辑资料</Link>
         </Menu.Item>
         <Menu.Item key="lock">
-          <a href={ getConfig().domain+"/portal/user-center/edit/password"} target="_blank">
-            <Icon type="lock" />
-            修改密码
-          </a>
+          <Link to="/user-center/edit/password"><Icon type="lock" />修改密码</Link>
         </Menu.Item>
         <Menu.Item key="mobile">
-          <a href={getConfig().domain + "/portal/user-center/edit/mobile"} target="_blank">
-            <Icon type="mobile" />
-            修改密保手机
-          </a>
+          <Link to="/user-center/edit/mobile"><Icon type="mobile" />修改密保手机</Link>
         </Menu.Item>
         <SubMenu key="process" className={styles.processAuthorize} title={<span><Icon type="user" />流程授权</span>}>
           <Menu.Item key="new">
