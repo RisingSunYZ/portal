@@ -23,7 +23,7 @@ public interface IUserLoginService{
      * @return
      * @throws Exception
      */
-    public ReturnVo updateCheckLogin(String username ,String password, HttpSession session)throws Exception;
+    public ReturnVo updateCheckLogin(String username ,String password, HttpSession session,HttpServletResponse response)throws Exception;
 
     /**
      * 获取手机验证码

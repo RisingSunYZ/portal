@@ -83,12 +83,12 @@ public class UserLoginController extends BaseController{
     @ApiOperation("登录")
     public ReturnVo<String> login(@ApiJsonObject({
             @ApiJsonProperty(key="userName",description = "用户名"),
-            @ApiJsonProperty(key="password",description = "密码")})@RequestBody UserLogin userLogin, HttpServletRequest request) {
+            @ApiJsonProperty(key="password",description = "密码")})@RequestBody UserLogin userLogin, HttpServletRequest request,HttpServletResponse response) {
 
         HttpSession session = request.getSession();
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "查询失败！");
         try {
-            returnVo = userLoginService.updateCheckLogin(userLogin.getUserName(),userLogin.getPassword(),session);
+            returnVo = userLoginService.updateCheckLogin(userLogin.getUserName(),userLogin.getPassword(),session,response);
         } catch (Exception e) {
             logger.error("UserLoginController-login:", e);
             e.printStackTrace();
