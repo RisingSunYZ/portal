@@ -1,35 +1,7 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
 
-export async function saveBaseInfo(params) {
-  return request('/portal/api/person/saveUserInfo.jhtml', {
-    method: 'POST',
-    data: stringify(params),
-  });
-}
 
-export async function saveUserPwd(params) {
-  return request('/portal/api/person/saveUserPwd.jhtml', {
-    method: 'POST',
-    data: stringify(params),
-  });
-}
-
-
-
-export async function sendUserMobileCode(params) {
-  return request('/portal/api/person/sendUserMobileCode.jhtml', {
-    method: 'POST',
-    data: stringify(params),
-  });
-}
-
-export async function saveUserMobile(params) {
-  return request('/portal/api/person/saveUserMobile.jhtml', {
-    method: 'POST',
-    data: stringify(params),
-  });
-}
 
 /**
  * 提交反馈表单
