@@ -248,15 +248,29 @@ export default class MeetingRoom extends PureComponent {
                             </span>);
   };
 
+
+
   render() {
     const {
       meetingRoom: { draftData: { listDraft }, waitData:{ listWait } ,historyData:{listHistory } ,inviteData:{ listInvita }},
       loading,
       match
     } = this.props;
+
     const { type }=this.state;
     const tab = match.params.tab? match.params.tab:1;
-    console.log(tab);
+    // console.log(tab);
+
+    // 上传附件格式化
+    const handleFiles=(files)=>{
+      let fileName="";
+      for(let i=0;i<files.length;i++){
+        fileName += files[i].fileName+';'
+      }
+      if(fileName.length>0) fileName=fileName.substr(0,fileName.length-1);
+      return fileName;
+    };
+
     const cardData=(item,cardType)=>{
       return (
         <div>
@@ -362,21 +376,21 @@ export default class MeetingRoom extends PureComponent {
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={24} style={{left:30,fontSize:18}}>
-                      <Icon type="paper-clip" />
-                      <span style={{color:'#2596FF',fontSize:12,cursor:'pointer'}}>{item.meetingFiles} 业务经理调整任务(1).docx; </span>
+                      {/*<Icon type="paper-clip" />*/}
+                      <span style={{color:'#2596FF',fontSize:12,cursor:'pointer'}}>{(item.meetingFiles) && handleFiles(item.meetingFiles)}</span>
                     </Col>
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>会议纪要：</Col>
                     <Col span={20}>
-                      <span>{item.summaryContent}我发过呢个呢个 </span>
+                      <span>{item.summaryContent}</span>
                       <div style={{margin: '10px 0'}}>
-                        <Link to={"/workplace/meeting-room/:tab/meeting-summary/"+item.id}>
+                        <Link to={"/workplace/meeting-room/"+cardType+"/meeting-summary/"+item.id}>
                           <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
                           <span>编辑</span>
                         </Link>
                       </div>
-                      <div style={{color:'#2596FF',fontSize:12}}> 劳务招标平台工作计划表V1.0.xlsx;{item.meetingSummaryFiles}</div>
+                      <div style={{color:'#2596FF',fontSize:12}}> 劳务招标平台工作计划表.xlsx;{item.meetingSummaryFiles && handleFiles(item.meetingSummaryFiles)}</div>
                     </Col>
                   </Row>
                   <Row className={styles.BotCount}>
