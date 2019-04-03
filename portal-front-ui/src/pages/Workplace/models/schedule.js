@@ -1,11 +1,14 @@
 import {
   queryScheduleGrant,
+  delScheduleGrant,
+  saveGrant,
   queryScheduleList,
   queryScheduleInfo,
   doSaveSchedule,
   delSchedule
 } from '@/services/schedule';
 import { message } from 'antd';
+import router from "umi/router";
 
 export default {
   state: {
@@ -14,6 +17,9 @@ export default {
       scheduleEventGrantList: [],
     },
     scheduleList: [],
+    scheduleEvent: {},
+    delGrantLoading: false,
+    saveGrantLoading: false,
   },
 
   namespace: 'schedule',
@@ -26,6 +32,34 @@ export default {
         payload: response,
       });
     },
+    *delScheduleGrant({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'saveDelScheduleGrant',
+        payload: true,
+      });
+      const response = yield call(delScheduleGrant, payload);
+      if (response.code === '100') {
+        if (callback && typeof callback === 'function') {
+          callback(response);
+        }
+      } else {
+        message.error(response.msg);
+      }
+    },
+    *saveGrant({ payload, callback }, { call, put }) {
+      yield put({
+        type: 'changeGrantLoading',
+        payload: true,
+      });
+      const response = yield call(saveGrant, payload);
+      if (response.code === '100') {
+        if (callback && typeof callback === 'function') {
+          callback(response);
+        }
+      } else {
+        message.error(response.msg);
+      }
+    },
     *queryScheduleList({ payload }, { call, put }) {
       const response = yield call(queryScheduleList, payload);
       yield put({
@@ -33,14 +67,15 @@ export default {
         payload: response,
       });
     },
-    *queryScheduleInfo({ payload }, { call, put }) {
+    *queryScheduleInfo({ payload, callback }, { call, put }) {
       const response = yield call(queryScheduleInfo, payload);
-      if(response.code === "100"){
-        yield put({
-          type: 'saveScheduleInfo',
-          payload: response,
-        });
+      if (callback && typeof callback === 'function') {
+        callback(response);
       }
+      yield put({
+        type: 'saveScheduleInfo',
+        payload: response,
+      });
     },
     *doSaveSchedule({ payload }, { call, put }) {
       const response = yield call(doSaveSchedule, payload);
@@ -63,6 +98,18 @@ export default {
         scheduleGrant: action.payload
       };
     },
+    saveDelScheduleGrant(state, action) {
+      return {
+        ...state,
+        delGrantLoading: action.payload
+      };
+    },
+    changeGrantLoading(state, action) {
+      return {
+        ...state,
+        saveGrantLoading: action.payload
+      };
+    },
     saveScheduleList(state, action) {
       return {
         ...state,
@@ -72,7 +119,7 @@ export default {
     saveScheduleInfo(state, action) {
       return {
         ...state,
-        scheduleEvent: action.payload.data
+        scheduleEvent: action.payload
       };
     },
   },

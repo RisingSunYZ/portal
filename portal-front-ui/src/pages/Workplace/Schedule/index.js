@@ -2,6 +2,7 @@ import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Calendar, Icon, Row, Col, Menu, Dropdown, Popover, Input, Card, Modal } from 'antd';
 import ScheduleGrant from './ScheduleGrant';
+import ScheduleEventDetail from './ScheduleEventDetail';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -18,6 +19,7 @@ export default class Schedule extends PureComponent {
   state = {
     currDate: moment(),
     view: 'month',
+    selEvent: '',
   };
 
   componentDidMount() {
@@ -56,10 +58,13 @@ export default class Schedule extends PureComponent {
 
   renderEvent = ({ event }) => {
     return (
-      <div className={`${styles.event} ${event.type === 2 ? styles.note : styles.meeting}`}>
-        <span>{event.title}</span>
-      </div>
-      )
+      <ScheduleEventDetail eventId={event.id} showRender={()=>{
+        return <div className={`${styles.event} ${event.type === 2 ? styles.note : styles.meeting}`}>
+          <span>{event.title}</span>
+        </div>
+      }}>
+      </ScheduleEventDetail>
+    )
   };
 
   onDateChange = d => {
@@ -71,20 +76,19 @@ export default class Schedule extends PureComponent {
     });
   };
 
-  onEventClick = event => {
-    console.log(event);
-  };
-
   render() {
     const {
       schedule: { scheduleList }
     } = this.props;
-    const { currDate, view } = this.state;
+    const { currDate, view, selEvent } = this.state;
     return (
       <Fragment>
         <Card bordered={false} bodyStyle={{padding: 16}}>
           <Row>
-            <Col span={24}>
+            <Col span={3}>
+              <ScheduleEventDetail eventId={selEvent} />
+            </Col>
+            <Col span={3}>
               <ScheduleGrant />
             </Col>
           </Row>
@@ -106,7 +110,6 @@ export default class Schedule extends PureComponent {
                   endAccessor={e=>new Date(e.endTime)}
                   views={['month', 'week', 'day']}
                   onNavigate={this.onDateChange}
-                  onSelectEvent={this.onEventClick}
                   components={{
                     event: this.renderEvent,
                   }}
