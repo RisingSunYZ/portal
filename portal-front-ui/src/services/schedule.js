@@ -11,8 +11,31 @@ export async function query() {
  * @returns {Promise<Object>}
  */
 
-export async function queryScheduleEventGrant(params) {
-  return request(`/rest/portal/schedule/getScheduleEventGrantByGrantedPersonNo?${stringify(params)}`);
+export async function queryScheduleGrant(params) {
+  return request(`/rest/portal/scheduleGrant/empower?${stringify(params)}`);
+}
+
+/**
+ * 通过ID删除授权信息
+ * @param params
+ * @returns {Promise<Object>}
+ */
+
+export async function delScheduleGrant(params) {
+  return request(`/rest/portal/scheduleGrant/delEventGrant/${params}`);
+}
+
+/**
+ * 保存授权信息
+ * @param params
+ * @returns {Promise<Object>}
+ */
+
+export async function saveGrant(params) {
+  return request(`/rest/portal/scheduleGrant/save`, {
+    method: 'POST',
+    body: params
+  });
 }
 
 /**
@@ -30,7 +53,7 @@ export async function queryScheduleList(params) {
  * @returns {Promise<Object>}
  */
 export async function queryScheduleInfo(params) {
-  return request(`/rest/portal/schedule/getScheduleEventById?${stringify(params)}`);
+  return request(`/rest/portal/schedule/getScheduleEventById/${params}`);
 }
 
 
@@ -42,7 +65,7 @@ export async function queryScheduleInfo(params) {
 export async function doSaveSchedule(params) {
   return request('/rest/portal/schedule/save', {
     method: 'POST',
-    body:params,
+    body: stringify(params),
   });
 }
 
