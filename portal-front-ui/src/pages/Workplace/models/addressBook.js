@@ -67,6 +67,7 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *addContactPer({payload},{call, put}){
+      debugger;
       const response= yield call(addContactPerData,payload);
       if(response.code=='100'){
         message.success(response.msg)

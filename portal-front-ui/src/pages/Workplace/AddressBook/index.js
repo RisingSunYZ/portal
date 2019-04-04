@@ -22,7 +22,7 @@ const { Sider, Content } = Layout;
 export default class AddressBook extends PureComponent {
 
   state = {
-    selectedKey: '',
+    selectedKey: [],
     selectedRowKeys: [],
     visibleDrawer: false,
     visible:false ,//弹窗初始化状态
@@ -69,6 +69,7 @@ export default class AddressBook extends PureComponent {
       });
       this.setState({
         query:params,
+        selectedKey:selectedKeys
       });
     }
   }
@@ -130,12 +131,21 @@ export default class AddressBook extends PureComponent {
     this.setState({
       selectedRowKeys,
       nos:no
-    })
-    console.log(no)
+    });
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
   }
 
-  // 添加到常用联系人
+  // Drawer添加到常用联系人
+  drawerAddContactPer=()=>{
+    const { dispatch }=this.props;
+    const { personObj  }=this.state;
+    dispatch({
+      type:'addressBook/addContactPer',
+      payload:{contactNo:personObj.no}
+    })
+  };
+
+  // (页面头部)添加到常用联系人
   addContactPer = ()=> {
     const { dispatch }=this.props;
     const { selectedRowKeys  }=this.state;
@@ -303,7 +313,7 @@ export default class AddressBook extends PureComponent {
                   <p className={styles.perPost}>{personObj.jobStation}</p>
                   <p className={styles.perUnit}>{personObj.deptName}</p>
                   <div className={styles.btnGroup}>
-                    <Button type="primary">添加到常用联系人</Button>
+                    <Button type="primary" onClick={this.drawerAddContactPer}>添加到常用联系人</Button>
                     <Link to={'mailto:'+personObj.email}>
                       <Button className={styles.btnEmail}>发邮件</Button>
                     </Link>
@@ -335,7 +345,7 @@ export default class AddressBook extends PureComponent {
             <Content>
               <Row style={{marginTop:'12px'}}>
                 {
-                 this.state.selectedKey == 'TOP-CONTACTS' ? (
+                 this.state.selectedKey[0] === 'TOP-CONTACTS' ? (
                    <Col span={1} className={styles.colHeader}>
                      {!hasSelected ? (
                        <div onClick={this.delContactPer} className={styles.setDisable}>

@@ -390,7 +390,7 @@ export default class MeetingRoom extends PureComponent {
                           <span>编辑</span>
                         </Link>
                       </div>
-                      <div style={{color:'#2596FF',fontSize:12}}> 劳务招标平台工作计划表.xlsx;{item.meetingSummaryFiles && handleFiles(item.meetingSummaryFiles)}</div>
+                      <div style={{color:'#2596FF',fontSize:12}}>{item.meetingSummaryFiles && handleFiles(item.meetingSummaryFiles)}</div>
                     </Col>
                   </Row>
                   <Row className={styles.BotCount}>

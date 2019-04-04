@@ -140,6 +140,7 @@ export default class MeetingInput extends PureComponent {
     form.validateFields((err, fieldsValue)=>{
       if(err) return;
       // 调用公共方法
+      debugger;
       this.commonMethod(fieldsValue);
       dispatch({
         type:'meetingRoom/sendInvites',
