@@ -1,6 +1,6 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Tabs, Icon, Row, Col,Input, Card, Modal,Badge } from 'antd';
+import { Tabs, Icon, Row, Col,Input, Card, Modal,Badge,Pagination  } from 'antd';
 import styles from './index.less';
 import Link from 'umi/link';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
@@ -75,6 +75,32 @@ export default class MeetingRoom extends PureComponent {
       query:params
     })
   }
+
+  // 历史会议数据分页查询
+  onHistoryChange=(pageNumber)=>{
+    const { dispatch }=this.props;
+    dispatch({
+      type: 'meetingRoom/getHistoryData',
+      payload:{
+        pageIndex:pageNumber,
+        pageSize:this.state.pagination.pageSize
+      }
+    });
+    console.log('Page: ', pageNumber);
+  };
+
+  // 我的邀请数据分页查询
+  onInviteChange=(pageNumber)=>{
+    const { dispatch }=this.props;
+    dispatch({
+      type: 'meetingRoom/getMyInviteData',
+      payload:{
+        pageIndex:pageNumber-1,
+        pageSize:this.state.pagination.pageSize
+      }
+    });
+    console.log('Page: ', pageNumber);
+  };
 
   // 搜索会议
   doSearchMeeting=(value)=> {
@@ -252,11 +278,10 @@ export default class MeetingRoom extends PureComponent {
 
   render() {
     const {
-      meetingRoom: { draftData: { listDraft }, waitData:{ listWait } ,historyData:{listHistory } ,inviteData:{ listInvita }},
+      meetingRoom: { draftData: { listDraft }, waitData:{ listWait } ,historyData:{listHistory ,pagination} ,inviteData:{ listInvita ,paginations}},
       loading,
       match
     } = this.props;
-
     const { type }=this.state;
     const tab = match.params.tab? match.params.tab:1;
     // console.log(tab);
@@ -270,6 +295,7 @@ export default class MeetingRoom extends PureComponent {
       if(fileName.length>0) fileName=fileName.substr(0,fileName.length-1);
       return fileName;
     };
+
 
     const cardData=(item,cardType)=>{
       return (
@@ -430,6 +456,7 @@ export default class MeetingRoom extends PureComponent {
                 loopCard(listInvita,2):
                 (<BlankList emptyText="暂无数据" />)
             }
+            <Pagination showQuickJumper defaultCurrent={2} total={paginations} onChange={this.onInviteChange} style={{textAlign:'center'}} />
           </TabPane>
           <TabPane tab="历史会议" key="3">
             {
@@ -437,6 +464,7 @@ export default class MeetingRoom extends PureComponent {
                 loopCard(listHistory,3):
                 (<BlankList emptyText="暂无数据" />)
             }
+            <Pagination showQuickJumper defaultCurrent={2} total={pagination} onChange={this.onHistoryChange} style={{textAlign:'center'}}/>
           </TabPane>
           <TabPane tab="我的草稿" key="4">
             {
@@ -445,6 +473,7 @@ export default class MeetingRoom extends PureComponent {
                 (<BlankList emptyText="暂无数据" />) }
           </TabPane>
         </Tabs>
+
       </PageHeaderWrapper>
     )
   }

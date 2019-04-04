@@ -16,7 +16,7 @@ import { message } from 'antd';
 export default {
   state: {
     draftData: {     //草稿会议数据
-      listDraft: [],
+      listDraft: []
     },
 
     waitData:{      //代开会议数据
@@ -24,11 +24,13 @@ export default {
     },
 
     historyData:{   //历史会议数据
-      listHistory:[]
+      listHistory:[],
+      pagination: {}
     },
 
     inviteData:{    //我的邀请数据
-      listInvita:[]
+      listInvita:[],
+      paginations: {}
     },
 
     delPerson: [],
@@ -53,7 +55,7 @@ export default {
       if(response.code=='100'){
         yield put({
           type: 'saveHistory',
-          payload:response.data.data
+          payload:response.data
         })
       }
 
@@ -106,7 +108,7 @@ export default {
       if(response.code=="100"){
         yield put({
           type: 'saveInvite',
-          payload:response.data.data
+          payload:response.data
         })
       }
     },
@@ -119,7 +121,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *loadInput({payload,callback},{call,put}) {
-      // debugger;
       const response= yield call(getInputData,payload);
       yield put({
         type: 'saveMeetingData',
@@ -239,7 +240,6 @@ export default {
      */
     *sendInvites({payload,callback},{call,put}){
       const response= yield call(sendInviteData,payload);
-      debugger;
       yield put({
         type: 'sendData',
         payload:response
@@ -255,7 +255,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *saveDrafts({payload,callback},{call,put}){
-      debugger;
       const response = yield call(saveDraftData,payload);
       console.log(11111111);
       // yield put({
@@ -303,14 +302,14 @@ export default {
     saveHistory(state, action) {
       return {
         ...state,
-        historyData: { listHistory: action.payload }
+        historyData: { listHistory: action.payload.data , pagination:action.payload.total}
       };
     },
 
     saveInvite(state, action) {
       return {
         ...state,
-        inviteData: { listInvita: action.payload }
+        inviteData: { listInvita: action.payload.data , paginations:action.payload.total }
       };
     },
 
@@ -338,7 +337,6 @@ export default {
      */
     delDraftRecordById(state, action) {
       const id=action.payload.id;
-      // debugger;
       return {
         ...state,
         delPerson: action.payload.recordPersonName
@@ -365,7 +363,6 @@ export default {
     },
 
     sendData(state, action) {
-      debugger;
       return {
         ...state,
         delPerson: action.payload

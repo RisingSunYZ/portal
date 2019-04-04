@@ -108,8 +108,7 @@ export default class AddressBook extends PureComponent {
 
   // 跳到树目录
   skipMenuTree=(record)=>{
-    debugger;
-    console.log(record);
+    // console.log(record);
     const {dispatch}=this.props;
     const  params={
       deptId: record.deptId,
@@ -117,6 +116,7 @@ export default class AddressBook extends PureComponent {
       pageIndex:this.state.pagination.pageIndex,
       pageSize:this.state.pagination.pageSize
     };
+
     if(record.gender===null){
       this.setState({
         selectTreeStr:record.deptId,
@@ -130,6 +130,7 @@ export default class AddressBook extends PureComponent {
     });
     this.setState({
       query:params,
+      // selectTreeStr:record.id,
     });
   };
 
