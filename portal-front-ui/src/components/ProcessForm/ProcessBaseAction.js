@@ -235,6 +235,7 @@ class ProcessBaseAction extends Component {
       { title: 'Office files', extensions: 'pdf,txt,doc,docx,ppt,pptx,xls,xlsx' },
       { title: 'Zip files', extensions: 'zip,rar' },
       { title: 'Cad files', extensions: 'dwg' },
+      { title: 'Msg files', extensions: 'msg' }
     ];
 
     const ActionBtn = () => {
