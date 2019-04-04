@@ -54,6 +54,7 @@ export default class TreeMenu extends PureComponent {
   }
   render() {
     const { addressBook: { treeData  } } = this.props;
+
     const loop = data =>
       data.map(item => {
         if (item.orgTreeApiVos && item.orgTreeApiVos.length) {

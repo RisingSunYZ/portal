@@ -239,7 +239,7 @@ export default {
      */
     *sendInvites({payload,callback},{call,put}){
       const response= yield call(sendInviteData,payload);
-      // debugger;
+      debugger;
       yield put({
         type: 'sendData',
         payload:response
@@ -355,7 +355,7 @@ export default {
 
 
     saveMeetingData(state, action) {
-      const meeting = action.payload
+      const meeting = action.payload;
       return {
         ...state,
         ...meeting,
@@ -365,6 +365,7 @@ export default {
     },
 
     sendData(state, action) {
+      debugger;
       return {
         ...state,
         delPerson: action.payload
