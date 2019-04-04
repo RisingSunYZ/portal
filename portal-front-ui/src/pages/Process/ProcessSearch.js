@@ -238,7 +238,7 @@ class ProcessSearch extends PureComponent {
           <Col span={20}>
             <Row gutter={24}>
               <Col span={8}>
-                <FormItem label="提交人" {...formItemLayout}>
+                <FormItem label="提交人" {...formItemLayout} className={processStyle.creatorName}>
                   {getFieldDecorator(`creatorName`, {
                     initialValue: [],
                     rules: [
