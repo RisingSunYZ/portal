@@ -32,7 +32,8 @@ export default class AddressBook extends PureComponent {
     nos:"",
     personObj:{},
     deptId:'',
-    companyId:''
+    companyId:'',
+    selectTreeStr:"1001K31000000002GLCT"
   };
 
   componentDidMount(){
@@ -54,8 +55,9 @@ export default class AddressBook extends PureComponent {
     });
   };
 
+  // 树的点击事件
   selectNode(selectedKeys, e) {
-    console.log(selectedKeys)
+    // console.log(selectedKeys)
     if (e.selected) {
       const params={
         deptId: selectedKeys[0],
@@ -69,7 +71,8 @@ export default class AddressBook extends PureComponent {
       });
       this.setState({
         query:params,
-        selectedKey:selectedKeys
+        selectedKey:selectedKeys,
+        companyId:params.companyId
       });
     }
   }
@@ -94,13 +97,40 @@ export default class AddressBook extends PureComponent {
     })
   };
 
+  // 显示右侧抽屉
   showDrawer=(record)=>{
-    // console.log(record)
     this.setState({
       personObj:record,
       visibleDrawer:true,
     })
 
+  };
+
+  // 跳到树目录
+  skipMenuTree=(record)=>{
+    debugger;
+    console.log(record);
+    const {dispatch}=this.props;
+    const  params={
+      deptId: record.deptId,
+      companyId:this.state.companyId,
+      pageIndex:this.state.pagination.pageIndex,
+      pageSize:this.state.pagination.pageSize
+    };
+    if(record.gender===null){
+      this.setState({
+        selectTreeStr:record.deptId,
+      })
+    }
+
+
+    dispatch({
+      type: 'addressBook/getTableList',
+      payload: params
+    });
+    this.setState({
+      query:params,
+    });
   };
 
   // 搜索table数据
@@ -133,7 +163,7 @@ export default class AddressBook extends PureComponent {
       nos:no
     });
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  }
+  };
 
   // Drawer添加到常用联系人
   drawerAddContactPer=()=>{
@@ -222,6 +252,22 @@ export default class AddressBook extends PureComponent {
     }
   };
 
+  // 根据gender区分人员
+  disGender=(text,record) =>{
+    if( record.gender === 1 ){
+      return <span><Icon type="smile" theme="twoTone"/> {text} </span>
+    }else if( record.gender===2 ){
+      return <span><Icon type="heart" theme="twoTone" twoToneColor="#eb2f96"/> {text} </span>
+    }else{
+      return <span style={{color:'#0E65AF',cursor:'pointer'}}><Icon type="branches" /> {text} </span>
+    }
+  };
+
+  // 区分人员与部门
+  disDepartment=(text,record)=>{
+    return ( record.gender===null ? <span style={{color:'#0E65AF'}}>{text}</span> : <span>{text}</span>)
+  };
+
 
   render() {
     const {
@@ -236,10 +282,7 @@ export default class AddressBook extends PureComponent {
         title: '姓名',
         dataIndex: 'name',
         width: 150,
-        render:(text,record)=> {
-          return record.gender === 1 ? <span><Icon type="smile" theme="twoTone"/> {text} </span> :
-            <span><Icon type="heart" theme="twoTone" twoToneColor="#eb2f96"/> {text} </span>
-        }
+        render:this.disGender
       },
       {
         title: '工号',
@@ -253,10 +296,12 @@ export default class AddressBook extends PureComponent {
       {
         title: '单位',
         dataIndex: 'address',
+        render:this.disDepartment
       },
       {
         title: '部门',
         dataIndex: 'department',
+        render:this.disDepartment
       },
       {
         title: '岗位',
@@ -274,7 +319,6 @@ export default class AddressBook extends PureComponent {
         name: record.name,
       }),
     };
-
     const showDrawers=()=>{
         return (
           <Drawer
@@ -338,8 +382,9 @@ export default class AddressBook extends PureComponent {
               >
                 <TreeMenu
                   onSelect={this.selectNode.bind(this)}
-                  defaultExpandedKeys={[ '1001K31000000002GLCT']}
-                  defaultSelectedKeys={[ '1001K31000000002GLCT']} />
+                  defaultExpandedKeys={[this.state.selectTreeStr]}
+                  selectedKeys={[this.state.selectTreeStr]}
+                />
               </Card>
             </Sider>
             <Content>
@@ -410,13 +455,13 @@ export default class AddressBook extends PureComponent {
                 onChange={this.handleTableChange}
                 onRow={(record) => {
                   return {
-                    onClick: (event) => {this.showDrawer(record) },       // 点击行
+                    onClick: (event) => {this.showDrawer(record) ;this.skipMenuTree(record) },       // 点击行
                   };
                 }}
               />
             </Content>
           </Layout>
-          {showDrawers()}
+          {personObj.gender === null ? '': showDrawers()}
         </PageHeaderWrapper>
     );
   }
