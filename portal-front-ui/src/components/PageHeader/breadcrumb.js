@@ -4,6 +4,8 @@ import { Breadcrumb } from 'antd';
 import styles from './index.less';
 import { urlToList } from '../_utils/pathTools';
 import {getConfig} from "@/utils/utils";
+import Link from "umi/link";
+
 
 export const getBreadcrumb = (breadcrumbNameMap, url) => {
   let breadcrumb = breadcrumbNameMap[url];
@@ -81,8 +83,17 @@ export default class BreadcrumbView extends PureComponent {
       </Breadcrumb>
     );
   };
-  setBreadcrumbHeaderState=()=>{
 
+  AddBreadcrumbDom=(routerLocation)=>{
+    switch(routerLocation.split("/")[1]){
+      case "process" :return <a href={ getConfig().domain+"/main.jhtml"}>工作台</a>;break;
+      case "workplace" :return <Link to={"/main/workplace"}>工作台</Link>;break;
+      case "hr-service" :return <Link to={"/main/hr-service"}>HR服务</Link>;break;
+      case "infor-tech" :return <Link to={"/infor-tech"}>IT服务</Link>;break;
+      case "fnc-service" :return <Link to={"/main/fnc-service"}>财务服务</Link>;break;
+      case "news" :return <Link to={"/main/news"}>新闻资讯</Link>;break;
+      default : return <a href={ getConfig().domain+"/main.jhtml"}>工作台</a>;break;
+    }
   }
 
   conversionFromLocation = (routerLocation, breadcrumbNameMap) => {
@@ -108,9 +119,10 @@ export default class BreadcrumbView extends PureComponent {
       ) : null;
     });
     // Add home breadcrumbs to your head
+    const  homeDem  = this.AddBreadcrumbDom(routerLocation.pathname);
     extraBreadcrumbItems.unshift(
       <Breadcrumb.Item key="home">
-        您所在的位置：<a href={ getConfig().domain+"/main.jhtml"}>工作台</a>
+        您所在的位置：{homeDem}
         {/*{createElement(*/}
           {/*linkElement,*/}
           {/*{*/}
