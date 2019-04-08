@@ -5,7 +5,6 @@ import { stringify } from 'qs';
  * 获取常用联系人数据
  */
 export async function queryTopConcactData() {
-  // transParamsDate(params);
   return request(`/rest/addrbook/addressBook/getTopContactsData`);
 }
 

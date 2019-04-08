@@ -6,8 +6,7 @@ import request from '../utils/request';
  * @returns {Promise<Object>}
  */
 export async function delRecordPersons(params){
-  console.log(params);
-  console.log(88888888888);
+
   return request(`/rest/portal/rscmgmt/meeting/delPersonnel/${params.id}`);
 }
 
@@ -127,7 +126,6 @@ export async function getInputData(params){
  * @returns {Promise<Object>}
  */
 export async function getUploadSummary(params) {
-  // debugger;
   return request('/rest/portal/rscmgmt/meeting/saveMeetingSummary', {
     method: 'POST',
     body: params,

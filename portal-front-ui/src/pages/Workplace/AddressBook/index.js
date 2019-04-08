@@ -130,7 +130,6 @@ export default class AddressBook extends PureComponent {
     });
     this.setState({
       query:params,
-      // selectTreeStr:record.id,
     });
   };
 

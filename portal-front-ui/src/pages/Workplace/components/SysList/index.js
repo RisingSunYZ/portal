@@ -76,6 +76,7 @@ export default class SysList extends PureComponent {
   };
 
   getServicesList = slist => {
+
     return slist.map((sys, index)=>{
       return (
         <li key={index} className="s-item">
@@ -105,7 +106,7 @@ export default class SysList extends PureComponent {
         bordered={false}
         bodyStyle={{padding: 0}}
         title="常用系统"
-        extra={ <a href={ getConfig().domain + "/portal/workplat/system/customize.jhtml" } target="_blank" >添加更多 &gt;</a>}
+        extra={ <a href={ getConfig().domain + "/portal/workplat/system/customize" } target="_blank" >添加更多 &gt;</a>}
       >
         <Row>
           <Col span={24}>

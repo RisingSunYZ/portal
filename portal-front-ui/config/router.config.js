@@ -139,6 +139,11 @@ export default [
             name: 'schedule',
             component: './Workplace/Schedule'
           },
+          {
+            path: '/workplace/system-more',
+            name: 'system-more',
+            component: './Workplace/components/SysList/SystemMore'
+          },
           // meeting-room
           {
             path: '/workplace/meeting-room/:tab',

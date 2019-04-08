@@ -86,7 +86,6 @@ export default class MeetingRoom extends PureComponent {
         pageSize:this.state.pagination.pageSize
       }
     });
-    console.log('Page: ', pageNumber);
   };
 
   // 我的邀请数据分页查询
@@ -99,7 +98,7 @@ export default class MeetingRoom extends PureComponent {
         pageSize:this.state.pagination.pageSize
       }
     });
-    console.log('Page: ', pageNumber);
+    // console.log('Page: ', pageNumber);
   };
 
   // 搜索会议
