@@ -204,4 +204,21 @@ public class SystemMenuController extends BaseController {
 		}
 		return returnVo;
 	}
+
+	/**
+	 * 获取所有顶级系统
+	 */
+	@ApiOperation("获取所有顶级系统")
+	@GetMapping("/getTopSystem")
+	public ReturnVo getTopSystem(){
+		ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "获取所有顶级系统菜单失败!");
+		try {
+			List<SystemMenuType> firstClassify = systemMenuTypeService.getFirstClassify();
+			returnVo = new ReturnVo( ReturnCode.SUCCESS, "获取所有顶级系统菜单成功！", firstClassify );
+		} catch (Exception e) {
+			logger.error("SystemMenuController-getTopSystem",e);
+			e.printStackTrace();
+		}
+		return returnVo;
+	}
 }
