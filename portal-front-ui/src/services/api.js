@@ -53,29 +53,7 @@ export async function getScheduleCount() {
   return request(`/rest/process/list/queryTodoCount`);
 }
 
-/**
- * 常用系统数据获取
- * @param params
- * @returns {Promise<Object>}
- */
-export async function getSysData() {
-  return request(`/rest/portal/workplat/system/getUserSystem`);
-}
 
-/**
- * 常用系統保存
- * @param params
- * @returns {Promise<void>}
- */
-export async function saveSystemMenu(params) {
-  var formdata = new FormData();
-  const val = JSON.stringify(params.systemMenuUser);
-  formdata.append("systemMenuUserJson",val);
-  return request(`/rest/portal/workplat/system/saveSystemMenu`, {
-    method: 'POST',
-    body: formdata,
-  });
-}
 
 /**
  * 文档预览地址数据获取

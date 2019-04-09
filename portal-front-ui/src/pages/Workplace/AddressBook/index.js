@@ -423,7 +423,7 @@ export default class AddressBook extends PureComponent {
                       closable={false}
                       centered
                       bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
-                      maskStyle={{backgroundColor:'#E6E6E6'}}>
+                      maskStyle={{backgroundColor:'transparent'}}>
                       <p>{ModalTextAdd}</p>
                     </Modal>
                   </Col>

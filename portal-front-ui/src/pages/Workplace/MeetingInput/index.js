@@ -40,7 +40,6 @@ export default class MeetingInput extends PureComponent {
 
   componentDidMount(){
     const {dispatch, match, form }=this.props;
-    // debugger
     if(match.params.meetId!=":meetId" && match.params.meetId!=undefined){
       dispatch({
         type:'meetingRoom/loadInput',
@@ -140,7 +139,7 @@ export default class MeetingInput extends PureComponent {
     form.validateFields((err, fieldsValue)=>{
       if(err) return;
       // 调用公共方法
-      debugger;
+
       this.commonMethod(fieldsValue);
       dispatch({
         type:'meetingRoom/sendInvites',
@@ -159,7 +158,7 @@ export default class MeetingInput extends PureComponent {
     form.validateFields((err, fieldsValue)=>{
       console.log(fieldsValue)
       if(err) return;
-     // debugger;
+
       if(fieldsValue.theme==undefined || fieldsValue.mandatoryPersonName=="" || fieldsValue.meetingroomName==undefined){
         //点击显示 弹出框
         this.setState({
@@ -438,7 +437,7 @@ export default class MeetingInput extends PureComponent {
                     closable={false}
                     centered
                     bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
-                    maskStyle={{backgroundColor:'#E6E6E6'}}>
+                    maskStyle={{backgroundColor:'transparent'}}>
                     <p>{ModalTextSave}</p>
                   </Modal>
                 </Col>

@@ -57,10 +57,4 @@ export async function delContactPerData(params) {
   });
 }
 
-function transParamsDate(params) {
-  if (typeof params != 'undefined' && typeof params.date != 'undefined' && params.date != '') {
-    params.startTime = params.date[0].format('YYYY-MM-DD') + ' 00:00:00';
-    params.endTime = params.date[1].format('YYYY-MM-DD') + ' 23:59:59';
-    delete params.date;
-  }
-}
+

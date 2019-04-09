@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Card, Row, Col, Icon, Button } from 'antd';
+import { Card, Row, Col, Icon, Button, Modal, Tabs, Radio } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import {getConfig} from "@/utils/utils";
 import sysDefault from '@/assets/workplace/sys-default.png';
 import styles  from './index.less'
+
+const TabPane = Tabs.TabPane;
 
 @connect(({ user, workplace , loading }) => ({
   user,
@@ -15,7 +17,8 @@ import styles  from './index.less'
 class SystemMore extends PureComponent {
 
   state = {
-
+    visible: false,
+    value:0,
   };
 
   componentDidMount(){
@@ -23,15 +26,25 @@ class SystemMore extends PureComponent {
     dispatch({
       type:'workplace/getSysData',
     });
+
+    dispatch({
+      type:"workplace/getSystemById",
+      payload:{id:"8a948c155d16777c015d16792f2e0001"}
+    });
+
+    dispatch({
+      type:'workplace/getTopSystem',
+    });
   }
 
   onSysImgError = tar => {
-    var img=tar.currentTarget;
+    const img=tar.currentTarget;
     img.src=sysDefault;
     img.onerror=null;
   };
 
   getServicesList = slist => {
+
     return slist.map((sys, index)=>{
       return (
         <li key={index} className={styles.sysItem}>
@@ -40,17 +53,17 @@ class SystemMore extends PureComponent {
             <img width="56" height="56" onError={this.onSysImgError.bind(this)} src={getConfig().ftpHost+sys.sysIcon}/>
           </a>
           <p>{sys.sysName}</p>
+          {sys.isIdmSys === 0 ? (<Icon type="minus-circle" className={styles.idmSys} />) : ('')}
         </li>
       );
-
-
     });
   };
 
 
+
+  // 保存按钮事件
   handleSave = ()=> {
     const { dispatch ,workplace: { sysData }}=this.props;
-
     const systemMenuUser=[];
     sysData.map( item =>{
       const obj={
@@ -62,16 +75,62 @@ class SystemMore extends PureComponent {
 
     dispatch({
       type: "workplace/saveSystemMenu",
-      payload:{ systemMenuUser:systemMenuUser }
+      payload:{ systemMenuUser:systemMenuUser },
+      callback: res=>{
+        if(res.code === '100'){
+            this.setState({
+              visible: true
+            });
+
+          setTimeout(()=>{
+            this.setState({
+              visible: false
+            })
+          },500);
+          return
+        }
+      }
     })
   };
 
+  //重置按钮事件
   handleReset = ()=> {
+    const { dispatch } = this.props;
+    dispatch({
+      type:'workplace/getSysData',
+    });
+  };
 
+  sysCustom = (id,index)=> {
+    // debugger;
+    const { dispatch }=this.props;
+    this.setState({
+      value:index
+    });
+    dispatch({
+      type:"workplace/getSystemById",
+      payload:{ id:id }
+    });
+  };
+
+  // 点击改变二级菜单
+  changeSysMenu = ()=> {
+    const { dispatch,workplace: { sysData , sysMenusDate } } = this.props;
+    dispatch({
+      type:'workplace/getSysData',
+
+    });
+    sysData.map(item => {
+      if(item.sysName){
+
+      }
+    });
   };
 
   render() {
-    const { workplace: { sysData } } = this.props;
+    const { workplace: { sysData , sysMenusDate, sysTopMenusDate} } = this.props;
+    const { visible ,value}=this.state;
+    const  callback= (key) =>{ console.log(key) };
 
     return (
       <PageHeaderWrapper>
@@ -89,6 +148,47 @@ class SystemMore extends PureComponent {
         <div className={styles.btns}>
           <Button type="primary" onClick={this.handleSave}>保存</Button>
           <Button className={styles.resetBtn} onClick={this.handleReset}>重置</Button>
+        </div>
+        <Modal
+          visible={visible}
+          footer={null}
+          closable={false}
+          centered
+          bodyStyle={{backgroundColor:'rgba(0, 0, 0, 0.6)',filter:'alpha(opacity=60)',color:'#fff',textAlign:'center'}}
+          maskStyle={{backgroundColor:'transparent'}}>
+          <p>保存常用系统成功</p>
+        </Modal>
+        <div>
+          <Radio.Group value={value} style={{ margin:'50px 0 30px 380px'}}>
+            {sysTopMenusDate.map((item,index)=>{
+              return <Radio.Button value={index} key={item.id} onClick={()=>this.sysCustom(item.id,index)}>{item.name}</Radio.Button>
+            })}
+          </Radio.Group>
+          <div>
+            {sysMenusDate.length===0 ? (<span>暂无数据！</span>):(
+              <Tabs onChange={callback} type="card">
+                <TabPane tab="ALL" key="1">
+                  {sysMenusDate.map(item =>{
+                    return (
+                      <div>
+                        <Icon type="shopping" style={{ paddingLeft:10, fontSize: 18 }}/>&nbsp;&nbsp;
+                        <span>{item.name}</span>
+                        <div/>
+                        {item.systemMenu.map((itm)=>{
+                          return (
+                            <span>
+                              <Button style={{margin:'40px 20px 0 34px'}} onClick={this.changeSysMenu}>{itm.sysName}</Button>
+                            </span>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
+                </TabPane>
+                <TabPane tab="办公" key="2">办公部分内容</TabPane>
+              </Tabs>
+            )}
+          </div>
         </div>
       </PageHeaderWrapper>
     );
