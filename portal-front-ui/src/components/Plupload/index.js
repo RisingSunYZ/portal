@@ -98,8 +98,8 @@ export default class Plupload extends PureComponent{
               } else if ( info.response && typeof info.response != 'undefined' && "100" === JSON.parse(info.response).code ) {
                 const { dispatch } = _this.props;
                 file.response = {};
-                file.response.code = JSON.parse(info.response).code;
-                file.response.msg = JSON.parse(info.response).msg;
+                file.response.responseCode = JSON.parse(info.response).code;
+                file.response.responseMsg = JSON.parse(info.response).msg;
                 setTimeout(function() {
                   dispatch({
                     type: _this.props.saveDataCall,
