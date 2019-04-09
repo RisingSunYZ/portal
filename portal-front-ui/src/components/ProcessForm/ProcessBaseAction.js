@@ -11,20 +11,72 @@ import router from 'umi/router';
  * 流程图组件
  */
 class DiagramImgModal  extends PureComponent{
-  state = { diagramModalWidth:'50%' };
+  state = {
+    diagramModalWidth:'80%',
+    diagramModalHeight:"50%",
+    diagramModalMax:false,
+    moveFlag:false,
+  };
   // 设置图片弹窗的宽度
   setDiagramModalWidth = ()=>{
     const { processDiagramImgUrl } = this.props;
     const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth; // width
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; // Hidth
     const imgObj = new Image();
     imgObj.src = processDiagramImgUrl;
     const width = imgObj.naturalWidth;
+    const height = imgObj.naturalHeight;
+
     if(width > windowWidth*0.8){
-      this.setState({diagramModalWidth: '80%'})
+      this.setState({diagramModalWidth: '80%',diagramModalMax:false})
     }else{
-      this.setState({diagramModalWidth: width+50})
+      this.setState({diagramModalWidth: width+50,diagramModalMax:false})
+    }
+    if(height > windowHeight*0.8){
+      this.setState({diagramModalHeight:"450px"})
+    }else{
+      this.setState({diagramModalHeight:height})
+    }
+
+
+  }
+
+  setDiagramModalMax = ()=>{
+      this.setState({diagramModalWidth:"100%",diagramModalHeight:"100%",diagramModalMax:true})
+
+  }
+
+  startDrag = (event)=>{
+
+    // this.setState({moveFlag:true});
+
+    const target = event.target;
+    const startX = event.pageX;
+    const startY = event.pageY;
+
+    // console.log(scrollTop,scrollLeft)
+
+    const scrollTop = $(target).parent().parent().scrollTop();
+    const scrollLeft = $(target).parent().parent().scrollLeft();
+    document.onmousemove = function(event){
+      event.preventDefault();
+      const left = event.pageX - startX;
+      const top = event.pageY - startY;
+      // console.log(left,top)
+      const endLeft = scrollTop - left;
+      const endTop = scrollLeft - top;
+
+      $(target).parent().parent().scrollTop(endTop)
+      $(target).parent().parent().scrollLeft(endLeft)
+
+    }
+    target.onmouseup = function(){
+      document.onmousemove = null;
+      target.onmouseup = null;
     }
   }
+
+
 
   // 流程图节点内容
   flowNodeContent = (item) => {
@@ -44,12 +96,27 @@ class DiagramImgModal  extends PureComponent{
     );
   };
 
+  // 流程图节点内容
+  flowTile = (formTitle) => {
+    return (
+      <div>
+        {formTitle + ' - 流程图'}
+        <div style={{float:"right",marginRight:"30px"}}>
+          <Icon type="shrink" style={{display:this.state.diagramModalMax?"inline-block":"none"}} onClick={this.setDiagramModalWidth.bind(this)} />
+          <Icon type="arrows-alt" style={{display:this.state.diagramModalMax?"none":"inline-block"}} onClick={this.setDiagramModalMax}/>
+        </div>
+      </div>
+    );
+  };
+
   render(){
     const {processDiagramImgUrl, handleOk, handleCancel, handleDownImage, visibleDiagramModal, processDiagramData, formTitle} = this.props;
+    const top = this.state.diagramModalMax?"0px":"100px";
     return  (
       <Modal
-        title={formTitle + ' - 流程图'}
+        title={this.flowTile(formTitle)}
         width={this.state.diagramModalWidth}
+        style={{ top:top }}
         keyboard="true"
         maskClosable="true"
         visible={visibleDiagramModal}
@@ -61,8 +128,12 @@ class DiagramImgModal  extends PureComponent{
           <Button key="back" onClick={handleCancel}>关闭</Button>
         ]}
       >
-        <div>
-          <img alt={formTitle} onLoad={this.setDiagramModalWidth.bind(this)} src={processDiagramImgUrl} />
+        <div style={{height:this.state.diagramModalHeight}}>
+          <img alt={formTitle}
+               onMouseDown={this.startDrag}
+               onLoad={this.setDiagramModalWidth.bind(this)}
+               src={processDiagramImgUrl}
+          />
           {
             processDiagramData && processDiagramData.length>0?(processDiagramData.map((item) =>{
 
@@ -243,8 +314,7 @@ class ProcessBaseAction extends Component {
         <Fragment>
           <Popover content="上传附件">
             <span style={{ marginLeft: '8px'}}>
-              <Plupload url={"/website/tools/fileUpload/uploadFile.jhtml?filePath=form"}
-                        saveDataCall={"processForm/addProcessFile"}
+              <Plupload saveDataCall={"processForm/addProcessFile"}
                         idName={"btn"}
                         mime_types={mime_types} />
             </span>

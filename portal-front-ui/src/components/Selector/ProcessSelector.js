@@ -396,8 +396,8 @@ class ProcessSelector extends Component {
         title: '序号',
         dataIndex: 'num',
         key: 'processInstanceId',
-        width: 60,
         render: (text, r, i) => <span>{i + 1}</span>,
+        width: 60,
       },
       {
         title: '状态',
@@ -521,9 +521,11 @@ class ProcessSelector extends Component {
       },
     ];
     const rowSelection = {
+      selectedRows,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({selectedRows:selectedRows});
       },
+      // onChange: this.onSelectChange,
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User', // Column configuration not to be checked
         name: record.name,
@@ -554,6 +556,7 @@ class ProcessSelector extends Component {
                 loading={loading}
                 data={data}
                 columns={columnsTodo}
+                rowKey="processInstanceId"
                 showPagination={true}
                 scroll={{y: 300 }}
                 rowSelection={rowSelection}
@@ -566,6 +569,7 @@ class ProcessSelector extends Component {
               <ProcessTable
                 loading={loading}
                 data={data}
+                rowKey="taskId"
                 columns={columnsAlreadyDo}
                 showPagination={true}
                 scroll={{y: 300 }}
@@ -579,6 +583,7 @@ class ProcessSelector extends Component {
               <ProcessTable
                 loading={loading}
                 data={data}
+                rowKey="procInstId"
                 columns={columnsAlreadySend}
                 showPagination={true}
                 scroll={{y: 300 }}
