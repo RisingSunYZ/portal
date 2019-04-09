@@ -1,11 +1,12 @@
 import {
   queryScheduleGrant,
+  queryScheduleGrantedByNo,
   delScheduleGrant,
   saveGrant,
   queryScheduleList,
   queryScheduleInfo,
   doSaveSchedule,
-  delSchedule
+  delEvent
 } from '@/services/schedule';
 import { message } from 'antd';
 import router from "umi/router";
@@ -19,7 +20,9 @@ export default {
     scheduleList: [],
     scheduleEvent: {},
     delGrantLoading: false,
+    delEventLoading: false,
     saveGrantLoading: false,
+    scheduleEventGrantList: [],
   },
 
   namespace: 'schedule',
@@ -29,6 +32,13 @@ export default {
       const response = yield call(queryScheduleGrant, payload);
       yield put({
         type: 'saveScheduleGrant',
+        payload: response,
+      });
+    },
+    *queryScheduleGrantedByNo({ payload }, { call, put }) {
+      const response = yield call(queryScheduleGrantedByNo, payload);
+      yield put({
+        type: 'saveGrantedList',
         payload: response,
       });
     },
@@ -77,16 +87,16 @@ export default {
         payload: response,
       });
     },
-    *doSaveSchedule({ payload }, { call, put }) {
+    *doSaveSchedule({ payload, callback }, { call, put }) {
       const response = yield call(doSaveSchedule, payload);
-      if(response.code === "100"){
-        message.success(response.msg);
+      if (callback && typeof callback === 'function') {
+        callback(response);
       }
     },
-    *delSchedule({ payload }, { call, put }) {
-      const response = yield call(delSchedule, payload);
-      if(response.code === "100"){
-        message.success(response.msg);
+    *delEvent({ payload, callback }, { call, put }) {
+      const response = yield call(delEvent, payload);
+      if (callback && typeof callback === 'function') {
+        callback(response);
       }
     },
   },
@@ -96,6 +106,12 @@ export default {
       return {
         ...state,
         scheduleGrant: action.payload
+      };
+    },
+    saveGrantedList(state, action) {
+      return {
+        ...state,
+        scheduleEventGrantList: action.payload
       };
     },
     saveDelScheduleGrant(state, action) {
