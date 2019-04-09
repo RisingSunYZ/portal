@@ -11,30 +11,7 @@ const y = 2;
 const z = 1;
 const gData = [];
 
-/*
-const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0';
-  const tns = _tns || gData;
 
-  const children = [];
-  for (let i = 0; i < x; i++) {
-    const key = `${preKey}-${i}`;
-    tns.push({ title: key, key });
-    if (i < y) {
-      children.push(key);
-    }
-  }
-  if (_level < 0) {
-    return tns;
-  }
-  const level = _level - 1;
-  children.forEach((key, index) => {
-    tns[index].children = [];
-    return generateData(level, key, tns[index].children);
-  });
-};
-generateData(z);
-*/
 
 @connect(({ addressBook, loading }) => ({
   addressBook,
@@ -76,13 +53,13 @@ export default class TreeMenu extends PureComponent {
     this.setState({expandAll:true});
   }
   render() {
-    const { addressBook: { treeData  }, className, placeholder, ...restProps } = this.props;
-    // delete restProps.defaultOpen; // for rc-select not affected
+    const { addressBook: { treeData  } } = this.props;
+
     const loop = data =>
       data.map(item => {
         if (item.orgTreeApiVos && item.orgTreeApiVos.length) {
           return (
-            <TreeNode key={item.id} title={item.text}>
+            <TreeNode key={item.id} title={item.text} companyId={item.companyId}>
               {loop(item.orgTreeApiVos)}
             </TreeNode>
           );
@@ -92,7 +69,7 @@ export default class TreeMenu extends PureComponent {
           let itemName=item.text;
           return (<TreeNode key={item.id} title={itemName} />);
         }
-        return <TreeNode key={item.id} title={item.text} />;
+        return <TreeNode key={item.id} title={item.text} companyId={item.companyId}/>;
       });
     return (
       <div id="components-tree-demo-draggable" className={styles.treeMenuBox}>
@@ -102,6 +79,8 @@ export default class TreeMenu extends PureComponent {
               <Tree
                 className={styles.treeMenu}
                 onSelect={this.props.onSelect}
+                defaultExpandedKeys={this.props.defaultExpandedKeys}
+                selectedKeys={this.props.selectedKeys}
               >
                 {loop(treeData)}
               </Tree>

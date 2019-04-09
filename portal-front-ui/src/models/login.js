@@ -90,10 +90,6 @@ export default {
       }
     },
 
-    // *getCaptcha({ payload }, { call }) {
-    //   yield call(getFakeCaptcha, payload);
-    // },
-
     // 找回密码
     *checkCaptchaCode({ payload, callback }, { call, put }) {
       const response = yield call(checkCaptchaCode, payload);

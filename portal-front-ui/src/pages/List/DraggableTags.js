@@ -49,7 +49,7 @@ const leftTags = [{type: "text", name: "单行文本"},
 
 
 
-import styles from './drag.less';
+import styles from './Drag.less';
 
 class CrossArea  extends PureComponent {
   constructor() {

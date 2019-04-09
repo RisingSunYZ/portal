@@ -111,8 +111,7 @@
     "umi-plugin-ga": "^1.1.3",
     "umi-plugin-react": "^1.2.0"
   },
-  "optionalDependencies": {
-  },
+  "optionalDependencies": {},
   "lint-staged": {
     "**/*.{js,ts,tsx,json,jsx,less}": [
       "node ./scripts/lint-prettier.js",

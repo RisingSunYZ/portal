@@ -1,16 +1,16 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Tabs, Icon, Row, Col, Card, Menu, Drawer,Button ,Modal, Input, Dropdown, List,Layout, Radio, Tree, Table  } from 'antd';
+import { Tabs, Icon, Row, Col, Card, Drawer,Button ,Modal, Input,Layout,Tree, Table  } from 'antd';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from './index.less';
 import TreeMenu from '../components/TreeMenu';
-import DeptTree from '../components/DeptTree/DeptTree';
+import Link from 'umi/link';
 import { message } from 'antd';
-const TreeNode = Tree.TreeNode;
 
+const TreeNode = Tree.TreeNode;
 const TabPane = Tabs.TabPane;
 const Search = Input.Search;
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 
 
@@ -20,25 +20,34 @@ const { Header, Sider, Content } = Layout;
 }))
 
 export default class AddressBook extends PureComponent {
-  searchFormObj = {};
+
   state = {
-    selectedKey: '',
+    selectedKey: [],
     selectedRowKeys: [],
     visibleDrawer: false,
     visible:false ,//弹窗初始化状态
-    ModalTextAdd:''
+    ModalTextAdd:'',
+    pagination: { pageIndex: 0, pageSize: 20 },
+    query:{},
+    nos:"",
+    personObj:{},
+    deptId:'',
+    companyId:'',
+    selectTreeStr:"1001K31000000002GLCT"
   };
 
   componentDidMount(){
-
-  }
-
-  //展示隐藏抽屉
-  showDrawer = () => {
-    this.setState({
-      visibleDrawer: true,
+    const { dispatch }=this.props;
+    dispatch({
+      type: 'addressBook/getTableList',
+      payload: {
+        deptId: "1001K31000000002GLCT",
+        companyId:"0001K310000000008TK6",
+        pageIndex:0,
+        pageSize:10
+      },
     });
-  };
+  }
 
   onClose = () => {
     this.setState({
@@ -46,50 +55,132 @@ export default class AddressBook extends PureComponent {
     });
   };
 
+  // 树的点击事件
   selectNode(selectedKeys, e) {
+    // console.log(selectedKeys)
     if (e.selected) {
-      this.searchFormObj.categoryId = selectedKeys[0];
+      const params={
+        deptId: selectedKeys[0],
+        companyId:e.selectedNodes[0].props.companyId,
+        pageIndex:this.state.pagination.pageIndex,
+        pageSize:this.state.pagination.pageSize
+      };
       this.props.dispatch({
-        type: 'addressBook/getModelList',
-        payload: { categoryId: selectedKeys[0] },
+        type: 'addressBook/getTableList',
+        payload: params
       });
       this.setState({
-        selectedKey: selectedKeys[0],
+        query:params,
+        selectedKey:selectedKeys,
+        companyId:params.companyId
       });
     }
   }
 
-
-
-  doSearch(modelName) {
-    this.searchFormObj.name = modelName;
-    //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
-    this.props.dispatch({
-      type: 'addressBook/getModelList',
-      payload: {
-        name: modelName,
-        categoryId: this.state.selectedKey == 'myDraft' ? this.state.selectedKey : '',
-      },
+  // 点击分页改变时，触发的函数
+  handleTableChange = (pagination, filtersArg, sorter) => {
+    const { dispatch } = this.props;
+    const deptId = this.state.query.deptId;
+    const companyId = this.state.query.companyId;
+    const params={
+      pageIndex:pagination.current-1,
+      pageSize:pagination.pageSize,
+      deptId:deptId==undefined ? '1001K31000000002GLCT':deptId,
+      companyId:companyId==undefined ? '0001K310000000008TK6':companyId
+    };
+    dispatch({
+      type: 'addressBook/getTableList',
+      payload:params,
     });
-  }
+    this.setState({
+      query:params
+    })
+  };
 
-  handleDel(businessKey) {
-    this.props.dispatch({
-      type: 'addressBook/delDraft',
-      payload: {
-        businessKey: businessKey,
-      },
+  // 显示右侧抽屉
+  showDrawer=(record)=>{
+    this.setState({
+      personObj:record,
+      visibleDrawer:true,
+    })
+
+  };
+
+  // 跳到树目录
+  skipMenuTree=(record)=>{
+    // console.log(record);
+    const {dispatch}=this.props;
+    const  params={
+      deptId: record.deptId,
+      companyId:this.state.companyId,
+      pageIndex:this.state.pagination.pageIndex,
+      pageSize:this.state.pagination.pageSize
+    };
+
+    if(record.gender===null){
+      this.setState({
+        selectTreeStr:record.deptId,
+      })
+    }
+
+
+    dispatch({
+      type: 'addressBook/getTableList',
+      payload: params
     });
-  }
+    this.setState({
+      query:params,
+    });
+  };
+
+  // 搜索table数据
+  doSearch=( value )=>{
+    const { dispatch } = this.props;
+    const params={
+        keyword: value,
+        pageIndex:this.state.pagination.pageIndex,
+        pageSize:this.state.pagination.pageSize
+      };
+    dispatch({
+      type: 'addressBook/getTableList',
+      payload:params
+    });
+    this.setState({
+      query:params
+    })
+  };
 
 
-  // 添加到常用联系人
+  onSelectChange=(selectedRowKeys, selectedRows) => {
+    let no = '';
+    for(let i=0;i<selectedRows.length; i++){
+      no += selectedRows[i].no+",";
+    }
+    if(no.length>0) no=no.substr(0,no.length-1);
+
+    this.setState({
+      selectedRowKeys,
+      nos:no
+    });
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  };
+
+  // Drawer添加到常用联系人
+  drawerAddContactPer=()=>{
+    const { dispatch }=this.props;
+    const { personObj  }=this.state;
+    dispatch({
+      type:'addressBook/addContactPer',
+      payload:{contactNo:personObj.no}
+    })
+  };
+
+  // (页面头部)添加到常用联系人
   addContactPer = ()=> {
     const { dispatch }=this.props;
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
     console.log(hasSelected);
-    // debugger;
     if(!hasSelected){
       //点击显示 弹出框
       this.setState({
@@ -107,7 +198,7 @@ export default class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/addContactPer',
-        payload:selectedRowKeys
+        payload:{contactNo:this.state.nos}
       })
     }
   };
@@ -118,9 +209,7 @@ export default class AddressBook extends PureComponent {
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
     console.log(hasSelected);
-    // debugger;
     if(!hasSelected){
-      // message.error('请选择！')
       //点击显示 弹出框
       this.setState({
         visible: true,
@@ -137,7 +226,7 @@ export default class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/delContactPer',
-        payload: selectedRowKeys
+        payload: {contactNo:this.state.nos}
       })
     }
   };
@@ -163,64 +252,38 @@ export default class AddressBook extends PureComponent {
     }
   };
 
-
-  handleTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { keyword, deptId } = this.state;
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      page: pagination.current,
-      rows: pagination.pageSize,
-      keyword,
-      ...filters,
-      deptId,
-
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
+  // 根据gender区分人员
+  disGender=(text,record) =>{
+    if( record.gender === 1 ){
+      return <span><Icon type="smile" theme="twoTone"/> {text} </span>
+    }else if( record.gender===2 ){
+      return <span><Icon type="heart" theme="twoTone" twoToneColor="#eb2f96"/> {text} </span>
+    }else{
+      return <span style={{color:'#0E65AF',cursor:'pointer'}}><Icon type="branches" /> {text} </span>
     }
+  };
 
-    dispatch({
-      type: 'user/getAllUser',
-      payload: params,
-    });
-
+  // 区分人员与部门
+  disDepartment=(text,record)=>{
+    return ( record.gender===null ? <span style={{color:'#0E65AF'}}>{text}</span> : <span>{text}</span>)
   };
 
 
-  onSelectChange=(selectedRowKeys, selectedRows) => {
-      let nos = '';
-      for(let i=0;i<selectedRowKeys.length; i++){
-      nos += selectedRowKeys[i]+",";
-    }
-    if(nos.length>0) nos=nos.substr(0,nos.length-1);
-
-    this.setState({selectedRowKeys:nos})
-    console.log(nos)
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  }
-
   render() {
     const {
-      addressBook: { list, data ,pagination},
+      addressBook: {  list,pagination },
       loading,
     } = this.props;
-    const { selectedRowKeys,visible ,ModalTextAdd }=this.state;
-
+    const { selectedRowKeys,visible ,ModalTextAdd, personObj }=this.state;
     const hasSelected = selectedRowKeys.length > 0;
-    // console.log(hasSelected)
-    // console.log(55)
 
-    const columns = [{
-      title: '姓名',
-      dataIndex: 'name',
-      width: 150
-    },
+    const columns = [
+      {
+        title: '姓名',
+        dataIndex: 'name',
+        width: 150,
+        render:this.disGender
+      },
       {
         title: '工号',
         dataIndex: 'jobNum',
@@ -233,10 +296,12 @@ export default class AddressBook extends PureComponent {
       {
         title: '单位',
         dataIndex: 'address',
+        render:this.disDepartment
       },
       {
         title: '部门',
         dataIndex: 'department',
+        render:this.disDepartment
       },
       {
         title: '岗位',
@@ -254,6 +319,56 @@ export default class AddressBook extends PureComponent {
         name: record.name,
       }),
     };
+    const showDrawers=()=>{
+        return (
+          <Drawer
+            placement="right"
+            mask={false}
+            closable={true}
+            onClose={this.onClose}
+            width={830}
+            style={{position:'absolute',top:180}}
+            visible={this.state.visibleDrawer}
+          >
+            <Row>
+              <Col span={18} push={6}>
+                <div className={styles.RightBox}>
+                  <ul className={styles.boxTopMsg}>
+                    <li>性别 ：<span>{personObj.gender===1?'男':'女'}</span></li>
+                    <li>部门 ：<span>{personObj.deptName}</span></li>
+                    <li>岗位 ：<span>{personObj.jobStation}</span></li>
+                    <li>办公地址 ：<span>{personObj.workAddress}</span></li>
+                  </ul>
+                  <ul className={styles.boxBotMsg}>
+                    <li>手机 ：<span>{personObj.mobile}</span></li>
+                    <li>短号 ：<span>{personObj.shortPhone}</span></li>
+                    <li>座机号码 ：<span>{personObj.companyMobile}</span></li>
+                    <li>座机短号 ：<span>{personObj.shortWorkPhone}</span></li>
+                    <li>邮箱 ：<span>{personObj.email}</span></li>
+                  </ul>
+                </div>
+              </Col>
+              <Col span={6} pull={18} style={{background:'#FAFAFA'}}>
+                <div className={styles.LeftBox}>
+                  <div className={styles.headerImg}>
+                    <img src={'http://file.chinayasha.com'+ personObj.headImg} alt=""/>
+                  </div>
+                  <h5 className={styles.perName}>{personObj.name}</h5>
+                  <p className={styles.perPost}>{personObj.jobStation}</p>
+                  <p className={styles.perUnit}>{personObj.deptName}</p>
+                  <div className={styles.btnGroup}>
+                    <Button type="primary" onClick={this.drawerAddContactPer}>添加到常用联系人</Button>
+                    <Link to={'mailto:'+personObj.email}>
+                      <Button className={styles.btnEmail}>发邮件</Button>
+                    </Link>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </Drawer>
+        )
+    };
+
 
     return (
         <PageHeaderWrapper>
@@ -265,14 +380,17 @@ export default class AddressBook extends PureComponent {
                 headStyle={{ borderLeft: '1px solid #e5e5e5', borderRight: '1px solid #e5e5e5',borderBottom:'2px solid #0E65AF',color:'#0E65AF',fontSize:'14px' }}
                 bodyStyle={{ padding: '0' }}
               >
-                {/*<DeptTree onSelect={this.selectNode} />*/}
-                <TreeMenu onSelect={this.selectNode.bind(this)} />
+                <TreeMenu
+                  onSelect={this.selectNode.bind(this)}
+                  defaultExpandedKeys={[this.state.selectTreeStr]}
+                  selectedKeys={[this.state.selectTreeStr]}
+                />
               </Card>
             </Sider>
             <Content>
               <Row style={{marginTop:'12px'}}>
                 {
-                 this.state.selectedKey == 'TOP-CONTACTS' ? (
+                 this.state.selectedKey[0] === 'TOP-CONTACTS' ? (
                    <Col span={1} className={styles.colHeader}>
                      {!hasSelected ? (
                        <div onClick={this.delContactPer} className={styles.setDisable}>
@@ -325,30 +443,31 @@ export default class AddressBook extends PureComponent {
                    )}
                  </Col>
                  <Col span={4}>
-                   <Search placeholder="姓名/部门名称" onSearch={value => console.log(value)} style={{position:'relative',top: -8}}/>
-                   {/*<Search*/}
-                   {/*placeholder={*/}
-                   {/*this.state.selectedKey == 'TOP-CONTACTS' ? '搜索我的草稿' : '搜索流程模板'*/}
-                   {/*}*/}
-                   {/*onSearch={this.doSearch.bind(this)}*/}
-                   {/*style={{ width: '100%' }}*/}
-                   {/*/>*/}
+                   <Search placeholder="姓名/部门名称" onSearch={this.doSearch} style={{position:'relative',top: -8}}/>
                  </Col>
               </Row>
               <Table
                 columns={columns}
                 dataSource={list}
-                pagination={{showSizeChanger: true, showQuickJumper: true,...pagination}}
-                scroll={{ y: 260 }}
-                size="middle"
-                rowKey="no"
+                pagination={pagination}
+                scroll={{ y: 640 }}
                 rowSelection={rowSelection}
                 onChange={this.handleTableChange}
+                onRow={(record) => {
+                  return {
+                    onClick: (event) => {this.showDrawer(record) ;this.skipMenuTree(record) },       // 点击行
+                  };
+                }}
               />
             </Content>
           </Layout>
+          {personObj.gender === null ? '': showDrawers()}
         </PageHeaderWrapper>
     );
   }
 }
+
+//http://file.chinayasha.com/p-head/2017/12/20/8a8a94aa6059716b016071f33d2002fb.jpg
+//http://file.chinayasha.com/p-head/2017/12/13/00000000602edd7001604f193af80543.jpg
+//http://hometest.chinayasha.com
 

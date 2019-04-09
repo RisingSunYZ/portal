@@ -2,7 +2,7 @@ import React, { Component, PureComponent, Fragment } from 'react';
 import { Button, Icon,Row,Col, Modal, Popover, message } from 'antd';
 import { connect } from 'dva';
 import { ProcessSelector } from '../Selector';
-import { changeParam, getConfig, nullToZero } from '@/utils/utils';
+import { changeParam, getConfig, nullToZero, fileDown } from '@/utils/utils';
 import Plupload from "@/components/Plupload";
 import styles from "./index.less"
 import router from 'umi/router';
@@ -45,10 +45,10 @@ class DiagramImgModal  extends PureComponent{
   };
 
   render(){
-    const {processDiagramImgUrl, handleOk, handleCancel, visibleDiagramModal, processDiagramData, formTitle} = this.props;
+    const {processDiagramImgUrl, handleOk, handleCancel, handleDownImage, visibleDiagramModal, processDiagramData, formTitle} = this.props;
     return  (
       <Modal
-        title="流程图"
+        title={formTitle + ' - 流程图'}
         width={this.state.diagramModalWidth}
         keyboard="true"
         maskClosable="true"
@@ -57,7 +57,8 @@ class DiagramImgModal  extends PureComponent{
         onCancel={handleCancel}
         bodyStyle={{ overflowX:'auto',position:"relative",padding:"0px 20px 30px 0px", minHeight:'200px'}}
         footer={[
-          <Button key="back" type="primary" onClick={handleCancel}>关闭</Button>
+          <Button key="downImage" type="primary" onClick={handleDownImage}>导出图片</Button>,
+          <Button key="back" onClick={handleCancel}>关闭</Button>
         ]}
       >
         <div>
@@ -119,6 +120,12 @@ class ProcessBaseAction extends Component {
       type: 'processForm/setProcessDiagramImgModal',
       payload: false,
     });
+  };
+
+  // 下载图片
+  handleDownImage = e => {
+    const { formInfo:{formTitle}, processForm:{ processDiagramImgUrl } } = this.props;
+    fileDown( formTitle + '-流程图.jpg', getConfig().domain + processDiagramImgUrl);
   };
 
   // 收藏操作
@@ -228,6 +235,7 @@ class ProcessBaseAction extends Component {
       { title: 'Office files', extensions: 'pdf,txt,doc,docx,ppt,pptx,xls,xlsx' },
       { title: 'Zip files', extensions: 'zip,rar' },
       { title: 'Cad files', extensions: 'dwg' },
+      { title: 'Msg files', extensions: 'msg' }
     ];
 
     const ActionBtn = () => {
@@ -235,7 +243,10 @@ class ProcessBaseAction extends Component {
         <Fragment>
           <Popover content="上传附件">
             <span style={{ marginLeft: '8px'}}>
-              <Plupload url={"/website/tools/fileUpload/uploadFile.jhtml?filePath=form"} saveDataCall={"processForm/addProcessFile"} idName={"btn"} mime_types={mime_types}/>
+              <Plupload url={"/website/tools/fileUpload/uploadFile.jhtml?filePath=form"}
+                        saveDataCall={"processForm/addProcessFile"}
+                        idName={"btn"}
+                        mime_types={mime_types} />
             </span>
           </Popover>
           <Popover content="关联流程">
@@ -287,6 +298,7 @@ class ProcessBaseAction extends Component {
           formTitle={formInfo.formTitle}
           handleOk={this.handleOk}
           handleCancel={this.handleCancel}
+          handleDownImage={this.handleDownImage.bind(this)}
         />
       </Fragment>
     );

@@ -1,18 +1,15 @@
 import React, { Component, PureComponent, Fragment } from 'react';
-import { connect } from 'dva';
-import { Icon, Row, Col, Card, Modal,Form,Upload,Button } from 'antd';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import styles from './index.less'
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState ,convertToRaw} from 'draft-js';
-// import draftToHtml from 'draftjs-to-html';
+import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import {message} from "antd/lib/index";
+import { connect } from 'dva';
+import { Row, Col,Form, Button,Input } from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import styles from './index.less'
 import Plupload from "@/components/Plupload";
 
 
-
-const { Meta } = Card;
 const FormItem = Form.Item;
 
 @connect(({ meetingRoom, loading }) => ({
@@ -35,35 +32,51 @@ export default class MeetingSummary extends PureComponent {
 
   // 加载会议页面内容
   componentDidMount(){
-    const {dispatch} =this.props;
+    const { dispatch ,match } =this.props;
 
-    // 加载 我的邀请会议 数据
+    // 加载 会议纪要和附件 数据
     dispatch({
-      type: 'meetingRoom/getMyInviteData',
-      payload:{}
+      type: 'meetingRoom/getSummaryMeetingData',
+      payload:{ id: match.params.id }
     })
   }
 
   // 保存会议纪要和上传的文件
   saveUpload = ()=>{
-    const { dispatch ,form }=this.props;
+    const { dispatch ,form ,match,meetingRoom:{ meetingFileList } }=this.props;
     form.validateFields((err, fieldsValue)=>{
       if(err) return;
       console.log(fieldsValue);
+      //  给表单添加 fileName，filePath
+      let fileName="",filePath="";
+      if (meetingFileList) {
+        for (let i = 0; i < meetingFileList.length; i++) {
+          filePath += meetingFileList[i].filePath+ ';';
+          fileName += meetingFileList[i].name+ ';'+ ' ';
+        }
+        if(filePath.length>0) filePath=filePath.substr(0,filePath.length-1);
+        if(fileName.length>0) fileName=fileName.substr(0,fileName.length-1);
+        fieldsValue.filePath=filePath;
+        fieldsValue.fileName=fileName;
+        // delete fieldsValue[meetingSummaryFiles]
+      }
+
       dispatch({
-        type: 'meetingRoom/getUploadSummary',
-        payload:{...fieldsValue}
+        type: 'meetingRoom/saveUploadSummary',
+        payload:{...fieldsValue},
+        callback:res=>{
+          if(res.code=='101'){
+            window.location.href='/workplace/meeting-room/'+ match.params.tab
+          }
+        }
       })
+
     })
-
-  }
-
-
-
+  };
 
   render() {
     const {
-      meetingRoom: { draftData: { listDraft } },
+      meetingRoom: { meetingSummary,meetingFileList },
       files,
       loading,
       match,
@@ -71,30 +84,14 @@ export default class MeetingSummary extends PureComponent {
       form,
     } = this.props;
     const {  editorState }=this.state;
-
+// console.log(meetingSummary.meetingId);
     // 上传组件相关属性配置
-    const uploadProps = {
-      name: 'file',
-      action: '/rest/portal/rscmgmt/meeting/uploadImage',
-      multiple: true,
-      accept: '.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt,.pdf,image/jpg,image/jpeg,image/png,image/bmp',
-      showUploadList: true,
-      onChange(info) {
-
-        if (info.file.status !== 'uploading') {
-          dispatch({
-            type: 'meetingRoom/addFiles',
-            payload: info.file,
-          });
-        }
-        if (info.file.status === 'done' && info.file.response && info.file.response.error == 0 ) {
-          message.success(`${info.file.name} 文件上传成功`);
-        } else if (info.file.status === 'error' || (info.file.response &&info.file.response.error == 1)) {
-          message.error(`${info.file.name} 文件上传失败.`);
-        }
-      },
-      defaultFileList: files,
-    };
+    const mime_types = [
+      { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
+      { title: 'Office files', extensions: 'pdf,txt,doc,docx,ppt,pptx,xls,xlsx' },
+      { title: 'Zip files', extensions: 'zip,rar' },
+      { title: 'Cad files', extensions: 'dwg' },
+    ];
 
     return (
       <PageHeaderWrapper>
@@ -105,9 +102,15 @@ export default class MeetingSummary extends PureComponent {
           <Form layout="inline" hideRequiredMark className={styles.form}>
             <Row className={styles.rows}>
               <Col span={24}>
-                <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
+                <FormItem label='id' colon={false} style={{display:'none'}} >
+                  {form.getFieldDecorator('meetingId', {
+                    initialValue: meetingSummary.meetingId,
+                  })
+                  (<Input type={'hidden'} style={{width:"100%"}} placeholder="请输入" />)}
+                </FormItem>
+                <Form.Item label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
                   {form.getFieldDecorator('content', {
-                    // initialValue: meeting.content,
+                    initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent())).slice(3,-5),
                   })(
                     <div style={{width:1100,height:600}}>
                       <Editor
@@ -117,17 +120,16 @@ export default class MeetingSummary extends PureComponent {
                         editorClassName="editorClassName"
                         onEditorStateChange={this.onEditorStateChange}
                       />
-                      {/*<textarea value={draftToHtml(convertToRaw(editorState.getCurrentContent()))} style={{width:1084}}/>*/}
                     </div>
                   )}
-                </FormItem>
+                </Form.Item>
               </Col>
             </Row>
             <Row style={{marginLeft:61,top: -46}}>
               <Col span={6}>
                 <Form.Item>
-                  {form.getFieldDecorator('files', {
-                    initialValue:files
+                  {form.getFieldDecorator('meetingSummaryFiles', {
+                    // initialValue:meeting.meetingSummaryFiles
                   })(
                     <Plupload url={"/rest/portal/rscmgmt/meeting/uploadImage"} saveDataCall={"meetingRoom/addFiles"} idName={"summaryBtn"} mime_types={mime_types}>上传文件</Plupload>
                   )}

@@ -32,8 +32,20 @@ public class AuthUtils {
 	protected String appinfo;
 	@Value("${idm.appkey}")
 	protected String appkey;
+	@Value("${idm.api.url}")
+	private String idmApiUrl;
+	@Value("${idm.api.user}")
+	private String idmApiUser;
+	@Value("${idm.api.key}")
+	private String idmApiKey;
 
-
+	/**
+	 * idm登录相关
+	 * @param url
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
 	public String getResponseFromServer(String url, Map<String, Object> params) throws Exception {
 		HttpPost httpPost = new HttpPost(url);
 		createSignHeader(httpPost, params);
@@ -41,7 +53,22 @@ public class AuthUtils {
 		httpPost.setEntity(new ByteArrayEntity(object.toString().getBytes(), ContentType.APPLICATION_JSON));
 		return execute(httpPost);
 	}
-	
+
+	/**
+	 * IDM接口相关
+	 * @param url
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public String getApiResponseFromServer(String url, Map<String, Object> params) throws Exception {
+		HttpPost httpPost = new HttpPost(idmApiUrl + url);
+		createSignHeader(httpPost, params);
+		JSONObject object = JSONObject.fromObject(params);
+		httpPost.setEntity(new ByteArrayEntity(object.toString().getBytes(), ContentType.APPLICATION_JSON));
+		return execute(httpPost);
+	}
+
 	private String execute(HttpUriRequest request) throws Exception {
 		CloseableHttpClient client = null;
 		CloseableHttpResponse resp = null;
@@ -81,6 +108,35 @@ public class AuthUtils {
 		request.addHeader("Content-Type", "application/json");
 	}
 
+	/**
+	 * 添加IDM-Api接口消息头
+	 * @param request
+	 * @param params
+	 * @throws Exception
+	 */
+	private void createApiSignHeader(HttpUriRequest request, Map<String, Object> params) throws Exception {
+		request.addHeader("appuser", idmApiUser);
+
+		String randomcode = RandomStringUtils.random(10, true, true);
+		request.addHeader("randomcode", randomcode);
+
+		Calendar now = Calendar.getInstance();
+		String timestamp = sdf.format(now.getTime());
+		request.addHeader("timestamp", timestamp);
+
+		String data = StringUtils.join(idmApiUser, randomcode, timestamp);
+		String encodekey = DigestUtils.sha256Hex( StringUtils.join(data, "{", idmApiKey, "}"));
+		request.addHeader("encodekey", encodekey);
+
+		JSONObject object = JSONObject.fromObject(params);
+		String paramData = StringUtils.join(object.toString(), "&", idmApiKey);
+		String signature = DigestUtils.md5Hex(paramData).toUpperCase();
+		request.addHeader("sign", signature);
+
+		request.addHeader("appinfo", appinfo);
+		request.addHeader("Content-Type", "application/json");
+	}
+
 	public String getAppuser() {
 		return appuser;
 	}
@@ -104,5 +160,37 @@ public class AuthUtils {
 
 	public void setAppinfo(String appinfo) {
 		this.appinfo = appinfo;
+	}
+
+	public static SimpleDateFormat getSdf() {
+		return sdf;
+	}
+
+	public static void setSdf(SimpleDateFormat sdf) {
+		AuthUtils.sdf = sdf;
+	}
+
+	public String getIdmApiUrl() {
+		return idmApiUrl;
+	}
+
+	public void setIdmApiUrl(String idmApiUrl) {
+		this.idmApiUrl = idmApiUrl;
+	}
+
+	public String getIdmApiUser() {
+		return idmApiUser;
+	}
+
+	public void setIdmApiUser(String idmApiUser) {
+		this.idmApiUser = idmApiUser;
+	}
+
+	public String getIdmApiKey() {
+		return idmApiKey;
+	}
+
+	public void setIdmApiKey(String idmApiKey) {
+		this.idmApiKey = idmApiKey;
 	}
 }

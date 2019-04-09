@@ -1,4 +1,4 @@
-import { getSysData } from '@/services/api';
+import { getSysData,saveSystemMenu } from '@/services/api';
 import { message } from 'antd';
 
 export default {
@@ -27,6 +27,18 @@ export default {
         });
       }
 
+    },
+
+    *saveSystemMenu({ payload }, { call, put }) {
+      // debugger;
+      const response = yield call(saveSystemMenu, payload);
+      if(callback) callback(response);
+      // if(response.code === "100"){
+      //   yield put({
+      //     type: 'sysList',
+      //     payload: response
+      //   });
+      // }
     }
   },
 
