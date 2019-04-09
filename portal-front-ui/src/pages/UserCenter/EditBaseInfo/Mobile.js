@@ -107,7 +107,7 @@ class EditUserMobile extends PureComponent {
               <Col span={16}>
                 <FormItem {...formItemLayout} label="密保手机">
                   {getFieldDecorator('number', {
-                    initialValue: profile.profile.workphone,
+                    initialValue: profile.mobile,
                   })(<Input type="text" disabled />)}
                 </FormItem>
               </Col>
@@ -126,7 +126,7 @@ class EditUserMobile extends PureComponent {
         </Card>
         <Card bordered={false} style={{ margin: '50px 0', display: visible ? 'block' : 'none' }}>
           <div style={{ padding: '30px 280px', visibility: noticeShow }}>
-            <Alert message={`短信验证码已发送到手机： ${profile.profile.workphone}，请注意查收！`} type="success" showIcon />
+            <Alert message={`短信验证码已发送到手机： ${profile.mobile}，请注意查收！`} type="success" showIcon />
           </div>
           <Form onSubmit={this.saveMsg}>
             <FormItem {...formItemLayout} label="短信验证码">

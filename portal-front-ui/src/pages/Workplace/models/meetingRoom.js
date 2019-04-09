@@ -9,27 +9,28 @@ import {
   getMyInviteData,
   getInputData,
   getRecordPer,
-  DownloadPerList,
-  getUploadSummary
+  getUploadSummary,
 } from '../../../services/meetingRoom';
 import { message } from 'antd';
 
 export default {
   state: {
-    draftData: {
-      listDraft: [],
+    draftData: {     //草稿会议数据
+      listDraft: []
     },
 
-    waitData:{
+    waitData:{      //代开会议数据
       listWait:[]
     },
 
-    historyData:{
-      listHistory:[]
+    historyData:{   //历史会议数据
+      listHistory:[],
+      pagination: {}
     },
 
-    inviteData:{
-      listInvita:[]
+    inviteData:{    //我的邀请数据
+      listInvita:[],
+      paginations: {}
     },
 
     delPerson: [],
@@ -54,7 +55,7 @@ export default {
       if(response.code=='100'){
         yield put({
           type: 'saveHistory',
-          payload:response.data.data
+          payload:response.data
         })
       }
 
@@ -75,7 +76,6 @@ export default {
           payload:response.data.data
         })
       }
-
     },
 
     /**
@@ -108,7 +108,7 @@ export default {
       if(response.code=="100"){
         yield put({
           type: 'saveInvite',
-          payload:response.data.data
+          payload:response.data
         })
       }
     },
@@ -121,7 +121,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *loadInput({payload,callback},{call,put}) {
-      // debugger;
       const response= yield call(getInputData,payload);
       yield put({
         type: 'saveMeetingData',
@@ -241,7 +240,6 @@ export default {
      */
     *sendInvites({payload,callback},{call,put}){
       const response= yield call(sendInviteData,payload);
-      // debugger;
       yield put({
         type: 'sendData',
         payload:response
@@ -257,7 +255,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *saveDrafts({payload,callback},{call,put}){
-      debugger;
       const response = yield call(saveDraftData,payload);
       console.log(11111111);
       // yield put({
@@ -267,23 +264,6 @@ export default {
       if(callback) callback(response);
     },
 
-
-    /**
-     * 查看下 下载 参会人员列表
-     * @param payload
-     * @param callback
-     * @param call
-     * @param put
-     * @returns {IterableIterator<*>}
-     */
-    *getDownloadPerList({payload,callback},{call,put}){
-      const response = yield call(DownloadPerList,payload);
-      // yield put({
-      //   type: 'saveDraftData',
-      //   payload:payload
-      // });
-      if(callback) callback(response);
-    },
 
     /**
      * 点击编辑 保存 会议纪要 和附件
@@ -322,14 +302,14 @@ export default {
     saveHistory(state, action) {
       return {
         ...state,
-        historyData: { listHistory: action.payload }
+        historyData: { listHistory: action.payload.data , pagination:action.payload.total}
       };
     },
 
     saveInvite(state, action) {
       return {
         ...state,
-        inviteData: { listInvita: action.payload }
+        inviteData: { listInvita: action.payload.data , paginations:action.payload.total }
       };
     },
 
@@ -357,7 +337,6 @@ export default {
      */
     delDraftRecordById(state, action) {
       const id=action.payload.id;
-      // debugger;
       return {
         ...state,
         delPerson: action.payload.recordPersonName
@@ -374,7 +353,7 @@ export default {
 
 
     saveMeetingData(state, action) {
-      const meeting = action.payload
+      const meeting = action.payload;
       return {
         ...state,
         ...meeting,

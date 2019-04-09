@@ -1,16 +1,11 @@
 /**
  *个人资料绩效信息model
  */
-import {
-  saveBaseInfo,
-  saveUserPwd,
-  loginoutSyn,
-  sendUserMobileCode,
-  saveUserMobile,
-} from '../../../services/hrServiceAjax';
-import { getBaseInfo } from '../../../services/hrService';
 import router from 'umi/router';
 import { message } from 'antd';
+import {getBaseInfo,saveBaseInfo,saveUserMobile,verificationCode,
+  updatePwdAfterLogin,logOutSyn} from '../../../services/user'
+
 export default {
   namespace: 'baseInfo',
 
@@ -34,7 +29,7 @@ export default {
       if(callback && typeof callback === 'function'){
         callback(response);
       }else{
-        if (response.code === 1) {
+        if (response.code === '100') {
           message.success('保存成功');
         } else {
           message.error(response.msg);
@@ -43,29 +38,28 @@ export default {
     },
     *saveUserMobile({ payload }, { call }) {
       const response = yield call(saveUserMobile, payload);
-      if (response.code === 1) {
+      if (response.code === '100') {
         message.success('保存成功');
       } else {
         message.error(response.msg);
       }
     },
     *sendUserMobileCode({ payload,callback }, { call }) {
-      const response = yield call(sendUserMobileCode, payload);
-      if (response.code === 0) {
-        message.error(response.msg);
-      }
-      if(response.code==1){
+      const response = yield call(verificationCode, payload);
+      if(response.code=='100'){
         if (callback && typeof callback === 'function') {
           callback(response)
         }
+      }else{
+        message.error(response.msg);
       }
     },
     *saveUserPwd({ payload ,callback }, { call }) {
-      let response = yield call(saveUserPwd, payload);
-      if (response.code === 1) {
+      let response = yield call(updatePwdAfterLogin, payload);
+      if (response.code === '100') {
         message.success('保存成功');
-        response = yield call(loginoutSyn, {});
-        if(response.code==1){
+        response = yield call(logOutSyn, {});
+        if (response.code === '100') {
           if (callback && typeof callback === 'function') {
               callback(response)
           }
@@ -74,20 +68,11 @@ export default {
         message.error(response.msg);
       }
     },
-    *logoutSyn({ payload ,callback }, { call }) {
-
-        const response = yield call(loginoutSyn, {});
-        if(response.code=='100'){
-          if (callback && typeof callback === 'function') {
-              callback(response)
-          }
-        }
-    },
     *getBaseInfo({ payload }, { call, put }) {
       const response = yield call(getBaseInfo, payload);
       yield put({
         type: 'save',
-        payload: response,
+        payload: response!=undefined&&response.data!=undefined?response.data:{},
       });
     },
   },

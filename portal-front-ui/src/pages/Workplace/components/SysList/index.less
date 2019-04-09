@@ -1,0 +1,48 @@
+@import '~antd/lib/style/themes/default.less';
+
+.sysView{
+  ul,li,p{
+    margin: 0;
+    padding: 0;
+  }
+  .sysList{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .sysItem{
+      width: 126px;
+      text-align: center;
+      height: 112px;
+      box-sizing: border-box;
+      padding-top: 20px;
+      .iconDrag{
+        position: relative;
+        top: -21px;
+        left: -10px;
+        font-size: 16px;
+        font-weight: 600;
+        opacity: 0;
+      }
+      .imgIcons{
+        img{
+          position: relative;
+          right: 10px;
+        }
+      }
+    }
+    :hover .iconDrag{
+      opacity: 1;
+    }
+  }
+}
+
+.btns{
+  position:relative;
+  float:right;
+  top: -539px;
+  right: 20px;
+  .resetBtn{
+    margin-left: 24px;
+  }
+}
+

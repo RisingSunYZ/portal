@@ -1,6 +1,5 @@
+import request from '../utils/request';
 import { stringify } from 'qs';
-import request from '@/utils/request';
-
 
 export async function queryRule(params) {
   return request(`/api/rule?${stringify(params)}`);
@@ -59,10 +58,24 @@ export async function getScheduleCount() {
  * @param params
  * @returns {Promise<Object>}
  */
-export async function getSysData(params) {
-  return request(`/rest/portal/workplat/system/getUserSystem?${stringify(params)}`);
+export async function getSysData() {
+  return request(`/rest/portal/workplat/system/getUserSystem`);
 }
 
+/**
+ * 常用系統保存
+ * @param params
+ * @returns {Promise<void>}
+ */
+export async function saveSystemMenu(params) {
+  var formdata = new FormData();
+  const val = JSON.stringify(params.systemMenuUser);
+  formdata.append("systemMenuUserJson",val);
+  return request(`/rest/portal/workplat/system/saveSystemMenu`, {
+    method: 'POST',
+    body: formdata,
+  });
+}
 
 /**
  * 文档预览地址数据获取

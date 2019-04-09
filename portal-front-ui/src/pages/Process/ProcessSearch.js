@@ -53,7 +53,7 @@ class ProcessSearch extends PureComponent {
   selectNode(selectedKeys, e) {
     this.props.form.validateFields((err, fieldsValue) => {
        if (err) return;
-       if( Array.isArray( fieldsValue.creatorName ) ){
+       if( Array.isArray( fieldsValue.creatorName ) && fieldsValue.creatorName.length >0 ){
          const person = JSON.parse( JSON.stringify(fieldsValue.creatorName) );
          delete fieldsValue.creatorName ;// 删除属性
          fieldsValue['creatorName'] = person[0].name;

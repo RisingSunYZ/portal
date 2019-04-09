@@ -35,6 +35,69 @@
   cursor:not-allowed;
 }
 
+// 设置抽屉
+.LeftBox{
+
+  .headerImg{
+    width:150px;
+    height: 150px;
+    overflow:hidden;
+    margin: 30px auto;
+    img{
+      width:150px;
+      height: 150px;
+    }
+  }
+  .perName{
+    text-align:center;
+    font-size: 16px;
+    font-weight: bold;
+    color:#0E65AF;
+  }
+  .perPost{
+    font-size: 12px;
+    font-weight: bold;
+    text-align:center;
+    margin:0;
+  }
+  .perUnit{
+    font-size: 12px;
+    text-align:center;
+  }
+  .btnGroup{
+    margin-top:50px;
+    text-align:center;
+    .btnEmail{
+      width:144px;
+      margin-top:20px;
+    }
+  }
+}
+
+.RightBox{
+  padding: 50px 0 0 130px;
+  .boxTopMsg{
+    border-bottom: 1px dotted #DEDEDE;
+    padding-bottom:20px;
+  }
+  .boxBotMsg{
+    padding-top: 20px;
+  }
+  ul{
+    margin:0;
+    padding:0;
+    li{
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 36px;
+      color:#333;
+      span{
+        font-weight:normal;
+      }
+    }
+  }
+}
+
 
 .treeMenu{
   //background: #F0F0F0;
@@ -42,22 +105,29 @@
 
 
 :global{
+  .ant-layout-footer{
+    display: none;
+  }
   .antd-pro-components-common-header-index-header .antd-pro-components-common-header-index-main > a {
     position:relative;
     left: -327px;
   }
   .antd-pro-layouts-basic-layout-contentBox {
     margin: 0;
+    //width:1900px;
+    position:relative;
   }
   .antd-pro-layouts-basic-layout-contentBox >div {
     width: 1900px;
   }
   .ant-layout-header,.ant-layout-sider{
     background:#fff;
+    height:800px;
+    overflow:hidden;
   }
   .antd-pro-pages-workplace-components-tree-menu-index-treeMenuBox,
   .antd-pro-pages-workplace-components-tree-menu-index-treeMenu{
-    height: 780px !important;
+    height: 760px !important;
   }
 
   .ant-table-wrapper{
@@ -70,7 +140,35 @@
   .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body .ant-table-tbody >tr:nth-child(2n){
     background:#F5F5F5;
   }
-  .ant-table-scroll{
-    border:1px solid #E6E6E6;
+
+  .ant-drawer-body{
+    padding: 0 24px 24px 0;
+  }
+
+  .ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper{
+    position:fixed;
+    height:690px !important;
+    right:17px;
+    box-shadow:none;
+    border: 1px solid #E6E6E6;
+  }
+
+  .ant-table-pagination.ant-pagination{
+    margin-top: 100px;
+  }
+
+  .ant-table-content{
+    border: 1px solid #E6E6E6;
+    height: 690px;
+  }
+
+  .ant-layout{
+    height: 800px !important;
+  }
+  .ant-layout .ant-layout-has-sider{
+    height: 800px !important;
+  }
+  .ant-layout-content{
+    height: 800px
   }
 }

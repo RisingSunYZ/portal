@@ -1,15 +1,15 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState ,convertToRaw} from 'draft-js';
-// import draftToHtml from 'draftjs-to-html';
-import Plupload from "@/components/Plupload";
+import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { connect } from 'dva';
 import { Tabs, Form, Row, Col, Upload, message, Icon, DatePicker, TimePicker,Select, Button, Input, Card, Modal } from 'antd';
-import { UserSelect } from '../../../components/Selector';
-import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
-import { simpleFormatTime} from '../../../utils/utils';
-import FileList from '../../../components/FileList';
+import { UserSelect } from '@/components/Selector';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { simpleFormatTime} from '@/utils/utils';
+import FileList from '@/components/FileList';
+import Plupload from "@/components/Plupload";
 import Link from 'umi/link';
 import moment from 'moment';
 import styles from './index.less'
@@ -30,20 +30,18 @@ const FormItem = Form.Item;
 
 @Form.create()
 export default class MeetingInput extends PureComponent {
-  searchFormObj = {};
-
-
   state = {
     selectedKey: '',
     visible:false,
     editorState: EditorState.createEmpty(),
-    ModalTextSave:'会议主题不能为空！'
+    ModalTextSave:'会议主题不能为空！',
+    cardType:1
   };
 
   componentDidMount(){
     const {dispatch, match, form }=this.props;
     // debugger
-    if(match.params.meetId!="" && match.params.meetId!=undefined){
+    if(match.params.meetId!=":meetId" && match.params.meetId!=undefined){
       dispatch({
         type:'meetingRoom/loadInput',
         payload:{
@@ -59,26 +57,6 @@ export default class MeetingInput extends PureComponent {
     });
   };
 
-  doSearch(modelName) {
-    this.searchFormObj.name = modelName;
-    //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
-    this.props.dispatch({
-      type: 'meetingRoom/getModelList',
-      payload: {
-        name: modelName,
-        categoryId: this.state.selectedKey == 'myDraft' ? this.state.selectedKey : '',
-      },
-    });
-  }
-
-  handleDel(businessKey) {
-    this.props.dispatch({
-      type: 'meetingRoom/delDraft',
-      payload: {
-        businessKey: businessKey,
-      },
-    });
-  }
 
   selectCallback = datas => {
     const { setFieldsValue } = this.props.form;
@@ -89,14 +67,9 @@ export default class MeetingInput extends PureComponent {
   };
 
 
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  }
-
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
+    const { meetingRoom:{meetingFileList} }=this.props;
     // 格式化 必选人员
     let mandaPer=fieldsValue.mandatoryPersonList;
     let str="";
@@ -110,7 +83,6 @@ export default class MeetingInput extends PureComponent {
     fieldsValue.mandatoryPersonName=str;
     fieldsValue.mandatoryPersonNo = mandaNo
 
-debugger;
     // 格式化 可选人员
     let optionPer=fieldsValue.optionalPersonList;
     let str0="";
@@ -148,26 +120,47 @@ debugger;
 
     //  给表单添加 fileName，filePath
     let fileName="",filePath="";
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        fileName = files[i].response.fileName;
-        filePath = files[i].response.url;
+    debugger
+    if (meetingFileList) {
+      for (let i = 0; i < meetingFileList.length; i++) {
+        filePath += meetingFileList[i].filePath+ ';';
+        fileName += meetingFileList[i].name+ ';'+ ' ';
       }
+      if(filePath.length>0) filePath=filePath.substr(0,filePath.length-1)
+      if(fileName.length>0) fileName=fileName.substr(0,fileName.length-1)
       fieldsValue.filePath=filePath;
       fieldsValue.fileName=fileName;
-      delete fieldsValue[files]
+      delete fieldsValue[meetingFiles]
     }
   }
 
-
+  // 发送更新
+  sendUpdate=()=>{
+    const { dispatch ,form, match }=this.props;
+    form.validateFields((err, fieldsValue)=>{
+      if(err) return;
+      // 调用公共方法
+      debugger;
+      this.commonMethod(fieldsValue);
+      dispatch({
+        type:'meetingRoom/sendInvites',
+        payload:{...fieldsValue},
+        callback: res=>{
+          if(res.code=='100'){
+            window.location.href='/workplace/meeting-room/'+ match.params.tab
+          }
+        }
+      })
+    })
+  }
  // 发送邀请-按钮
   sendInvite =() =>{
-    const {dispatch ,form, meetingRoom:{files}  }=this.props;
+    const {dispatch ,form }=this.props;
     form.validateFields((err, fieldsValue)=>{
       console.log(fieldsValue)
       if(err) return;
      // debugger;
-      if(fieldsValue.theme==undefined || fieldsValue.mandatoryPersonName==undefined || fieldsValue.meetingroomName==undefined){
+      if(fieldsValue.theme==undefined || fieldsValue.mandatoryPersonName=="" || fieldsValue.meetingroomName==undefined){
         //点击显示 弹出框
         this.setState({
           visible: true,
@@ -187,7 +180,6 @@ debugger;
       this.commonMethod(fieldsValue);
 
       dispatch({
-
         type:'meetingRoom/sendInvites',
         payload:{...fieldsValue },
         callback: res => {
@@ -202,9 +194,8 @@ debugger;
 
   // 新建会议(或 点击 编辑)-按钮-保存草稿
   saveDraft=()=>{
-    const {dispatch ,form}=this.props;
+    const {dispatch ,form }=this.props;
     form.validateFields((err, fieldsValue) => {
-      // debugger
       if (err) return;
       if(fieldsValue.theme==undefined){
         //点击显示 弹出框
@@ -221,7 +212,6 @@ debugger;
         return;
       }
       // console.log(fieldsValue);
-
       // 调用公共方法
       this.commonMethod(fieldsValue);
 
@@ -241,42 +231,27 @@ debugger;
 
   render() {
     const {
-      meetingRoom: { list, data ,meeting,mandatoryPersonList,optionalPersonList ,files},
+      meetingRoom: { list, data ,meeting,mandatoryPersonList,optionalPersonList ,meetingFileList},
       loading,
       dispatch,
       form,
+      match
     } = this.props;
-    console.log(meeting);
-    console.log(88888888888);
-    const { visible, editorState, ModalTextSave  }=this.state;
-
+    console.log(meetingFileList)
+    // console.log(meeting);
+    // console.log(match.params.meetId)
+    // console.log(match.params.tab)
+    // console.log(88888888888);
+    const { visible, editorState, ModalTextSave ,cardType }=this.state;
+    const tab = match.params.tab ? match.params.tab:tab;
 
     // 上传组件相关属性配置
-    const uploadProps = {
-      name: 'file',
-      action: '/rest/portal/rscmgmt/meeting/uploadImage',
-      multiple: true,
-      accept: '.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt,.pdf,image/jpg,image/jpeg,image/png,image/bmp',
-      showUploadList: true,
-      onChange(info) {
-
-        if (info.file.status !== 'uploading') {
-          dispatch({
-            type: 'meetingRoom/addFiles',
-            payload: info.file,
-          });
-        }
-        if (info.file.status === 'done' && info.file.response && info.file.response.error == 0 ) {
-          message.success(`${info.file.name} 上传成功`);
-        } else if (info.file.status === 'error' || (info.file.response &&info.file.response.error == 1)) {
-          message.error(`${info.file.name} 上传失败.`);
-        }
-      },
-      defaultFileList: files,
-    };
-    // console.log(2222222);
-    // console.log(meeting);
-    console.log(mandatoryPersonList)
+    const mime_types = [
+      { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
+      { title: 'Office files', extensions: 'pdf,txt,doc,docx,ppt,pptx,xls,xlsx' },
+      { title: 'Zip files', extensions: 'zip,rar' },
+      { title: 'Cad files', extensions: 'dwg' },
+    ];
 
 
     return (
@@ -414,7 +389,7 @@ debugger;
               <Col span={24}>
                 <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
                   {form.getFieldDecorator('content', {
-                    initialValue: meeting.content,
+                    initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent())).slice(3,-5),
                   })(
                     <div style={{width:1100,height:600}}>
                       <Editor
@@ -433,31 +408,42 @@ debugger;
             <Row style={{marginLeft:61,top: -46}}>
               <Col span={6}>
                 <Form.Item>
-                  {form.getFieldDecorator('files', {
-                    // initialValue:files
+                  {form.getFieldDecorator('meetingFiles', {
+                    initialValue:meeting.meetingFiles
                   })(
-                    <Plupload url={"/rest/portal/rscmgmt/meeting/uploadImage"} saveDataCall={"meetingRoom/addFiles"} idName={"meetingBtn"} mime_types={mime_types}>上传文件</Plupload>
+                    <div>
+                      <Plupload url={"/rest/portal/rscmgmt/meeting/uploadImage"} saveDataCall={"meetingRoom/addFiles"} idName={"meetingBtn"} mime_types={mime_types}>上传文件</Plupload>
+                      {/*<span>{meeting.meetingFiles}</span>*/}
+                    </div>
                   )}
                 </Form.Item>
               </Col>
             </Row>
-            <Row className={styles.rows} style={{left:'414px'}}>
-              <Col span={3}>
-                <Button type="primary" onClick={this.sendInvite}>发送邀请</Button>
-              </Col>
-              <Col span={3}>
-                <Button onClick={this.saveDraft}>保存草稿</Button>
-                <Modal
-                  visible={visible}
-                  footer={null}
-                  closable={false}
-                  centered
-                  bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
-                  maskStyle={{backgroundColor:'#E6E6E6'}}>
-                  <p>{ModalTextSave}</p>
-                </Modal>
-              </Col>
-            </Row>
+            {((tab==1 || tab==2) && match.params.meetId != ':meetId') ? (
+              <Row className={styles.rows} style={{left:'535px'}}>
+                <Col span={3}>
+                  <Button type="primary" onClick={this.sendUpdate}>发送更新</Button>
+                </Col>
+              </Row>
+            ):(
+              <Row className={styles.rows} style={{left:'414px'}}>
+                <Col span={3}>
+                  <Button type="primary" onClick={this.sendInvite}>发送邀请</Button>
+                </Col>
+                <Col span={3}>
+                  <Button onClick={this.saveDraft}>保存草稿</Button>
+                  <Modal
+                    visible={visible}
+                    footer={null}
+                    closable={false}
+                    centered
+                    bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
+                    maskStyle={{backgroundColor:'#E6E6E6'}}>
+                    <p>{ModalTextSave}</p>
+                  </Modal>
+                </Col>
+              </Row>
+            )}
           </Form>
         </div>
       </PageHeaderWrapper>

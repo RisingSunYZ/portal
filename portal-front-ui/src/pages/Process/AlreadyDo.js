@@ -326,11 +326,11 @@ class AlreadyDo extends PureComponent {
         key: 'processStatusName',
         render: text =>
           text === '办结' || text === '终止' ? (
-            <Tag style={{ width: 50, textAlign: 'center' }} color="green">
+            <Tag style={{ width: 60, textAlign: 'center' }} color="green">
               {text}
             </Tag>
           ) : (
-            <Tag style={{ width: 50, textAlign: 'center' }} color="volcano">
+            <Tag style={{ width: 60, textAlign: 'center' }} color="volcano">
               {text}
             </Tag>
           ),

@@ -314,7 +314,7 @@ public class PortalConstant {
     /**临时用户账号*/
     public static final String SESSION_TEMPORARY_USER_UID = "temporaryUserUid";
     /**用户验证码*/
-    public static final String SESSION_VERIFICATION_CODE = "verificationCode";
+    public static final String SESSION_VERIFICATION_CODE = "-verificationCode";
     /**用户验证结果*/
     public static final String SESSION_CHECK_CODE_FLAG = "checkCodeFlag";
     //**********************************

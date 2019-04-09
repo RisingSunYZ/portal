@@ -503,8 +503,8 @@ export function fileDown(name, path) {
   // window.location.href="http://home.chinayasha.com/website/tools/fileUpload/download.jhtml?path=%2Fform%2F2018%2F06%2F28%2F8a8a8c1d641b6a3301644510c56d21c9.xlsx&name=%E9%99%84%E4%BB%B61-%E9%97%A8%E6%88%B7%E5%B9%95%E5%A2%99%E8%90%A5%E9%94%80%E7%AE%A1%E7%90%86%E5%AE%A1%E6%89%B9%E6%B5%81%E7%A8%8B%E4%BC%98%E5%8C%96%E8%A7%84%E8%8C%83%E6%A0%87%E5%87%86.xlsx";
   window.location.href =
     getConfig().domain +
-    '/rest/portal/file-operation/download?filePath=' +
+    '/rest/portal/file-operation/download?path=' +
     encodeURIComponent(path) +
-    '&fileName=' +
+    '&name=' +
     encodeURIComponent(name);
 }

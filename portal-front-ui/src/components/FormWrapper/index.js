@@ -142,7 +142,7 @@ export default class FormBox extends React.Component {
 
   render() {
     const { props:{ src }, state} = this;
-    const iframeSrc  = `//homedev.chinayasha.com${src}&flowFileBasePath=${getConfig().ftpHost}&flowFileViewPath=${getConfig().filePreviewPath}`;
+    const iframeSrc  = `${getConfig().domain}${src}&flowFileBasePath=${getConfig().ftpHost}&flowFileViewPath=${getConfig().filePreviewPath}`;
 
     const isLoading = src?false:true;
 
@@ -154,7 +154,7 @@ export default class FormBox extends React.Component {
           className={styles.formMainLoadingBox}
         />
         {
-          <Skeleton loading={isLoading} active paragraph={{rows:18}} >
+          <Skeleton loading={isLoading} active paragraph={{rows:10}} >
             <iframe
               title="formIframeBox"
               id="formData"
