@@ -4,7 +4,7 @@ import { message } from 'antd';
 
 export function getConfig() {
   const config = {
-    domain:'http://hometest.chinayasha.com',
+    domain:'http://homedev.chinayasha.com',
     appName: 'eip',
     appVision: '0.1',
     appAuthor: 'xietongjian',
@@ -20,7 +20,7 @@ export function getConfig() {
     mqStaffId : '1816145',
     zsTargetGroupId : '264104623',
     zsStaffId : '1815233',
-    idmLoginSwitch : false,// 是否启用IDM登录
+    idmLoginSwitch : true,// 是否启用IDM登录
     idmBaseUrl:'https://idmtest.chinayasha.com:8443/siam/login',// IDM登录服务
     idmLoginCallbackUrl:'http://homedev.chinayasha.com/rest/user/userLogin',// IDM登录回调URL
     idmLogoutUrl:'https://idmtest.chinayasha.com:8443/siam/logout',// IDM 退出请求地址

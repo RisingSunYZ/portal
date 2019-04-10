@@ -59,30 +59,34 @@ export default class ProcessFormPrint extends React.Component {
   mainContentView = () =>{
     var mainCt = '';
     setTimeout(function () {
-      mainCt = $($("#formData").contents()).find(".widget-view");
-      $.each(mainCt, function(i, widget){
-        if($(widget).hasClass("fui_subform")){
-          //子表单
-          $(widget).find(".fui_subform table").css("width","100%");
-          var itms = $(widget).find(".subform-line td");
-          $.each(itms, function(i, itm){
-            var cell = $(itm).find(".form-cell"), html = '';
-            if(cell.find("input")[0]){
-              html += cell.find("input").val();
-            }else{
-              var ls = cell.find(".select-list li");
-              $.each(ls, function(k, t){
-                html += (k==0 ? $(t).text() : (','+$(t).text()));
-              });
-            }
-            $(itm).html('<div class="itm-box">'+ html +'</div>');
-          });
-        }else if($(widget).hasClass("fui_textarea")){
-          //多行文本
-          var text = $(widget).find("textarea").val();
-          $(widget).find(".fl-widget .fui_textarea").html(text).css({"height":"auto","border":"1px solid #e5e5e5","padding":"5px 10px"});
-        }
-      });
+      try{
+        mainCt = $($("#formData").contents()).find(".widget-view");
+        $.each(mainCt, function(i, widget){
+          if($(widget).hasClass("fui_subform")){
+            //子表单
+            $(widget).find(".fui_subform table").css("width","100%");
+            var itms = $(widget).find(".subform-line td");
+            $.each(itms, function(i, itm){
+              var cell = $(itm).find(".form-cell"), html = '';
+              if(cell.find("input")[0]){
+                html += cell.find("input").val();
+              }else{
+                var ls = cell.find(".select-list li");
+                $.each(ls, function(k, t){
+                  html += (k==0 ? $(t).text() : (','+$(t).text()));
+                });
+              }
+              $(itm).html('<div class="itm-box">'+ html +'</div>');
+            });
+          }else if($(widget).hasClass("fui_textarea")){
+            //多行文本
+            var text = $(widget).find("textarea").val();
+            $(widget).find(".fl-widget .fui_textarea").html(text).css({"height":"auto","border":"1px solid #e5e5e5","padding":"5px 10px"});
+          }
+        });
+      }catch(e){
+        console.error(e);
+      }
     },1000)
   };
 

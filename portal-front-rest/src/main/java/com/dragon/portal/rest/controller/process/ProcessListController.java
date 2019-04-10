@@ -53,6 +53,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -719,10 +720,163 @@ public class ProcessListController extends BaseController {
         }
         return returnVo;
     }
+    @GetMapping("/exportProcessModel")
+    @ApiOperation("导出流程模板")
+    public String exportProcessModel(ModelVo modelVo,HttpServletRequest request, HttpServletResponse response){
+        SimpleReturnVo returnVo = new SimpleReturnVo(ReturnCode.FAIL, "导出失败");
+        List<ModelVo> list=new ArrayList<>();
+        UserSessionInfo user=getUserSessionInfo(request,response);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            if (null != user && StringUtils.isNotBlank(user.getNo())) {
+                ReturnVo<List<ModelVo>> vo = flowApi.exportProcessModelInfoByQuery(modelVo);
+                if(CollectionUtils.isNotEmpty(vo.getData())){
+                    list=vo.getData();
+                }
+                if(CollectionUtils.isNotEmpty(list)){
+                    // 声明一个工作薄
+                    HSSFWorkbook workbook=new HSSFWorkbook();
+                    // 生成一个表格
+                    HSSFSheet sheet=workbook.createSheet("导出流程模板列表");
+                    //字体样式一用于设置表头
+                    HSSFCellStyle style=workbook.createCellStyle();
+                    // 设置这些样式
+                    style.setFillForegroundColor(HSSFColor.BLACK.index);
+                    style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                    style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+                    style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+                    style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+                    style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+                    style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+                    style.setVerticalAlignment(HSSFCellStyle.ALIGN_CENTER);
+                    style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+                    // 生成一个字体
+                    HSSFFont font = workbook.createFont();
+                    font.setColor(HSSFColor.WHITE.index);
+                    font.setFontHeightInPoints((short) 8);
+                    font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                    font.setFontName("微软雅黑");
+                    // 把字体应用到当前的样式
+                    style.setFont(font);
+                    // 生成并设置另一个样式
+                    HSSFCellStyle style2 = workbook.createCellStyle();
+                    style2.setFillForegroundColor(HSSFColor.WHITE.index);
+                    style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                    style2.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+                    style2.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+                    style2.setBorderRight(HSSFCellStyle.BORDER_THIN);
+                    style2.setBorderTop(HSSFCellStyle.BORDER_THIN);
+                    style2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+                    style2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+                    // 生成另一个字体
+                    HSSFFont font2 = workbook.createFont();
+                    font2.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+                    // 把字体应用到当前的样式
+                    style2.setFont(font2);
+                    String[] titles=new String[]{"所属系统","应用范围","流程目录","流程模板名称","流程模板所属单位","流程模板归属部门","流程owner","流程BP"};
+                    for (int i=0;i<titles.length;i++){
+                        sheet.setDefaultColumnStyle(i,style2);
+                        sheet.setColumnWidth(i,6000);
+                    }
+                    // 生成表头样式
+                    HSSFCellStyle style0 = workbook.createCellStyle();
+                    style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                    style0.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+                    style0.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框
+                    style0.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框
+                    style0.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框
+                    style0.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框
+                    // 生成表头字体
+                    HSSFFont font0 = workbook.createFont();
+                    font0.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+                    font0.setFontName("黑体");
+                    font0.setFontHeightInPoints((short) 14);// 设置字体大小
+                    // 把字体应用到当前的样式
+                    style0.setFont(font0);
+                    //第一行
+                    HSSFRow row0= sheet.createRow(0);
+                    row0.setHeight((short)500);
+                    HSSFCell cell0 = row0.createCell(0);
+                    cell0.setCellValue("流程清单");
+                    //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+                    sheet.addMergedRegion(new CellRangeAddress(0,0,0,titles.length-1));//合并单元格
+                    cell0.setCellStyle(style0);
+                    //第二行
+                    HSSFRow row1= sheet.createRow(1);
+                    row1.setHeight((short)500);
+                    HSSFCell cell1 = row1.createCell(0);
+                    cell1.setCellValue("导出人:"+user.getName()+"   "+"导出时间:"+sdf.format(new Date()));
+                    //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+                    sheet.addMergedRegion(new CellRangeAddress(1,1,0,titles.length-1));//合并单元格
+                    cell1.setCellStyle(style2);
+                    //第三行
+                    HSSFRow row= sheet.createRow(2);
+                    row.setHeight((short)600);
 
-
+                    for (int i = 0; i < titles.length; i++) {
+                        HSSFCell cell = row.createCell(i);
+                        cell.setCellStyle(style);
+                        HSSFRichTextString text = new HSSFRichTextString(titles[i]);
+                        cell.setCellValue(text);
+                    }
+                    for (int i=0;i<list.size();i++) {
+                        ModelVo rowVo=list.get(i);
+                        row=sheet.createRow(i+3);
+                        row.setHeight((short)500);
+                        for(int j=0;j<titles.length;j++){
+                            HSSFCell cell = row.createCell(j);
+                            cell.setCellStyle(style2);
+                            switch (j) {
+                                case 0:
+                                    cell.setCellValue(rowVo.getSystemName());
+                                    break;
+                                case 1:
+                                    cell.setCellValue(rowVo.getAppliedRangeName());
+                                    break;
+                                case 2:
+                                    cell.setCellValue(rowVo.getBelongCategoryStr());
+                                    break;
+                                case 3:
+                                    cell.setCellValue(rowVo.getModelName());
+                                    break;
+                                case 4:
+                                    cell.setCellValue(rowVo.getOwnCompanyName());
+                                    break;
+                                case 5:
+                                    cell.setCellValue(rowVo.getOwnDeptName());
+                                    break;
+                                case 6:
+                                    cell.setCellValue(rowVo.getFlowOwnerName());
+                                    break;
+                                case 7:
+                                    cell.setCellValue(rowVo.getProcessDockingName());
+                                    break;
+                            }
+                        }
+                    }
+                    returnVo = new SimpleReturnVo(ReturnCode.SUCCESS, "导出成功");
+                    String fileName=new String(sheet.getSheetName().getBytes("UTF-8"),"ISO-8859-1");
+                    try {
+                        response.setContentType("application/vnd.ms-excel");
+                        response.setHeader("Content-disposition", "attachment;filename="+fileName+".xls");
+                        OutputStream ouputStream = response.getOutputStream();
+                        workbook.write(ouputStream);
+                        ouputStream.flush();
+                        ouputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    returnVo = new SimpleReturnVo(ReturnCode.FAIL, "导出列表为空!");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return JsonUtils.toJson(returnVo);
+    }
     /**
-     * 导出
+     * 导出表单查询结果
      * @param param
      * @param formName
      * @param response
@@ -732,8 +886,8 @@ public class ProcessListController extends BaseController {
      */
     @GetMapping("/export2Excel")
     @ApiOperation("根据条件导出表单查询结果")
-    public String export2Excel(QueryTaskVo param, String formName, HttpServletResponse response, HttpServletRequest request, String sessionId){
-        SimpleReturnVo returnVo = new SimpleReturnVo(FlowConstant.ERROR, "导出失败");
+    public String export2Excel(QueryTaskVo param, String formName, HttpServletResponse response, HttpServletRequest request){
+        SimpleReturnVo returnVo = new SimpleReturnVo(ReturnCode.FAIL, "导出失败");
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdftime=new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
         PagerModel<Map<String, Object>> pm=new PagerModel<Map<String,Object>>();
@@ -1184,7 +1338,7 @@ public class ProcessListController extends BaseController {
                         }
                     }
                 }
-                returnVo = new SimpleReturnVo(FlowConstant.SUCCESS, "导出成功");
+                returnVo = new SimpleReturnVo(ReturnCode.SUCCESS, "导出成功");
                 String fileName = new String(sheet.getSheetName().getBytes("UTF-8"), "ISO-8859-1");
                 try {
                     response.setContentType("application/vnd.ms-excel");

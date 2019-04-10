@@ -18,7 +18,7 @@ export default class PageHeader extends PureComponent {
   };
   changeFixHeight = (affixed) => {
     if (affixed) {
-      this.setState({height: "138px"})
+      this.setState({height: "135px"})
     } else {
       this.setState({height: "auto"})
     }
