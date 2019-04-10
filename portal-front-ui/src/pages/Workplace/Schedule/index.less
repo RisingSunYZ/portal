@@ -1,5 +1,24 @@
 @import '~antd/lib/style/themes/default.less';
 
+.toolbar{
+  margin-bottom: 10px;
+  :global{
+    .event-type{
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-left: 5px;
+      vertical-align: middle;
+      margin-top: -3px;
+      &.type-1{
+        background-color: #2FB654;
+      }
+      &.type-2{
+        background-color: @primary-color;
+      }
+    }
+  }
+}
 .leftCalendar{
   :global{
     .ant-fullcalendar-header{
@@ -110,7 +129,8 @@
       flex-flow: column wrap;
       align-items: flex-start;
       overflow: hidden;
-      position: absolute
+      position: absolute;
+      border: 1px solid #999;
     }
   }
 }

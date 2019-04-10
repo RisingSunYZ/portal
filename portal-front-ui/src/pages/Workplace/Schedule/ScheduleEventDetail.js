@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import { Row, Col, DatePicker, Checkbox, Modal, Form, Input, Icon, Button, message } from 'antd';
 import { UserSelect } from '@/components/Selector';
-import styles from './index.less';
 import moment from 'moment';
 
 @connect(({ schedule,loading }) => ({
@@ -17,7 +16,7 @@ export default class ScheduleEventDetail extends Component {
     event: {},
     startValue: null,
     endValue: null,
-    allDay: false,
+    isAllDay: false,
     delBtnLoading: false,
     saveBtnLoading: false,
   };
@@ -41,25 +40,36 @@ export default class ScheduleEventDetail extends Component {
         callback: (res)=>{
           this.setState({
             event: res,
+            startValue: moment(res.startTime),
+            endValue: moment(res.endTime),
+            isAllDay: res.isAllDay === 1
           })
         }
       })
     }
   };
   disabledStartDate = (startValue) => {
-    const endValue = this.state.endValue;
+    const {endValue, isAllDay} = this.state;
     if (!startValue || !endValue) {
       return false;
     }
-    return startValue.valueOf() > moment(endValue).subtract(30, 'minutes').valueOf();
+    if(isAllDay){
+      return startValue.valueOf() > endValue.valueOf()
+    }else{
+      return startValue.valueOf() > moment(endValue).subtract(30, 'minutes').valueOf();
+    }
   };
 
   disabledEndDate = (endValue) => {
-    const startValue = this.state.startValue;
+    const {startValue, isAllDay} = this.state;
     if (!endValue || !startValue) {
       return false;
     }
-    return endValue.valueOf() < moment(startValue).add(30, 'minutes').valueOf();
+    if(isAllDay){
+      return endValue.valueOf() < startValue.valueOf()
+    }else{
+      return endValue.valueOf() < moment(startValue).add(30, 'minutes').valueOf();
+    }
   };
 
   onStartChange = (value) => {
@@ -92,7 +102,7 @@ export default class ScheduleEventDetail extends Component {
         });
         return;
       }
-      if(fieldsValue['startTime'].valueOf() >= fieldsValue['endTime'].valueOf()){
+      if(!fieldsValue.isAllDay && fieldsValue['startTime'].valueOf() >= fieldsValue['endTime'].valueOf()){
         this.setState({
           saveBtnLoading: false,
         });
@@ -102,9 +112,9 @@ export default class ScheduleEventDetail extends Component {
       const values = {
         ...event,
         ...fieldsValue,
-        allDay: fieldsValue.allDay===true ? 1 : 0,
-        'startTime': fieldsValue['startTime'].format("YYYY-MM-DD hh:mm:ss"),
-        'endTime': fieldsValue['endTime'].format("YYYY-MM-DD hh:mm:ss"),
+        isAllDay: fieldsValue.isAllDay===true ? 1 : 0,
+        'startTime': fieldsValue['startTime'].format("YYYY-MM-DD HH:mm:ss"),
+        'endTime': fieldsValue['endTime'].format("YYYY-MM-DD HH:mm:ss"),
       };
       dispatch({
         type: 'schedule/doSaveSchedule',
@@ -138,7 +148,7 @@ export default class ScheduleEventDetail extends Component {
       type: 'schedule/delEvent',
       payload: id,
       callback: (res)=>{
-        if(res.code == 100){
+        if(res.code === '100'){
           message.success(res.msg);
           this.setState({
             delBtnLoading: false,
@@ -156,30 +166,31 @@ export default class ScheduleEventDetail extends Component {
   };
 
   updateEventTime = (e) => {
-    const allDay = !e.target.value;
+    const isAllDay = e.target.checked;
     const { startValue, endValue } = this.state;
     this.setState({
-      allDay,
+      isAllDay,
       startValue: moment(startValue).startOf('day'),
       endValue: moment(endValue).startOf('day'),
     });
   };
 
   getFooter = () => {
+    const { eventId } = this.props;
     const { event,saveBtnLoading, delBtnLoading } = this.state;
-    if(event.id){
-      if(event.type === 2){
+    if(eventId){
+      if(event.type === 1){
         return (
           <div>
-            <Button onClick={()=>this.setState({visible: false})}>关闭</Button>
+            <Button onClick={()=>this.delEvent(event.id)} loading={delBtnLoading}>删除</Button>
+            <Button type="primary" onClick={this.saveEvent} loading={saveBtnLoading}>保存</Button>
+            <Button onClick={()=>this.setState({visible: false})}>取消</Button>
           </div>
         )
       }
       return (
         <div>
-          <Button onClick={()=>this.delEvent(event.id)} loading={delBtnLoading}>删除</Button>
-          <Button type="primary" onClick={this.saveEvent} loading={saveBtnLoading}>保存</Button>
-          <Button onClick={()=>this.setState({visible: false})}>取消</Button>
+          <Button onClick={()=>this.setState({visible: false})}>关闭</Button>
         </div>
       )
     }
@@ -191,12 +202,8 @@ export default class ScheduleEventDetail extends Component {
     )
   };
 
-  checkStartTime = (rule, value, callback) => {
-    console.log(rule, value, callback);
-  };
-
   render() {
-    const { visible, event, startValue, endValue, allDay } = this.state;
+    const { visible, event, startValue, endValue, isAllDay } = this.state;
     const {
       disabled,
       form: {getFieldDecorator},
@@ -245,24 +252,25 @@ export default class ScheduleEventDetail extends Component {
               )}
             </Form.Item>
             <Form.Item style={{margin: 0}}>
-              {getFieldDecorator('allDay',{
-                initialValue: event.allDay === 1,
+              {getFieldDecorator('isAllDay',{
+                valuePropName: 'checked',
+                initialValue: event.isAllDay === 1,
               })(
-                <Checkbox disabled={itemDisabled} onChange={this.updateEventTime} />
-              )} 全天
+                <Checkbox disabled={itemDisabled} onChange={this.updateEventTime}>全天</Checkbox>
+              )}
             </Form.Item>
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item labelCol={{span: 7}} wrapperCol={{span: 17}} label="开始时间" style={{margin: 0}}>
                   {getFieldDecorator('startTime',{
                     required: true,
-                    initialValue: event.startTime ? moment(event.startTime, 'YYYY-MM-DD hh:mm:ss') : startValue,
+                    initialValue: event.startTime ? moment(event.startTime, 'YYYY-MM-DD HH:mm:ss') : startValue,
                   })(
                     <DatePicker
                       disabled={itemDisabled}
                       style={{minWidth: 165}}
-                      showTime={allDay ? false :{ format: 'HH:mm', minuteStep: 5 }}
-                      format={allDay ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"}
+                      showTime={isAllDay ? false :{ format: 'HH:mm', minuteStep: 5 }}
+                      format={isAllDay ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"}
                       disabledDate={this.disabledStartDate}
                       onChange={this.onStartChange}
                     />
@@ -273,13 +281,13 @@ export default class ScheduleEventDetail extends Component {
                 <Form.Item labelCol={{span: 7}} wrapperCol={{span: 17}} label="结束时间" style={{margin: 0}}>
                   {getFieldDecorator('endTime',{
                     required: true,
-                    initialValue: event.endTime ? moment(event.endTime, 'YYYY-MM-DD hh:mm:ss') : endValue
+                    initialValue: event.endTime ? moment(event.endTime, 'YYYY-MM-DD HH:mm:ss') : endValue
                   })(
                     <DatePicker
                       disabled={itemDisabled}
                       style={{minWidth: 165}}
-                      showTime={allDay ? false :{ format: 'HH:mm', minuteStep: 5 }}
-                      format={allDay ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"}
+                      showTime={isAllDay ? false :{ format: 'HH:mm', minuteStep: 5 }}
+                      format={isAllDay ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm"}
                       disabledDate={this.disabledEndDate}
                       onChange={this.onEndChange}
                     />
@@ -291,7 +299,7 @@ export default class ScheduleEventDetail extends Component {
         </Modal>
         {typeof showRender === 'function'
           ? <div onClick={this.grantModelShow}>{showRender()}</div>
-          : <Button disabled={disabled} onClick={this.grantModelShow}><Icon type="plus" />新建</Button>
+          : <Button disabled={disabled} onClick={this.grantModelShow}><Icon type="plus" style={{color: '#1890FF'}} />新建</Button>
         }
       </Fragment>
     );
