@@ -69,6 +69,7 @@ export default class MeetingInput extends PureComponent {
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
     const { meetingRoom:{meetingFileList} }=this.props;
+
     // 格式化 必选人员
     let mandaPer=fieldsValue.mandatoryPersonList;
     let str="";
@@ -108,8 +109,6 @@ export default class MeetingInput extends PureComponent {
     fieldsValue.recordPersonName=str1;
     fieldsValue.recordPersonNo = recordNo;
 
-    console.log(fieldsValue);
-    console.log(6666666666666);
     fieldsValue.meetingTime = moment(fieldsValue.meetingTime).format('YYYY-MM-DD');
     if(fieldsValue.meetingTime ==="Invalid date") fieldsValue.meetingTime="";
     fieldsValue.start = moment(fieldsValue.start).format('HH:mm');
@@ -119,7 +118,6 @@ export default class MeetingInput extends PureComponent {
 
     //  给表单添加 fileName，filePath
     let fileName="",filePath="";
-    debugger
     if (meetingFileList) {
       for (let i = 0; i < meetingFileList.length; i++) {
         filePath += meetingFileList[i].filePath+ ';';
@@ -139,14 +137,14 @@ export default class MeetingInput extends PureComponent {
     form.validateFields((err, fieldsValue)=>{
       if(err) return;
       // 调用公共方法
-
+debugger;
       this.commonMethod(fieldsValue);
       dispatch({
         type:'meetingRoom/sendInvites',
         payload:{...fieldsValue},
         callback: res=>{
           if(res.code=='100'){
-            window.location.href='/workplace/meeting-room/'+ match.params.tab
+            window.location.href='/eip/workplace/meeting-room/'+ match.params.tab
           }
         }
       })
@@ -177,7 +175,6 @@ export default class MeetingInput extends PureComponent {
 
       // 调用公共方法
       this.commonMethod(fieldsValue);
-
       dispatch({
         type:'meetingRoom/sendInvites',
         payload:{...fieldsValue },
@@ -218,7 +215,6 @@ export default class MeetingInput extends PureComponent {
         type:'meetingRoom/saveDrafts',
         payload:{...fieldsValue},
         callback: res => {
-          // debugger
           if (res.code == '100') {
             // form.resetFields();
             window.location.href = '/workplace/meeting-room/4'
@@ -230,17 +226,13 @@ export default class MeetingInput extends PureComponent {
 
   render() {
     const {
-      meetingRoom: { list, data ,meeting,mandatoryPersonList,optionalPersonList ,meetingFileList},
+      meetingRoom: { list, data, meeting, mandatoryPersonList, optionalPersonList, meetingFileList },
       loading,
       dispatch,
       form,
       match
     } = this.props;
-    console.log(meetingFileList)
-    // console.log(meeting);
-    // console.log(match.params.meetId)
-    // console.log(match.params.tab)
-    // console.log(88888888888);
+
     const { visible, editorState, ModalTextSave ,cardType }=this.state;
     const tab = match.params.tab ? match.params.tab:tab;
 
@@ -412,7 +404,6 @@ export default class MeetingInput extends PureComponent {
                   })(
                     <div>
                       <Plupload url={"/rest/portal/rscmgmt/meeting/uploadImage"} saveDataCall={"meetingRoom/addFiles"} idName={"meetingBtn"} mime_types={mime_types}>上传文件</Plupload>
-                      {/*<span>{meeting.meetingFiles}</span>*/}
                     </div>
                   )}
                 </Form.Item>

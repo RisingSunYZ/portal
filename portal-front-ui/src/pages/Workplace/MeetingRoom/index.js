@@ -298,7 +298,7 @@ export default class MeetingRoom extends PureComponent {
 
     const cardData=(item,cardType)=>{
       return (
-        <div>
+        <div className={styles.cardView}>
           <div className={styles.img}>
             <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553760114282&di=732bf7b82482ea4c9542111736406cd5&imgtype=0&src=http%3A%2F%2Fwww.zf3d.com%2FUpload%2Fzuopin%2Fs_QQ%25E6%2588%25AA%25E5%259B%25BE20160712094859_zf3d_201671294912428.jpg" style={{width:'100%' ,height: '100%'}}/>
           </div>
@@ -307,9 +307,9 @@ export default class MeetingRoom extends PureComponent {
             <li className={styles.liTop}>{item.creatorName}  &nbsp;{(item.creatorDept)}</li>
             <li className={styles.liBot}>
               <span className={styles.liDate}>{simpleFormatDate(item.startTime)}</span>&nbsp;&nbsp;&nbsp;
-              <span className={styles.liTime}>{simpleFormatTime(item.startTime)}-{simpleFormatTime(item.endTime)}</span>&nbsp;&nbsp;
+              <span className={styles.liTime}>{simpleFormatTime(item.startTime)}-{simpleFormatTime(item.endTime)}</span>
               { (cardType == 1 ||cardType == 2||cardType == 3 ) ?
-                this.formatterGetTime(item.startTime,item.endTime) :
+                <span style={{ marginLeft: 60}}>{this.formatterGetTime(item.startTime,item.endTime)}</span> :
                 (<Icon type="delete" theme="twoTone" className={styles.del} onClick={()=>this.showDeleteConfirm(1,item.id)}/>)}
             </li>
           </ul>
@@ -333,6 +333,7 @@ export default class MeetingRoom extends PureComponent {
                   <Modal
                     title="信息"
                     centered
+                    maskStyle={{backgroundColor:'rgba(0,0,0,0.1)'}}
                     visible={this.state.visibleModal}
                     onOk={()=>this.handleOk(this.state.modelId,type)}
                     onCancel={this.handleCancel}
@@ -455,7 +456,7 @@ export default class MeetingRoom extends PureComponent {
                 loopCard(listInvita,2):
                 (<BlankList emptyText="暂无数据" />)
             }
-            <Pagination showQuickJumper defaultCurrent={2} total={paginations} onChange={this.onInviteChange} style={{textAlign:'center'}} />
+            <Pagination showQuickJumper defaultCurrent={1} total={paginations} onChange={this.onInviteChange} style={{textAlign:'center'}} />
           </TabPane>
           <TabPane tab="历史会议" key="3">
             {
@@ -463,7 +464,7 @@ export default class MeetingRoom extends PureComponent {
                 loopCard(listHistory,3):
                 (<BlankList emptyText="暂无数据" />)
             }
-            <Pagination showQuickJumper defaultCurrent={2} total={pagination} onChange={this.onHistoryChange} style={{textAlign:'center'}}/>
+            <Pagination showQuickJumper defaultCurrent={1} total={pagination} onChange={this.onHistoryChange} style={{textAlign:'center'}}/>
           </TabPane>
           <TabPane tab="我的草稿" key="4">
             {

@@ -158,7 +158,7 @@ class SystemMore extends PureComponent {
           footer={null}
           closable={false}
           centered
-          bodyStyle={{backgroundColor:'rgba(0, 0, 0, 0.6)',filter:'alpha(opacity=60)',color:'#fff',textAlign:'center'}}
+          bodyStyle={{backgroundColor:'rgba(0,0,0,0.5)',color:'#fff',textAlign:'center'}}
           maskStyle={{backgroundColor:'transparent'}}>
           <p>保存常用系统成功</p>
         </Modal>

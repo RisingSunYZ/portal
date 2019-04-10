@@ -10,6 +10,7 @@ import {
   getInputData,
   getRecordPer,
   getUploadSummary,
+  getSummaryMeetingDatas
 } from '../../../services/meetingRoom';
 import { message } from 'antd';
 
@@ -38,6 +39,8 @@ export default {
     meeting:{},
     mandatoryPersonList:[],
     optionalPersonList:[],
+    meetingSummary:[],
+    meetingFileList:[]
   },
 
   namespace: 'meetingRoom',
@@ -179,7 +182,7 @@ export default {
      */
     *delRecordPerson({payload},{call,put}) {
       const response= yield call(delRecordPersons,payload);
-      if(response.code=="100"){
+      if(response.code==="100"){
         message.success(response.msg);
       }else{
         message.error(response.msg);
@@ -239,6 +242,7 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *sendInvites({payload,callback},{call,put}){
+      debugger;
       const response= yield call(sendInviteData,payload);
       yield put({
         type: 'sendData',
@@ -256,14 +260,26 @@ export default {
      */
     *saveDrafts({payload,callback},{call,put}){
       const response = yield call(saveDraftData,payload);
-      console.log(11111111);
-      // yield put({
-      //   type: 'saveDraftData',
-      //   payload:payload
-      // });
+
       if(callback) callback(response);
     },
 
+    /**
+     * 根据id查询 会议纪要和附件
+     * @param payload
+     * @param callback
+     * @param call
+     * @param put
+     * @returns {IterableIterator<*>}
+     */
+      *getSummaryMeetingData({payload,callback},{call,put}){
+        const response=yield call(getSummaryMeetingDatas, payload);
+        yield put({
+          type: 'saveSummary',
+          payload:response.data
+        });
+        if(callback) callback(response);
+    },
 
     /**
      * 点击编辑 保存 会议纪要 和附件
@@ -273,14 +289,15 @@ export default {
      * @param put
      * @returns {IterableIterator<*>}
      */
-    *getUploadSummary({payload,callback},{call,put}){
-      const response=yield(getUploadSummary, payload);
+    *saveUploadSummary({payload,callback},{call,put}){
+debugger;
+      const response=yield call(getUploadSummary, payload);
       yield put ({
         type:'saveUploadSum',
         payload: response
       });
       if(callback) callback(response);
-    }
+    },
 
   },
 
@@ -328,6 +345,13 @@ export default {
       }
     },
 
+    saveSummary(state,action){
+
+      return {
+        ...state,
+        meetingSummary:action.payload.meetingSummary
+      }
+    },
 
     /**
      * 通过id删除 会议 记录人
@@ -376,35 +400,35 @@ export default {
      * @returns {*}
      */
     addFiles(state, action) {
-      if (action.payload.response && action.payload.response.error == 1) {
+      if (action.payload.response && action.payload.response.code === 0) {
         return { ...state };
       }
 
       let type = '';
-      if(action.payload.response &&action.payload.response.url.indexOf('.')!=-1 && action.payload.response.url.split('.').length>=2){
+      if(action.payload.response &&action.payload.response.url.indexOf('.')!==-1 && action.payload.response.url.split('.').length>=2){
         type = action.payload.response.url.split('.')[1];
       }
 
 
       const file = {
-        id: action.payload.uid,
-        name: action.payload.response ? action.payload.fileName : "",
+        id: action.payload.id,
+        name: action.payload.response ? action.payload.response.fileName : "",
         filePath: action.payload.response ? action.payload.response.url : '',
         fileSize: action.payload.size,
         ...action.payload,
       };
 
       file.type = type;
-      let files = [];
+      let meetingFileList = [];
       if(state.files){
-        files = state.files.concat(file);
+        meetingFileList = state.files.concat(file);
       }else{
-        files.push(file);
+        meetingFileList.push(file);
       }
 
       const result = {
         ...state,
-        files
+        meetingFileList
       };
       return result;
     },

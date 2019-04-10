@@ -28,7 +28,6 @@ export async function getRecordPer(params) {
  * @returns {Promise<Object>}
  */
 export async function delDraftDatas(params){
-  // debugger;
   console.log(params);
   return request(`/rest/portal/rscmgmt/meeting/delMyDraft/${params.id}`);
 }
@@ -114,7 +113,6 @@ export async function getMyInviteData(params){
  * @returns {Promise<Object>}
  */
 export async function getInputData(params){
-  // debugger
   return request(`/rest/portal/rscmgmt/meeting/getMeetingById/${params.id}`);
 }
 
@@ -126,8 +124,19 @@ export async function getInputData(params){
  * @returns {Promise<Object>}
  */
 export async function getUploadSummary(params) {
+  debugger;
   return request('/rest/portal/rscmgmt/meeting/saveMeetingSummary', {
     method: 'POST',
     body: params,
   });
+}
+
+/**
+ * 根据id查询 会议纪要 和 附件
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function getSummaryMeetingDatas(params){
+
+  return request(`/rest/portal/rscmgmt/meeting/getSummaryMeeting?id=${params.id}`);
 }

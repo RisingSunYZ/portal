@@ -33,7 +33,6 @@ export default class MeetingSummary extends PureComponent {
   // 加载会议页面内容
   componentDidMount(){
     const { dispatch ,match } =this.props;
-
     // 加载 会议纪要和附件 数据
     dispatch({
       type: 'meetingRoom/getSummaryMeetingData',
@@ -58,14 +57,14 @@ export default class MeetingSummary extends PureComponent {
         if(fileName.length>0) fileName=fileName.substr(0,fileName.length-1);
         fieldsValue.filePath=filePath;
         fieldsValue.fileName=fileName;
-        // delete fieldsValue[meetingSummaryFiles]
+        delete fieldsValue.meetingSummaryFiles
       }
-
+      // debugger;
       dispatch({
         type: 'meetingRoom/saveUploadSummary',
         payload:{...fieldsValue},
         callback:res=>{
-          if(res.code=='101'){
+          if(res.code=='100'){
             window.location.href='/workplace/meeting-room/'+ match.params.tab
           }
         }
@@ -76,7 +75,7 @@ export default class MeetingSummary extends PureComponent {
 
   render() {
     const {
-      meetingRoom: { meetingSummary,meetingFileList },
+      meetingRoom: { meetingSummary, meetingFileList },
       files,
       loading,
       match,
@@ -84,7 +83,8 @@ export default class MeetingSummary extends PureComponent {
       form,
     } = this.props;
     const {  editorState }=this.state;
-// console.log(meetingSummary.meetingId);
+console.log(meetingSummary);
+console.log(meetingSummary.meetingId)
     // 上传组件相关属性配置
     const mime_types = [
       { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
@@ -129,7 +129,7 @@ export default class MeetingSummary extends PureComponent {
               <Col span={6}>
                 <Form.Item>
                   {form.getFieldDecorator('meetingSummaryFiles', {
-                    // initialValue:meeting.meetingSummaryFiles
+                    initialValue:meetingSummary.fileName
                   })(
                     <Plupload url={"/rest/portal/rscmgmt/meeting/uploadImage"} saveDataCall={"meetingRoom/addFiles"} idName={"summaryBtn"} mime_types={mime_types}>上传文件</Plupload>
                   )}
