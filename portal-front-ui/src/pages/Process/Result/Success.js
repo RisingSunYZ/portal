@@ -30,13 +30,12 @@ export default class Success extends React.Component {
       const { match } = this.props;
       const isSubmit = match.params.isSubmit;
       clearInterval(this.tId);
-      // debugger
 
       const href = window.opener?(isSubmit==1?'/eip/process/list/already-send':window.opener.location.href):"/eip/process/list/already-send";
       if(href.search('/eip') !== -1 ){
         router.push( href.split("eip")[1] );
       }else{
-        location.href = href
+        window.opener?window.close():location.href = href;
       }
 
     }

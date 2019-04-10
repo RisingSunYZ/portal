@@ -40,7 +40,7 @@ function nullToZero(param) {
 }))
 export default class ProcessModel extends PureComponent {
   searchFormObj = {};
-  state = { selectedKey: '' };
+  state = { selectedKey: 'myDraft' };
   selectNode(selectedKeys, e) {
     if (e.selected) {
       this.searchFormObj.categoryId = selectedKeys[0];
@@ -85,10 +85,8 @@ export default class ProcessModel extends PureComponent {
   }
 
   render() {
-    const {
-      process: { list, data },
-      loading,
-    } = this.props;
+    const {process: { list,selectedKey }, loading} = this.props;
+
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
         <span>{title}</span>
@@ -150,14 +148,14 @@ export default class ProcessModel extends PureComponent {
                 <Col span={8}>
                   <Search
                     placeholder={
-                      this.state.selectedKey == 'myDraft' ? '搜索我的草稿' : '搜索流程模板'
+                      selectedKey == 'myDraft' ? '搜索我的草稿' : '搜索流程模板'
                     }
                     onSearch={this.doSearch.bind(this)}
                     style={{ width: '100%' }}
                   />
                 </Col>
               </Row>
-              {this.state.selectedKey == 'myDraft' ? (
+              { selectedKey == 'myDraft' ? (
                 <List
                   size="large"
                   rowKey="id"
@@ -180,12 +178,9 @@ export default class ProcessModel extends PureComponent {
                       ]}
                     >
                       <div className="ant-list-item-content">
-                        <Link to={this.linkUrl(item)} target="_blank">
-                          {item.name}
-                        </Link>
+                        <Link to={this.linkUrl(item)} target="_blank">{item.name}</Link>
                         <span style={{ marginLeft: 20, color: '#A5A5A5' }}>{item.createTime}</span>
                       </div>
-
                     </List.Item>
                   )}
                 />
