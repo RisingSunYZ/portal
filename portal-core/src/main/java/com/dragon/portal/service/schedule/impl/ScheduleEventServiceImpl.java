@@ -98,7 +98,10 @@ public class ScheduleEventServiceImpl implements IScheduleEventService {
 		ids = this.converString(ids);
 		if (StringUtils.isNotBlank(ids) && null != scheduleEvent) {
 			scheduleEvent.setUpdateTime(new Date());
-			this.scheduleEventDao.updateScheduleEventByIds(ids, scheduleEvent);
+			Map<String,Object> params = new HashMap<>();
+			params.put("ids", ids);
+			params.put("scheduleEvent", scheduleEvent);
+			this.scheduleEventDao.updateScheduleEventByIds(params);
 		}
 	}
 	

@@ -79,12 +79,11 @@ public interface IScheduleEventDao {
 
 	/**
 	 * 通过ids批量修改日程事件ScheduleEvent
-	 * @param ids 如："'1','2','3','4'..."
-	 * @param scheduleEvent
+	 * @param map {ids: 如："'1','2','3','4'..." scheduleEvent:...}
 	 * @throws Exception
 	 * @Description:
 	 */
-	public void updateScheduleEventByIds(String ids, ScheduleEvent scheduleEvent) throws Exception;
+	public void updateScheduleEventByIds(Map<String,Object>map) throws Exception;
 
 	/**
 	 * 根据条件查询日程
