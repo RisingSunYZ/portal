@@ -127,8 +127,7 @@ export default class FncService extends PureComponent {
          <Tabs.TabPane tab="财务报告" key="8a8a8c3a5f04d252015f4d14027f0048">
          </Tabs.TabPane>
        </Tabs>
-       <Table columns={columns} dataSource={materialData} rowKey={record => record.id}  pagination={paginationSet}>
-       </Table>
+       <Table columns={columns} dataSource={materialData} rowKey={record => record.id}  pagination={paginationSet} />
      </PageHeaderWrapper>
     );
   }

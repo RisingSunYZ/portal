@@ -28,7 +28,13 @@ export default class NewsNotice extends PureComponent {
     return news &&news.length >0 && news.map((item, index) => {
       return (
         <li key={index}>
-          <span className={styles.content}><a title={item.title} href={getConfig().domain +'/portal/news/noticeDetail.jhtml?id='+item.id+'&typeSn=hr_notice'} target="_blank">{item.title}</a></span>
+          <span className={styles.content}>
+            <a title={item.title}
+               href={getConfig().domain +'/portal/news/noticeDetail.jhtml?id='+item.id+'&typeSn=hr_notice'} target="_blank"
+            >
+              {item.title}
+            </a>
+          </span>
           <span className={styles.pubTime}>
             {item.publishTime.split(" ")[0]}
           </span>
