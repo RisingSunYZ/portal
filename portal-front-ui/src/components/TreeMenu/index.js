@@ -77,7 +77,7 @@ export default class TreeMenu extends PureComponent {
     this.setState({expandAll:true});
   }
   render() {
-    const { process: { treeData,draftCount }, className, placeholder, ...restProps } = this.props;
+    const { process: { treeData,draftCount }, className, placeholder,defaultSelectedKeys, ...restProps } = this.props;
     // delete restProps.defaultOpen; // for rc-select not affected
     const loop = data =>
       data.map(item => {
@@ -104,6 +104,10 @@ export default class TreeMenu extends PureComponent {
             ?(
               <Tree
                 className={styles.treeMenu}
+                defaultSelectedKeys={defaultSelectedKeys}
+                defaultExpandedKeys={defaultSelectedKeys}
+                autoExpandParent={true}
+                checkedKeys={defaultSelectedKeys}
                 onSelect={this.props.onSelect}
               >
                 {loop(treeData)}

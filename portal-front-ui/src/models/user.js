@@ -45,8 +45,8 @@ export default {
           type: 'saveCurrentUser',
           payload: response,
         });
-
       }else{
+        location.href = getConfig().domain
         // if(window.location.href.indexOf("redirect") === -1){
         //   yield put(
         //     routerRedux.push({

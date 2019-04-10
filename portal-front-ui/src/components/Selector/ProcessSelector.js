@@ -405,7 +405,6 @@ class ProcessSelector extends Component {
         key: 'processStatusName',
         width: 100,
       },
-
       {
         title: '流程标题',
         dataIndex: 'formName',

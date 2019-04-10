@@ -86,6 +86,7 @@ export default class ProcessModel extends PureComponent {
 
   render() {
     const {process: { list,selectedKey }, loading} = this.props;
+    const defaultSelectedKeys = [selectedKey];
 
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
@@ -204,7 +205,7 @@ export default class ProcessModel extends PureComponent {
             </Col>
             <Col span={6} pull={18}>
               <Button style={{marginBottom: 8}} type="primary" icon="download" onClick={this.export}>流程汇总清单</Button>
-              <TreeMenu onSelect={this.selectNode.bind(this)} />
+              <TreeMenu defaultSelectedKeys={defaultSelectedKeys} onSelect={this.selectNode.bind(this)} />
             </Col>
           </Row>
         </Card>
