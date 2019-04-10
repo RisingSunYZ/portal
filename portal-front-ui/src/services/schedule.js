@@ -16,6 +16,16 @@ export async function queryScheduleGrant(params) {
 }
 
 /**
+ * 通过当前用户工号查询被授权信息
+ * @param params
+ * @returns {Promise<Object>}
+ */
+
+export async function queryScheduleGrantedByNo(params) {
+  return request(`/rest/portal/schedule/getScheduleEventGrantByGrantedPersonNo?${stringify(params)}`);
+}
+
+/**
  * 通过ID删除授权信息
  * @param params
  * @returns {Promise<Object>}
@@ -65,7 +75,7 @@ export async function queryScheduleInfo(params) {
 export async function doSaveSchedule(params) {
   return request('/rest/portal/schedule/save', {
     method: 'POST',
-    body: stringify(params),
+    body: params,
   });
 }
 
@@ -75,8 +85,8 @@ export async function doSaveSchedule(params) {
  * @returns {Promise<Object>}
  */
 
-export async function delSchedule(params) {
-  return request(`/rest/portal/schedule/delEvent?${stringify(params)}`);
+export async function delEvent(params) {
+  return request(`/rest/portal/schedule/delEvent/${params}`);
 }
 
 

@@ -25,8 +25,8 @@ export default class ScheduleGrant extends Component {
     if(selPersons.length > 0){
       return selPersons.map((item, idx)=>{
         return (
-          <Form.Item style={{margin: 0}}>
-            <Row key={idx} className={styles.grantList} ref={item.no}>
+          <Form.Item key={idx} style={{margin: 0}}>
+            <Row className={styles.grantList} ref={item.no}>
               <Col offset={1} span={5}>{item.name}</Col>
               <Col span={9}>
                 {getFieldDecorator(`no_${item.no}`,{
@@ -69,7 +69,8 @@ export default class ScheduleGrant extends Component {
   };
 
   grantModelShow = () => {
-    const { dispatch } = this.props;
+    const { dispatch, enable } = this.props;
+    if(!enable) return;
     this.setState({
       visible: true
     });
@@ -96,12 +97,12 @@ export default class ScheduleGrant extends Component {
       grantedPersonNos += `${index>0 ? ',' : ''}${person.no}_${person.name}_${person.grandId || 0}_${values["no_"+person.no]}`;
       autoType += `${index>0 ? ',' : ''}${person.no}_${values["no_"+person.no]}`;
     });
+    let formData = new FormData();
+    formData.append('grantedPersonNo',grantedPersonNos);
+    formData.append('autoType', autoType);
     dispatch({
       type: 'schedule/saveGrant',
-      payload: {
-        grantedPersonNo: grantedPersonNos,
-        autoType
-      },
+      payload: formData,
       callback: (res)=>{
         message.success(res.msg);
         this.setState({
@@ -119,6 +120,7 @@ export default class ScheduleGrant extends Component {
 
   render() {
     const { visible, selPersons } = this.state;
+    const { enable } = this.props;
 
     return (
       <Fragment>
@@ -148,7 +150,7 @@ export default class ScheduleGrant extends Component {
             </Form>
           </div>
         </Modal>
-        <Button onClick={this.grantModelShow}><Icon type="lock" style={{color: '#f5222d'}} />授权</Button>
+        <Button disabled={!enable} onClick={this.grantModelShow}><Icon type="lock" style={{color: '#f5222d'}} />授权</Button>
       </Fragment>
     );
   }

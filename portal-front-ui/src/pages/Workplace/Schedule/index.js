@@ -208,7 +208,6 @@ export default class Schedule extends PureComponent {
                   className="schedule-container"
                   date={currDate.toDate()}
                   localizer={localizer}
-                  culture="ZN-CH"
                   view={view}
                   onView={this.onViewChange}
                   events={scheduleList}
@@ -218,11 +217,10 @@ export default class Schedule extends PureComponent {
                   onNavigate={(d)=>this.onDateChange(moment(d))}
                   messages= {{
                     allDay: "全天",
-                    date: "Date",
                     day: "日",
                     month: "月",
-                    next: "后一天",
-                    previous: "前一天",
+                    next: "往后",
+                    previous: "往前",
                     today: "今天",
                     tomorrow: "明天",
                     week: "周",
