@@ -522,7 +522,10 @@ public class MeetingServiceImpl implements IMeetingService {
 								this.scheduleEventDao.delScheduleEventByIds(delEventId.substring(0, delEventId.length()-1));
 							}
 							if(StringUtils.isNotBlank(editEventId)){
-								this.scheduleEventDao.updateScheduleEventByIds(editEventId, updateSchdule);
+                                Map<String,Object> params = new HashMap<>();
+                                params.put("ids", editEventId);
+                                params.put("scheduleEvent", updateSchdule);
+								this.scheduleEventDao.updateScheduleEventByIds(params);
 							}
 							if(addEvent.size()>0){
 								this.scheduleEventDao.insertScheduleEvents(addEvent);
