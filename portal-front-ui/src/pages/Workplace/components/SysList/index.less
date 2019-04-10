@@ -34,20 +34,23 @@
         position: relative;
         top: -83px;
         left: 39px;
-        //opacity: 0;
+        opacity: 0;
       }
     }
     :hover .iconDrag{
+      opacity: 1;
+    }
+    :hover .idmSys{
       opacity: 1;
     }
   }
 }
 
 .btns{
-  position:relative;
+  position:absolute;
   float:right;
-  top: -539px;
-  right: 20px;
+  top: 76px;
+  right: 377px;
   .resetBtn{
     margin-left: 24px;
   }
@@ -58,5 +61,8 @@
 :global{
   .ant-tabs-bar{
     border-bottom: none;
+  }
+  .ant-btn{
+    border-color: transparent;
   }
 }

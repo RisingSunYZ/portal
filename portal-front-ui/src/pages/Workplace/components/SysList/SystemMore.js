@@ -23,18 +23,20 @@ class SystemMore extends PureComponent {
 
   componentDidMount(){
     const { dispatch } = this.props;
+    // 加载常用系统
     dispatch({
       type:'workplace/getSysData',
     });
-
+    // 加载二级菜单
     dispatch({
       type:"workplace/getSystemById",
       payload:{id:"8a948c155d16777c015d16792f2e0001"}
     });
-
+    // 加载顶级系统
     dispatch({
       type:'workplace/getTopSystem',
     });
+
   }
 
   onSysImgError = tar => {
@@ -44,7 +46,6 @@ class SystemMore extends PureComponent {
   };
 
   getServicesList = slist => {
-
     return slist.map((sys, index)=>{
       return (
         <li key={index} className={styles.sysItem}>
@@ -53,12 +54,20 @@ class SystemMore extends PureComponent {
             <img width="56" height="56" onError={this.onSysImgError.bind(this)} src={getConfig().ftpHost+sys.sysIcon}/>
           </a>
           <p>{sys.sysName}</p>
-          {sys.isIdmSys === 0 ? (<Icon type="minus-circle" className={styles.idmSys} />) : ('')}
+          {sys.isIdmSys === 0 ? (<Icon type="minus-circle" className={styles.idmSys} onClick={()=>this.modifyIdmSys(sys)}/>) : ('')}
         </li>
       );
     });
   };
 
+  // 删除或添加菜单
+  modifyIdmSys=(data)=>{
+    const { dispatch } = this.props;
+    dispatch({
+      type:"workplace/update",
+      payload:data
+    });
+  };
 
 
   // 保存按钮事件
@@ -94,15 +103,23 @@ class SystemMore extends PureComponent {
   };
 
   //重置按钮事件
-  handleReset = ()=> {
+  handleResets = ()=> {
     const { dispatch } = this.props;
     dispatch({
       type:'workplace/getSysData',
     });
+    dispatch({
+      type:'workplace/getTopSystem',
+    });
+    dispatch({
+      type:"workplace/getSystemById",
+      payload:{id:"8a948c155d16777c015d16792f2e0001"}
+    });
   };
 
+
+  // 点击加载二级菜单
   sysCustom = (id,index)=> {
-    // debugger;
     const { dispatch }=this.props;
     this.setState({
       value:index
@@ -113,19 +130,6 @@ class SystemMore extends PureComponent {
     });
   };
 
-  // 点击改变二级菜单
-  changeSysMenu = ()=> {
-    const { dispatch,workplace: { sysData , sysMenusDate } } = this.props;
-    dispatch({
-      type:'workplace/getSysData',
-
-    });
-    sysData.map(item => {
-      if(item.sysName){
-
-      }
-    });
-  };
 
   render() {
     const { workplace: { sysData , sysMenusDate, sysTopMenusDate} } = this.props;
@@ -134,21 +138,21 @@ class SystemMore extends PureComponent {
 
     return (
       <PageHeaderWrapper>
+        <div className={styles.btns}>
+          <Button type="primary" onClick={this.handleSave}>保存</Button>
+          <Button className={styles.resetBtn} onClick={this.handleResets}>重置</Button>
+        </div>
         <Card bordered={false} bodyStyle={{padding: '16px 24px'}}>
           <Row>
             <Col span={24}>
               <div className={styles.sysView}>
-                <ul className={styles.sysList}>
+                <ul className={styles.sysList} id="ulContent">
                   {this.getServicesList(sysData || [])}
                 </ul>
               </div>
             </Col>
           </Row>
         </Card>
-        <div className={styles.btns}>
-          <Button type="primary" onClick={this.handleSave}>保存</Button>
-          <Button className={styles.resetBtn} onClick={this.handleReset}>重置</Button>
-        </div>
         <Modal
           visible={visible}
           footer={null}
@@ -177,7 +181,7 @@ class SystemMore extends PureComponent {
                         {item.systemMenu.map((itm)=>{
                           return (
                             <span>
-                              <Button style={{margin:'40px 20px 0 34px'}} onClick={this.changeSysMenu}>{itm.sysName}</Button>
+                              <Button style={{margin:'40px 20px 0 34px'}} onClick={()=>this.modifyIdmSys(itm)}>{itm.sysName}</Button>
                             </span>
                           )
                         })}

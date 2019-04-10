@@ -39,7 +39,6 @@ export default {
      */
     *getTopSystem({ payload,callback }, { call, put }) {
       const response = yield call(getTopSystems, payload);
-      // debugger;
       if(response.code === "100"){
         yield put({
           type: 'sysTopMenu',
@@ -71,7 +70,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *getSystemById({ payload,callback }, { call, put }) {
-
       const response = yield call(querySystemById, payload);
       yield put({
         type: 'sysMenu',
@@ -97,12 +95,37 @@ export default {
     },
 
     sysTopMenu(state,action){
-      // debugger;
       return {
         ...state,
         sysTopMenusDate:action.payload
       }
     },
+
+    /**
+     * 添加或删除常用菜单
+     * @param state
+     * @param action
+     * @returns {{sysData: Array}}
+     */
+    update(state,action){
+      let id = action.payload.id;
+      let arr = [];
+      let flag = true;
+      for(let i=0;i<state.sysData.length;i++){
+          if(id===state.sysData[i].id){
+            flag = false;
+          }else{
+            arr.push(state.sysData[i]);
+          }
+      }
+      if(flag){
+        arr.push(action.payload);
+      }
+      return {
+        ...state,
+        sysData:arr
+      }
+    }
   },
 };
 
