@@ -162,6 +162,27 @@ export default [
           }
         ]
       },
+      {
+        path: '/infor-tech/knowledge',
+        name: 'infor-tech',
+        component: '../layouts/BasicLayout',
+        routes: [
+          {
+            path: '/infor-tech/knowledge',
+            redirect: '/infor-tech/knowledge/list'
+          },
+          {
+            path: '/infor-tech/knowledge/list',
+            name: 'knowledge-list',
+            component: './InforTech/HotKnowledge/knowledgeList'
+          },
+          {
+            path: '/infor-tech/knowledge/detail/:id',
+            name: 'knowledge-detail',
+            component: './InforTech/HotKnowledge/knowledgeDetail'
+          },
+        ]
+      },
       // news-notice
       {
         path: '/news',
@@ -186,6 +207,11 @@ export default [
             path: '/news/news-detail/:id',
             name: 'news-detail',
             component: './News/NewsDetail',
+          },
+          {
+            path: '/news/notice-detail/:id',
+            name: 'notice-detail',
+            component: './News/NoticeDetail',
           }
         ]
       },
