@@ -256,7 +256,6 @@ export default {
         headRefDel: encodeURIComponent(JSON.stringify(formInfo.delRefDocs)),
         attachMsgAttAdd: encodeURIComponent(JSON.stringify(formInfo.postscriptsFiles)),
       };
-      consol.log(processForm)
       const response = yield call(doSaveBaseInfo, payload);
       //如果是费用报销平台 则temp=0 提交成功后调回费用报销平台
       const modelId = [
