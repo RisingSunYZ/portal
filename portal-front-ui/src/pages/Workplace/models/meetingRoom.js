@@ -242,7 +242,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *sendInvites({payload,callback},{call,put}){
-      debugger;
       const response= yield call(sendInviteData,payload);
       yield put({
         type: 'sendData',
@@ -290,7 +289,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *saveUploadSummary({payload,callback},{call,put}){
-debugger;
       const response=yield call(getUploadSummary, payload);
       yield put ({
         type:'saveUploadSum',
@@ -345,8 +343,13 @@ debugger;
       }
     },
 
+    /**
+     * 保存会议纪要和附件
+     * @param state
+     * @param action
+     * @returns {{meetingSummary: Array}}
+     */
     saveSummary(state,action){
-
       return {
         ...state,
         meetingSummary:action.payload.meetingSummary
@@ -376,7 +379,14 @@ debugger;
     },
 
 
+    /**
+     * 保存新建会议数据
+     * @param state
+     * @param action
+     * @returns {{mandatoryPersonList: Array, optionalPersonList: Array}}
+     */
     saveMeetingData(state, action) {
+
       const meeting = action.payload;
       return {
         ...state,

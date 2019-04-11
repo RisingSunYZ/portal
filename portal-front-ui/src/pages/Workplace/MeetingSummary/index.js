@@ -59,7 +59,7 @@ export default class MeetingSummary extends PureComponent {
         fieldsValue.fileName=fileName;
         delete fieldsValue.meetingSummaryFiles
       }
-      // debugger;
+
       dispatch({
         type: 'meetingRoom/saveUploadSummary',
         payload:{...fieldsValue},

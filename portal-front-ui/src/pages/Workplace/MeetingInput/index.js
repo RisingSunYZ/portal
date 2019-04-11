@@ -23,9 +23,10 @@ const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const FormItem = Form.Item;
 
 
-@connect(({ meetingRoom, loading }) => ({
+@connect(({ user, meetingRoom, loading }) => ({
+  user,
   meetingRoom,
-  loading: loading.models.meetingRoom,
+  loading: loading.models.user,
 }))
 
 @Form.create()
@@ -56,7 +57,6 @@ export default class MeetingInput extends PureComponent {
     });
   };
 
-
   selectCallback = datas => {
     const { setFieldsValue } = this.props.form;
     this.setState({ selectedPersons: datas });
@@ -64,7 +64,6 @@ export default class MeetingInput extends PureComponent {
       setFieldsValue({ creatorName: datas[0].name });
     }
   };
-
 
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
@@ -98,23 +97,13 @@ export default class MeetingInput extends PureComponent {
     fieldsValue.optionalPersonName =str0;
     fieldsValue.optionalPersonNo = optionNo;
 
-    // 格式化 记录人
-    let recordPer =fieldsValue.recordPersonName;
-    let str1="";
-    let recordNo="";
-    if(fieldsValue.recordPersonName){
-        str1+= recordPer[0].name;
-        recordNo+=recordPer[0].no;
-    }
-    fieldsValue.recordPersonName=str1;
-    fieldsValue.recordPersonNo = recordNo;
-
     fieldsValue.meetingTime = moment(fieldsValue.meetingTime).format('YYYY-MM-DD');
     if(fieldsValue.meetingTime ==="Invalid date") fieldsValue.meetingTime="";
     fieldsValue.start = moment(fieldsValue.start).format('HH:mm');
     if(fieldsValue.start === "Invalid date") fieldsValue.start= "";
     fieldsValue.end = moment(fieldsValue.end).format('HH:mm');
     if(fieldsValue.end === "Invalid date") fieldsValue.end= "";
+
 
     //  给表单添加 fileName，filePath
     let fileName="",filePath="";
@@ -137,7 +126,6 @@ export default class MeetingInput extends PureComponent {
     form.validateFields((err, fieldsValue)=>{
       if(err) return;
       // 调用公共方法
-debugger;
       this.commonMethod(fieldsValue);
       dispatch({
         type:'meetingRoom/sendInvites',
@@ -156,7 +144,6 @@ debugger;
     form.validateFields((err, fieldsValue)=>{
       console.log(fieldsValue)
       if(err) return;
-
       if(fieldsValue.theme==undefined || fieldsValue.mandatoryPersonName=="" || fieldsValue.meetingroomName==undefined){
         //点击显示 弹出框
         this.setState({
@@ -191,6 +178,7 @@ debugger;
   // 新建会议(或 点击 编辑)-按钮-保存草稿
   saveDraft=()=>{
     const {dispatch ,form }=this.props;
+    debugger;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       if(fieldsValue.theme==undefined){
@@ -227,6 +215,7 @@ debugger;
   render() {
     const {
       meetingRoom: { list, data, meeting, mandatoryPersonList, optionalPersonList, meetingFileList },
+      user:{currentUser},
       loading,
       dispatch,
       form,
@@ -324,7 +313,7 @@ debugger;
               <Col span={12}>
                 <FormItem label='记录人' colon={false}>
                   {form.getFieldDecorator('recordPersonName', {
-                    initialValue: [{name:meeting.recordPersonName,no:meeting.recordPersonNo}],
+                    initialValue: [{name:currentUser.name,no:currentUser.no}],
                   })
                   (<UserSelect
                     type="input"
@@ -355,6 +344,8 @@ debugger;
                 <FormItem>
                   {form.getFieldDecorator('start', {
                     initialValue:moment('13:20','HH:mm')
+                    // initialValue:moment(meeting.start).format('HH:mm')
+                    // moment(fieldsValue.start).format('HH:mm');
                     // initialValue:(meeting.start==null || meeting.start=="" || meeting.start=='Invalid date')?"":moment(simpleFormatTime(meeting.start),'HH:mm')
                   })(
                     <TimePicker format="HH:mm" placeholder="请选择开始时间" style={{width: '185px'}}/>
@@ -368,6 +359,7 @@ debugger;
                 <FormItem>
                   {form.getFieldDecorator('end', {
                     initialValue:moment('16:30','HH:mm')
+                    // initialValue:moment(meeting.end).format('HH:mm')
                     // initialValue:(meeting.end==null || meeting.end=="" || meeting.end=='Invalid date') ? "" : moment(simpleFormatTime(meeting.end),'HH:mm')
                   })(
                     <TimePicker format="HH:mm" placeholder="请选择结束时间" style={{width: '185px'}} />
