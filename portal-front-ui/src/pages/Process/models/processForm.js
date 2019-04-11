@@ -173,11 +173,10 @@ export default {
       } else if (payload.code === 'backToAnyStep') {
         response = yield call(backToAnyStep, payload);
       }
-
+      if (callback && typeof callback === 'function') {
+        callback(response); // 返回结果
+      }
       if (response.code === '100') {
-        if (callback && typeof callback === 'function') {
-          callback(response); // 返回结果
-        }
         yield put(router.push('/process/result/success/0'));
       } else {
         message.error(response.msg);
@@ -257,6 +256,7 @@ export default {
         headRefDel: encodeURIComponent(JSON.stringify(formInfo.delRefDocs)),
         attachMsgAttAdd: encodeURIComponent(JSON.stringify(formInfo.postscriptsFiles)),
       };
+      consol.log(processForm)
       const response = yield call(doSaveBaseInfo, payload);
       //如果是费用报销平台 则temp=0 提交成功后调回费用报销平台
       const modelId = [

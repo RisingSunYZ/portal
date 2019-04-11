@@ -145,7 +145,7 @@ export default class FormApproveTool extends Component {
         },
         callback: res => {
           if (res) {
-            if(res.code ==1 ){
+            if(res.code =="100" ){
               this.props.doFormFn("doReject",'');
             }
           }
@@ -168,7 +168,7 @@ export default class FormApproveTool extends Component {
         },
         callback: res => {
           if (res) {
-            if(res.code ==1 ){
+            if(res.code =="100" ){
               this.props.doFormFn("doReject",'');
             }
           }
