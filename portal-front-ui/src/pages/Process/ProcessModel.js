@@ -40,7 +40,6 @@ function nullToZero(param) {
 }))
 export default class ProcessModel extends PureComponent {
   searchFormObj = {};
-  state = { selectedKey: 'myDraft' };
   selectNode(selectedKeys, e) {
     if (e.selected) {
       this.searchFormObj.categoryId = selectedKeys[0];
@@ -55,20 +54,19 @@ export default class ProcessModel extends PureComponent {
           selectedNode:e.node.props
         },
       });
-
-      this.setState({
-        selectedKey: selectedKeys[0],
-      });
     }
   }
   doSearch(modelName) {
     this.searchFormObj.name = modelName;
+    const {process:{selectedNode}} = this.props;
+    const categoryId = selectedNode.eventKey?selectedNode.eventKey:"";
     //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
+
     this.props.dispatch({
       type: 'process/getModelList',
       payload: {
         name: modelName,
-        categoryId: this.state.selectedKey == 'myDraft' ? this.state.selectedKey : '',
+        categoryId:categoryId,
       },
     });
   }
@@ -94,7 +92,7 @@ export default class ProcessModel extends PureComponent {
 
   render() {
     const {process: { list,selectedNode }, loading} = this.props;
-    const selectedKey = selectedNode.eventKey?selectedNode.eventKey:this.state.selectedKey
+    const selectedKey = selectedNode.eventKey?selectedNode.eventKey:"";
 
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
