@@ -1,9 +1,9 @@
 package com.dragon.portal.dao.fnc;
 
 import com.dragon.portal.model.fnc.ContactUs;
-import com.dragon.tools.pager.PagerModel;
 import com.github.pagehelper.Page;
-
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -16,6 +16,8 @@ import java.util.List;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有  
  */
+@Mapper
+@Repository
 public interface IFncContactUsDao {
 
 	/**

@@ -7,13 +7,6 @@ import { getRoutes } from '../../utils/utils';
 
 const openPanel = () => {};
 
-// const action = (
-//   <Fragment >
-//     <Button type="primary" ><Icon type="plus" />{this.state.sendBtnShow}发起流程</Button>
-//     <Button type="primary" onClick={openPanel()} ><Icon type="plus" />测试添加</Button>
-//   </Fragment>
-// );
-
 class Action extends Component {
   render() {
     const toSend = 'http://www.baidu.com';

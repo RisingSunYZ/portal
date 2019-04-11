@@ -24,6 +24,7 @@ export default class Plupload extends PureComponent{
     saveDataCall:"",
     idName:"",
     mime_types:[],
+    plUploader:null
   };
 
   componentDidMount() {
@@ -50,13 +51,12 @@ export default class Plupload extends PureComponent{
     const _this = this;
 
     const default_mime_types = [
-      { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
+      { title: 'Image files', extensions: 'gif,png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
       { title: 'Office files', extensions: 'pdf,txt,doc,docx,ppt,pptx,xls,xlsx' },
       { title: 'Zip files', extensions: 'zip,rar' },
       { title: 'Cad files', extensions: 'dwg' },
       { title: 'Msg files', extensions: 'msg' }
     ];
-
     const mime_types =this.props.mime_types?this.props.mime_types:default_mime_types;
 
       setTimeout(function(){
