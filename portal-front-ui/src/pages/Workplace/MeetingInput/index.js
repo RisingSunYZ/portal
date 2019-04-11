@@ -57,6 +57,7 @@ export default class MeetingInput extends PureComponent {
     });
   };
 
+
   selectCallback = datas => {
     const { setFieldsValue } = this.props.form;
     this.setState({ selectedPersons: datas });
@@ -65,9 +66,10 @@ export default class MeetingInput extends PureComponent {
     }
   };
 
+
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
-    const { meetingRoom:{meetingFileList} }=this.props;
+    const { meetingRoom:{meetingFileList},user:{currentUser}, }=this.props;
 
     // 格式化 必选人员
     let mandaPer=fieldsValue.mandatoryPersonList;
@@ -96,6 +98,17 @@ export default class MeetingInput extends PureComponent {
     if(optionNo.length>0) optionNo=optionNo.substr(0,optionNo.length-1);
     fieldsValue.optionalPersonName =str0;
     fieldsValue.optionalPersonNo = optionNo;
+
+    // 格式化 记录人
+    let recordPer =fieldsValue.recordPersonName;
+    let str1="";
+    let recordNo="";
+    if(fieldsValue.recordPersonName){
+        str1+= recordPer[0].name = currentUser.name;
+        recordNo+=recordPer[0].no = currentUser.no;
+    }
+    fieldsValue.recordPersonName=str1;
+    fieldsValue.recordPersonNo = recordNo;
 
     fieldsValue.meetingTime = moment(fieldsValue.meetingTime).format('YYYY-MM-DD');
     if(fieldsValue.meetingTime ==="Invalid date") fieldsValue.meetingTime="";
@@ -178,7 +191,6 @@ export default class MeetingInput extends PureComponent {
   // 新建会议(或 点击 编辑)-按钮-保存草稿
   saveDraft=()=>{
     const {dispatch ,form }=this.props;
-    debugger;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       if(fieldsValue.theme==undefined){
@@ -313,7 +325,7 @@ export default class MeetingInput extends PureComponent {
               <Col span={12}>
                 <FormItem label='记录人' colon={false}>
                   {form.getFieldDecorator('recordPersonName', {
-                    initialValue: [{name:currentUser.name,no:currentUser.no}],
+                    initialValue: [{name:meeting.recordPersonName=currentUser.name,no:meeting.recordPersonNo=currentUser.no}],
                   })
                   (<UserSelect
                     type="input"

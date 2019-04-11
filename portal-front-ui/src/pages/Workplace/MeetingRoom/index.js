@@ -303,7 +303,10 @@ export default class MeetingRoom extends PureComponent {
             <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553760114282&di=732bf7b82482ea4c9542111736406cd5&imgtype=0&src=http%3A%2F%2Fwww.zf3d.com%2FUpload%2Fzuopin%2Fs_QQ%25E6%2588%25AA%25E5%259B%25BE20160712094859_zf3d_201671294912428.jpg" style={{width:'100%' ,height: '100%'}}/>
           </div>
           <ul className={styles.descLeft}>
-            <li className={styles.liTitle}>{item.theme}</li>
+            <li className={styles.liTitle}>
+              {item.theme}
+              <span>{(item.meetingFiles) && handleFiles(item.meetingFiles)!==""  ? (<Icon type="paper-clip" style={{color:'#1890FF',marginLeft:20}}/>): ('') }</span>
+            </li>
             <li className={styles.liTop}>{item.creatorName}  &nbsp;{(item.creatorDept)}</li>
             <li className={styles.liBot}>
               <span className={styles.liDate}>{simpleFormatDate(item.startTime)}</span>&nbsp;&nbsp;&nbsp;
@@ -402,7 +405,6 @@ export default class MeetingRoom extends PureComponent {
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={24} style={{left:30,fontSize:18}}>
-                      {/*<Icon type="paper-clip" />*/}
                       <span style={{color:'#2596FF',fontSize:12,cursor:'pointer'}}>{(item.meetingFiles) && handleFiles(item.meetingFiles)}</span>
                     </Col>
                   </Row>
