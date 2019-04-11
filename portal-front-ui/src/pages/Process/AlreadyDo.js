@@ -191,18 +191,6 @@ class AlreadyDo extends PureComponent {
                   })(<RangePicker format={dateFormat} />)}
                 </FormItem>
               </Col>
-              {/*<Col span={8}>*/}
-                {/*<FormItem label="所属系统" {...formItemLayout}>*/}
-                  {/*{getFieldDecorator(`systemSn`, {*/}
-                    {/*rules: [*/}
-                      {/*{*/}
-                        {/*required: false,*/}
-                        {/*message: 'Input something!',*/}
-                      {/*},*/}
-                    {/*],*/}
-                  {/*})(<Select placeholder="请选择系统">{systemOpts}</Select>)}*/}
-                {/*</FormItem>*/}
-              {/*</Col>*/}
               <Col span={8}>
                 <FormItem label="状态" {...formItemLayout}>
                   {getFieldDecorator(`processStatus`, {
@@ -238,18 +226,6 @@ class AlreadyDo extends PureComponent {
                   })(<Search placeholder="标题/流程编号/提交人" onSearch={this.handleSearch2} />)}
                 </FormItem>
               </Col>
-              {/*<Col span={8}>*/}
-                {/*<FormItem label="提交人" {...formItemLayout}>*/}
-                  {/*{getFieldDecorator(`createName`, {*/}
-                    {/*initialValue: '',*/}
-                    {/*rules: [*/}
-                      {/*{*/}
-                        {/*required: false,*/}
-                      {/*},*/}
-                    {/*],*/}
-                  {/*})(<Search placeholder="提交人" onSearch={this.handleSearch2} />)}*/}
-                {/*</FormItem>*/}
-              {/*</Col>*/}
             </Row>
           </Col>
           <Col span={4}>
@@ -295,6 +271,7 @@ class AlreadyDo extends PureComponent {
         title: '状态',
         dataIndex: 'processStatusName',
         width: 80,
+        align: 'center',
         key: 'processStatusName',
         render: text =>
           text === '办结' || text === '终止' ? (
@@ -324,6 +301,7 @@ class AlreadyDo extends PureComponent {
         sorter: true,
         dataIndex: 'endTime',
         width: 180,
+        align: 'center',
         key: 'endTime',
       },
       {
