@@ -59,7 +59,7 @@ export default class ProcessModel extends PureComponent {
   doSearch(modelName) {
     this.searchFormObj.name = modelName;
     const {process:{selectedNode}} = this.props;
-    const categoryId = selectedNode.eventKey?selectedNode.eventKey:"";
+    const categoryId = selectedNode.eventKey == "myDraft" ?selectedNode.eventKey:"";
     //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
 
     this.props.dispatch({
