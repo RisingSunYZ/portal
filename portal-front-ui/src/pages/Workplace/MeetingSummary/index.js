@@ -3,6 +3,9 @@ import { Editor } from 'react-draft-wysiwyg';
 import { EditorState ,convertToRaw} from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
+import Ueditor from '@/components/Ueditor'
+
 import { connect } from 'dva';
 import { Row, Col,Form, Button,Input } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -110,16 +113,18 @@ console.log(meetingSummary.meetingId)
                 </FormItem>
                 <Form.Item label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
                   {form.getFieldDecorator('content', {
-                    initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent())).slice(3,-5),
+                    // initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent())).slice(3,-5),
+                    initialValue:meetingSummary.content
                   })(
                     <div style={{width:1100,height:600}}>
-                      <Editor
-                        editorState={editorState}
-                        toolbarClassName="toolbarClassName"
-                        wrapperClassName="wrapperClassName"
-                        editorClassName="editorClassName"
-                        onEditorStateChange={this.onEditorStateChange}
-                      />
+                      {/*<Editor*/}
+                        {/*editorState={editorState}*/}
+                        {/*toolbarClassName="toolbarClassName"*/}
+                        {/*wrapperClassName="wrapperClassName"*/}
+                        {/*editorClassName="editorClassName"*/}
+                        {/*onEditorStateChange={this.onEditorStateChange}*/}
+                      {/*/>*/}
+                      <Ueditor  id="content" height="200" />
                     </div>
                   )}
                 </Form.Item>

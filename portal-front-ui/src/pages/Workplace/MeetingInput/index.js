@@ -247,6 +247,8 @@ export default class MeetingInput extends PureComponent {
       { title: 'Cad files', extensions: 'dwg' },
     ];
 
+    console.log(meetingFileList)
+
 
     return (
       <PageHeaderWrapper>
@@ -386,7 +388,7 @@ export default class MeetingInput extends PureComponent {
               <Col span={24}>
                 <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
                   {form.getFieldDecorator('content', {
-                    // initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent(meeting.content))).slice(3,-5),
+                    // initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent(meeting.content))),
                     initialValue: meeting.content,
                   })(
                     <div style={{width:1100,height:600}}>
@@ -396,8 +398,9 @@ export default class MeetingInput extends PureComponent {
                         wrapperClassName="wrapperClassName"
                         editorClassName="editorClassName"
                         onEditorStateChange={this.onEditorStateChange}
+
                       />
-                      {/*<textarea value={draftToHtml(convertToRaw(editorState.getCurrentContent()))} style={{width:1084}}/>*/}
+                      {/*<textarea type="hidden" value={draftToHtml(convertToRaw(editorState.getCurrentContent(meeting.content)))} style={{width:1084}}/>*/}
                     </div>
                     )}
                 </FormItem>
@@ -410,7 +413,8 @@ export default class MeetingInput extends PureComponent {
                     initialValue:meeting.meetingFiles
                   })(
                     <div>
-                      <Plupload url={"/rest/portal/rscmgmt/meeting/uploadImage"} saveDataCall={"meetingRoom/addFiles"} idName={"meetingBtn"} mime_types={mime_types}>上传文件</Plupload>
+                      <Plupload saveDataCall={"meetingRoom/addFiles"} idName={"meetingBtn"} mime_types={mime_types}>上传文件</Plupload>
+                      <FileList files={meetingFileList} />
                     </div>
                   )}
                 </Form.Item>

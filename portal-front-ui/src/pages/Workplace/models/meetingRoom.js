@@ -411,20 +411,19 @@ export default {
      * @returns {*}
      */
     addFiles(state, action) {
-      if (action.payload.response && action.payload.response.code === 0) {
+      debugger
+      if (action.payload.response && action.payload.response.responseCode === "101") {
         return { ...state };
       }
 
       let type = '';
-      if(action.payload.response &&action.payload.response.url.indexOf('.')!==-1 && action.payload.response.url.split('.').length>=2){
-        type = action.payload.response.url.split('.')[1];
+      if(action.payload.response &&action.payload.response.responseMsg.indexOf('.')!==-1 && action.payload.response.responseMsg.split('.').length>=2){
+        type = action.payload.response.responseMsg.split('.')[1];
       }
-
-
       const file = {
         id: action.payload.id,
-        name: action.payload.response ? action.payload.response.fileName : "",
-        filePath: action.payload.response ? action.payload.response.url : '',
+        name: action.payload ? action.payload.name : "",
+        filePath: action.payload.response ? action.payload.response.responseMsg : '',
         fileSize: action.payload.size,
         ...action.payload,
       };
