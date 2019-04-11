@@ -19,22 +19,9 @@ class ProcessTable extends PureComponent {
     const needTotalList = initTotalList(columns);
 
     this.state = {
-      // selectedRowKeys: [],
-      needTotalList,
+      needTotalList
     };
   }
-
-  // static getDerivedStateFromProps(nextProps) {
-  //   // clean state
-  //   if (nextProps.selectedRows.length === 0) {
-  //     const needTotalList = initTotalList(nextProps.columns);
-  //     return {
-  //       selectedRowKeys: [],
-  //       needTotalList,
-  //     };
-  //   }
-  //   return null;
-  // }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     let { needTotalList } = this.state;

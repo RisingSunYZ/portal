@@ -56,6 +56,7 @@ export default {
       pagination: {},
     },
     list: [],
+    selectedNode:{},
     treeData: [],
     formTypes: [],
     processStatus: [],
@@ -116,6 +117,7 @@ export default {
         });
       }
     },
+    // 表单查询页面 流程列表数据
     *getFormDataList({ payload }, { call, put }) {
       const response = yield call(getFormDataList, payload);
       if(response.code === "100"){
@@ -168,6 +170,7 @@ export default {
       }
 
     },
+    // 流程中心发起页面 获取流程列表数据
     *getModelList({ payload }, { call, put }) {
       const response = yield call(getModelList, payload);
       yield put({
@@ -249,6 +252,12 @@ export default {
         ...state,
         data: action.payload,
         disabled:false,
+      };
+    },
+    setSelectedNode(state, action) {
+      return {
+        ...state,
+        selectedNode:action.payload.selectedNode
       };
     },
     queryTodoList(state, action) {

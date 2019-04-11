@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/flow/api/rest")
-public class ApiFlowResource implements IPortalApi {
+public class ApiFlowResource {
 }

@@ -396,16 +396,15 @@ class ProcessSelector extends Component {
         title: '序号',
         dataIndex: 'num',
         key: 'processInstanceId',
-        width: 60,
         render: (text, r, i) => <span>{i + 1}</span>,
+        width: 60,
       },
       {
         title: '状态',
         dataIndex: 'processStatusName',
         key: 'processStatusName',
-        width: 100,
+        width: 80,
       },
-
       {
         title: '流程标题',
         dataIndex: 'formName',
@@ -416,14 +415,14 @@ class ProcessSelector extends Component {
         title: '提交人',
         dataIndex: 'startPersonName',
         key: 'startPersonName',
-        width: 100,
+        width: 80,
       },
       {
         title: '提交时间',
         sorter: true,
         dataIndex: 'startTime',
         key: 'startTime',
-        width: 140,
+        width: 160,
       },
     ];
 
@@ -439,6 +438,7 @@ class ProcessSelector extends Component {
         title: '状态',
         dataIndex: 'processStatusName',
         key: 'processStatusName',
+        align: 'center',
         width: 100,
       },
       {
@@ -458,13 +458,13 @@ class ProcessSelector extends Component {
         sorter: true,
         dataIndex: 'endTime',
         key: 'endTime',
-        width: 140,
+        width: 160,
       },
       {
         title: '总耗时',
         dataIndex: 'startTime',
         key: 'startTime',
-        width: 100,
+        width: 120,
       },
       {
         title: '所属系统',
@@ -481,12 +481,14 @@ class ProcessSelector extends Component {
         key: 'procInstId',
         render: (text, r, i) => <span>{i + 1}</span>,
         width: 60,
+        align: 'center'
       },
       {
         title: '状态',
         dataIndex: 'processStatusName',
         key: 'processStatusName',
-        width: 100,
+        width: 80,
+        align:'center'
       },
       {
         title: '流程标题',
@@ -498,20 +500,23 @@ class ProcessSelector extends Component {
         title: '待办人',
         dataIndex: 'approver',
         key: 'approver',
-        width: 100,
+        width: 90,
+        align: 'center',
+        className:'morePerson',
       },
       {
         title: '提交时间',
         sorter: true,
         dataIndex: 'startTime',
         key: 'startTime',
-        width: 140,
+        align:'center',
+        width: 160,
       },
       {
         title: '流程耗时',
         dataIndex: 'endTime',
         key: 'endTime',
-        width: 100,
+        width: 120,
       },
       {
         title: '所属系统',
@@ -521,9 +526,11 @@ class ProcessSelector extends Component {
       },
     ];
     const rowSelection = {
+      selectedRows,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({selectedRows:selectedRows});
       },
+      // onChange: this.onSelectChange,
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User', // Column configuration not to be checked
         name: record.name,
@@ -554,6 +561,7 @@ class ProcessSelector extends Component {
                 loading={loading}
                 data={data}
                 columns={columnsTodo}
+                rowKey="processInstanceId"
                 showPagination={true}
                 scroll={{y: 300 }}
                 rowSelection={rowSelection}
@@ -566,6 +574,7 @@ class ProcessSelector extends Component {
               <ProcessTable
                 loading={loading}
                 data={data}
+                rowKey="taskId"
                 columns={columnsAlreadyDo}
                 showPagination={true}
                 scroll={{y: 300 }}
@@ -579,9 +588,10 @@ class ProcessSelector extends Component {
               <ProcessTable
                 loading={loading}
                 data={data}
+                rowKey="procInstId"
                 columns={columnsAlreadySend}
                 showPagination={true}
-                scroll={{y: 300 }}
+                scroll={{ y: 300 }}
                 rowSelection={rowSelection}
                 onChange={this.handleStandardTableChangeToAlreadySend}
               />

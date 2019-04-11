@@ -40,7 +40,6 @@ function nullToZero(param) {
 }))
 export default class ProcessModel extends PureComponent {
   searchFormObj = {};
-  state = { selectedKey: '' };
   selectNode(selectedKeys, e) {
     if (e.selected) {
       this.searchFormObj.categoryId = selectedKeys[0];
@@ -48,19 +47,26 @@ export default class ProcessModel extends PureComponent {
         type: 'process/getModelList',
         payload: { categoryId: selectedKeys[0] },
       });
-      this.setState({
-        selectedKey: selectedKeys[0],
+
+      this.props.dispatch({
+        type: 'process/setSelectedNode',
+        payload: {
+          selectedNode:e.node.props
+        },
       });
     }
   }
   doSearch(modelName) {
     this.searchFormObj.name = modelName;
+    const {process:{selectedNode}} = this.props;
+    const categoryId = selectedNode.eventKey?selectedNode.eventKey:"";
     //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
+
     this.props.dispatch({
       type: 'process/getModelList',
       payload: {
         name: modelName,
-        categoryId: this.state.selectedKey == 'myDraft' ? this.state.selectedKey : '',
+        categoryId:categoryId,
       },
     });
   }
@@ -85,10 +91,9 @@ export default class ProcessModel extends PureComponent {
   }
 
   render() {
-    const {
-      process: { list, data },
-      loading,
-    } = this.props;
+    const {process: { list,selectedNode }, loading} = this.props;
+    const selectedKey = selectedNode.eventKey?selectedNode.eventKey:"";
+
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
         <span>{title}</span>
@@ -150,14 +155,14 @@ export default class ProcessModel extends PureComponent {
                 <Col span={8}>
                   <Search
                     placeholder={
-                      this.state.selectedKey == 'myDraft' ? '搜索我的草稿' : '搜索流程模板'
+                      selectedKey == 'myDraft' ? '搜索我的草稿' : '搜索流程模板'
                     }
                     onSearch={this.doSearch.bind(this)}
                     style={{ width: '100%' }}
                   />
                 </Col>
               </Row>
-              {this.state.selectedKey == 'myDraft' ? (
+              { selectedKey == 'myDraft' ? (
                 <List
                   size="large"
                   rowKey="id"
@@ -180,12 +185,9 @@ export default class ProcessModel extends PureComponent {
                       ]}
                     >
                       <div className="ant-list-item-content">
-                        <Link to={this.linkUrl(item)} target="_blank">
-                          {item.name}
-                        </Link>
+                        <Link to={this.linkUrl(item)} target="_blank">{item.name}</Link>
                         <span style={{ marginLeft: 20, color: '#A5A5A5' }}>{item.createTime}</span>
                       </div>
-
                     </List.Item>
                   )}
                 />
@@ -209,7 +211,7 @@ export default class ProcessModel extends PureComponent {
             </Col>
             <Col span={6} pull={18}>
               <Button style={{marginBottom: 8}} type="primary" icon="download" onClick={this.export}>流程汇总清单</Button>
-              <TreeMenu onSelect={this.selectNode.bind(this)} />
+              <TreeMenu selectedNode={selectedNode} onSelect={this.selectNode.bind(this)} />
             </Col>
           </Row>
         </Card>

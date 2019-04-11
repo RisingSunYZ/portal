@@ -147,7 +147,7 @@ export default class FormBox extends React.Component {
     const isLoading = src?false:true;
 
     return (
-      <Card title="表单内容" className={styles.formMainBox} bordered={false} headStyle={{ height:'46px',lineHeight:'46px',padding:'0 24px',fontWeight:'bold' }}>
+      <Card title="表单内容" className={styles.formMainBox} bordered={false}>
         <Card
           loading={state.loadingForm}
           bordered={false}

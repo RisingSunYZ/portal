@@ -4,25 +4,26 @@ import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.util.BarcodeUtil;
 import com.dragon.portal.util.QRCodeUtil;
+import com.dragon.tools.common.FileUtils;
+import com.dragon.tools.common.ReturnCode;
+import com.dragon.tools.common.UUIDGenerator;
+import com.dragon.tools.ftp.FtpTools;
+import com.dragon.tools.ftp.UploadUtils;
 import com.ys.tools.vo.ReturnVo;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -45,6 +46,43 @@ public class FileOperationController {
 	@Autowired
 	private CommonProperties commonProperties;
 
+	@Resource
+	private FtpTools ftpTools;
+
+
+	/**
+	 * @Author YangZhao
+	 * @Description 上传附件
+	 * @Date 10:47 2019/4/3
+	 * @Param [file, filePath]
+	 * @return com.dragon.tools.vo.ReturnVo
+	 **/
+	@PostMapping(value = "/uploadFile",headers="content-type=multipart/form-data")
+	@ApiOperation("上传附件")
+	public com.dragon.tools.vo.ReturnVo uploadFile(@ApiParam MultipartFile file, String filePath) {
+		String destFilePath = "";
+		String fileName = "";
+		Boolean result = false;
+		try {
+			if (null != file) {
+				filePath = StringUtils.isBlank(filePath) ? "p" : filePath;
+				// FTP上传文件
+				String fileExtension = UploadUtils.getExtension(file.getOriginalFilename());
+				fileName = UUIDGenerator.generate() + "." + fileExtension;
+
+				String path = "/" + filePath + FileUtils.getDateFmtFilePath() + "/";
+				result = ftpTools.uploadFile(file.getInputStream(), fileName, path);
+				destFilePath = path + fileName;
+			}
+			// 文件图片
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("FileOperationController-uploadFile" + e.getMessage());
+		}
+		com.dragon.tools.vo.ReturnVo returnVO = result?new com.dragon.tools.vo.ReturnVo(ReturnCode.SUCCESS, destFilePath):new com.dragon.tools.vo.ReturnVo(ReturnCode.FAIL, "附件上传失败");
+
+		return returnVO;
+	}
 
 	
 	/**

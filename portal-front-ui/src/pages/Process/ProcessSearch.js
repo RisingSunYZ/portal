@@ -44,7 +44,7 @@ class ProcessSearch extends PureComponent {
     dispatch({
       type: 'process/queryList',
       payload: {
-        list: [],
+        data: [],
         pagination: {},
       },
     });
@@ -238,7 +238,7 @@ class ProcessSearch extends PureComponent {
           <Col span={20}>
             <Row gutter={24}>
               <Col span={8}>
-                <FormItem label="提交人" {...formItemLayout}>
+                <FormItem label="提交人" {...formItemLayout} className={processStyle.creatorName}>
                   {getFieldDecorator(`creatorName`, {
                     initialValue: [],
                     rules: [
@@ -356,10 +356,7 @@ class ProcessSearch extends PureComponent {
 
   render() {
     const { match, routerData } = this.props;
-    const {
-      process: { list, formData},
-      loading,
-    } = this.props;
+    const { process: { formData}, loading} = this.props;
     const columns = [
       {
         title: '序号',

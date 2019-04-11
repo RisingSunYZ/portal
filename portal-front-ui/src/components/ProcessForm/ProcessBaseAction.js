@@ -19,8 +19,8 @@ class DiagramImgModal  extends PureComponent{
     const imgObj = new Image();
     imgObj.src = processDiagramImgUrl;
     const width = imgObj.naturalWidth;
-    if(width > windowWidth*0.8){
-      this.setState({diagramModalWidth: '80%'})
+    if(width > windowWidth*0.9){
+      this.setState({diagramModalWidth: '90%'})
     }else{
       this.setState({diagramModalWidth: width+50})
     }
@@ -206,7 +206,7 @@ class ProcessBaseAction extends Component {
 
 
   render() {
-    const {processForm:{ visibleDiagramModal,processDiagramData, processDiagramImgUrl, formInfo }, dispatch } = this.props;
+    const {processForm:{ visibleDiagramModal, processDiagramData, processDiagramImgUrl, formInfo }, dispatch } = this.props;
 
     const fileLists = formInfo.files;
     if (fileLists) {
@@ -243,8 +243,7 @@ class ProcessBaseAction extends Component {
         <Fragment>
           <Popover content="上传附件">
             <span style={{ marginLeft: '8px'}}>
-              <Plupload url={"/website/tools/fileUpload/uploadFile.jhtml?filePath=form"}
-                        saveDataCall={"processForm/addProcessFile"}
+              <Plupload saveDataCall={"processForm/addProcessFile"}
                         idName={"btn"}
                         mime_types={mime_types} />
             </span>

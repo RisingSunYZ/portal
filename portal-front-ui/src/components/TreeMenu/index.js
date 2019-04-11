@@ -77,13 +77,13 @@ export default class TreeMenu extends PureComponent {
     this.setState({expandAll:true});
   }
   render() {
-    const { process: { treeData,draftCount }, className, placeholder, ...restProps } = this.props;
+    const { process: { treeData,draftCount }, className, placeholder,selectedNode, ...restProps } = this.props;
     // delete restProps.defaultOpen; // for rc-select not affected
     const loop = data =>
       data.map(item => {
         if (item.children && item.children.length) {
           return (
-            <TreeNode key={item.id} title={item.name}>
+            <TreeNode pid={item.pid} key={item.id} title={item.name}>
               {loop(item.children)}
             </TreeNode>
           );
@@ -93,9 +93,9 @@ export default class TreeMenu extends PureComponent {
           if(draftCount){
             itemName=item.name+"("+draftCount+")";
           }
-          return (<TreeNode key={item.id} title={itemName} />);
+          return (<TreeNode pid={item.pid} key={item.id} title={itemName} />);
         }
-        return <TreeNode key={item.id} title={item.name} />;
+        return <TreeNode pid={item.pid} key={item.id} title={item.name} />;
       });
     return (
       <div id="components-tree-demo-draggable" className={styles.treeMenuBox}>
@@ -104,6 +104,8 @@ export default class TreeMenu extends PureComponent {
             ?(
               <Tree
                 className={styles.treeMenu}
+                defaultSelectedKeys={[selectedNode.eventKey]}
+                defaultExpandedKeys={[selectedNode.pid]}
                 onSelect={this.props.onSelect}
               >
                 {loop(treeData)}

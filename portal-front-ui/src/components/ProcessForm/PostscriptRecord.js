@@ -125,7 +125,7 @@ export default class PostscriptRecord extends Component {
             />
 
             <div style={{ display: this.props.print > 0  ? 'none' : '',marginTop: '24px' }}>
-              <Plupload url={"/website/tools/fileUpload/uploadFile.jhtml?filePath=form"} saveDataCall={"processForm/addPostScriptsFiles"} idName={"addPostBtn"} mime_types={mime_types}>上传附件</Plupload>
+              <Plupload saveDataCall={"processForm/addPostScriptsFiles"} idName={"addPostBtn"} mime_types={mime_types}>上传附件</Plupload>
             </div>
             <div style={{ display: this.props.print > 0 ? 'none' : '',color:'rgba(0, 0, 0, .45)', margin:'16px 0' }}>
               支持扩展名：.rar .zip .doc .docx .pdf .jpg...

@@ -28,7 +28,8 @@ export async function queryAlreadyDo(params) {
  */
 export async function queryAlreadySend(params) {
   transParamsDate(params);
-  return request(`/rest/process/list/getAlreadySend?${stringify(params)}`);
+  const random=Math.random();
+  return request(`/rest/process/list/getAlreadySend?t=${random}&${stringify(params)}`);
 }
 
 /**
@@ -36,7 +37,8 @@ export async function queryAlreadySend(params) {
  */
 export async function getFormDataList(params) {
   transParamsDate(params);
-  return request(`/rest/process/list/getFormDataList?${stringify(params)}`);
+  const random=Math.random();
+  return request(`/rest/process/list/getFormDataList?t=${random}&${stringify(params)}`);
 }
 
 /**
@@ -58,8 +60,9 @@ export async function queryTreeDataSearch(params) {
  * 获取表单模板列表
  */
 export async function getModelList(params) {
+  const random=Math.random();
 
-  return request(`/rest/process/list/ajaxListModel?${stringify(params)}`);
+  return request(`/rest/process/list/ajaxListModel?t=${random}&${stringify(params)}`);
   // GET /rest/process/list/ajaxListModel
   // return request(`/api/getProcessModelDataList?${stringify(params)}`);
 }
@@ -76,7 +79,8 @@ export async function getPermission() {
  */
 export async function queryDrafts(params) {
   transParamsDate(params);
-  return request(`/portal/api/process/ajaxListMyDraft?${stringify(params)}`);
+  const random=Math.random();
+  return request(`/portal/api/process/ajaxListMyDraft?t=${random}&${stringify(params)}`);
   // return request(`/api/getDraftList`);
 }
 
@@ -110,14 +114,16 @@ export async function getProcessEnums() {
  * 获取待办微标数
  */
 export async function getTodoCount() {
-  return request(`/rest/process/list/queryTodoCount`);
+  const random=Math.random();
+  return request(`/rest/process/list/queryTodoCount?t=${random}`);
 }
 
 /**
  * 获取草稿微标数
  */
 export async function getDraftsCount() {
-  return request(`/rest/process/list/ajaxListMyDraftCount`);
+  const random=Math.random();
+  return request(`/rest/process/list/ajaxListMyDraftCount?t=${random}`);
 }
 
 function transParamsDate(params) {

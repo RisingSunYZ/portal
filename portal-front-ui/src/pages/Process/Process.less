@@ -1,6 +1,20 @@
 @import '~antd/lib/style/themes/default.less';
+:global{
+  .morePerson{
+    word-break: keep-all;
+  }
+}
 .mainBox {
   min-height: 600px;
+  .creatorName {
+    :global {
+      .ant-form-item-control-wrapper{
+        .ant-form-item-control{
+          margin-top: 4px;
+        }
+      }
+    }
+  }
   :global {
     .ant-card-body {
       padding: 24px !important;

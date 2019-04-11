@@ -267,7 +267,7 @@
         <!-- Exchange End -->
     </dependencies>
     <build>
-        <finalName>flow-core</finalName>
+        <finalName>portal-core</finalName>
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/java</directory>
