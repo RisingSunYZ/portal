@@ -26,7 +26,9 @@ export default class FncService extends PureComponent {
 
   tabsChange = (val) => {
     this.setState({
-      activeKey: val
+      activeKey: val,
+      page: 1,
+      pageSize: 15
     }, ()=>{
       this.reqData();
     })
