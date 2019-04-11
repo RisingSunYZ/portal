@@ -33,11 +33,13 @@ export default class Plupload extends PureComponent{
 
     // 解决 plUploader 初始化多次生成多个 plUploader元素的bug
     setTimeout(() => {
-      if($("#"+idName+"").siblings().length>1){
-        const Dom = $("#"+idName+"").siblings()[0];
-        $("#"+idName+"").siblings(".moxie-shim").remove();
-        $("#"+idName+"").parent().append(Dom);
-      }
+      const parent = document.getElementById(idName).parentNode;
+      const siblings = parent.getElementsByClassName("moxie-shim");
+      Array.prototype.forEach.call(siblings, function(ele, index) {
+        if(index !== siblings.length-1){
+          parent.removeChild(ele)
+        }
+      })
     }, 1000)
 
   }
@@ -71,7 +73,7 @@ export default class Plupload extends PureComponent{
           chunk_size: '1024M',
           urlstream_upload: true,
           multiple_queues: false,
-          multipart_params: { JSESSID: $('#btn'+ _this.props.idName) },
+          // multipart_params: { JSESSID: $('#btn'+ _this.props.idName) },
           // flash_swf_url: basePath + "/assets/js/libs/plupload/Moxie.swf",
           // silverlight_xap_url: basePath + "/assets/js/libs/plupload/Moxie.xap",
           max_file_size: '500MB',
@@ -145,7 +147,6 @@ export default class Plupload extends PureComponent{
 
   render(){
     const {children,icon,idName} = this.props;
-
     return  (
         <Button icon={icon?icon:"upload"} id={idName}>{children}</Button>
       );
