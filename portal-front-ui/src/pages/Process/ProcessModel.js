@@ -48,6 +48,14 @@ export default class ProcessModel extends PureComponent {
         type: 'process/getModelList',
         payload: { categoryId: selectedKeys[0] },
       });
+
+      this.props.dispatch({
+        type: 'process/setSelectedNode',
+        payload: {
+          selectedNode:e.node.props
+        },
+      });
+
       this.setState({
         selectedKey: selectedKeys[0],
       });
@@ -85,8 +93,8 @@ export default class ProcessModel extends PureComponent {
   }
 
   render() {
-    const {process: { list,selectedKey }, loading} = this.props;
-    const defaultSelectedKeys = [selectedKey];
+    const {process: { list,selectedNode }, loading} = this.props;
+    const selectedKey = selectedNode.eventKey?selectedNode.eventKey:this.state.selectedKey
 
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
@@ -205,7 +213,7 @@ export default class ProcessModel extends PureComponent {
             </Col>
             <Col span={6} pull={18}>
               <Button style={{marginBottom: 8}} type="primary" icon="download" onClick={this.export}>流程汇总清单</Button>
-              <TreeMenu defaultSelectedKeys={defaultSelectedKeys} onSelect={this.selectNode.bind(this)} />
+              <TreeMenu selectedNode={selectedNode} onSelect={this.selectNode.bind(this)} />
             </Col>
           </Row>
         </Card>

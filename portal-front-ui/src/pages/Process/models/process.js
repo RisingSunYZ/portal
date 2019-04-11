@@ -56,6 +56,7 @@ export default {
       pagination: {},
     },
     list: [],
+    selectedNode:{},
     treeData: [],
     formTypes: [],
     processStatus: [],
@@ -63,7 +64,6 @@ export default {
     formTitle: '初始化标题',
     todoCount: 0,
     draftCount: 0,
-    selectedKey:"",
     returnVo: {},
     disabled:true,
     hasPermission:false,// 是否有表单查询权限
@@ -172,12 +172,6 @@ export default {
     },
     // 流程中心发起页面 获取流程列表数据
     *getModelList({ payload }, { call, put }) {
-      yield put({
-        type: 'setSelectedKey',
-        payload: {
-          selectedKey:payload.categoryId
-        },
-      });
       const response = yield call(getModelList, payload);
       yield put({
         type: 'modelCallback',
@@ -260,10 +254,10 @@ export default {
         disabled:false,
       };
     },
-    setSelectedKey(state, action) {
+    setSelectedNode(state, action) {
       return {
         ...state,
-        selectedKey:action.payload.selectedKey,
+        selectedNode:action.payload.selectedNode
       };
     },
     queryTodoList(state, action) {
