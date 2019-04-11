@@ -203,7 +203,7 @@ export async function getTrainingDetails(params) {
  * 获取表单信息
  */
 export async function getBaseInfo(params) {
-  return request(`/rest/portal/user/userLogin/getEditUserInfo?${stringify(params)}`);
+  return request(`/portal/api/person/getBaseInfo.jhtml?${stringify(params)}`);
 }
 
 /**
