@@ -137,6 +137,7 @@ export default class MeetingInput extends PureComponent {
   sendUpdate=()=>{
     const { dispatch ,form, match }=this.props;
     form.validateFields((err, fieldsValue)=>{
+
       if(err) return;
       // 调用公共方法
       this.commonMethod(fieldsValue);
@@ -190,8 +191,9 @@ export default class MeetingInput extends PureComponent {
 
   // 新建会议(或 点击 编辑)-按钮-保存草稿
   saveDraft=()=>{
-    const {dispatch ,form }=this.props;
+    const { dispatch ,form }= this.props;
     form.validateFields((err, fieldsValue) => {
+
       if (err) return;
       if(fieldsValue.theme==undefined){
         //点击显示 弹出框
@@ -384,7 +386,8 @@ export default class MeetingInput extends PureComponent {
               <Col span={24}>
                 <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
                   {form.getFieldDecorator('content', {
-                    initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent())).slice(3,-5),
+                    // initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent(meeting.content))).slice(3,-5),
+                    initialValue: meeting.content,
                   })(
                     <div style={{width:1100,height:600}}>
                       <Editor

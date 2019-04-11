@@ -175,7 +175,6 @@ export default class MeetingRoom extends PureComponent {
   handleOk = (id,type) => {
     const { dispatch }=this.props;
     if(type==1){
-
       // 点击删除，删除草稿会议卡片
       dispatch({
         type:'meetingRoom/delDraftData',
@@ -311,7 +310,7 @@ export default class MeetingRoom extends PureComponent {
             <li className={styles.liBot}>
               <span className={styles.liDate}>{simpleFormatDate(item.startTime)}</span>&nbsp;&nbsp;&nbsp;
               <span className={styles.liTime}>{simpleFormatTime(item.startTime)}-{simpleFormatTime(item.endTime)}</span>
-              { (cardType == 1 ||cardType == 2||cardType == 3 ) ?
+              { (cardType === 1 ||cardType === 2||cardType === 3 ) ?
                 <span style={{ marginLeft: 60}}>{this.formatterGetTime(item.startTime,item.endTime)}</span> :
                 (<Icon type="delete" theme="twoTone" className={styles.del} onClick={()=>this.showDeleteConfirm(1,item.id)}/>)}
             </li>
@@ -342,11 +341,11 @@ export default class MeetingRoom extends PureComponent {
                     onCancel={this.handleCancel}
                     width={356}
                   >
-                    {this.state.type==1?(<p>确定删除会议?</p>):(<p>确定删除记录人吗?</p>)}
+                    {this.state.type===1?(<p>确定删除会议?</p>):(<p>确定删除记录人吗?</p>)}
                   </Modal>
                 </li>)
               }
-              {(cardType == 4||((cardType == 1 ||cardType == 2||cardType == 3) && this.calculationTime(item.startTime) )) ? (
+              {(cardType === 4||((cardType === 1 ||cardType === 2||cardType === 3) && this.calculationTime(item.startTime) )) ? (
                 <li style={{marginLeft:20}}>
                   <Link to={"/workplace/meeting-room/"+cardType+"/meeting-input/"+item.id}>
                     <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;

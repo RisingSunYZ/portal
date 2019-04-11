@@ -124,6 +124,7 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *loadInput({payload,callback},{call,put}) {
+      // debugger;
       const response= yield call(getInputData,payload);
       yield put({
         type: 'saveMeetingData',
@@ -386,7 +387,7 @@ export default {
      * @returns {{mandatoryPersonList: Array, optionalPersonList: Array}}
      */
     saveMeetingData(state, action) {
-
+    // debugger;
       const meeting = action.payload;
       return {
         ...state,
