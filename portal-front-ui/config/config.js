@@ -51,7 +51,7 @@ export default {
     ie: 11,
   },
   publicPath: process.env.NODE_ENV === 'production' ? '/eip/' : '/eip/',
-  outputPath: '../../../data/eip',
+  outputPath: './target/eip',
   mountElementId: 'portalMainContent',
   base: '/eip',
   // 路由配置
