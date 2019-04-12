@@ -173,6 +173,10 @@ export default {
     // 流程中心发起页面 获取流程列表数据
     *getModelList({ payload }, { call, put }) {
       const response = yield call(getModelList, payload);
+      if(payload.categoryId == "myDraft"){
+        Array.isArray(response) && response.sort((a,b) => new Date(b.createTime).getTime()-new Date(a.createTime).getTime())
+      }
+
       yield put({
         type: 'modelCallback',
         payload: Array.isArray(response) ? response : [],

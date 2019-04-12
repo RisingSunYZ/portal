@@ -61,10 +61,8 @@ export async function queryTreeDataSearch(params) {
  */
 export async function getModelList(params) {
   const random=Math.random();
-
   return request(`/rest/process/list/ajaxListModel?t=${random}&${stringify(params)}`);
-  // GET /rest/process/list/ajaxListModel
-  // return request(`/api/getProcessModelDataList?${stringify(params)}`);
+
 }
 
 /**
