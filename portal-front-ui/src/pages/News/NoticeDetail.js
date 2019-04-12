@@ -28,8 +28,8 @@ export default class NoticeDetail extends PureComponent {
     //默认设置
     var defaultSettings={
       watermark_txt:"",
-      watermark_x:30,//水印起始位置x轴坐标
-      watermark_y:150,//水印起始位置Y轴坐标
+      watermark_x: -10,//水印起始位置x轴坐标
+      watermark_y: 30,//水印起始位置Y轴坐标
       watermark_rows:(document.body.scrollHeight/window.screen.availHeight)*10,//水印行数
       watermark_cols:5,//水印列数
       watermark_x_space:50,//水印x轴间隔
@@ -167,6 +167,8 @@ export default class NoticeDetail extends PureComponent {
   }
 
   createApproveItem = (records) => {
+    const {
+      newsNotice:{ noticeDetail: {notice} }} = this.props;
     let approveRemark = '' , dom = [];
     if(records && records.length>0){
       records.map((record)=> {
@@ -174,8 +176,9 @@ export default class NoticeDetail extends PureComponent {
           approveRemark = approveRemark + record.userName + record.typeName + "-&gt;";
         }
       });
-      if(approveRemark){
-        dom.push(<li><em>发文审批信息：</em><span>{approveRemark}</span></li>);
+      if(notice.approveRemark){
+        dom.push(<li><em>发文审批信息：</em><span>{notice.approveRemark}</span></li>);
+      }else{
         approveRemark.length>0 && dom.push(<li><em>发文审批信息：</em><span>{approveRemark.split(0,approveRemark.length-6)}</span></li>)
       }
     }
