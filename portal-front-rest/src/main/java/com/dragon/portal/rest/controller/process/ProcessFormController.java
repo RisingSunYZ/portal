@@ -17,11 +17,13 @@ import com.dragon.flow.vo.flowable.comment.FlowCommentVo;
 import com.dragon.flow.vo.flowable.run.FlowNodeVo;
 import com.dragon.flow.vo.mongdb.SearchTaskVo;
 import com.dragon.portal.component.IProcessMainComponent;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.enm.process.OptionEnum;
 import com.dragon.portal.utils.CommUtil;
 import com.dragon.portal.vo.process.*;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
+import com.dragon.tools.common.BaseCommonConstant;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
 import com.dragon.tools.common.JsonUtils;
@@ -51,7 +53,7 @@ import java.util.regex.Pattern;
  */
 @RestController
 @RequestMapping("/rest/process/form")
-@Api(value="流程中心-表单操作", description = "流程中心-表单操作", tags={"流程中心-表单操作 /rest/process/form"})
+@Api(value="流程中心-表单操作", tags={"流程中心-表单操作 /rest/process/form"})
 public class ProcessFormController extends BaseController {
 	private static Logger logger = Logger.getLogger(ProcessFormController.class);
 
@@ -61,6 +63,7 @@ public class ProcessFormController extends BaseController {
 	private IPersonnelApi personnelApi;
 	@Autowired
 	private IProcessMainComponent processMainComponent;
+
 	/**
 	 * 得到状态及类型枚举数据
 	 * @return
@@ -73,10 +76,11 @@ public class ProcessFormController extends BaseController {
 			map.put("formTypes", ModelAppliedRangeEnum.getAllinfo());
 		}catch(Exception e){
 			e.printStackTrace();
-			logger.error("ApiProcessController-getProcessEnums",e);
+			logger.error("得到状态及类型枚举数据异常！ApiProcessController-getProcessEnums", e);
 		}
 		return map;
 	}
+
 	/**
 	 * 流程的基本信息
 	 * @param modelId
@@ -94,7 +98,7 @@ public class ProcessFormController extends BaseController {
 			@ApiImplicitParam(value="业务表单id",name="bizId",dataType = "String",paramType = "query"),
 			@ApiImplicitParam(value="任务id",name="taskId",dataType = "String",paramType = "query")
 	})
-	@RequestMapping(value = "/getBaseInfo",method = RequestMethod.GET)
+	@RequestMapping(value = "/getBaseInfo", method = RequestMethod.GET)
 	private Map<String,Object> getBaseInfo( String modelId,String instId,String bizId,String taskId,HttpServletRequest request, HttpServletResponse response) {
 		Map<String,Object> formInfo=new HashMap<String,Object>();
 		ExtendModel modelExtend=new ExtendModel();
@@ -102,7 +106,7 @@ public class ProcessFormController extends BaseController {
 		modelExtend.setModelKey(modelId);
 		String processDefineId="";
 		try{
-			if(!"0".equals(instId)&&"0".equals(taskId)){
+			if(!PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(instId) && PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(taskId)){
 				ReturnVo<ActReProcdefExtendVo> rVo = flowApi.getPInfoByPId(instId);
 				if(null != rVo && null!=rVo.getData()){
 					taskId = rVo.getData().getTaskId();
@@ -119,8 +123,6 @@ public class ProcessFormController extends BaseController {
 
 				//获取流程提交人信息
 				this.getUserInfo(formInfo,instId);
-
-
 			}else{
 				ReturnVo<ExtendModel> rVo = flowApi.getModelBySearch(modelExtend);
 				if(rVo.getData()!=null && rVo.getData().getAppliedRange()!=null){
@@ -145,11 +147,12 @@ public class ProcessFormController extends BaseController {
 			formInfo.put("taskId",taskId);
 		}catch (Exception e){
 			e.printStackTrace();
-			logger.error("流程的基本信息 ApiProcessController-getBaseInfo"+e);
+			logger.error("获取流程的基本信息异常 ApiProcessController-getBaseInfo"+e);
 		}
 
 		return formInfo;
 	}
+
 	/**
 	 * 获取iframe连接
 	 * @param modelId
@@ -172,8 +175,8 @@ public class ProcessFormController extends BaseController {
 	@RequestMapping(value = "/getFormUrl",method = RequestMethod.GET)
 	private Map<String,Object> getFormUrl( String modelId,String instId,String bizId,String taskId,String expType,HttpServletRequest request, HttpServletResponse response) {
 		Map<String,Object> formInfo=new HashMap<String,Object>();
-		Integer appliedRange=ModelAppliedRangeEnum.UNKNOW.getStatus();
-		String url="";
+		Integer appliedRange = ModelAppliedRangeEnum.UNKNOW.getStatus();
+		String url = "";
 		boolean errorFlag=false;
 		try{
 			ExtendModel modelExtend=new ExtendModel();
@@ -184,28 +187,28 @@ public class ProcessFormController extends BaseController {
 				if(null!=rVo.getData() && StringUtils.isNotBlank(rVo.getData().getModelKey())){
 					modelId = rVo.getData().getModelKey();
 				}
-				appliedRange=rVo.getData().getAppliedRange();
+				appliedRange = rVo.getData().getAppliedRange();
 			}
-			if(appliedRange== ModelAppliedRangeEnum.YWXTMH.getStatus()
-					|| appliedRange==ModelAppliedRangeEnum.YWXTYW.getStatus()){
-				url=rVo.getData().getBusinessUrl();
+			if(ModelAppliedRangeEnum.YWXTMH.getStatus().equals(appliedRange)
+					|| ModelAppliedRangeEnum.YWXTYW.getStatus().equals(appliedRange)){
+				url = rVo.getData().getBusinessUrl();
 				if(url.indexOf("/portal/form/biz/index-")>-1){
 					url = "/flow/form/s/page/biz-form.html";
 				}
 			}else{
 				url="/flow/form/s/page/custm-form.html";
 			}
-			if(StringUtils.isNotBlank(bizId) && !"0".equals(bizId)){
+			if(StringUtils.isNotBlank(bizId) && !PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(bizId)){
 				url= changeParam(url,"bizId",bizId);
 			}
-			if(StringUtils.isNotBlank(modelId) && !"0".equals(modelId)){
+			if(StringUtils.isNotBlank(modelId) && !PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(modelId)){
 				url=changeParam(url,"modelKey",modelId);
 				url=changeParam(url,"bizFormSn",modelId);
 			}
-			if(StringUtils.isNotBlank(taskId)&& !"0".equals(taskId)){
+			if(StringUtils.isNotBlank(taskId)&& !PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(taskId)){
 				url=changeParam(url,"taskId",taskId);
 			}
-			if(StringUtils.isNotBlank(instId)&& !"0".equals(instId)){
+			if(StringUtils.isNotBlank(instId)&& !PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(instId)){
 				url=changeParam(url,"processInstId",instId);
 			}
 			if(StringUtils.isNotBlank(expType)){
@@ -214,10 +217,11 @@ public class ProcessFormController extends BaseController {
 			formInfo.put("formUrl",errorFlag?"/error404.jhtml":url);
 		}catch (Exception e){
 			e.printStackTrace();
-			logger.error("获取iframe连接 ApiProcessController-getFromUrl"+e);
+			logger.error("获取流程表单iframe连接异常！ ApiProcessController-getFromUrl"+e);
 		}
 		return formInfo;
 	}
+
 	/**
 	 * 获取表单信息
 	 * @param instId
@@ -236,14 +240,13 @@ public class ProcessFormController extends BaseController {
 	@RequestMapping(value = "/getFormInfo",method = RequestMethod.GET)
 	public Map<String,Object> getFormInfo( String instId, String bizId, String taskId, HttpServletRequest request, HttpServletResponse response) {
 		Map<String,Object> formInfo=new HashMap<String,Object>();
-		long beginTime=System.currentTimeMillis();
 		try{
 			UserSessionInfo user=getLoginUser(request,response);
 			ActReProcdefExtendVo actReProcdefExtendVo=new ActReProcdefExtendVo();
 			if(user!=null && StringUtils.isNotBlank(user.getNo())){
-				if(!"0".equals(instId) || !"0".equals(bizId)){
+				if(!PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(instId) || !PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(bizId)){
 					String senderNo = "";
-					if(!"0".equals(instId)){
+					if(!PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(instId)){
 						senderNo=this.getSenderNo(instId,bizId);
 						//1、表单基本信息
 						ReturnVo<ActReProcdefExtendVo> rVo = flowApi.getPInfoByPId(instId);
@@ -255,7 +258,7 @@ public class ProcessFormController extends BaseController {
 						}
 						String approveType=actReProcdefExtendVo.getTaskType();
 						//获取节点类型
-						if(!"0".equals(taskId)){
+						if(!PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(taskId)){
 							String nodeType=flowApi.getNodeType(taskId);
 							if(StringUtils.isNotBlank(nodeType)){
 								approveType=nodeType;
@@ -265,7 +268,6 @@ public class ProcessFormController extends BaseController {
 						}
 						formInfo.put("taskType",actReProcdefExtendVo.getTaskType());
 						formInfo.put("approveType",approveType);
-						String nodeType = "";
 						formInfo.put("revokable",false);
 						if((user.getNo().equals(senderNo)) && (null==actReProcdefExtendVo.getEndTime())){
 							//发起人是当前登录人并且尚未结束的时候可以撤回
@@ -301,7 +303,6 @@ public class ProcessFormController extends BaseController {
 					List<Map<String,Object>> postscripts= getAttachMsg(wfPostscript);
 					formInfo.put("postscripts",postscripts);
 				}
-
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -310,13 +311,13 @@ public class ProcessFormController extends BaseController {
 
 		return formInfo;
 	}
+
 	/**
 	 * 添加附言数据
 	 * @return
 	 * @Description:
 	 */
 	@ApiOperation("添加附言数据")
-
 	@RequestMapping(value = "/insertAttachMsg",method = RequestMethod.POST)
 	public ReturnVo<List<Map<String,Object>>> insertAttachMsg(HttpServletRequest request, HttpServletResponse response,
 								  @RequestBody @ApiParam(value = "流程参数对象") ProcessMainVo processMainVo) {
@@ -353,8 +354,8 @@ public class ProcessFormController extends BaseController {
 		}
 		return returnVo;
 	}
+
 	/**
-	 *
 	 * @param request
 	 * @return
 	 * @Description:审批，暂存，协同，评审都用此方法
@@ -410,8 +411,8 @@ public class ProcessFormController extends BaseController {
 		}
 		return returnVo;
 	}
+
 	/**
-	 *
 	 * @param request
 	 * @return
 	 * @Description:转办
@@ -449,8 +450,8 @@ public class ProcessFormController extends BaseController {
 		}
 		return returnVo;
 	}
+
 	/**
-	 *
 	 * @param request
 	 * @return
 	 * @Description:加签
@@ -491,7 +492,6 @@ public class ProcessFormController extends BaseController {
 	}
 
 	/**
-	 *
 	 * @param request
 	 * @return
 	 * @Description:转阅
@@ -524,8 +524,8 @@ public class ProcessFormController extends BaseController {
 		}
 		return returnVo;
 	}
+
 	/**
-	 *
 	 * @param request
 	 * @param response
 	 * @param taskId
@@ -547,6 +547,7 @@ public class ProcessFormController extends BaseController {
 		}
 		return JsonUtils.toJson(vo.getData());
 	}
+
 	/**
 	 * 撤销操作
 	 * @param request
@@ -568,6 +569,7 @@ public class ProcessFormController extends BaseController {
 		}
 		return JsonUtils.toJson(returnVo);
 	}
+
 	/**
 	 * 驳回到任意节点
 	 * @param request
@@ -593,6 +595,7 @@ public class ProcessFormController extends BaseController {
 		}
 		return returnVo;
 	}
+
 	/**
 	 * 表单提交，保存待发。
 	 * @param request
@@ -651,7 +654,6 @@ public class ProcessFormController extends BaseController {
 	}
 
 	/**
-	 *
 	 * @param request
 	 * @return
 	 * @Description:转阅知会操作
@@ -679,7 +681,6 @@ public class ProcessFormController extends BaseController {
 
 
 	/**
-	 *
 	 * @param request
 	 * @return
 	 * @Description:终止
