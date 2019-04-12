@@ -40,9 +40,15 @@ function nullToZero(param) {
 }))
 export default class ProcessModel extends PureComponent {
   searchFormObj = {};
+  state = { pageSize: 10,current:1 };
   selectNode(selectedKeys, e) {
     if (e.selected) {
       this.searchFormObj.categoryId = selectedKeys[0];
+      // if(selectedKeys[0] == "myRegular"){
+      //   const data = [{"modelName":"技术资料章押金退还申请单","modelKey":"MQGG0001","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"技术资料章押金退还申请单-复制1","modelKey":"MQGG0027","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"技术资料章押金退还申请单-复制1的复制1","modelKey":"MQGG0028","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"技术资料章押金退还申请单-复制1的复制2","modelKey":"MQGG0029","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"考核项目集采下单审批流程","modelKey":"MQGG0002","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"考核项目集采下单审批流程 - 副本33333333","modelKey":"MQGG0021","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"幕墙施工图审图及盖章审批流程","modelKey":"MQGG0003","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"并行分支嵌套条件分支审批测试","modelKey":"MQGG0030","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"幕墙施工图审图及盖章审批流程-复制2","modelKey":"MQGG0031","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"幕墙施工现场废料处理审批单","modelKey":"MQGG0004","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"完工项目技术资料专用章盖章审批流程","modelKey":"MQGG0007","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1},{"modelName":"在建工程进度款付款异常预警审批流程","modelKey":"MQGG0010","appliedRange":1,"belongCategoryStr":"(亚厦幕墙-工程管理)","pid":"8a8a94aa5e145290015e16dbe15b0044","delFlag":1}]
+      //   console.log(data)
+      //   return
+      // }
       this.props.dispatch({
         type: 'process/getModelList',
         payload: { categoryId: selectedKeys[0] },
@@ -54,6 +60,14 @@ export default class ProcessModel extends PureComponent {
           selectedNode:e.node.props
         },
       });
+      this.setState({
+        current:1
+      })
+
+      // localStorage.setItem(key,imgAsDataUrl);
+      // console.log(e.node.props)
+      // sessionStorage.setItem("selectedNode",JSON.stringify(e.node.props));
+
     }
   }
   doSearch(modelName) {
@@ -67,6 +81,7 @@ export default class ProcessModel extends PureComponent {
       payload: {
         name: modelName,
         categoryId:categoryId,
+        keyWord:modelName,
       },
     });
   }
@@ -83,6 +98,10 @@ export default class ProcessModel extends PureComponent {
     return  `/process/form/launch/${nullToZero(item.processDefinitionKey)}/${nullToZero(item.processInstanceId)}/${nullToZero(item.businessKey)}/${nullToZero(item.taskId)}/0`;
   };
 
+  saveItem = (item) =>{
+    // console.log(item)
+  }
+
   export=()=>{
 
     var url = '/rest/process/list/exportProcessModel';
@@ -92,6 +111,10 @@ export default class ProcessModel extends PureComponent {
 
   render() {
     const {process: { list,selectedNode }, loading} = this.props;
+
+    // console.log(JSON.parse(sessionStorage.getItem("selectedNode")))
+
+    // const selectedNodeObj = selectedNode.eventKey? selectedNode:JSON.parse( sessionStorage.getItem("selectedNode"));
     const selectedKey = selectedNode.eventKey?selectedNode.eventKey:"";
 
     const Info = ({ title, value, bordered }) => (
@@ -117,8 +140,21 @@ export default class ProcessModel extends PureComponent {
       showSizeChanger: true,
       showQuickJumper: true,
       hideOnSinglePage: true,
-      pageSize: 10,
+      current:this.state.current,
       total: list.length,
+      onChange:(page,pageSize) => {
+        this.setState({
+          current:page
+        })
+      },
+      onShowSizeChange: (current,size) => {
+        this.setState({
+          pageSize:size,
+          current:1
+        })
+      },
+      pageSize: this.state.pageSize,
+      defaultPageSize:10
     };
     const menu = (
       <Menu>
@@ -185,7 +221,7 @@ export default class ProcessModel extends PureComponent {
                       ]}
                     >
                       <div className="ant-list-item-content">
-                        <Link to={this.linkUrl(item)} target="_blank">{item.name}</Link>
+                        <Link onClick={this.saveItem} to={this.linkUrl(item)} target="_blank">{item.name}</Link>
                         <span style={{ marginLeft: 20, color: '#A5A5A5' }}>{item.createTime}</span>
                       </div>
                     </List.Item>
@@ -200,7 +236,7 @@ export default class ProcessModel extends PureComponent {
                   dataSource={list}
                   renderItem={item => (
                     <List.Item>
-                      <Link target="_blank" to={item.url}>{item.modelName}</Link>
+                      <Link onClick={this.saveItem} target="_blank" to={item.url}>{item.modelName}</Link>
                       <span style={{ marginLeft: 20, color: '#A5A5A5' }}>
                         {item.belongCategoryStr}
                       </span>

@@ -173,9 +173,10 @@ export default {
     // 流程中心发起页面 获取流程列表数据
     *getModelList({ payload }, { call, put }) {
       const response = yield call(getModelList, payload);
-      if(payload.categoryId == "myDraft"){
-        Array.isArray(response) && response.sort((a,b) => new Date(b.createTime).getTime()-new Date(a.createTime).getTime())
-      }
+      // 我的草稿排序
+      // if(payload.categoryId == "myDraft"){
+      //   Array.isArray(response) && response.sort((a,b) => new Date(b.createTime).getTime()-new Date(a.createTime).getTime())
+      // }
 
       yield put({
         type: 'modelCallback',
@@ -199,7 +200,17 @@ export default {
 
     *queryTreeData(_, { call, put }) {
       const response = yield call(queryTreeData);
-      const data = Array.isArray(response.data) ? response.data : []
+      const data = Array.isArray(response.data) ? response.data : [];
+
+      // const regular = {
+      //   children: null,
+      //   code: "my_regular",
+      //   id: "myRegular",
+      //   name: "我常用的",
+      //   pid: ""
+      // }
+      // data.unshift(regular)
+
       yield put({
         type: 'getTreeData',
         payload: data,
@@ -419,8 +430,6 @@ export default {
     setup({ dispatch, history }) {
 
       regWindowFun();
-      // Subscribe history(url) change, trigger `load` action if pathname is `/`
-
       history.listen(location => {
 
         if(location.pathname.search('list') ===-1 ){
@@ -430,7 +439,8 @@ export default {
         // debugger location.pathname.search('/process/list') === -1
         try{
           if(window.opener && window.opener.location.href.search('/process/list') !== -1){
-            window.close()
+            window.opener.location.reload();
+            window.close();
           }
         }catch(e){
           // console.error('=======================',e);
