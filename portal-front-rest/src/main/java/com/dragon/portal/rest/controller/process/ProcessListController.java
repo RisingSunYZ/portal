@@ -325,6 +325,7 @@ public class ProcessListController extends BaseController {
                 ReturnVo<String> vo=flowApi.updateFormDraftStatus(map.get("businessKey"), FormDraftStatusEnum.SC.getStatus());
                 if(FlowConstant.SUCCESS.equals(vo.getCode())){
                     Query query=new Query();
+                    query.setPageSize(PortalConstant.MAX_PAGE_SIZE);
                     Map<String, Object> maps = getMyDraft(query,null,null, new FormDraft(), request, response);
                     returnVo = new ReturnVo<Map<String, Object>>(FlowConstant.SUCCESS, "删除成功");
                     returnVo.setData(maps);
