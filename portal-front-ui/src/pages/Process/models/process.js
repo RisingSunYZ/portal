@@ -386,6 +386,9 @@ export default {
         message.error('删除失败');
       } else {
         message.success('删除成功');
+        action.payload.data.list.map(row => {
+          row.url = `/process/form/launch/${row.modelKey}/0/0/0/${getFormType(row.fromUrl)}`;
+        });
         return {
           ...state,
           draftData: action.payload.data,
