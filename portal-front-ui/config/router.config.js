@@ -135,6 +135,32 @@ export default [
             component: './Workplace/AddressBook'
           },
           {
+            path: '/workplace/msg',
+            name: 'msg-center',
+            component: './Workplace/MsgManage',
+            routes:[
+              {
+                path: '/workplace/msg',
+                redirect: '/workplace/msg/lczx'
+              },
+              {
+                path: '/workplace/msg/lczx',
+                name: 'msg-flow',
+                component: './Workplace/MsgManage/FlowMsg',
+              },
+              {
+                path: '/workplace/msg/xtxx',
+                name: 'msg-system',
+                component: './Workplace/MsgManage/SysMsg',
+              },
+            ],
+          },
+          {
+            path: '/workplace/msg-system',
+            name: 'msg-system',
+            component: './Workplace/MsgManage/SysMsg'
+          },
+          {
             path: '/workplace/schedule',
             name: 'schedule',
             component: './Workplace/Schedule'
