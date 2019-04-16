@@ -39,8 +39,8 @@ export default {
     meeting:{},
     mandatoryPersonList:[],
     optionalPersonList:[],
-    meetingSummary:[],
-    meetingFileList:[]
+    meetingSummary:{},
+    meetingFileList:[],
   },
 
   namespace: 'meetingRoom',
@@ -124,7 +124,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *loadInput({payload,callback},{call,put}) {
-      // debugger;
       const response= yield call(getInputData,payload);
       yield put({
         type: 'saveMeetingData',
@@ -273,6 +272,7 @@ export default {
      * @returns {IterableIterator<*>}
      */
       *getSummaryMeetingData({payload,callback},{call,put}){
+        // debugger;
         const response=yield call(getSummaryMeetingDatas, payload);
         yield put({
           type: 'saveSummary',
@@ -291,10 +291,7 @@ export default {
      */
     *saveUploadSummary({payload,callback},{call,put}){
       const response=yield call(getUploadSummary, payload);
-      yield put ({
-        type:'saveUploadSum',
-        payload: response
-      });
+
       if(callback) callback(response);
     },
 
@@ -351,11 +348,14 @@ export default {
      * @returns {{meetingSummary: Array}}
      */
     saveSummary(state,action){
+      // debugger
+      const meetingSummary=action.payload;
       return {
         ...state,
-        meetingSummary:action.payload.meetingSummary
+        ...meetingSummary,
       }
     },
+
 
     /**
      * 通过id删除 会议 记录人
@@ -387,7 +387,6 @@ export default {
      * @returns {{mandatoryPersonList: Array, optionalPersonList: Array}}
      */
     saveMeetingData(state, action) {
-    // debugger;
       const meeting = action.payload;
       return {
         ...state,
@@ -411,7 +410,7 @@ export default {
      * @returns {*}
      */
     addFiles(state, action) {
-      debugger
+
       if (action.payload.response && action.payload.response.responseCode === "101") {
         return { ...state };
       }

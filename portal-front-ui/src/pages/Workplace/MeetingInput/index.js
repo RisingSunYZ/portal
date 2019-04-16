@@ -1,8 +1,5 @@
 import React, { Component, PureComponent, Fragment } from 'react';
-import { Editor } from 'react-draft-wysiwyg';
-import { EditorState ,convertToRaw} from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import Editor from 'react-umeditor';
 import { connect } from 'dva';
 import { Tabs, Form, Row, Col, Upload, message, Icon, DatePicker, TimePicker,Select, Button, Input, Card, Modal } from 'antd';
 import { UserSelect } from '@/components/Selector';
@@ -13,6 +10,8 @@ import Plupload from "@/components/Plupload";
 import Link from 'umi/link';
 import moment from 'moment';
 import styles from './index.less'
+
+
 
 
 const TabPane = Tabs.TabPane;
@@ -34,10 +33,38 @@ export default class MeetingInput extends PureComponent {
   state = {
     selectedKey: '',
     visible:false,
-    editorState: EditorState.createEmpty(),
+    content: "",
     ModalTextSave:'会议主题不能为空！',
     cardType:1
   };
+
+  handleChange=(content)=>{
+    this.setState({
+      content: content
+    })
+  }
+
+  getIcons=()=>{
+    const icons = [
+      "source | undo redo | bold italic underline strikethrough fontborder emphasis | ",
+      "paragraph fontfamily fontsize | superscript subscript | ",
+      "forecolor backcolor | removeformat | insertorderedlist insertunorderedlist | selectall | ",
+      "cleardoc  | indent outdent | justifyleft justifycenter justifyright | touppercase tolowercase | ",
+      "horizontal date time  | image emotion spechars | inserttable"
+    ];
+    return icons;
+  }
+
+  getPlugins=()=>{
+    return {
+      "image": {
+        "uploader": {
+          "name":"file",
+          "url": "/api/upload"
+        }
+      }
+    }
+  }
 
   componentDidMount(){
     const {dispatch, match, form }=this.props;
@@ -51,13 +78,6 @@ export default class MeetingInput extends PureComponent {
     }
   }
 
-  onEditorStateChange = (editorState) => {
-    this.setState({
-      editorState,
-    });
-  };
-
-
   selectCallback = datas => {
     const { setFieldsValue } = this.props.form;
     this.setState({ selectedPersons: datas });
@@ -69,8 +89,7 @@ export default class MeetingInput extends PureComponent {
 
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
-    const { meetingRoom:{meetingFileList},user:{currentUser}, }=this.props;
-
+    const { meetingRoom:{meetingFileList},user:{currentUser} }=this.props;
     // 格式化 必选人员
     let mandaPer=fieldsValue.mandatoryPersonList;
     let str="";
@@ -90,7 +109,7 @@ export default class MeetingInput extends PureComponent {
     let optionNo = "";
     if(fieldsValue.optionalPersonList){
       for(let i=0; i<optionPer.length;i++){
-        str0 += optionPer[i].name + ",";
+        str0 += optionPer[i].name + ',';
         optionNo+= optionPer[i].no+","
       }
     }
@@ -129,15 +148,21 @@ export default class MeetingInput extends PureComponent {
       if(fileName.length>0) fileName=fileName.substr(0,fileName.length-1)
       fieldsValue.filePath=filePath;
       fieldsValue.fileName=fileName;
-      delete fieldsValue[meetingFiles]
+      delete fieldsValue.meetingFiles
     }
+    if(this.state.content==""){
+      fieldsValue.content = meeting.content;
+    }else{
+      fieldsValue.content = this.state.content;
+    }
+
   }
 
   // 发送更新
   sendUpdate=()=>{
     const { dispatch ,form, match }=this.props;
     form.validateFields((err, fieldsValue)=>{
-
+      console.log(fieldsValue)
       if(err) return;
       // 调用公共方法
       this.commonMethod(fieldsValue);
@@ -193,7 +218,6 @@ export default class MeetingInput extends PureComponent {
   saveDraft=()=>{
     const { dispatch ,form }= this.props;
     form.validateFields((err, fieldsValue) => {
-
       if (err) return;
       if(fieldsValue.theme==undefined){
         //点击显示 弹出框
@@ -247,8 +271,9 @@ export default class MeetingInput extends PureComponent {
       { title: 'Cad files', extensions: 'dwg' },
     ];
 
-    console.log(meetingFileList)
-
+    console.log(meeting)
+    const icons = this.getIcons();
+    const plugins = this.getPlugins();
 
     return (
       <PageHeaderWrapper>
@@ -375,38 +400,25 @@ export default class MeetingInput extends PureComponent {
                 <FormItem>
                   {form.getFieldDecorator('end', {
                     initialValue:moment('16:30','HH:mm')
-                    // initialValue:moment(meeting.end).format('HH:mm')
-                    // initialValue:(meeting.end==null || meeting.end=="" || meeting.end=='Invalid date') ? "" : moment(simpleFormatTime(meeting.end),'HH:mm')
                   })(
                     <TimePicker format="HH:mm" placeholder="请选择结束时间" style={{width: '185px'}} />
                   )}
                 </FormItem>
               </Col>
             </Row>
-
             <Row className={styles.rows}>
               <Col span={24}>
                 <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
-                  {form.getFieldDecorator('content', {
-                    // initialValue: draftToHtml(convertToRaw(editorState.getCurrentContent(meeting.content))),
-                    initialValue: meeting.content,
-                  })(
-                    <div style={{width:1100,height:600}}>
                       <Editor
-                        editorState={editorState}
-                        toolbarClassName="toolbarClassName"
-                        wrapperClassName="wrapperClassName"
-                        editorClassName="editorClassName"
-                        onEditorStateChange={this.onEditorStateChange}
-
-                      />
-                      {/*<textarea type="hidden" value={draftToHtml(convertToRaw(editorState.getCurrentContent(meeting.content)))} style={{width:1084}}/>*/}
-                    </div>
-                    )}
+                        ref="editor"
+                        icons={icons}
+                        value={this.state.content=="" ? meeting.content:this.state.content} defaultValue="<p>请输入内容</p>"
+                        onChange={this.handleChange.bind(this)}
+                        plugins={plugins} />
                 </FormItem>
               </Col>
             </Row>
-            <Row style={{marginLeft:61,top: -46}}>
+            <Row style={{marginLeft:61,top: -20}}>
               <Col span={6}>
                 <Form.Item>
                   {form.getFieldDecorator('meetingFiles', {

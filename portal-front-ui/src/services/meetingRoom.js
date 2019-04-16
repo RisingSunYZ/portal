@@ -124,7 +124,6 @@ export async function getInputData(params){
  * @returns {Promise<Object>}
  */
 export async function getUploadSummary(params) {
-  debugger;
   return request('/rest/portal/rscmgmt/meeting/saveMeetingSummary', {
     method: 'POST',
     body: params,
