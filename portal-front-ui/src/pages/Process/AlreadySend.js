@@ -217,6 +217,7 @@ export default class TableList extends PureComponent {
                       <option value="CH">撤回</option>
                       <option value="ZC">暂存</option>
                       <option value="JQ">加签</option>
+                      <option value="ZB">转办</option>
                       <option value="BJ">办结</option>
                       <option value="ZZ">终止</option>
                     </Select>
