@@ -366,6 +366,8 @@ export default class MeetingRoom extends PureComponent {
       )
     };
 
+
+
     const loopCard=(list,cardType)=>{
       return (
         <div>
@@ -400,7 +402,7 @@ export default class MeetingRoom extends PureComponent {
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>会议内容：</Col>
-                    <Col span={20}>{item.content}</Col>
+                      <Col span={20}><div dangerouslySetInnerHTML={{__html: item.content}}/></Col>
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={24} style={{left:30,fontSize:18}}>
@@ -410,7 +412,7 @@ export default class MeetingRoom extends PureComponent {
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>会议纪要：</Col>
                     <Col span={20}>
-                      <span>{item.summaryContent}</span>
+                      <span><div dangerouslySetInnerHTML={{__html: item.summaryContent}}/></span>
                       <div style={{margin: '10px 0'}}>
                         <Link to={"/workplace/meeting-room/"+cardType+"/meeting-summary/"+item.id}>
                           <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;

@@ -89,9 +89,9 @@ export default class MeetingInput extends PureComponent {
 
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
-    const { meetingRoom:{meetingFileList},user:{currentUser} }=this.props;
+    const { meetingRoom:{meetingFileList,meeting},user:{currentUser} }=this.props;
     // 格式化 必选人员
-    let mandaPer=fieldsValue.mandatoryPersonList;
+    let mandaPer = fieldsValue.mandatoryPersonList;
     let str="";
     let mandaNo = "";
     for(let i=0; i<mandaPer.length;i++){
@@ -150,10 +150,12 @@ export default class MeetingInput extends PureComponent {
       fieldsValue.fileName=fileName;
       delete fieldsValue.meetingFiles
     }
+    debugger;
     if(this.state.content==""){
+      // fieldsValue.content = meeting.content;
       fieldsValue.content = meeting.content;
     }else{
-      fieldsValue.content = this.state.content;
+      fieldsValue.content = this.state.content
     }
 
   }
@@ -412,7 +414,9 @@ export default class MeetingInput extends PureComponent {
                       <Editor
                         ref="editor"
                         icons={icons}
-                        value={this.state.content=="" ? meeting.content:this.state.content} defaultValue="<p>请输入内容</p>"
+                        value={this.state.content=="" ? meeting.content:this.state.content}
+                        // value={"<p>ddddddd</p>"}
+                        defaultValue="<p>请输入内容</p>"
                         onChange={this.handleChange.bind(this)}
                         plugins={plugins} />
                 </FormItem>
