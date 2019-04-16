@@ -1,11 +1,17 @@
 import { getMenuTree } from '@/services/bizSys';
-import { getMsgList, getMsgCount, getAllSystem } from '@/services/msgcenter';
+import { getMsgList, getMsgCount, getNoticeType, getAllSystem } from '@/services/msgcenter';
 import { message } from 'antd';
 
 export default {
   state: {
-    sysData: [],
+    msgList: {
+      data: [],
+      rows: [],
+      total: 0,
+    },
     menu: [],
+    noticeType: [],
+    sysData: [],
     count: {},
   },
 
@@ -46,13 +52,24 @@ export default {
         payload: response
       });
     },
+    *getNoticeType({ payload }, { call, put }) {
+      const response = yield call(getNoticeType, payload);
+      if(response.code === "100") {
+        yield put({
+          type: 'saveNoticeType',
+          payload: response
+        });
+      }
+    },
     *getAllSystem({ payload }, { call, put }) {
       const response = yield call(getAllSystem, payload);
-      yield put({
-        type: 'saveSystems',
-        payload: response
-      });
-    }
+      if(response.code === "100") {
+        yield put({
+          type: 'saveSystems',
+          payload: response
+        });
+      }
+    },
   },
 
   reducers: {
@@ -72,6 +89,12 @@ export default {
       return {
         ...state,
         count: action.payload.data
+      };
+    },
+    saveNoticeType(state, action) {
+      return {
+        ...state,
+        noticeType: action.payload.data
       };
     },
     saveSystems(state, action) {

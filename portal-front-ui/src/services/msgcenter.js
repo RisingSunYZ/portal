@@ -9,6 +9,12 @@ export async function getMsgList(params) {
 }
 
 /**
+ * 获取消息类型
+ */
+export async function getNoticeType(params) {
+  return request(`/rest/portal/msg/getNoticeType?${stringify(params)}`);
+}
+/**
  * 获取所有系统列表
  */
 export async function getAllSystem() {
