@@ -109,7 +109,7 @@ export default class AddressBook extends PureComponent {
   // 跳到树目录
   skipMenuTree=(record)=>{
     // console.log(record);
-    const {dispatch}=this.props;
+    const { dispatch }=this.props;
     const  params={
       deptId: record.deptId,
       companyId:this.state.companyId,
@@ -459,9 +459,10 @@ export default class AddressBook extends PureComponent {
                   };
                 }}
               />
+              {personObj.gender === null ? '': showDrawers()}
             </Content>
           </Layout>
-          {personObj.gender === null ? '': showDrawers()}
+
         </PageHeaderWrapper>
     );
   }

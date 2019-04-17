@@ -54,6 +54,7 @@ export default {
   'menu.process-form.form-approve': '审批',
   'menu.address-book': '通讯录',
   'menu.meeting-room': '会议管理',
+  'menu.meeting-summary':'会议纪要',
   'menu.system-more': '常用系统',
   'menu.result-success': '处理成功',
   'menu.result-fail': '提交失败',

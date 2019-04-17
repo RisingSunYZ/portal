@@ -272,7 +272,6 @@ export default {
      * @returns {IterableIterator<*>}
      */
       *getSummaryMeetingData({payload,callback},{call,put}){
-        // debugger;
         const response=yield call(getSummaryMeetingDatas, payload);
         yield put({
           type: 'saveSummary',

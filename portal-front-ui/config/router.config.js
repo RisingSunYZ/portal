@@ -157,7 +157,7 @@ export default [
           },
           {
             path: '/workplace/meeting-room/:tab/meeting-summary/:id',
-            name: 'meeting-room',
+            name: 'meeting-summary',
             component: './Workplace/MeetingSummary'
           }
         ]
