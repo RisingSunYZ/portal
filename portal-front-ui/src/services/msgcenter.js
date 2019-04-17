@@ -17,14 +17,26 @@ export async function getNoticeType(params) {
 /**
  * 获取所有系统列表
  */
-export async function getAllSystem() {
-  return request(`/rest/portal/msg/getAllSystem`);
+export async function getAllSystem(params) {
+  return request(`/rest/portal/msg/getAllSystem?${stringify(params)}`);
 }
 /**
  * 获取消息数量
  */
 export async function getMsgCount() {
   return request(`/rest/portal/msg/getMsgCount`);
+}
+/**
+ * 修改消息阅读状态
+ */
+export async function updateMsgStatus(params) {
+  return request(`/rest/portal/msg/updateMsgStatus?${stringify(params)}`);
+}
+/**
+ * 修改消息阅读状态
+ */
+export async function getMsgDetail(params) {
+  return request(`/rest/portal/msg/getDetail?${stringify(params)}`);
 }
 
 /**

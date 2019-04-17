@@ -19,13 +19,15 @@ export default class FlowMsg extends PureComponent {
       messageType: "1,2",
     },
     selectedIds: '',
-    pageIndex: 0,
-    pageSize: 15,
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    }
   };
 
   componentDidMount(){
     const { dispatch }=this.props;
-    const { pageSize, searchParam } = this.state;
+    const { pagination, searchParam } = this.state;
     dispatch({
       type: 'msg/getNoticeType',
       payload: searchParam
@@ -33,12 +35,26 @@ export default class FlowMsg extends PureComponent {
     dispatch({
       type: 'msg/getMsgList',
       payload: {
-        pageSize,
+        pageSize: pagination.pageSize,
         pageIndex: 0,
         ...searchParam
       }
     });
   }
+
+  reloadFlowMsg = () => {
+    const { dispatch }=this.props;
+    const { pagination, searchParam } = this.state;
+    this.state.pagination.current = 1;
+    dispatch({
+      type: 'msg/getMsgList',
+      payload: {
+        pageSize: pagination.pageSize,
+        pageIndex: 0,
+        ...searchParam
+      }
+    });
+  };
 
   handleTableChange = (pagination) => {
     const { dispatch } = this.props;
@@ -48,7 +64,10 @@ export default class FlowMsg extends PureComponent {
       pageSize:pagination.pageSize,
     };
     this.setState({
-      pageIndex: pagination.current - 1
+      pagination:{
+        current: pagination.current,
+        pageSize: pagination.pageSize
+      }
     });
     dispatch({
       type: 'msg/getMsgList',
@@ -62,7 +81,7 @@ export default class FlowMsg extends PureComponent {
   handleSearch = (e) => {
     e.preventDefault();
     const { dispatch, form } = this.props;
-    const { pageSize, searchParam } = this.state;
+    const { pagination, searchParam } = this.state;
     form.validateFields((err, values) => {
       if(err) return false;
       const params = {
@@ -76,12 +95,17 @@ export default class FlowMsg extends PureComponent {
           ...searchParam,
           ...params
         },
+        pagination: {
+          ...pagination,
+          current: 1,
+        },
       });
       dispatch({
         type: 'msg/getMsgList',
         payload: {
           ...searchParam,
-          pageSize,
+          ...params,
+          pageSize: pagination.pageSize,
           pageIndex: 0,
         },
       });
@@ -90,12 +114,57 @@ export default class FlowMsg extends PureComponent {
 
   handleReset = () => {
     this.props.form.resetFields();
+    this.setState({
+      searchParam: {
+        messageType: "1,2",
+      }
+    },()=>{
+      this.reloadFlowMsg();
+    })
+  };
+
+  doReadMsg = (record) => {
+    if(record.status === 0)this.doRead(record.id);
+    const url = `/process/form/view/0/${record.processInstId || 0}/${record.businessKey || 0}/0/0`;
+    window.open(url,"_blank");
+  };
+
+  updateMsgCount  = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'msg/getMsgCount',
+    });
+  };
+
+  doRead = (ids) => {
+    const { dispatch } = this.props;
+    const { selectedIds } = this.state;
+    if(!ids && !selectedIds){
+      message.warn('请选择未读消息', 1);
+    }else{
+      dispatch({
+        type: 'msg/updateMsgStatus',
+        payload: {
+          ids: ids || selectedIds
+        },
+        callback: (res) => {
+          if(res.code === '100'){
+            this.updateMsgCount();
+            message.success(res.msg);
+            this.reloadFlowMsg();
+          }else{
+            message.error(res.msg);
+          }
+        }
+      })
+    }
   };
 
   render() {
     const {
       msg: {  msgList, noticeType },
-      form: { getFieldDecorator }
+      form: { getFieldDecorator },
+      loading
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -126,7 +195,7 @@ export default class FlowMsg extends PureComponent {
         dataIndex: 'title',
         width: 500,
         render: (text, record) => {
-          return <Link style={record.status === 1 ? {color: '#333'} : {}} target="_blank" to={`/process/form/view/0/${record.processInstId || 0}/${record.businessKey || 0}/0/0`}>{record.title}</Link>
+          return <a style={record.status === 1 ? {color: '#333'} : {}} onClick={()=>this.doReadMsg(record)}>{record.title}</a>
         }
       },
       {
@@ -145,10 +214,10 @@ export default class FlowMsg extends PureComponent {
       }];
 
     return (
-        <Card bordered={false} bodyStyle={{padding: '16px'}}>
+        <Card bordered={false} bodyStyle={{padding: '16px', borderLeft: '1px solid #e8e8e8'}}>
           <div className={styles.msgOpt}>
-            <Button><Icon type="reload" style={{color: '#0e65af'}} />刷新</Button>
-            <Button><Icon type="file-protect" style={{color: '#0e65af'}} />设为已读</Button>
+            <Button onClick={this.reloadFlowMsg}><Icon type="reload" style={{color: '#0e65af'}} />刷新</Button>
+            <Button onClick={()=>this.doRead()}><Icon type="file-protect" style={{color: '#0e65af'}} />设为已读</Button>
           </div>
           <Form className={styles.searchMsgForm} {...formItemLayout} onSubmit={this.handleSearch}>
             <Row>
@@ -184,17 +253,22 @@ export default class FlowMsg extends PureComponent {
             </Row>
           </Form>
           <Table
+            loading={loading}
             rowKey="id"
             rowSelection={{
               onChange: (selectedRowKeys) => {
                 this.setState({
-                  selectedIds: selectedRowKeys,
+                  selectedIds: selectedRowKeys.join(','),
                 })
               }
             }}
             columns={columns}
             dataSource={msgList.data}
-            pagination={{ total: msgList.total, pageSize: this.state.pageSize }}
+            pagination={{
+              ...this.state.pagination,
+              showSizeChanger: true,
+              total: msgList.total,
+            }}
             onChange={this.handleTableChange}
           />
         </Card>

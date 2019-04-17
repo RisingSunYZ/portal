@@ -16,7 +16,9 @@ const SubMenu = Menu.SubMenu;
 }))
 
 export default class MsgManage extends PureComponent {
-
+  constructor(props){
+    super(props);
+  }
   state = {
     visible:false ,
   };

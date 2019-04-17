@@ -1,147 +1,347 @@
-import React, { Component, PureComponent, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Tabs, Icon, Row, Col, Card, Drawer,Button ,Modal, Input,Layout,Tree, Table  } from 'antd';
-import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
+import { Icon, Row, Col, Card,Button, Input,Modal, Table, Form, DatePicker, Select } from 'antd';
 import styles from './index.less';
-import TreeMenu from '../components/TreeMenu';
-import Link from 'umi/link';
 import { message } from 'antd';
 
-const TreeNode = Tree.TreeNode;
-const Search = Input.Search;
-const { Sider, Content } = Layout;
+const { RangePicker } = DatePicker;
 
 @connect(({ msg, loading }) => ({
   msg,
   loading: loading.models.msg,
 }))
+@Form.create()
 
 export default class SysMsg extends PureComponent {
-
-  state = {
-    visible:false ,
+  state={
+    searchParam: {
+      messageType: "3,4",
+    },
+    selectedIds: '',
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+    visible: false,
   };
 
   componentDidMount(){
     const { dispatch }=this.props;
+    const { pagination, searchParam } = this.state;
     dispatch({
-      type: 'msg/getMsgMenu'
+      type: 'msg/getNoticeType',
+      payload: searchParam
+    });
+    dispatch({
+      type: 'msg/getAllSystem',
+      payload: searchParam
+    });
+    dispatch({
+      type: 'msg/getMsgList',
+      payload: {
+        pageSize: pagination.pageSize,
+        pageIndex: 0,
+        ...searchParam
+      }
     });
   }
 
-  onClose = () => {
-    this.setState({
-      visibleDrawer: false,
+  reloadFlowMsg = () => {
+    const { dispatch }=this.props;
+    const { pagination, searchParam } = this.state;
+    this.state.pagination.current = 1;
+    dispatch({
+      type: 'msg/getMsgList',
+      payload: {
+        pageSize: pagination.pageSize,
+        pageIndex: 0,
+        ...searchParam
+      }
     });
   };
 
-  // 树的点击事件
-  selectNode(selectedKeys, e) {
-    // console.log(selectedKeys)
-    if (e.selected) {}
-  }
-
-  // 点击分页改变时，触发的函数
-  handleTableChange = (pagination, filtersArg, sorter) => {
+  handleTableChange = (pagination) => {
     const { dispatch } = this.props;
-    const deptId = this.state.query.deptId;
-    const companyId = this.state.query.companyId;
+    const { searchParam } = this.state;
     const params={
       pageIndex:pagination.current-1,
       pageSize:pagination.pageSize,
-      deptId:deptId==undefined ? '1001K31000000002GLCT':deptId,
-      companyId:companyId==undefined ? '0001K310000000008TK6':companyId
     };
-    dispatch({
-      type: 'addressBook/getTableList',
-      payload:params,
-    });
     this.setState({
-      query:params
-    })
+      pagination:{
+        current: pagination.current,
+        pageSize: pagination.pageSize
+      }
+    });
+    dispatch({
+      type: 'msg/getMsgList',
+      payload: {
+        ...params,
+        ...searchParam,
+      },
+    });
   };
 
-  doSearch=( value )=>{
-    const { dispatch } = this.props;
-    const params={
-        keyword: value,
-        pageIndex:this.state.pagination.pageIndex,
-        pageSize:this.state.pagination.pageSize
+  handleSearch = (e) => {
+    e.preventDefault();
+    const { dispatch, form } = this.props;
+    const { pagination, searchParam } = this.state;
+    form.validateFields((err, values) => {
+      if(err) return false;
+      const params = {
+        systemSn: values.systemSn,
+        title: values.title,
+        noticeType: values.noticeType,
+        startTime: values.rangeTime ? values.rangeTime[0].format('YYYY-MM-DD') : null,
+        endTime: values.rangeTime ? values.rangeTime[1].format('YYYY-MM-DD') : null,
       };
-    dispatch({
-      type: 'addressBook/getTableList',
-      payload:params
+      this.setState({
+        searchParam: {
+          ...searchParam,
+          ...params
+        },
+        pagination: {
+          ...pagination,
+          current: 1,
+        },
+      });
+      dispatch({
+        type: 'msg/getMsgList',
+        payload: {
+          ...searchParam,
+          ...params,
+          pageSize: pagination.pageSize,
+          pageIndex: 0,
+        },
+      });
     });
+  };
+
+  handleReset = () => {
+    this.props.form.resetFields();
     this.setState({
-      query:params
+      searchParam: {
+        messageType: "3,4",
+      }
+    },()=>{
+      this.reloadFlowMsg();
     })
   };
 
-
-  onSelectChange=(selectedRowKeys, selectedRows) => {
-    let no = '';
-    for(let i=0;i<selectedRows.length; i++){
-      no += selectedRows[i].no+",";
+  doReadMsg = (record) => {
+    if(record.status === 0)this.doRead(record.id);
+    if(record.noticeType === 3){
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'msg/getMsgDetail',
+        payload: {
+          id: record.id
+        }
+      });
+      this.setState({
+        visible: true
+      });
+    }else{
+      const url = `/portal/process/view.jhtml?url=${record.url || ""}&bizId=${record.bizId || ""}&processInstId=${record.processInstId || ""}`;
+      window.open(url, "_blank");
     }
-    if(no.length>0) no=no.substr(0,no.length-1);
+  };
 
-    this.setState({
-      selectedRowKeys,
-      nos:no
+  updateMsgCount  = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'msg/getMsgCount',
     });
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  };
+
+  doRead = (ids) => {
+    const { dispatch } = this.props;
+    const { selectedIds } = this.state;
+    if(!ids && !selectedIds){
+      message.warn('请选择未读消息', 1);
+    }else{
+      dispatch({
+        type: 'msg/updateMsgStatus',
+        payload: {
+          ids: ids || selectedIds
+        },
+        callback: (res) => {
+          if(res.code === '100'){
+            this.updateMsgCount();
+            message.success(res.msg, 1);
+            this.reloadFlowMsg();
+          }else{
+            message.error(res.msg, 1);
+          }
+        }
+      })
+    }
   };
 
   render() {
     const {
-      msg: {  msgMenu, msgList },
+      msg: {  msgList, noticeType, systemList, msgDetail },
+      form: { getFieldDecorator },
+      loading
     } = this.props;
-    const { visible }=this.state;
-
+    const { pagination, visible } = this.state;
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
     const columns = [
       {
         title: '消息类型',
-        dataIndex: 'name',
-        width: 150,
-        render:this.disGender
+        dataIndex: 'noticeType',
+        width: 100,
+        render: (text, record) => {
+          if (record.noticeType === 3) {
+            return "系统提醒";
+          } else if (record.noticeType === 4) {
+            return "系统待办";
+          }
+          return text;
+        }
       },
       {
-        title: '消息主题 ',
-        dataIndex: 'jobNum',
-        width: 150
+        title: '消息主题',
+        dataIndex: 'title',
+        width: 400,
+        render: (text, record) => {
+          return <a style={record.status === 1 ? {color: '#333'} : {}} onClick={()=>this.doReadMsg(record)}>{record.title}</a>
+        }
       },
       {
-        title: '企业邮箱',
-        dataIndex: 'email',
+        title: '所属系统',
+        dataIndex: 'systemName',
       },
       {
-        title: '单位',
-        dataIndex: 'address',
-        render:this.disDepartment
+        title: '发送人',
+        dataIndex: 'sender',
+        render: (text, record) => {
+          if (record.noticeType === 2) {
+            return "系统管理员";
+          }
+          return text;
+        }
       },
       {
-        title: '部门',
-        dataIndex: 'department',
-        render:this.disDepartment
-      },
-      {
-        title: '岗位',
-        dataIndex: 'post',
-      },
-      {
-        title: '短号',
-        dataIndex: 'shortNum',
+        title: '接收时间',
+        dataIndex: 'sendTime',
       }];
 
     return (
-        <Card>
-          系统
+      <Fragment>
+        <Modal
+          visible={visible}
+          title={msgDetail.title}
+          width={650}
+          footer={<div><Button onClick={()=>this.setState({visible: false})}>关闭</Button></div>}
+          onCancel={()=>this.setState({visible: false})}
+        >
+          <div className={styles.msgViewBox}>
+            <Row>
+              <Col span={3}>消息主题：</Col>
+              <Col span={20}>{msgDetail.title}</Col>
+            </Row>
+            <Row>
+              <Col span={3}>消息类型：</Col>
+              <Col span={20}>{msgDetail.noticeType === 2 ? '流程消息' : (msgDetail.noticeType === 3 ? '系统提醒' : '')}</Col>
+            </Row>
+            <Row>
+              <Col span={3}>发送人：</Col>
+              <Col span={20}>{msgDetail.sender}</Col>
+            </Row>
+            <Row>
+              <Col span={3}>发送时间：</Col>
+              <Col span={20}>{msgDetail.sendTime}</Col>
+            </Row>
+            <Row>
+              <Col span={3}>所属系统：</Col>
+              <Col span={20}>{msgDetail.systemName}</Col>
+            </Row>
+            <Row>
+              <Col span={3}>消息内容：</Col>
+              <Col span={20}>{msgDetail.content}</Col>
+            </Row>
+          </div>
+        </Modal>
+        <Card bordered={false} bodyStyle={{padding: '16px', borderLeft: '1px solid #e8e8e8'}}>
+          <div className={styles.msgOpt}>
+            <Button onClick={this.reloadFlowMsg}><Icon type="reload" style={{color: '#0e65af'}} />刷新</Button>
+            <Button onClick={()=>this.doRead()}><Icon type="file-protect" style={{color: '#0e65af'}} />设为已读</Button>
+          </div>
+          <Form className={styles.searchMsgForm} {...formItemLayout} onSubmit={this.handleSearch}>
+            <Row>
+              <Col span={6}>
+                <Form.Item label="消息类型">
+                  {getFieldDecorator('noticeType')(
+                    <Select placeholder="请选择类型">
+                      {noticeType && noticeType.length ? noticeType.map(item=>(
+                        <Select.Option key={item.noticeType}>{item.message}</Select.Option>
+                      )) : ""}
+                    </Select>
+                  )}
+                </Form.Item>
+              </Col>
+              <Col offset={1} span={6}>
+                <Form.Item label="所属系统">
+                  {getFieldDecorator('systemSn')(
+                    <Select placeholder="请选择">
+                      {systemList && systemList.length ? systemList.map(item=>(
+                        <Select.Option key={item.sn}>{item.text}</Select.Option>
+                      )) : ""}
+                    </Select>
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="起止日期">
+                  {getFieldDecorator('rangeTime')(
+                    <RangePicker />
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item label="消息主题">
+                  {getFieldDecorator('title')(
+                    <Input placeholder="请输入消息主题" />
+                  )}
+                </Form.Item>
+              </Col>
+              <Col offset={10} span={5} style={{paddingTop: 4, textAlign: 'right'}}>
+                <Button type="primary" htmlType="submit">查询</Button>
+                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>重置</Button>
+              </Col>
+            </Row>
+          </Form>
+          <Table
+            loading={loading}
+            rowKey="id"
+            rowSelection={{
+              onChange: (selectedRowKeys) => {
+                this.setState({
+                  selectedIds: selectedRowKeys.join(','),
+                })
+              }
+            }}
+            columns={columns}
+            dataSource={msgList.data}
+            pagination={{
+              ...pagination,
+              showSizeChanger: true,
+              total: msgList.total,
+            }}
+            onChange={this.handleTableChange}
+          />
         </Card>
+      </Fragment>
     );
   }
 }
-
-//http://file.chinayasha.com/p-head/2017/12/20/8a8a94aa6059716b016071f33d2002fb.jpg
-//http://file.chinayasha.com/p-head/2017/12/13/00000000602edd7001604f193af80543.jpg
-//http://hometest.chinayasha.com
-

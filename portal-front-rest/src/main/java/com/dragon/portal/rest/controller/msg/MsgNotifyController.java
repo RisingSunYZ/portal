@@ -63,9 +63,9 @@ public class MsgNotifyController extends BaseController {
 		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		try {
 			com.ecnice.privilege.vo.ReturnVo rVo = privilegeApi.getAllSystem(null);
-			if (null != rVo.getDatas()&&PrivilegeConstant.SUCCESS_CODE==rVo.getStatus()) {
-				returnVo.setData(rVo.getDatas());
+			if (null != rVo.getDatas()) {
 				returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+				returnVo.setData(rVo.getDatas());
 			}else{
 			    logger.info(rVo.getMessage());
 			    returnVo.setMsg(rVo.getMessage());

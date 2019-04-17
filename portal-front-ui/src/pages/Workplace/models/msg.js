@@ -1,5 +1,5 @@
 import { getMenuTree } from '@/services/bizSys';
-import { getMsgList, getMsgCount, getNoticeType, getAllSystem } from '@/services/msgcenter';
+import { getMsgList, getMsgCount, getNoticeType, getAllSystem, updateMsgStatus, getMsgDetail } from '@/services/msgcenter';
 import { message } from 'antd';
 
 export default {
@@ -13,6 +13,7 @@ export default {
     noticeType: [],
     sysData: [],
     count: {},
+    msgDetail: {},
   },
 
   namespace: 'msg',
@@ -35,7 +36,6 @@ export default {
           pagination: payload,
         });
       }
-
     },
 
     *getMenuTree({ payload }, { call, put }) {
@@ -66,6 +66,21 @@ export default {
       if(response.code === "100") {
         yield put({
           type: 'saveSystems',
+          payload: response
+        });
+      }
+    },
+    *updateMsgStatus({ payload, callback }, { call, put }) {
+      const response = yield call(updateMsgStatus, payload);
+      if(callback && typeof callback === 'function') {
+        callback(response);
+      }
+    },
+    *getMsgDetail({ payload }, { call, put }) {
+      const response = yield call(getMsgDetail, payload);
+      if(response.code === "100") {
+        yield put({
+          type: 'saveMsgDetail',
           payload: response
         });
       }
@@ -103,6 +118,11 @@ export default {
         systemList: action.payload.data
       };
     },
-
+    saveMsgDetail(state, action) {
+      return {
+        ...state,
+        msgDetail: action.payload.data
+      };
+    },
   },
 };
