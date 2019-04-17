@@ -59,7 +59,6 @@ export default class AddressBook extends PureComponent {
   // 树的点击事件
   selectNode(selectedKeys, e) {
     // console.log(selectedKeys)
-    // debugger;
     const key=e.selectedNodes[0].key;
     if (e.selected) {
       const params={
@@ -112,7 +111,6 @@ export default class AddressBook extends PureComponent {
 
   // 跳到树目录
   skipMenuTree=(record)=>{
-    // console.log(record);
     const { dispatch }=this.props;
     const  params={
       deptId: record.deptId,
@@ -406,6 +404,15 @@ export default class AddressBook extends PureComponent {
                          <span className={styles.text}>移除</span>
                        </div>
                      )}
+                     <Modal
+                       visible={visible}
+                       footer={null}
+                       closable={false}
+                       centered
+                       bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
+                       maskStyle={{backgroundColor:'transparent'}}>
+                       <p>{ModalTextAdd}</p>
+                     </Modal>
                    </Col>
                  ) : (
                   <Col span={2} className={styles.colHeader}>
