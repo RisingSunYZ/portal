@@ -33,7 +33,8 @@ export default class AddressBook extends PureComponent {
     personObj:{},
     deptId:'',
     companyId:'',
-    selectTreeStr:"1001K31000000002GLCT"
+    selectTreeStr:"1001K31000000002GLCT",
+    key:""
   };
 
   componentDidMount(){
@@ -58,6 +59,8 @@ export default class AddressBook extends PureComponent {
   // 树的点击事件
   selectNode(selectedKeys, e) {
     // console.log(selectedKeys)
+    // debugger;
+    const key=e.selectedNodes[0].key;
     if (e.selected) {
       const params={
         deptId: selectedKeys[0],
@@ -72,7 +75,8 @@ export default class AddressBook extends PureComponent {
       this.setState({
         query:params,
         selectedKey:selectedKeys,
-        companyId:params.companyId
+        companyId:params.companyId,
+        selectTreeStr:key
       });
     }
   }
@@ -118,16 +122,15 @@ export default class AddressBook extends PureComponent {
     };
 
     if(record.gender===null){
+      dispatch({
+        type: 'addressBook/getTableList',
+        payload: params
+      });
       this.setState({
         selectTreeStr:record.deptId,
       })
     }
 
-
-    dispatch({
-      type: 'addressBook/getTableList',
-      payload: params
-    });
     this.setState({
       query:params,
     });

@@ -81,6 +81,7 @@ export default class TreeMenu extends PureComponent {
                 onSelect={this.props.onSelect}
                 defaultExpandedKeys={this.props.defaultExpandedKeys}
                 selectedKeys={this.props.selectedKeys}
+                // defaultSelectedKeys={this.props.defaultSelectedKeys}
               >
                 {loop(treeData)}
               </Tree>
