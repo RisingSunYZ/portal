@@ -1,7 +1,7 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { Button, Icon,Row,Col, Modal, Popover, message } from 'antd';
 import { connect } from 'dva';
-import { ProcessSelector } from '../Selector';
+import { ProcessSelector } from '@/components/Selector';
 import { changeParam, getConfig, nullToZero, fileDown } from '@/utils/utils';
 import Plupload from "@/components/Plupload";
 import styles from "./index.less"
