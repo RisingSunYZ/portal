@@ -1,5 +1,6 @@
-import { stringify } from 'qs';
 import request from '../utils/request';
+import { stringify } from 'qs';
+
 
 /**
  * GET请求例子
@@ -156,7 +157,7 @@ export async function getLateAbsenteeism(params) {
  * @returns {Promise<Object>}
  */
 export async function getAbsenteeism(params) {
-  return request(`/portal/api/attendance/getAbsenteeism.jhtml?${stringify(params)}`);
+  return request(`/portal/api/attendance/getAbsenteeism?${stringify(params)}`);
 }
 /**
  * 获取考勤总览数据
@@ -164,7 +165,7 @@ export async function getAbsenteeism(params) {
  * @returns {Promise<Object>}
  */
 export async function getSummaryAttendance(params) {
-  return request(`/portal/api/attendance/getSummaryAttendance.jhtml?${stringify(params)}`);
+  return request(`/portal/api/attendance/getSummaryAttendance?${stringify(params)}`);
 }
 /**
  * 获取考勤记录数据
@@ -172,14 +173,14 @@ export async function getSummaryAttendance(params) {
  * @returns {Promise<Object>}
  */
 export async function getAttendanceRecord(params) {
-  return request(`/portal/api/attendance/getAttendanceRecord.jhtml?${stringify(params)}`);
+  return request(`/portal/api/attendance/getAttendanceRecord?${stringify(params)}`);
 }
 
 /**
  * 获取打卡异常信息
  */
 export async function getException(params) {
-  return request(`/portal/api/attendance/getException.jhtml?${stringify(params)}`);
+  return request(`/portal/api/attendance/getException?${stringify(params)}`);
 }
 
 /**
@@ -188,7 +189,7 @@ export async function getException(params) {
  * @returns {Promise<Object>}
  */
 export async function getTrainingOverview(params) {
-  return request(`/portal/api/train/getTrainingOverview.jhtml?${stringify(params)}`);
+  return request(`/portal/api/train/getTrainingOverview?${stringify(params)}`);
 }
 /**
  * 获取培训总览
@@ -196,47 +197,47 @@ export async function getTrainingOverview(params) {
  * @returns {Promise<Object>}
  */
 export async function getTrainingDetails(params) {
-  return request(`/portal/api/train/queryTrain.jhtml?${stringify(params)}`);
+  return request(`/portal/api/train/queryTrain?${stringify(params)}`);
 }
 
 /**
  * 获取表单信息
  */
 export async function getBaseInfo(params) {
-  return request(`/portal/api/person/getBaseInfo.jhtml?${stringify(params)}`);
+  return request(`/portal/api/person/getBaseInfo?${stringify(params)}`);
 }
 
 /**
  * 验证密码
  */
 export async function checkPwd(params) {
-  return request(`/portal/api/person/checkPwd.jhtml?${stringify(params)}`);
+  return request(`/portal/api/person/checkPwd?${stringify(params)}`);
 }
 
 /**
  * 获取因公外出信息
  */
 export async function getBusinessTrip(params) {
-  return request(`/portal/api/attendance/getBusinessTrip.jhtml?${stringify(params)}`);
+  return request(`/portal/api/attendance/getBusinessTrip?${stringify(params)}`);
 }
 /**
  * 获取常用流程
  */
 export async function getQuickProcess(params) {
-  return request(`/portal/api/hrService/getQuickProcess.jhtml?${stringify(params)}`);
+  return request(`/portal/api/hrService/getQuickProcess?${stringify(params)}`);
 }
 
 /**
  *检查个人是否考勤异常
  */
 export async function checkPersonExp(params) {
-  return request(`/portal/api/attendance/checkPersonExp.jhtml`);
+  return request(`/portal/api/attendance/checkPersonExp`);
 }
 /**
  *检查消息通知数量
  */
 export async function getMsgCount(params) {
-  return request(`/portal/api/person/getMsgCount.jhtml`);
+  return request(`/portal/api/person/getMsgCount`);
 }
 
 /**
@@ -245,18 +246,18 @@ export async function getMsgCount(params) {
  * @returns {Promise<Object>}
  */
 export async function getFeedback (params) {
-  return request(`/portal/api/hrService/getDicList.jhtml`);
+  return request(`/portal/api/hrService/getDicList`);
 }
 
 /**
  * 校验是否领导
  */
 export async function checkLeader (params) {
-  return request(`/portal/api/hrService/checkLeader.jhtml`);
+  return request(`/portal/api/hrService/checkLeader`);
 }
 /**
  * 联系我们
  */
 export async function getContactUs (params) {
-  return request(`/portal/api/hrService/getContactUs.jhtml`);
+  return request(`/portal/api/hrService/getContactUs`);
 }

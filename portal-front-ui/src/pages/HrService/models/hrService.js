@@ -1,8 +1,7 @@
-import { checkPersonExp,getMsgCount,checkLeader,getQuickProcess,getContactUs } from '@/services/hrService';
-import { getAllPerson, } from '@/services/hrServiceAjax';
-import { getDeptTree,getDeptList,getTopDept,getDeptIds } from '@/services/hrUserTeamService';
+import { checkPersonExp,getMsgCount,checkLeader,getQuickProcess,getContactUs } from '../../../services/hrService';
+import { getAllPerson, } from '../../../services/hrServiceAjax';
+import { getDeptTree,getDeptList,getTopDept,getDeptIds } from '../../../services/hrUserTeamService';
 
-import { message } from 'antd';
 export default {
   state: {
     msgCount: 0,

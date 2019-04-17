@@ -100,7 +100,7 @@ export default [
           {
             path: '/main/hr-service',
             name: 'hr',
-            // component: './HrService/HrService',
+            component: './HrService/HrService',
           },
           {
             path: '/main/infor-tech',

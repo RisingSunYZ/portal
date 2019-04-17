@@ -2,19 +2,20 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Form, Input, Select, Tabs, Icon } from 'antd';
 import NewsBanner from '@/components/NewsBanner';
+import HrBaseInfo from './components/HrBaseInfo/index';
+import HrDoneProcess from './components/HrDoneProcess/index';
 import NewsNotice from '@/components/NewsNotice';
-import SelfService from '../components/SelfService';
+import SelfService from './components/SelfService/index';
+import HrTrain from './components/HrTrain/index';
+import HrToDoProcess from './components/HrTodoProcess/index';
+import {getConfig} from "../../utils/utils";
 import styles from './HrService.less';
 
 const Search = Input.Search;
 const FormItem = Form.Item;
 const { Option } = Select;
 const TabPane = Tabs.TabPane;
-import HrBaseInfo from '../components/HrBaseInfo';
-import HrTrain from '../components/HrTrain';
-import HrToDoProcess from '../components/HrTodoProcess';
-import HrDoneProcess from '../components/HrDoneProcess';
-import {getConfig} from "../../../utils/utils";
+
 @connect(({ loading,hrService }) => ({
   hrService,
   loading: loading.models.hrService,
@@ -71,12 +72,12 @@ class HrService extends PureComponent {
               extra={<a className="moreNews" href={getConfig().domain +'/portal/newsNotice/homeNoticeList.jhtml?typeSn=hr_notice'} target="_blank">更多 <Icon type="ellipsis" /></a>}
               bordered={false}
             >
-              <NewsNotice />
+              {/*<NewsNotice />*/}
             </Card>
           </Col>
         </Row>
         <Row>
-          <Col span={24}> <SelfService /> </Col>
+          {/*<Col span={24}> <SelfService /> </Col>*/}
         </Row>
         <Row gutter={16}>
           <Col span={12}>
@@ -84,7 +85,7 @@ class HrService extends PureComponent {
               <Tabs defaultActiveKey="1" onChange={this.callback} style={{ height: 460 }}>
                 <TabPane tab="待办" key="1">
                   <div style={{ padding: '0 16px 16px' }}>
-                    <HrToDoProcess />
+                    {/*<HrToDoProcess />*/}
                   </div>
                 </TabPane>
                 <TabPane tab="已办" key="2">
@@ -101,7 +102,7 @@ class HrService extends PureComponent {
               <Tabs defaultActiveKey="1" onChange={this.changeSysEnter} style={{ height: 460 }}>
                 <TabPane tab="培训" key="1">
                   <div style={{ padding: '0 16px 16px' }}>
-                    <HrTrain />
+                    {/*<HrTrain />*/}
                   </div>
                 </TabPane>
                 <TabPane tab="招聘" key="2" />
