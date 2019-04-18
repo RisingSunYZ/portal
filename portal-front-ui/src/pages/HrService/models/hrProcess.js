@@ -1,5 +1,4 @@
-
-import { queryTodo,queryDone} from '@/services/process';
+import { queryTodo,queryAlreadyDo} from '../../../services/process';
 
 import { message } from 'antd';
 export default {
@@ -18,19 +17,19 @@ export default {
 
   effects: {
     *queryTodo({ payload }, { call, put }) {
+
       const response = yield call(queryTodo, payload);
       yield put({
         type: 'queryList',
-        payload: response,
-        pagination: payload,
+        payload: response.data,
+        // pagination: payload,
       });
     },
     *queryDone({ payload }, { call, put }) {
-      const response = yield call(queryDone, payload);
+      const response = yield call(queryAlreadyDo, payload);
       yield put({
         type: 'queryDoneList',
-        payload: response,
-        pagination: payload,
+        payload: response.data
       });
     },
 

@@ -19,10 +19,11 @@ export default {
   effects: {
     //检查个人是否考勤异常
     *getQuickProcess({ payload }, { call, put }) {
+      // debugger;
       const response = yield call(getQuickProcess, payload);
       yield put({
         type: 'saveQuickProcess',
-        payload: response,
+        payload: response.data,
       });
     },
 
@@ -97,7 +98,7 @@ export default {
 
   reducers: {
     saveQuickProcess(state, action) {
-
+    // debugger;
       return {
         ...state,
         quickProcess:action.payload

@@ -7,7 +7,7 @@ import HrDoneProcess from './components/HrDoneProcess/index';
 import NewsNotice from '@/components/NewsNotice';
 import SelfService from './components/SelfService/index';
 import HrTrain from './components/HrTrain/index';
-import HrToDoProcess from './components/HrTodoProcess/index';
+import HrToDoProcess from './HrTodoProcess/index';
 import {getConfig} from "../../utils/utils";
 import styles from './HrService.less';
 
@@ -64,7 +64,7 @@ class HrService extends PureComponent {
         <Row>
           <Col span={24}>
             <HrBaseInfo isLeader={hrService.isLeader} />
-            <NewsBanner newsBannerStyle={newsBannerStyle} />
+            <span style={{margin:'0 15px'}}><NewsBanner newsBannerStyle={newsBannerStyle} /></span>
             <Card
               className={styles.newsNoticeBox}
               title="人力公告"
@@ -72,12 +72,12 @@ class HrService extends PureComponent {
               extra={<a className="moreNews" href={getConfig().domain +'/portal/newsNotice/homeNoticeList.jhtml?typeSn=hr_notice'} target="_blank">更多 <Icon type="ellipsis" /></a>}
               bordered={false}
             >
-              {/*<NewsNotice />*/}
+              <NewsNotice  typeSn="notice" pageSize={5} />
             </Card>
           </Col>
         </Row>
         <Row>
-          {/*<Col span={24}> <SelfService /> </Col>*/}
+          <Col span={24}> <SelfService /> </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
@@ -85,7 +85,7 @@ class HrService extends PureComponent {
               <Tabs defaultActiveKey="1" onChange={this.callback} style={{ height: 460 }}>
                 <TabPane tab="待办" key="1">
                   <div style={{ padding: '0 16px 16px' }}>
-                    {/*<HrToDoProcess />*/}
+                    <HrToDoProcess />
                   </div>
                 </TabPane>
                 <TabPane tab="已办" key="2">
@@ -102,7 +102,7 @@ class HrService extends PureComponent {
               <Tabs defaultActiveKey="1" onChange={this.changeSysEnter} style={{ height: 460 }}>
                 <TabPane tab="培训" key="1">
                   <div style={{ padding: '0 16px 16px' }}>
-                    {/*<HrTrain />*/}
+                    <HrTrain />
                   </div>
                 </TabPane>
                 <TabPane tab="招聘" key="2" />

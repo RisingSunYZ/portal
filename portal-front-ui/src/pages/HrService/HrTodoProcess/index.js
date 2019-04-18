@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Table } from 'antd';
 import { connect } from 'dva';
-import { nullToZero,getFormType } from '../../../../utils/utils';
+import { nullToZero,getFormType } from '../../../utils/utils';
 import ProcessTable from '@/components/StandardTable/ProcessTable';
 import styles from './index.less';
 @connect(({ hrProcess, loading }) => ({
@@ -265,7 +265,7 @@ formatterName(val, row, index) {
 }
   render() {
     const {
-      hrProcess: { data },
+      hrProcess: { data ,pagination},
     } = this.props;
     const columns = [
       {
@@ -371,18 +371,12 @@ formatterName(val, row, index) {
     ];
     return (
       <div className="hrMainTable">
-        <Table columns={columns} dataSource={data.list} pagination={{pageSize:5,size:"small",total:data.pagination.total,onChange:this.handleStandardTableChange,showQuickJumper:true}}   />
-        {/*<ProcessTable*/}
-          {/*rowKey="taskId"*/}
-          {/*data={data}*/}
-          {/*columns={columns}*/}
-          {/*notShowAlert={true}*/}
-          {/*showPagination={true}*/}
-          {/*pageSize={5}*/}
-          {/*size="small"*/}
-          {/*onChange={this.handleStandardTableChange}*/}
-          {/*scroll={{ y: 280 }}*/}
-        {/*/>*/}
+        <Table
+          columns={columns}
+          dataSource={data.list}
+          onChange={this.handleStandardTableChange}
+          pagination={{pageSize:5,total:data.pagination.total,showQuickJumper:true}}
+        />
       </div>
     );
   }

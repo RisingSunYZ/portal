@@ -14,12 +14,13 @@ export default class NewsNotice extends PureComponent {
 
   componentDidMount() {
     const { dispatch, typeSn, pageSize } = this.props;
+    debugger;
     dispatch({
       type: 'newsNotice/queryNewsNoticeData',
       payload: {
-        typeSn: typeSn || 'hr_notice',
+        typeSn: typeSn,
         pageNumber: 1,
-        pageSize: pageSize || 4
+        pageSize: pageSize
       }
     });
   }

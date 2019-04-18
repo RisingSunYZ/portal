@@ -17,7 +17,7 @@ import styles from './index.less';
 export default class HrDoneProcess extends Component {
 
   componentDidMount () {
-    this.props.dispatch({
+      this.props.dispatch({
       type: 'hrProcess/queryDone',
       payload: { page: 1, rows: 5 },
     });
@@ -42,7 +42,7 @@ export default class HrDoneProcess extends Component {
     });
   };
 formatterName(val, row, index) {
-  var html = (<div
+  const html = (<div
   style={{
     textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
@@ -159,7 +159,12 @@ formatterName(val, row, index) {
     ];
     return (
       <div className="hrMainTable">
-        <Table columns={columns} dataSource={DoneData.list}  pagination={{pageSize:5,size:"small",total:DoneData.pagination.total,onChange:this.handleStandardTableChange,showQuickJumper:true}}/>
+        <Table
+          columns={columns}
+          dataSource={DoneData.list}
+          onChange={this.handleStandardTableChange}
+          pagination={{pageSize:5,total:DoneData.pagination.total,showQuickJumper:true}}
+        />
       </div>
     );
   }

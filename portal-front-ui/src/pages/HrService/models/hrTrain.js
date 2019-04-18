@@ -1,5 +1,4 @@
-
-import { queryTrain } from '@/services/hrService';
+import { queryTrain } from '../../../services/hrService';
 
 export default {
   namespace: 'hrTrain',
@@ -18,7 +17,7 @@ export default {
       const response = yield call(queryTrain, payload);
       yield put({
         type: 'queryTrainlist',
-        payload: response,
+        payload: response.data,
       });
     },
 

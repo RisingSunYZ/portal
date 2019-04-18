@@ -26,32 +26,8 @@ export async function removeRule(params) {
   });
 }
 
-/**
- * 新闻banner
- * @param params
- * @returns {Promise<Object>}
- */
-export async function queryNewsBanner(params) {
-  return request(`/portal/api/news/ajaxListVo.jhtml?${stringify(params)}`);
-}
 
-/**
- * 新闻公告
- * @param params
- * @returns {Promise<Object>}
- */
-export async function queryNewsNotice(params) {
-  return request(`/portal/api/news/ajaxListVo.jhtml?${stringify(params)}`);
-}
 
-/**
- * 培训
- * @param params
- * @returns {Promise<Object>}
- */
-export async function queryTrainList(params) {
-  // return request(`/portal/api/hrService/queryTrainList.jhtml?${stringify(params)}`);
-}
 /**
  * 培训
  * @param params

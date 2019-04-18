@@ -64,7 +64,11 @@ export default class HrTrain extends Component {
     ];
     return (
       <div className="hrMainTable">
-        <Table columns={columns} dataSource={data.list} pagination={{pageSize:5,size:"small",total:data.pagination.total,onChange:this.handleStandardTableChange,showQuickJumper:true}}   />
+        <Table
+          columns={columns}
+          dataSource={data.list}
+          onChange={this.handleStandardTableChange}
+          pagination={{pageSize:5,total:data.pagination.total,showQuickJumper:true}}   />
       </div>
     );
   }

@@ -48,6 +48,11 @@ export default {
       rows: [],
       total: 0
     },
+    hr_notice:{
+      data: [],
+      rows: [],
+      total: 0
+    },
     newsDetail: {},
     noticeDetail: {},
     finance_notice: {},
@@ -91,6 +96,7 @@ export default {
     },
 
     *queryNewsNoticeData({ payload }, { call, put }) {
+      // debugger;
       const response = yield call(queryNewsList, payload);
       // response.typeSn = payload.typeSn
       if(response.code === "100"){
@@ -146,6 +152,7 @@ export default {
       };
     },
     saveNewsList(state, action) {
+      // debugger
       return {
         ...state,
         notice: action.payload.data,
@@ -164,9 +171,16 @@ export default {
       };
     },
     savemsg_notice(state, action){
+      // debugger;
       return {
         ...state,
         msg_notice: action.payload.data,
+      };
+    },
+    savehr_notice(state, action) {
+      return {
+        ...state,
+        hr_notice: action.payload.data,
       };
     },
     saveNoticeList(state, action) {
@@ -216,6 +230,7 @@ export default {
         ...state,
         finance_pro: action.payload.data,
       };
-    },
+    }
+
   },
 };
