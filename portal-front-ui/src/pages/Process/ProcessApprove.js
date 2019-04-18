@@ -227,6 +227,24 @@ export default class ProcessApprove extends React.Component {
     });
   };
 
+
+  /**
+   * 评审
+   * @param msg
+   */
+  doApproveReview = msg =>{
+    this.props.dispatch({
+      type: 'processForm/doApprove',
+      payload: {
+        option: 'PS',
+        message: encodeURIComponent(msg),
+        taskId: this.props.processForm.taskId,
+        processInstanceId: this.props.processForm.instId,
+      },
+    });
+  };
+
+
   /**
    * 审批并加签
    * @param obj
@@ -248,8 +266,6 @@ export default class ProcessApprove extends React.Component {
    */
   doAddSign = obj => {
     if (obj && obj.datas.length > 0) {
-      debugger
-
       this.props.dispatch({
         type: 'processForm/doAddSign',
         payload: {
@@ -338,6 +354,7 @@ export default class ProcessApprove extends React.Component {
     doApprove: this.doApprove,
     doTurnDo: this.doTurnDo,
     doAddSign: this.doAddSign,
+    doApproveReview:this.doApproveReview
   };
 
   render() {

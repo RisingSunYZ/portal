@@ -71,14 +71,11 @@ class ProcessSelector extends PureComponent {
     form.validateFields((err, fieldsValue) => {
 
       if (err) return;
-
       const values = {
         ...fieldsValue,
         updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
         keyWords:fieldsValue.executionName,
       };
-      console.log(values)
-
       this.setState({
         formValues: values,
       });
@@ -658,7 +655,7 @@ class ProcessSelector extends PureComponent {
         onCancel={this.handleCancel}
         cancelText=""
         bodyStyle={{ padding:'4px 24px 0' }}
-        zIndex={10000}
+        zIndex={1000}
       >
         <Tabs defaultActiveKey="queryTodo" onChange={this.changeTab.bind(this)}>
           <TabPane tab="未处理"  disabled={this.state.disabled} key="queryTodo">

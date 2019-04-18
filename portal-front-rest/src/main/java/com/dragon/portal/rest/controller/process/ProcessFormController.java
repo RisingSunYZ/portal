@@ -179,6 +179,7 @@ public class ProcessFormController extends BaseController {
 		String url = "";
 		boolean errorFlag=false;
 		try{
+			UserSessionInfo user=getLoginUser(request,response);
 			ExtendModel modelExtend=new ExtendModel();
 			modelExtend.setModelKey(modelId);
 			modelExtend.setBusinessKey(bizId);
@@ -193,7 +194,12 @@ public class ProcessFormController extends BaseController {
 					|| ModelAppliedRangeEnum.YWXTYW.getStatus().equals(appliedRange)){
 				url = rVo.getData().getBusinessUrl();
 				if(url.indexOf("/portal/form/biz/index-")>-1){
-					url = "/flow/form/s/page/biz-form.html";
+					Boolean isEditData=false;
+					ReturnVo<Boolean> editData = processMainComponent.isEditData(user.getNo(), taskId, instId);
+					if(ReturnCode.SUCCESS.equals(editData.getCode())){
+						isEditData=editData.getData();
+					}
+					url = "/flow/form/s/page/biz-form.html?isEditorData="+isEditData;
 				}
 			}else{
 				url="/flow/form/s/page/custm-form.html";

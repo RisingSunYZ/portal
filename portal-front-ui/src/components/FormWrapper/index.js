@@ -60,6 +60,15 @@ export default class FormBox extends React.Component {
         }else{
           this.props.doApprove(approveMsg);
         }
+      }else if(fnName==="doApproveReview"){//评审
+        const con=()=>{
+          this.props.doApproveReview(approveMsg);
+        }
+        if($(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
+          iframeWin.YSForm.formApprove(con);
+        }else{
+          this.props.doApproveReview(approveMsg);
+        }
       }else if(fnName==="doAddSign"){//加签
         const con=()=>{
           this.props.doAddSign(approveMsg);
