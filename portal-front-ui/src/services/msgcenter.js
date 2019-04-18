@@ -21,12 +21,6 @@ export async function getAllSystem(params) {
   return request(`/rest/portal/msg/getAllSystem?${stringify(params)}`);
 }
 /**
- * 获取消息数量
- */
-export async function getMsgCount() {
-  return request(`/rest/portal/msg/getMsgCount`);
-}
-/**
  * 修改消息阅读状态
  */
 export async function updateMsgStatus(params) {

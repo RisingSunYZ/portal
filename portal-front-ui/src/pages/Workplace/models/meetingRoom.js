@@ -10,7 +10,7 @@ import {
   getInputData,
   getRecordPer,
   getUploadSummary,
-} from '../../../services/meetingRoom';
+} from '../../../services/meeting';
 import { message } from 'antd';
 
 export default {

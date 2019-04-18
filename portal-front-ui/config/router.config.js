@@ -119,6 +119,28 @@ export default [
           },
         ],
       },
+      {
+        path: '/biz-sys/:systemSn/:sn',
+        name: 'biz-sys',
+        component: '../layouts/HeadSiderLayout',
+        routes: [
+          {
+            path: '/biz-sys/xxzx/lczx',
+            name: 'msg-flow',
+            component: './Workplace/MsgManage/FlowMsg'
+          },
+          {
+            path: '/biz-sys/xxzx/xtxx',
+            name: 'msg-system',
+            component: './Workplace/MsgManage/SysMsg'
+          },
+          {
+            path: '/biz-sys/zygl/hys',
+            name: 'meetingroom-manage',
+            component: './ResourceControl/MeetingRoom'
+          },
+        ]
+      },
       // address-book
       {
         path: '/workplace',
@@ -133,27 +155,6 @@ export default [
             path: '/workplace/address-book',
             name: 'address-book',
             component: './Workplace/AddressBook'
-          },
-          {
-            path: '/workplace/msg',
-            name: 'msg-center',
-            component: './Workplace/MsgManage',
-            routes:[
-              {
-                path: '/workplace/msg',
-                redirect: '/workplace/msg/lczx'
-              },
-              {
-                path: '/workplace/msg/lczx',
-                name: 'msg-flow',
-                component: './Workplace/MsgManage/FlowMsg',
-              },
-              {
-                path: '/workplace/msg/xtxx',
-                name: 'msg-system',
-                component: './Workplace/MsgManage/SysMsg',
-              },
-            ],
           },
           {
             path: '/workplace/msg-system',

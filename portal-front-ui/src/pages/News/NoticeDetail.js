@@ -202,7 +202,7 @@ export default class NoticeDetail extends PureComponent {
               </p>
               <ul className="u-activity">
                 {notice.signatory ? <li>签发人：<span>{notice.signatory}</span></li>: ''}
-                <li>发布时间：<span>{notice.publishTime}</span></li>
+                <li>发布时间：<span>{notice.publishTime ? notice.publishTime.split(" ")[0] : ""}</span></li>
                 <li>阅读量：<span>{notice.visitCount}</span></li>
                 {notice.categoryName?<li className="category-text"><span title={notice.categoryName}>{notice.categoryName} </span> </li>:''}
               </ul>
@@ -211,7 +211,7 @@ export default class NoticeDetail extends PureComponent {
               <div id="watermark" />
               <div dangerouslySetInnerHTML={{__html: notice.content}} className="content-view" />
               <p align="right">{notice.ownerName}</p>
-              {notice.writingTime ? <p align="right">{notice.writingTime}</p> : ''}
+              {notice.writingTime ? <p align="right">{notice.writingTime.split(" ")[0]}</p> : ''}
             </div>
           </Card>
           <div className="fixed-msg-box">

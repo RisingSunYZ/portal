@@ -7,7 +7,8 @@ import { message } from 'antd';
 
 const { RangePicker } = DatePicker;
 
-@connect(({ msg, loading }) => ({
+@connect(({ bizSys, msg, loading }) => ({
+  bizSys,
   msg,
   loading: loading.models.msg,
 }))
@@ -132,7 +133,7 @@ export default class FlowMsg extends PureComponent {
   updateMsgCount  = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'msg/getMsgCount',
+      type: 'bizSys/getMsgCount',
     });
   };
 
