@@ -96,7 +96,6 @@ export default {
     },
 
     *queryNewsNoticeData({ payload }, { call, put }) {
-      // debugger;
       const response = yield call(queryNewsList, payload);
       // response.typeSn = payload.typeSn
       if(response.code === "100"){
@@ -152,7 +151,6 @@ export default {
       };
     },
     saveNewsList(state, action) {
-      // debugger
       return {
         ...state,
         notice: action.payload.data,
@@ -171,7 +169,6 @@ export default {
       };
     },
     savemsg_notice(state, action){
-      // debugger;
       return {
         ...state,
         msg_notice: action.payload.data,

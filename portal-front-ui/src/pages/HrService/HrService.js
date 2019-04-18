@@ -72,7 +72,7 @@ class HrService extends PureComponent {
               extra={<a className="moreNews" href={getConfig().domain +'/portal/newsNotice/homeNoticeList.jhtml?typeSn=hr_notice'} target="_blank">更多 <Icon type="ellipsis" /></a>}
               bordered={false}
             >
-              <NewsNotice  typeSn="notice" pageSize={5} />
+              <NewsNotice  typeSn="hr_notice" pageSize={5} />
             </Card>
           </Col>
         </Row>
