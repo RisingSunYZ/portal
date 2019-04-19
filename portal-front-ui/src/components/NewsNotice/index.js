@@ -14,7 +14,6 @@ export default class NewsNotice extends PureComponent {
 
   componentDidMount() {
     const { dispatch, typeSn, pageSize } = this.props;
-    debugger;
     dispatch({
       type: 'newsNotice/queryNewsNoticeData',
       payload: {

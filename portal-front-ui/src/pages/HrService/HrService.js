@@ -64,15 +64,15 @@ class HrService extends PureComponent {
         <Row>
           <Col span={24}>
             <HrBaseInfo isLeader={hrService.isLeader} />
-            <span style={{margin:'0 15px'}}><NewsBanner newsBannerStyle={newsBannerStyle} /></span>
+            <span style={{margin:'0 15px',}}><NewsBanner newsBannerStyle={newsBannerStyle} /></span>
             <Card
               className={styles.newsNoticeBox}
               title="人力公告"
-              bodyStyle={{ padding: '9px 0 0' }}
+              bodyStyle={{ padding: '9px 0 0 ' }}
               extra={<a className="moreNews" href={getConfig().domain +'/portal/newsNotice/homeNoticeList.jhtml?typeSn=hr_notice'} target="_blank">更多 <Icon type="ellipsis" /></a>}
               bordered={false}
             >
-              <NewsNotice  typeSn="hr_notice" pageSize={5} />
+              <NewsNotice  typeSn="hr_notice" pageSize={4} />
             </Card>
           </Col>
         </Row>
