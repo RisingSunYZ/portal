@@ -270,10 +270,24 @@ export default {
       };
     },
     setSelectedNode(state, action) {
-      return {
-        ...state,
-        selectedNode:action.payload.selectedNode
-      };
+      if(action.payload.selectedNode.eventKey == "myRegular"){
+        let regularItem = (JSON.parse(localStorage.getItem("regularData")) && JSON.parse(localStorage.getItem("regularData")).length>0)?JSON.parse(localStorage.getItem("regularData")):[];
+        regularItem.length>0&&regularItem.forEach(function (obj) {
+          obj.display="inline-block";
+        })
+
+        return {
+          ...state,
+          selectedNode:action.payload.selectedNode,
+          list:regularItem,
+        };
+      }else{
+        return {
+          ...state,
+          selectedNode:action.payload.selectedNode,
+        };
+      }
+
     },
     queryTodoList(state, action) {
       const sorter = action.payload.sorter;
@@ -388,6 +402,7 @@ export default {
         message.success('删除成功');
         action.payload.data.list.map(row => {
           row.url = `/process/form/launch/${row.modelKey}/0/0/0/${getFormType(row.fromUrl)}`;
+          row.display="none";
         });
         return {
           ...state,
@@ -400,6 +415,7 @@ export default {
     modelCallback(state, action) {
       action.payload.map(row => {
         row.url = `/process/form/launch/${row.modelKey}/0/0/0/${getFormType(row.fromUrl)}`;
+        row.display="none";
       });
       return {
         ...state,

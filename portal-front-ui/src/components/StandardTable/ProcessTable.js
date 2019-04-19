@@ -65,7 +65,7 @@ class ProcessTable extends PureComponent {
         {notShowAlert?(<span></span>):(<div className={styles.tableAlert}><Alert
           message={
             <Fragment>
-              共筛选<a style={{ fontWeight: 600 }}>{pagination.total}</a>条符合条件的事项。
+              共筛选<a style={{ fontWeight: 600 }}>{pagination.total}</a>条符合条件的数据。
             </Fragment>
           }
           type="info"
