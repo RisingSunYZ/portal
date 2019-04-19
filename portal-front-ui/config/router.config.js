@@ -298,32 +298,32 @@ export default [
           //   name: 'main-workplace',
             // component: './UserCenter/Baseinfo',
           // },
-          // {
-          //   path: '/user-center/attendance',
-          //   name: 'main-workplace',
-          //   component: './UserCenter/Attendance/TabList',
-          //   routes: [
-          //     // {
-          //     //   path: '/user-center/attendance',
-          //     //   redirect: '/user-center/attendance/summary',
-          //     // },
-          //     {
-          //       path: '/user-center/attendance/summary',
-          //       name: 'attendance-summary',
-          //       component: './UserCenter/Attendance/SummaryAttendance',
-          //     },
-          //     {
-          //       path: '/user-center/attendance/record',
-          //       name: 'attendance-record',
-          //       component: './UserCenter/Attendance/AttendanceRecord',
-          //     },
-          //     {
-          //       path: '/user-center/attendance/exception',
-          //       name: 'attendance-exception',
-          //       component: './UserCenter/Attendance/ExceptionHandle',
-          //     },
-          //   ],
-          // },
+          {
+            path: '/user-center/attendance',
+            name: 'main-workplace',
+            component: './UserCenter/Attendance/TabList',
+            routes: [
+              {
+                path: '/user-center/attendance',
+                redirect: '/user-center/attendance/summary',
+              },
+              {
+                path: '/user-center/attendance/summary',
+                name: 'attendance-summary',
+                component: './UserCenter/Attendance/SummaryAttendance',
+              },
+              {
+                path: '/user-center/attendance/record',
+                name: 'attendance-record',
+                component: './UserCenter/Attendance/AttendanceRecord',
+              },
+              {
+                path: '/user-center/attendance/exception',
+                name: 'attendance-exception',
+                component: './UserCenter/Attendance/ExceptionHandle',
+              },
+            ],
+          },
           // {
           //   path: '/user-center/asset',
           //   name: 'main-workplace',
@@ -334,11 +334,11 @@ export default [
           //   name: 'main-workplace',
           //   component: './UserCenter/Performance',
           // },
-          // {
-          //   path: '/user-center/train',
-          //   name: 'main-workplace',
-          //   component: './UserCenter/Train',
-          // },
+          {
+            path: '/user-center/train',
+            name: 'main-workplace',
+            component: './UserCenter/Train',
+          },
           {
             path: '/user-center/edit',
             name: 'edit-info',
