@@ -131,3 +131,13 @@ export async function getUploadSummary(params) {
     body: params,
   });
 }
+
+/**
+ * 根据id查询 会议纪要 和 附件
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function getSummaryMeetingDatas(params){
+
+  return request(`/rest/portal/rscmgmt/meeting/getSummaryMeeting?id=${params.id}`);
+}

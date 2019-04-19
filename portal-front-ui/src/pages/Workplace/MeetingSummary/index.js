@@ -112,7 +112,7 @@ export default class MeetingSummary extends PureComponent {
       form,
     } = this.props;
 
-console.log(meetingSummary);
+    console.log(meetingSummary);
 // console.log(meetingSummary.meetingId)
     // 上传组件相关属性配置
     const mime_types = [
