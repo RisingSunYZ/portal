@@ -23,7 +23,7 @@ export default class WorkMenus extends PureComponent {
 
   state = {
     current:"workplace",
-    size:"large",
+    size:45,
   };
 
   componentDidMount(){

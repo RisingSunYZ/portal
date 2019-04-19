@@ -1,13 +1,85 @@
 @import '~antd/lib/style/themes/default.less';
 
+.toolbar{
+  margin-bottom: 10px;
+  :global{
+    .event-type{
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-left: 5px;
+      vertical-align: middle;
+      margin-top: -3px;
+      &.type-1{
+        background-color: #2FB654;
+      }
+      &.type-2{
+        background-color: @primary-color;
+      }
+    }
+  }
+}
+.leftCalendar{
+  :global{
+    .ant-fullcalendar-header{
+      text-align: center;
+      padding: 10px 0;
+      .ant-radio-group{
+        display: none;
+      }
+    }
+    .ant-fullcalendar-table{
+      border-spacing: 0;
+      .ant-fullcalendar-column-header{
+        padding-bottom: 10px;
+      }
+      .ant-fullcalendar-cell{
+        text-align: center;
+        padding: 0;
+        .left-date-box{
+          width: 37px;
+          height: 100%;
+          line-height: 38px;
+          cursor: pointer;
+          .tip{
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            &.tipType_1{
+              background-color: #2FB654;
+            }
+            &.tipType_2{
+              background: @primary-color;
+            }
+          }
+          &.selected{
+            background-color: #E5E5E5;
+          }
+        }
+        &.ant-fullcalendar-today .left-date-box{
+          background-color: #FFC6B4;
+        }
+        &.ant-fullcalendar-next-month-btn-day, &.ant-fullcalendar-last-month-cell{
+          color: #c3c3c3;
+        }
+      }
+    }
+  }
+}
+.grantList{
+  border-top: 1px solid #e5e5e5;
+  padding: 8px 0;
+  line-height: 32px;
+}
 :global{
   .ant-layout-sider{
     background-color: #fff;
   }
   .schedule-container{
     .rbc-toolbar{
-      width: 1176px;
-      margin-left: -300px;
       background-color: #f5f5f5;
       margin-bottom: 16px;
       padding: 10px;
@@ -36,6 +108,29 @@
           }
         }
       }
+    }
+    .event-box{
+      color: #fff;
+      padding: 0 5px;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+      &.note{
+        background-color: #2FB654;
+      }
+      &.meeting{
+        background-color: @primary-color;
+      }
+    }
+    .rbc-day-slot .event-box{
+      display: flex;
+      max-height: 100%;
+      min-height: 20px;
+      flex-flow: column wrap;
+      align-items: flex-start;
+      overflow: hidden;
+      position: absolute;
+      border: 1px solid #999;
     }
   }
 }

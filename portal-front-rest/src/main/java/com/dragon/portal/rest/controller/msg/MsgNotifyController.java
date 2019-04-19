@@ -9,6 +9,7 @@ import com.ecnice.privilege.constant.PrivilegeConstant;
 import com.ys.mis.api.IMisApi;
 import com.ys.mis.constant.MisConstant;
 import com.ys.mis.model.notice.Notification;
+import com.ys.mis.enm.NoticeTypeEnum;
 import com.ys.tools.pager.PagerModel;
 import com.ys.tools.pager.Query;
 import io.swagger.annotations.Api;
@@ -62,9 +63,9 @@ public class MsgNotifyController extends BaseController {
 		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
 		try {
 			com.ecnice.privilege.vo.ReturnVo rVo = privilegeApi.getAllSystem(null);
-			if (null != rVo.getDatas()&&PrivilegeConstant.SUCCESS_CODE==rVo.getStatus()) {
-				returnVo.setData(rVo.getDatas());
+			if (null != rVo.getDatas()) {
 				returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+				returnVo.setData(rVo.getDatas());
 			}else{
 			    logger.info(rVo.getMessage());
 			    returnVo.setMsg(rVo.getMessage());
@@ -74,36 +75,37 @@ public class MsgNotifyController extends BaseController {
 		}
 		return returnVo;
 	}
-//	/**
-//	 * 消息类型查询
-//	 * @param notification
-//	 */
-//	@GetMapping("/getNoticeType")
-//	@ApiOperation("消息类型查询")
-//	public ReturnVo<List<Notification>> getNoticeType(@ApiIgnore Notification notification, HttpServletRequest request, HttpServletResponse response){
-//		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
-//		try {
-//			com.ys.tools.vo.ReturnVo<List<Notification>> system = misApi.getNoticeType(notification);
-//			if(null !=system.getData()){
-//				List<Notification> noticeTypes = system.getData();
-//				for(Notification noticeType :noticeTypes){
-//					if(noticeType.getNoticeType()==NoticeTypeEnum.FLOW_NOTIFY.getType()){
-//						noticeType.setMessage(NoticeTypeEnum.FLOW_NOTIFY.getName());
-//					}else if(noticeType.getNoticeType()==NoticeTypeEnum.FLOW_MESSAGE.getType()){
-//						noticeType.setMessage(NoticeTypeEnum.FLOW_MESSAGE.getName());
-//					}else if(noticeType.getNoticeType()==NoticeTypeEnum.SYSTEM_NOTIFY.getType()){
-//						noticeType.setMessage(NoticeTypeEnum.SYSTEM_NOTIFY.getName());
-//					}else{
-//						noticeType.setMessage(NoticeTypeEnum.SYSTEM_TODO.getName());
-//					}
-//				}
-//				returnVo.setData(noticeTypes);
-//			}
-//		}catch (Exception e){
-//			logger.error("MsgNotifyController-getNoticeType:",e);
-//		}
-//		return returnVo;
-//	}
+	/**
+	 * 消息类型查询
+	 * @param notification
+	 */
+	@GetMapping("/getNoticeType")
+	@ApiOperation("消息类型查询")
+	public ReturnVo<List<Notification>> getNoticeType(@ApiIgnore Notification notification, HttpServletRequest request, HttpServletResponse response){
+		ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"查询失败");
+		try {
+			com.ys.tools.vo.ReturnVo<List<Notification>> system = misApi.getNoticeType(notification);
+			if(null !=system.getData()){
+				List<Notification> noticeTypes = system.getData();
+				for(Notification noticeType :noticeTypes){
+					if(noticeType.getNoticeType()==NoticeTypeEnum.FLOW_NOTIFY.getType()){
+						noticeType.setMessage(NoticeTypeEnum.FLOW_NOTIFY.getName());
+					}else if(noticeType.getNoticeType()==NoticeTypeEnum.FLOW_MESSAGE.getType()){
+						noticeType.setMessage(NoticeTypeEnum.FLOW_MESSAGE.getName());
+					}else if(noticeType.getNoticeType()==NoticeTypeEnum.SYSTEM_NOTIFY.getType()){
+						noticeType.setMessage(NoticeTypeEnum.SYSTEM_NOTIFY.getName());
+					}else{
+						noticeType.setMessage(NoticeTypeEnum.SYSTEM_TODO.getName());
+					}
+				}
+				returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+				returnVo.setData(noticeTypes);
+			}
+		}catch (Exception e){
+			logger.error("MsgNotifyController-getNoticeType:",e);
+		}
+		return returnVo;
+	}
 
 
 	@GetMapping("/ajaxlist")

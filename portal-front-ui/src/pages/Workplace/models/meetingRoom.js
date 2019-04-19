@@ -11,7 +11,7 @@ import {
   getRecordPer,
   getUploadSummary,
   getSummaryMeetingDatas
-} from '../../../services/meetingRoom';
+} from '../../../services/meeting';
 import { message } from 'antd';
 
 export default {

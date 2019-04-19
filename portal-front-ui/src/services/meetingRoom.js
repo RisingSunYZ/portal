@@ -1,141 +1,97 @@
 import request from '../utils/request';
-
+import { stringify } from 'qs';
 /**
- * 删除记录人
+ * 根据日期加载会议室申请数据
  * @param params
  * @returns {Promise<Object>}
  */
-export async function delRecordPersons(params){
-
-  return request(`/rest/portal/rscmgmt/meeting/delPersonnel/${params.id}`);
-}
-
-/**
- * 保存记录人
- * @param params
- * @returns {Promise<Object>}
- */
-export async function getRecordPer(params) {
-  return request('/rest/portal/rscmgmt/meeting/insertPersonnel', {
+export async function queryApplyList(params) {
+  return request('/rest/portal/rscmgmt/meetingroom/ajaxApplyList', {
     method: 'POST',
     body: params,
   });
 }
 
 /**
- * 删除 我的草稿会议 数据
+ * 根据用户权限加载会议室数据
  * @param params
  * @returns {Promise<Object>}
  */
-export async function delDraftDatas(params){
-  console.log(params);
-  return request(`/rest/portal/rscmgmt/meeting/delMyDraft/${params.id}`);
-}
-
-/**
- * 新建会议-按钮-发送邀请
- * @param params
- * @returns {Promise<Object>}
- */
-export async function sendInviteData(params) {
-  return request('/rest/portal/rscmgmt/meeting/sendInvitation', {
+export async function querymRoomList(params) {
+  return request('/rest/portal/rscmgmt/meetingroom/ajaxList', {
     method: 'POST',
     body: params,
   });
 }
 
 /**
- * 新建会议(或点击 编辑 )-按钮-保存草稿
+ * 获取会议室详情
+ * @returns {Promise<Object>}
+ */
+export async function getmRoomDetail(params){
+  return request(`/rest/portal/rscmgmt/meetingroom/apply_room?${stringify(params)}`);
+}
+
+/**
+ * 获取会议室地点以及用具
+ * @returns {Promise<Object>}
+ */
+export async function getMeetingAddrsTools(params){
+  return request(`/rest/portal/rscmgmt/meetingroom/getMeetingAddrsTools?${stringify(params)}`);
+}
+
+/**
+ * 通过Id获取会议室申请信息
+ * @returns {Promise<Object>}
+ */
+export async function getMeetingApplyById(params){
+  return request(`/rest/portal/rscmgmt/meetingroom/getMeetingroomApplyById?${stringify(params)}`);
+}
+
+/**
+ * 查询我的申请列表
  * @param params
  * @returns {Promise<Object>}
  */
-export async function saveDraftData(params) {
-  return request('/rest/portal/rscmgmt/meeting/save', {
+export async function queryMyApplyList(params) {
+  return request('/rest/portal/rscmgmt/meetingroom/myApplyAjaxList', {
     method: 'POST',
     body: params,
   });
 }
 
 /**
- * 加载 历史会议 数据
- * @returns {Promise<Object>}
- */
-export async function getHistoryData(params){
-  let data="";
-  for(var key in params){
-    data += key + '=' + params[key] + '&';
-  }
-  if(data.length>0) data=data.substr(0,data.length-1);
-  return request(`/rest/portal/rscmgmt/meeting/ajaxHistoryList?`+data);
-}
-
-/**
- * 加载 待开会议 数据
- * @returns {Promise<Object>}
- */
-export async function getWaitStartData(params){
-  let data="";
-  for(var key in params){
-    data += key + '=' + params[key] + '&';
-  }
-  if(data.length>0) data=data.substr(0,data.length-1);
-  return request(`/rest/portal/rscmgmt/meeting/ajaxList?`+data);
-}
-
-/**
- * 加载 我的草稿会议 数据
- * @returns {Promise<Object>}
- */
-export async function getDraftData(params){
-  let data="";
-  for(var key in params){
-    data += key + '=' + params[key] + '&';
-  }
-  if(data.length>0) data=data.substr(0,data.length-1);
-  return request(`/rest/portal/rscmgmt/meeting/ajaxMyDraftList?`+data);
-}
-
-/**
- * 加载 我的邀请会议 数据
- * @returns {Promise<Object>}
- */
-export async function getMyInviteData(params){
-  let data="";
-  for(var key in params){
-    data += key + '=' + params[key] + '&';
-  }
-  if(data.length>0) data=data.substr(0,data.length-1);
-  return request(`/rest/portal/rscmgmt/meeting/ajaxMyList?`+data);
-}
-
-/**
- * 根据 id 查询新建会议数据
- * @returns {Promise<Object>}
- */
-export async function getInputData(params){
-  return request(`/rest/portal/rscmgmt/meeting/getMeetingById/${params.id}`);
-}
-
-
-
-/**
- * 点击编辑 保存会议纪要和上传附件
+ * 会议室添加/修改
  * @param params
  * @returns {Promise<Object>}
  */
-export async function getUploadSummary(params) {
-  return request('/rest/portal/rscmgmt/meeting/saveMeetingSummary', {
+export async function saveMtRoomMsg(params) {
+  return request('/rest/portal/rscmgmt/meetingroom/save', {
     method: 'POST',
     body: params,
   });
 }
 
 /**
- * 根据id查询 会议纪要 和 附件
+ * 重新发起流程
  * @param params
  * @returns {Promise<Object>}
  */
-export async function getSummaryMeetingDatas(params){
+export async function submitProcess(params) {
+  return request('/rest/portal/rscmgmt/meetingroom/submitProcess', {
+    method: 'POST',
+    body: params,
+  });
+}
 
-  return request(`/rest/portal/rscmgmt/meeting/getSummaryMeeting?id=${params.id}`);
+/**
+ * 取消申请(没有发起流程的)
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function updateMeetingStatus(params) {
+  return request('/rest/portal/rscmgmt/meetingroom/updateMeetingroomStatus', {
+    method: 'POST',
+    body: params,
+  });
 }
