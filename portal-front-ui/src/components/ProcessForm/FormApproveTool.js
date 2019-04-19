@@ -43,17 +43,7 @@ export default class FormApproveTool extends Component {
       message.warn('请填写评审意见！');
       return;
     }
-
-    const { processForm } = this.props;
-    this.props.dispatch({
-      type: 'processForm/doApprove',
-      payload: {
-        type: 'PS',
-        message: encodeURIComponent(this.state.approveMsg),
-        taskId: processForm.taskId,
-        processInstanceId: processForm.instId,
-      },
-    });
+    this.props.doFormFn('doApproveReview', this.state.approveMsg);
   };
 
   //协同
