@@ -16,6 +16,11 @@ import {getConfig} from "../../utils/utils";
 export default class TableList extends PureComponent {
   state = {};
 
+  componentWillMount(){
+    // 首页未上线，暂跳ysportal项目首页
+    location.href = getConfig().domain
+  }
+
   componentDidMount() {
 
 

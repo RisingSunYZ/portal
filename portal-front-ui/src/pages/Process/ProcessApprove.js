@@ -236,7 +236,22 @@ export default class ProcessApprove extends React.Component {
     this.props.dispatch({
       type: 'processForm/doApprove',
       payload: {
-        option: 'PS',
+        type: 'PS',
+        message: encodeURIComponent(msg),
+        taskId: this.props.processForm.taskId,
+        processInstanceId: this.props.processForm.instId,
+      },
+    });
+  };
+  /**
+   * 协同
+   * @param msg
+   */
+  doApproveCooperate = msg =>{
+    this.props.dispatch({
+      type: 'processForm/doApprove',
+      payload: {
+        type: 'XT',
         message: encodeURIComponent(msg),
         taskId: this.props.processForm.taskId,
         processInstanceId: this.props.processForm.instId,
@@ -354,7 +369,9 @@ export default class ProcessApprove extends React.Component {
     doApprove: this.doApprove,
     doTurnDo: this.doTurnDo,
     doAddSign: this.doAddSign,
-    doApproveReview:this.doApproveReview
+    doApproveReview:this.doApproveReview,
+    doApproveCooperate:this.doApproveCooperate,
+
   };
 
   render() {

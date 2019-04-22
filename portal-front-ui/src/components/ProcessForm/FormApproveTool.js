@@ -53,15 +53,7 @@ export default class FormApproveTool extends Component {
       return;
     }
     const { processForm } = this.props;
-    this.props.dispatch({
-      type: 'processForm/doApprove',
-      payload: {
-        type: 'XT',
-        message: encodeURIComponent(this.state.approveMsg),
-        taskId: processForm.taskId,
-        processInstanceId: processForm.instId,
-      },
-    });
+    this.props.doFormFn('doApproveCooperate', this.state.approveMsg);
   };
 
   doReject = () => {

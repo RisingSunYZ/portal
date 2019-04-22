@@ -55,7 +55,7 @@ export default class FormBox extends React.Component {
         const con=()=>{
           this.props.doApprove(approveMsg);
         }
-        if($(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
+        if($(iframeWin.document).find('#jsIsEditPoint')[0] && $(iframeWin.document).find('#jsIsEditPoint').val() == 'true'){
           iframeWin.YSForm.formApprove(con);
         }else{
           this.props.doApprove(approveMsg);
@@ -64,17 +64,26 @@ export default class FormBox extends React.Component {
         const con=()=>{
           this.props.doApproveReview(approveMsg);
         }
-        if($(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
+        if($(iframeWin.document).find('#jsIsEditPoint')[0] && $(iframeWin.document).find('#jsIsEditPoint').val() == 'true'){
           iframeWin.YSForm.formApprove(con);
         }else{
           this.props.doApproveReview(approveMsg);
+        }
+      } else if(fnName==="doApproveCooperate"){//协同
+        const con=()=>{
+          this.props.doApproveCooperate(approveMsg);
+        }
+        if($(iframeWin.document).find('#jsIsEditPoint')[0] && $(iframeWin.document).find('#jsIsEditPoint').val() == 'true'){
+          iframeWin.YSForm.formApprove(con);
+        }else{
+          this.props.doApproveCooperate(approveMsg);
         }
       }else if(fnName==="doAddSign"){//加签
         const con=()=>{
           this.props.doAddSign(approveMsg);
         };
 
-        if(iframeWin.YSForm && iframeWin.YSForm.formAddSign&& $(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
+        if(iframeWin.YSForm && iframeWin.YSForm.formAddSign&& $(iframeWin.document).find('#jsIsEditPoint')[0] && $(iframeWin.document).find('#jsIsEditPoint').val() == 'true'){
           iframeWin.YSForm.formAddSign(approveMsg,con);
         }else{
          this.props.doAddSign(approveMsg);
@@ -85,17 +94,17 @@ export default class FormBox extends React.Component {
           this.props.doTurnDo(approveMsg);
         };
         const datas = approveMsg.datas?approveMsg.datas:{};
-        if(iframeWin.YSForm && iframeWin.YSForm.formTurnDo  && $(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
+        if(iframeWin.YSForm && iframeWin.YSForm.formTurnDo  && $(iframeWin.document).find('#jsIsEditPoint')[0] && $(iframeWin.document).find('#jsIsEditPoint').val() == 'true'){
           iframeWin.YSForm.formTurnDo(datas ,con);
         }else{
           this.props.doTurnDo(approveMsg);
         }
       }else if(fnName==="doTurnRead"){//转阅
-        if(iframeWin.YSForm && iframeWin.YSForm.formTurnRead && $(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
+        if(iframeWin.YSForm && iframeWin.YSForm.formTurnRead && $(iframeWin.document).find('#jsIsEditPoint')[0] && $(iframeWin.document).find('#jsIsEditPoint').val() == 'true'){
           iframeWin.YSForm.formTurnRead(approveMsg);
         }
       }else if(fnName==="doReject"){//驳回
-        if(iframeWin.YSForm && iframeWin.YSForm.formDoReject && $(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
+        if(iframeWin.YSForm && iframeWin.YSForm.formDoReject && $(iframeWin.document).find('#jsIsEditPoint')[0] && $(iframeWin.document).find('#jsIsEditPoint').val() == 'true'){
           iframeWin.YSForm.formDoReject();
         }
       }else{
