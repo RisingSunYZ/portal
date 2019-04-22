@@ -132,7 +132,7 @@ public class UserController extends BaseController {
                 Cookie cookie = CommUtil.getCookieByName(request, "SIAMTGT");
                 siamTgt = null == cookie?null:cookie.getValue();
             }
-//            userSessionInfo = userLoginComponent.getCurrentUser(siamTgt, request, response);
+            userSessionInfo = userLoginComponent.getCurrentUser(siamTgt, request, response);
             if(null != userSessionInfo){
                 userSessionInfo.setUserImgUrl (StringUtils.isNotBlank(userSessionInfo.getUserImgUrl())?(commonProperties.getFtpHost() + userSessionInfo.getUserImgUrl()):null);
                 returnVo.setData(userSessionInfo);

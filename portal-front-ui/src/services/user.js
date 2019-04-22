@@ -13,8 +13,9 @@ export async function query() {
  * @param params
  * @returns {Promise<Object>}
  */
-export async function queryCurrent(params) {
-  return request(`/rest/user/currentUser?${stringify(params)}`);
+export async function queryCurrent() {
+  const random=Math.random();
+  return request(`/rest/user/currentUser?t=${random}`);
 }
 
 export async function queryUserByNo(params) {
