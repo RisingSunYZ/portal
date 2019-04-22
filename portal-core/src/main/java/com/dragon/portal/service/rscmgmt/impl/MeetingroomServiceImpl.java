@@ -176,7 +176,7 @@ public class MeetingroomServiceImpl implements IMeetingroomService {
 			}
 			page = this.meetingroomDao.getPagerModelVoByQuery(meetingroomViewVo);
 			PagerModel<MeetingroomViewVo> pm = new PagerModel<>(page);
-			for(MeetingroomViewVo temp : pm.getRows()){
+			for(MeetingroomViewVo temp : pm.getData()){
 				List<MeetingroomTools> mrToolsList = meetingroomToolsService.selectMeetingRoomTollsBymeetingRoomId(temp.getMeetingroomId());
 				List<MeetingroomApprover> approverList = meetingroomToolsService.selectAppoverListBymeetingRoomId(temp.getMeetingroomId());
 				temp.setTools(mrToolsList);
