@@ -5,7 +5,6 @@ import { Link } from 'dva/router';
 import styles from '../List/BasicList.less';
 import processStyle from './Process.less';
 import TreeMenu from '../../components/TreeMenu';
-import {stringify} from "qs";
 
 const TreeNode = Tree.TreeNode;
 
@@ -54,9 +53,6 @@ export default class ProcessModel extends PureComponent {
         current:1
       })
 
-      if(selectedKeys[0] == "myRegular"){
-        return
-      }
       this.props.dispatch({
         type: 'process/getModelList',
         payload: { categoryId: selectedKeys[0] },
@@ -93,27 +89,18 @@ export default class ProcessModel extends PureComponent {
   };
 
   saveItem = (item) =>{
-
-      let flag=true;
-      let regularItem = (JSON.parse(localStorage.getItem("regularData")) && JSON.parse(localStorage.getItem("regularData")).length>0)?JSON.parse(localStorage.getItem("regularData")):[];
-      regularItem.length>0&&regularItem.forEach(function (obj) {
-        if( obj.modelKey == item.modelKey ){
-          flag=false;
-          obj.seartchCount++;
-          return;
-        }
-      })
-
-      if(flag){
-        item.seartchCount =1;
-        if(regularItem.length == 10){
-          regularItem.splice(9,1,item);
-        }else{
-          regularItem.push(item);
-        }
-      }
-      regularItem = regularItem.sort((a,b) => b.seartchCount-a.seartchCount);
-      localStorage.setItem("regularData",JSON.stringify(regularItem));
+    const {process:{selectedNode}} = this.props;
+    if( selectedNode.eventKey && selectedNode.eventKey == "myRegular"){
+      return
+    }
+      this.props.dispatch({
+        type: 'process/saveRegularData',
+        payload: {
+          modelKey:item.modelKey,
+          modelItem:item,
+          userNo:"",
+        },
+      });
 
   }
 
@@ -252,7 +239,7 @@ export default class ProcessModel extends PureComponent {
                       <Link target="_blank" to={item.url}>{item.modelName}</Link>
                       <span style={{ marginLeft: 20, color: '#A5A5A5' }}>
                         {item.belongCategoryStr}
-                        <span style={{display:item.display}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发起次数：{item.seartchCount}</span>
+                        <span style={{display:item.display}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发起次数：{item.launchCount}</span>
                       </span>
                     </List.Item>
                   )}

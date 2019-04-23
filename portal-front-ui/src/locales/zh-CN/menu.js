@@ -41,7 +41,7 @@ export default {
   'menu.financial':"财务服务",
   'menu.news':"新闻资讯",
   'menu.process-list': '流程中心',
-  'menu.process-list.todo': '代办',
+  'menu.process-list.todo': '待办',
   'menu.process-list.already-send': '已发',
   'menu.process-list.already-do': '已办',
   'menu.process-list.draft': '草稿',
