@@ -5,7 +5,6 @@ import {
   addContactPerData,
   delContactPerData
 } from '../../../services/addressBook';
-import router from 'umi/router';
 import { message } from 'antd';
 
 export default {
@@ -30,7 +29,7 @@ export default {
      */
     *getTableList({ payload }, { call, put }) {
       let response = [];
-      if(payload.deptId == "TOP-CONTACTS"){
+      if(payload.deptId === "TOP-CONTACTS"){
         response = yield call(queryTopConcactData, payload);
       }else{
         response = yield call(getTableList, payload);
@@ -67,9 +66,8 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *addContactPer({payload},{call, put}){
-      debugger;
       const response= yield call(addContactPerData,payload);
-      if(response.code=='100'){
+      if(response.code === '100'){
         message.success(response.msg)
       }
     },
@@ -83,15 +81,10 @@ export default {
      */
     *delContactPer({payload},{call, put}){
       const response= yield call(delContactPerData,payload);
-      if(response.code=='100'){
+      if(response.code === '100'){
         message.success(response.msg)
       }
-
       const response2 = yield call(queryTopConcactData, payload);
-      // yield put({
-      //   type: 'tableCallback',
-      //   payload: Array.isArray(response2.rows) ? response2.rows : [],
-      // });
     },
 
   },
@@ -109,8 +102,8 @@ export default {
     tableCallback(state, action) {
       return {
         ...state,
-        list:Array.isArray(action.payload.list)?action.payload.list:[],
-        pagination:action.payload.pagination!=undefined?action.payload.pagination:{}
+        list: Array.isArray(action.payload.list) ? action.payload.list:[],
+        pagination: action.payload.pagination !== undefined ? action.payload.pagination:{}
       };
     },
 

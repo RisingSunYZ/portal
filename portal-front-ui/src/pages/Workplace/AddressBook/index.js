@@ -1,53 +1,54 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Tabs, Icon, Row, Col, Card, Drawer,Button ,Modal, Input,Layout,Tree, Table  } from 'antd';
+import { Icon, Row, Col, Card, Drawer,Button ,Input,Layout,Table ,message } from 'antd';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from './index.less';
 import TreeMenu from '../components/TreeMenu';
 import Link from 'umi/link';
-import { message } from 'antd';
+import {getConfig} from "../../../utils/utils";
 
-const TreeNode = Tree.TreeNode;
-const TabPane = Tabs.TabPane;
+
 const Search = Input.Search;
 const { Sider, Content } = Layout;
 
 
-
-@connect(({ addressBook, loading }) => ({
+@connect(({ user,addressBook, loading }) => ({
+  user,
   addressBook,
   loading: loading.models.addressBook,
 }))
 
-export default class AddressBook extends PureComponent {
+class AddressBook extends PureComponent {
 
   state = {
     selectedKey: [],
     selectedRowKeys: [],
     visibleDrawer: false,
     visible:false ,//弹窗初始化状态
-    ModalTextAdd:'',
     pagination: { pageIndex: 0, pageSize: 20 },
     query:{},
     nos:"",
     personObj:{},
     deptId:'',
     companyId:'',
-    selectTreeStr:"1001K31000000002GLCT",
+    selectTreeStr:"",
     key:""
   };
 
   componentDidMount(){
-    const { dispatch }=this.props;
+    const { dispatch, user:{ currentUser } }=this.props;
     dispatch({
       type: 'addressBook/getTableList',
       payload: {
-        deptId: "1001K31000000002GLCT",
-        companyId:"0001K310000000008TK6",
+        deptId: currentUser.depId,
+        companyId:currentUser.companyId,
         pageIndex:0,
         pageSize:10
       },
     });
+    this.setState({
+      selectTreeStr:currentUser.depId
+    })
   }
 
   onClose = () => {
@@ -58,7 +59,6 @@ export default class AddressBook extends PureComponent {
 
   // 树的点击事件
   selectNode(selectedKeys, e) {
-    // console.log(selectedKeys)
     const key=e.selectedNodes[0].key;
     if (e.selected) {
       const params={
@@ -81,15 +81,15 @@ export default class AddressBook extends PureComponent {
   }
 
   // 点击分页改变时，触发的函数
-  handleTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
+  handleTableChange = (pagination) => {
+    const { dispatch ,user:{ currentUser }} = this.props;
     const deptId = this.state.query.deptId;
     const companyId = this.state.query.companyId;
     const params={
       pageIndex:pagination.current-1,
       pageSize:pagination.pageSize,
-      deptId:deptId==undefined ? '1001K31000000002GLCT':deptId,
-      companyId:companyId==undefined ? '0001K310000000008TK6':companyId
+      deptId:deptId === undefined ? currentUser.deptId : deptId,
+      companyId:companyId === undefined ? currentUser.companyId : companyId
     };
     dispatch({
       type: 'addressBook/getTableList',
@@ -102,24 +102,25 @@ export default class AddressBook extends PureComponent {
 
   // 显示右侧抽屉
   showDrawer=(record)=>{
+    console.log(record);
     this.setState({
       personObj:record,
       visibleDrawer:true,
     })
-
   };
 
   // 跳到树目录
   skipMenuTree=(record)=>{
     const { dispatch }=this.props;
+    const {companyId, pagination:{pageIndex,pageSize }} = this.state;
     const  params={
       deptId: record.deptId,
-      companyId:this.state.companyId,
-      pageIndex:this.state.pagination.pageIndex,
-      pageSize:this.state.pagination.pageSize
+      companyId:companyId,
+      pageIndex:pageIndex,
+      pageSize:pageSize
     };
 
-    if(record.gender===null){
+    if(record.gender === null){
       dispatch({
         type: 'addressBook/getTableList',
         payload: params
@@ -137,10 +138,11 @@ export default class AddressBook extends PureComponent {
   // 搜索table数据
   doSearch=( value )=>{
     const { dispatch } = this.props;
+    const {pagination:{pageIndex,pageSize}}=this.state;
     const params={
         keyword: value,
-        pageIndex:this.state.pagination.pageIndex,
-        pageSize:this.state.pagination.pageSize
+        pageIndex:pageIndex,
+        pageSize:pageSize
       };
     dispatch({
       type: 'addressBook/getTableList',
@@ -158,7 +160,6 @@ export default class AddressBook extends PureComponent {
       no += selectedRows[i].no+",";
     }
     if(no.length>0) no=no.substr(0,no.length-1);
-
     this.setState({
       selectedRowKeys,
       nos:no
@@ -181,21 +182,9 @@ export default class AddressBook extends PureComponent {
     const { dispatch }=this.props;
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
-    console.log(hasSelected);
     if(!hasSelected){
-      //点击显示 弹出框
-      this.setState({
-        visible: true,
-        ModalTextAdd:'请勾选要添加的项！'
-      });
-      //间隔一段时间，让弹出框消失
-      setTimeout(() => {
-        this.setState({
-          visible: false,
-        });
-      }, 500);
+      message.error('请勾选要添加的项');
       return;
-
     }else{
       dispatch({
         type:'addressBook/addContactPer',
@@ -209,21 +198,9 @@ export default class AddressBook extends PureComponent {
     const { dispatch }=this.props;
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
-    console.log(hasSelected);
     if(!hasSelected){
-      //点击显示 弹出框
-      this.setState({
-        visible: true,
-        ModalTextAdd:'请先勾选要移除的项！'
-      });
-      //间隔一段时间，让弹出框消失
-      setTimeout(() => {
-        this.setState({
-          visible: false,
-        });
-      }, 500);
+      message.error('请先勾选要移除的项！');
       return;
-
     }else{
       dispatch({
         type:'addressBook/delContactPer',
@@ -236,19 +213,8 @@ export default class AddressBook extends PureComponent {
   sendEmail= ()=>{
     const { selectedRowKeys  }=this.state;
     const hasSelected = selectedRowKeys.length >0;
-    // console.log(hasSelected);
     if(!hasSelected){
-      //点击显示 弹出框
-      this.setState({
-        visible: true,
-        ModalTextAdd:'请先勾选邮件发送对象！'
-      });
-      //间隔一段时间，让弹出框消失
-      setTimeout(() => {
-        this.setState({
-          visible: false,
-        });
-      }, 500);
+      message.error('请先勾选邮件发送对象！');
       return;
     }
   };
@@ -271,11 +237,8 @@ export default class AddressBook extends PureComponent {
 
 
   render() {
-    const {
-      addressBook: {  list,pagination },
-      loading,
-    } = this.props;
-    const { selectedRowKeys,visible ,ModalTextAdd, personObj }=this.state;
+    const { addressBook: {  list, pagination } } = this.props;
+    const { selectedRowKeys, personObj ,selectTreeStr}=this.state;
     const hasSelected = selectedRowKeys.length > 0;
 
     const columns = [
@@ -316,7 +279,7 @@ export default class AddressBook extends PureComponent {
     const rowSelection = {
       onChange: this.onSelectChange,
       getCheckboxProps: record => ({
-        disabled: record.name === 'Disabled User', // Column configuration not to be checked
+        disabled: record.name === 'Disabled User',
         name: record.name,
       }),
     };
@@ -328,7 +291,7 @@ export default class AddressBook extends PureComponent {
             closable={true}
             onClose={this.onClose}
             width={830}
-            style={{position:'absolute',top:180}}
+            style={{position:'absolute',top:170}}
             visible={this.state.visibleDrawer}
           >
             <Row>
@@ -352,7 +315,7 @@ export default class AddressBook extends PureComponent {
               <Col span={6} pull={18} style={{background:'#FAFAFA'}}>
                 <div className={styles.LeftBox}>
                   <div className={styles.headerImg}>
-                    <img src={'http://file.chinayasha.com'+ personObj.headImg} alt=""/>
+                    {personObj.headImg !== null ? (<img src={getConfig().ftpHost+ personObj.headImg} alt=""/>):(<div className={styles.imgBot}/>)}
                   </div>
                   <h5 className={styles.perName}>{personObj.name}</h5>
                   <p className={styles.perPost}>{personObj.jobStation}</p>
@@ -370,7 +333,6 @@ export default class AddressBook extends PureComponent {
         )
     };
 
-
     return (
         <PageHeaderWrapper>
           <Layout>
@@ -378,18 +340,18 @@ export default class AddressBook extends PureComponent {
               <Card
                 title="企业通讯录"
                 bordered={false}
-                headStyle={{ borderLeft: '1px solid #e5e5e5', borderRight: '1px solid #e5e5e5',borderBottom:'2px solid #0E65AF',color:'#0E65AF',fontSize:'14px' }}
+                className={styles.headStyles}
                 bodyStyle={{ padding: '0' }}
               >
                 <TreeMenu
                   onSelect={this.selectNode.bind(this)}
-                  defaultExpandedKeys={[this.state.selectTreeStr]}
-                  selectedKeys={[this.state.selectTreeStr]}
+                  defaultExpandedKeys={[selectTreeStr]}
+                  selectedKeys={[selectTreeStr]}
                 />
               </Card>
             </Sider>
             <Content>
-              <Row style={{marginTop:'12px'}}>
+              <Row style={{marginTop:'8px',zIndex:100 }}>
                 {
                  this.state.selectedKey[0] === 'TOP-CONTACTS' ? (
                    <Col span={1} className={styles.colHeader}>
@@ -404,15 +366,6 @@ export default class AddressBook extends PureComponent {
                          <span className={styles.text}>移除</span>
                        </div>
                      )}
-                     <Modal
-                       visible={visible}
-                       footer={null}
-                       closable={false}
-                       centered
-                       bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
-                       maskStyle={{backgroundColor:'transparent'}}>
-                       <p>{ModalTextAdd}</p>
-                     </Modal>
                    </Col>
                  ) : (
                   <Col span={2} className={styles.colHeader}>
@@ -427,15 +380,6 @@ export default class AddressBook extends PureComponent {
                         <span className={styles.text}>添加到常用联系人</span>
                       </div>
                     )}
-                    <Modal
-                      visible={visible}
-                      footer={null}
-                      closable={false}
-                      centered
-                      bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
-                      maskStyle={{backgroundColor:'transparent'}}>
-                      <p>{ModalTextAdd}</p>
-                    </Modal>
                   </Col>
                  )
                }
@@ -453,7 +397,7 @@ export default class AddressBook extends PureComponent {
                    )}
                  </Col>
                  <Col span={4}>
-                   <Search placeholder="姓名/部门名称" onSearch={this.doSearch} style={{position:'relative',top: -8}}/>
+                   <Search placeholder="姓名/部门名称" onSearch={this.doSearch} style={{position:'relative',top: -8 }}/>
                  </Col>
               </Row>
               <Table
@@ -478,7 +422,4 @@ export default class AddressBook extends PureComponent {
   }
 }
 
-//http://file.chinayasha.com/p-head/2017/12/20/8a8a94aa6059716b016071f33d2002fb.jpg
-//http://file.chinayasha.com/p-head/2017/12/13/00000000602edd7001604f193af80543.jpg
-//http://hometest.chinayasha.com
-
+export default AddressBook;
