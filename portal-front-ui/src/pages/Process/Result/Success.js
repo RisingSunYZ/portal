@@ -18,6 +18,9 @@ export default class Success extends React.Component {
 
   componentDidMount() {
      const _this = this;
+
+     window.opener?window.opener.location.reload():null;
+
      this.tId = setInterval(function(){
        _this.setState({
         seconds: _this.state.seconds-1,

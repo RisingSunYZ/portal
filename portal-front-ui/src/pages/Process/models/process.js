@@ -452,7 +452,6 @@ export default {
         // debugger location.pathname.search('/process/list') === -1
         try{
           if(window.opener && window.opener.location.href.search('/process/list') !== -1){
-            window.opener.location.reload();
             window.close();
           }
         }catch(e){

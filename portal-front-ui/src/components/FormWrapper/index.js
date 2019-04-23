@@ -76,6 +76,7 @@ export default class FormBox extends React.Component {
         if($(iframeWin.document).find('#jsIsEditPoint')[0] && $(iframeWin.document).find('#jsIsEditPoint').val() == 'true'){
           iframeWin.YSForm.formApprove(con);
         }else{
+
           this.props.doApproveCooperate(approveMsg);
         }
       }else if(fnName==="doAddSign"){//加签

@@ -52,7 +52,6 @@ export default class FormApproveTool extends Component {
       message.warn('请填写协同意见！');
       return;
     }
-    const { processForm } = this.props;
     this.props.doFormFn('doApproveCooperate', this.state.approveMsg);
   };
 
@@ -140,7 +139,6 @@ export default class FormApproveTool extends Component {
         type: 'processForm/doReject',
         payload: {
           code: this.state.value,
-          type:processForm.instId,
           processInstanceId: processForm.instId,
           message: encodeURIComponent(this.state.approveMsg),
           taskId: processForm.taskId,
@@ -239,7 +237,6 @@ export default class FormApproveTool extends Component {
       </div>
     );
 
-    // 显示按钮，显示按钮排序
     // 显示按钮，显示按钮排序
     const approveBtns = () => {
       const btns = [];

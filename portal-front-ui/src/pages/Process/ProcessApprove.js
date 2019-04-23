@@ -166,7 +166,6 @@ export default class ProcessApprove extends React.Component {
 
   componentWillMount() {
     const { match } = this.props;
-
     //判断审批状态(已审批跳转到view页面)
     /*this.props.dispatch({
       type: 'processForm/getProcessFormState',
@@ -226,8 +225,6 @@ export default class ProcessApprove extends React.Component {
       },
     });
   };
-
-
   /**
    * 评审
    * @param msg
@@ -258,8 +255,6 @@ export default class ProcessApprove extends React.Component {
       },
     });
   };
-
-
   /**
    * 审批并加签
    * @param obj
@@ -305,8 +300,10 @@ export default class ProcessApprove extends React.Component {
       });
     }
   };
-
-  //转办
+  /**
+   * 转办
+   * @param msg
+   */
   doTurnDo = obj => {
     if (obj && obj.datas.length > 0) {
       this.props.dispatch({
