@@ -23,7 +23,8 @@ class Exception401 extends React.PureComponent {
 
   render() {
     const logoutUrl = getConfig().idmLogoutUrl;
-    const redrectUrl = getConfig().domain;
+    const redrectUrl = getConfig().idmBaseUrl+"?service=" + encodeURIComponent(getConfig().domain+"/main.jhtml");
+    console.log(JSON.stringify(getConfig()));
     return (
       <div>
         <img src={logoutUrl} style={{width:'0', height:'0', border:'0', overflow:'hidden'}} />

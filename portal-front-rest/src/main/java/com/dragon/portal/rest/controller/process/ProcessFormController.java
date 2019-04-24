@@ -19,6 +19,7 @@ import com.dragon.flow.vo.mongdb.SearchTaskVo;
 import com.dragon.portal.component.IProcessMainComponent;
 import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.enm.process.OptionEnum;
+import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.utils.CommUtil;
 import com.dragon.portal.vo.process.*;
 import com.dragon.portal.vo.user.UserSessionInfo;
@@ -63,6 +64,8 @@ public class ProcessFormController extends BaseController {
 	private IPersonnelApi personnelApi;
 	@Autowired
 	private IProcessMainComponent processMainComponent;
+	@Autowired
+	private CommonProperties commonProperties;
 
 	/**
 	 * 得到状态及类型枚举数据
@@ -860,6 +863,9 @@ public class ProcessFormController extends BaseController {
 					PersonnelApiVo pVo = pMap.get(commentVo.getUserId());
 					if(null != pVo){
 						commentVo.setUserName(pVo.getName());
+						if(StringUtils.isNotBlank(pVo.getHeadImg())){
+							commentVo.setUserUrl(commonProperties.getFtpHost() + pVo.getHeadImg());
+						}
 					}
 				}
 				if(CommentTypeEnum.SPJS.getName().equals(commentVo.getTypeName())){
