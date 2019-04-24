@@ -285,6 +285,8 @@ public class ProcessFormController extends BaseController {
 								//如果当前节点是提交人不能撤回
 								formInfo.put("revokable",false);
 								formInfo.put("nodeName","提交人");
+							}else{
+								// logger.error("调用接口【flowApi.getNodeInfoByTaskId(actReProcdefExtendVo.getTaskId())】失败！"+vo.getMsg());
 							}
 						}
 						//4、审批记录

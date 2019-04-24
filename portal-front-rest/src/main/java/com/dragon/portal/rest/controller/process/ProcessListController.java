@@ -46,11 +46,9 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -291,7 +289,7 @@ public class ProcessListController extends BaseController {
             UserSessionInfo user=getUserSessionInfo(request,response);
             if (null != user){
                 formDraft.setCreator(user.getNo());
-                formDraft.setStatus( FormDraftStatusEnum.CG.getStatus());
+                formDraft.setStatus(FormDraftStatusEnum.CG.getStatus());
                 ReturnVo<PagerModel<FormDraft>> vo = flowApi.getFormDraftPagerModel(formDraft,query);
                 if (null != vo && FlowConstant.SUCCESS.equals(vo.getCode()) &&null != vo.getData()){
                     returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询草稿数量成功！", vo.getData().getTotal() );
@@ -462,13 +460,7 @@ public class ProcessListController extends BaseController {
                 if(vo!=null && FlowConstant.SUCCESS.equals(vo.getCode()) && vo.getData()!=null){
                     pm = vo.getData();
                     pm.getRows().forEach(draft -> {
-                        if(draft.getStatus()!=null){
-                            for(FormDraftStatusEnum e : FormDraftStatusEnum.values()){
-                                if(e.getStatus().equals(draft.getStatus())){
-                                    draft.setStatusName(e.getName());
-                                }
-                            }
-                        }
+                        draft.setStatusName(FormDraftStatusEnum.getNameByStatus(draft.getStatus()));
                         if(draft.getCreateTime()!=null){
                             draft.setCreateTimeStr(sdf.format(draft.getCreateTime()));
                         }

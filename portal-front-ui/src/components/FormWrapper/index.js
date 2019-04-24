@@ -25,7 +25,6 @@ export default class FormBox extends React.Component {
           const formId = iframeWin.YSForm.formSave();
           // 判断返回值，如果有返回值代表表单已经保存成功，否则把按钮加载
           if(formId) {
-
             this.props.doSaveBaseInfo(formId);
           }else{
             this.props.changeBtnState(false);

@@ -250,11 +250,11 @@ class ProcessBaseAction extends Component {
           </Popover>
           <Popover content="关联流程">
             <Button onClick={this.selectProcess} icon="link" style={{ marginLeft: '8px' }} />
-            <ProcessSelector
-              visible={this.state.showProcessSelector}
-              onSelect={this.selectedProcess}
-            />
           </Popover>
+          <ProcessSelector
+            visible={this.state.showProcessSelector}
+            onSelect={this.selectedProcess}
+          />
         </Fragment>
       ) : null;
     };

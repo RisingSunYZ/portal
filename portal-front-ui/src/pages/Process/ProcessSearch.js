@@ -374,10 +374,11 @@ class ProcessSearch extends PureComponent {
       {
         title: '状态',
         dataIndex: 'process_type',
-        width: 80,
+        width: 100,
+        align: 'center',
         key: 'process_type',
         render: text => (
-          <Tag style={{ width: 50, textAlign: 'center' }} color="volcano">
+          <Tag style={{ width: 60, textAlign: 'center' }} color="volcano">
             {text}
           </Tag>
         ),
@@ -386,6 +387,7 @@ class ProcessSearch extends PureComponent {
         title: '提交时间',
         dataIndex: 'launch_time',
         width: 120,
+        align: 'center',
         key: 'launch_time',
         render: time => <div>{time && time.slice(0, 10)}</div>,
       },

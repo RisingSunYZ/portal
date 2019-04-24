@@ -67,16 +67,21 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 		HttpSession session = request.getSession();
 		// 判断是否IDM登录
 		if(Boolean.TRUE.toString().equals(commonProperties.getLoginSwitch())){
-			// 1、从Redis中获取存储的当前登录用户。
-
 			// 验证IDM接口是否已经登录
 			Cookie cookie = CommUtil.getCookieByName(request, "SIAMTGT");
 			String siamTgt = null == cookie?null:cookie.getValue();
-
+			if(StringUtils.isBlank(siamTgt)){
+//				response.getWriter().write("");
+//				response.sendRedirect(commonProperties.getIdmLogoutUrl());
+				logger.warn("您的IDM登录会话已经失效，请重新登录！");
+				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+				response.setHeader("msg", "no idm login, please do login.");
+//				return false;
+			}
 			long start = System.currentTimeMillis();
 			IdmReturnEntity idmReturnEntity = idmService.checkLoginStatus(siamTgt);
 			long end = System.currentTimeMillis();
-			logger.info((end - start) + " ms= ---------------------------->");
+			logger.info("获取当前登录状态耗时：" + (end - start) +"ms");
 
 			if(null != idmReturnEntity && null != idmReturnEntity.getUser()){
 				IdmUser idmUser = idmReturnEntity.getUser();
@@ -120,9 +125,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 				}
 				return true;
 			}else{
-				logger.warn("您的登录会话已经失效，请重新登录！");
+				logger.warn("您的IDM登录会话已经失效，请重新登录！");
 				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
-				response.setHeader("msg", "no login, please do login.");
+				response.setHeader("msg", "no idm login, please do login.");
 				return false;
 			}
 		}else{
