@@ -4,6 +4,8 @@ import {Popover, Icon, Row, Col} from 'antd';
 import {connect} from "dva/index";
 import logo from '../../assets/icons/flow-end.png';
 import defaultUser from '../../assets/icons/default-user-head.jpg';
+import { getConfig } from "../../utils/utils";
+
 @connect(({ userInfo, loading }) => ({
   userInfo,
   loading: loading.models.userInfo,

@@ -171,10 +171,10 @@ public class ProcessListController extends BaseController {
     }
 
     /**
-     * 查询待办事项已办理
+     * 查询流程-已办数据
      */
     @GetMapping("/queryAlreadyDo")
-    @ApiOperation("查询待办事项未办理")
+    @ApiOperation("查询流程-已办数据")
     @ApiImplicitParams({})
     public ReturnVo queryAlreadyDo(String sort, String page , Integer rows, String order, Query query, QueryTaskVo param,
                                               @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
@@ -235,7 +235,7 @@ public class ProcessListController extends BaseController {
     @GetMapping("/getAlreadySend")
     @ApiOperation("查询我的已发起流程")
     @ApiImplicitParams({})
-    public ReturnVo getAlreadySend(String sort,String page,Integer rows, String order, Query query,
+    public ReturnVo getAlreadySend(String page,Integer rows, Query query,
                                    QueryTaskVo param, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
         try {

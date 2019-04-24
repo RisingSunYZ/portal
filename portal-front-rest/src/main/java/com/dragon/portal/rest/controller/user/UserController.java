@@ -183,7 +183,7 @@ public class UserController extends BaseController {
                 person.put("id", personVo.getId());
                 person.put("userNo", personVo.getNo());
                 person.put("userName", personVo.getName());
-                person.put("userHead",personVo.getHeadImg());
+                person.put("userHead",commonProperties.getFtpHost() + personVo.getHeadImg());
                 person.put("deptId", personVo.getDeptId());
                 person.put("deptName", personVo.getDeptName());
                 person.put("parentDeptId", personVo.getParentDeptId());
