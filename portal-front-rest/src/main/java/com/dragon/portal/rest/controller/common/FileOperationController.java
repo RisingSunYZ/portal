@@ -353,7 +353,9 @@ public class FileOperationController {
 			conn.connect();
 			InputStream is = conn.getInputStream(); //得到网络返回的输入流
 			response.setContentType("application/force-download");// 设置强制下载不打开
-			response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);// 设置文件名
+			String s1 ="attachment;fileName=\"" + fileName + "\"; filename*=\"utf-8''" + fileName+"\""+";filename*=utf-8''"+fileName;
+
+			response.addHeader("Content-Disposition", s1);// 设置文件名
 			byte[] buffer = new byte[1024];
 			bis = new BufferedInputStream(is);
 			OutputStream os = response.getOutputStream();

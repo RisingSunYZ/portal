@@ -38,9 +38,7 @@ export default class UserHeadBox extends React.Component {
     img.src=head;
     img.onerror=null;
   };
-  componentWillReceiveProps(props) {
 
-  }
   componentDidMount(){
     const { src } = this.props;
     src && this.setState({
@@ -70,7 +68,7 @@ export default class UserHeadBox extends React.Component {
       <div className={styles.userTitle}>
         <Row>
           <Col span={10} className={styles.imageWrapper}>
-            <img ref="headImage" src={src} onError={this.onHeadImgError} className={styles.headImage} />
+            <img ref="headImage" src={user.userHead} onError={this.onHeadImgError} className={styles.headImage} />
             <h3>{user.userName}</h3>
           </Col>
           <Col offset={13} span={1}>
