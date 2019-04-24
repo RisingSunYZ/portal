@@ -44,8 +44,8 @@ class DiagramImgModal  extends PureComponent{
   setDiagramModalMax = ()=>{
       const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; // heihgt
       this.setState({diagramModalWidth:"100%",diagramModalHeight:windowHeight-135,diagramModalMax:true})
-      console.log(windowHeight-132)
-      const _this = this;
+
+       const _this = this;
 
        setTimeout(function(){
          const ele = document.getElementsByClassName("ant-modal-body")[0]
@@ -60,6 +60,7 @@ class DiagramImgModal  extends PureComponent{
   startDrag = (event)=>{
 
     if(this.state.moveFlag){
+      event.preventDefault();
       const target = event.target;
       const startX = event.pageX;
       const startY = event.pageY;
