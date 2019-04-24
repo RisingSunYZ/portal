@@ -27,13 +27,15 @@ class DiagramImgModal  extends PureComponent{
     const width = imgObj.naturalWidth;
     const height = imgObj.naturalHeight;
 
+    console.log(windowHeight)
+
     if(width > windowWidth*0.8){
       this.setState({diagramModalWidth: '80%',diagramModalMax:false})
     }else{
       this.setState({diagramModalWidth: width+50,diagramModalMax:false})
     }
     if(height > windowHeight*0.8){
-      this.setState({diagramModalHeight:"450px"})
+      this.setState({diagramModalHeight:windowHeight*0.6})
     }else{
       this.setState({diagramModalHeight:height})
     }
@@ -67,9 +69,7 @@ class DiagramImgModal  extends PureComponent{
       $(target).parent().parent().scrollTop(endTop)
       $(target).parent().parent().scrollLeft(endLeft)
 
-      // if(true){
-      //
-      // }
+
 
     }
     document.onmouseup = function(){
@@ -119,8 +119,7 @@ class DiagramImgModal  extends PureComponent{
         title={this.flowTile(formTitle)}
         width={this.state.diagramModalWidth}
         style={{ top:top,paddingBottom:"0px" }}
-        keyboard="true"
-        maskClosable="true"
+        maskClosable={false}
         visible={visibleDiagramModal}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -130,7 +129,7 @@ class DiagramImgModal  extends PureComponent{
           <Button key="back" onClick={handleCancel}>关闭</Button>
         ]}
       >
-        <div style={{height:this.state.diagramModalHeight}}>
+        <div style={{height:this.state.diagramModalHeight,cursor: "move"}}>
           <img alt={formTitle}
                onMouseDown={this.startDrag}
                onLoad={this.setDiagramModalWidth.bind(this)}
