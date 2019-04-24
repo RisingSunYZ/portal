@@ -27,55 +27,65 @@ class DiagramImgModal  extends PureComponent{
     const width = imgObj.naturalWidth;
     const height = imgObj.naturalHeight;
 
-    console.log(windowHeight)
-
     if(width > windowWidth*0.8){
+      this.setState({moveFlag:true});
       this.setState({diagramModalWidth: '80%',diagramModalMax:false})
     }else{
       this.setState({diagramModalWidth: width+50,diagramModalMax:false})
     }
     if(height > windowHeight*0.8){
+      this.setState({moveFlag:true});
       this.setState({diagramModalHeight:windowHeight*0.6})
     }else{
       this.setState({diagramModalHeight:height})
     }
-
-
   }
 
   setDiagramModalMax = ()=>{
       const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; // heihgt
-      this.setState({diagramModalWidth:"100%",diagramModalHeight:windowHeight-150,diagramModalMax:true})
+      this.setState({diagramModalWidth:"100%",diagramModalHeight:windowHeight-135,diagramModalMax:true})
+      console.log(windowHeight-132)
+      const _this = this;
+
+       setTimeout(function(){
+         const ele = document.getElementsByClassName("ant-modal-body")[0]
+         if(ele.scrollHeight > ele.clientHeight || ele.scrollWidth > ele.clientWidth){
+         }else{
+           _this.setState({moveFlag:false});
+         }
+       },200)
+
   }
 
   startDrag = (event)=>{
 
-    // this.setState({moveFlag:true});
+    if(this.state.moveFlag){
+      const target = event.target;
+      const startX = event.pageX;
+      const startY = event.pageY;
+      const ele = document.getElementsByClassName("ant-modal-body")[0];
 
-    const target = event.target;
-    const startX = event.pageX;
-    const startY = event.pageY;
-
-    // console.log(scrollTop,scrollLeft)
-
-    const scrollTop = $(target).parent().parent().scrollTop();
-    const scrollLeft = $(target).parent().parent().scrollLeft();
-    document.onmousemove = function(event){
-      event.preventDefault();
-      const top = event.pageY - startY;
-      const left = event.pageX - startX;
-      const endTop = scrollTop - top;
-      const endLeft = scrollLeft - left;
-      $(target).parent().parent().scrollTop(endTop)
-      $(target).parent().parent().scrollLeft(endLeft)
-
-
-
+      const scrollTop =ele.scrollTop;
+      const scrollLeft =ele.scrollLeft;
+      // const scrollTop = $(target).parent().parent().scrollTop();
+      // const scrollLeft = $(target).parent().parent().scrollLeft();
+      document.onmousemove = function(event){
+        event.preventDefault();
+        const top = event.pageY - startY;
+        const left = event.pageX - startX;
+        const endTop = scrollTop - top;
+        const endLeft = scrollLeft - left;
+        ele.scrollTop = endTop;
+        ele.scrollLeft = endLeft;
+        // $(target).parent().parent().scrollTop(endTop)
+        // $(target).parent().parent().scrollLeft(endLeft)
+      }
+      document.onmouseup = function(){
+        document.onmousemove = null;
+        document.onmouseup = null;
+      }
     }
-    document.onmouseup = function(){
-      document.onmousemove = null;
-      document.onmouseup = null;
-    }
+
   }
 
 
@@ -114,6 +124,7 @@ class DiagramImgModal  extends PureComponent{
   render(){
     const {processDiagramImgUrl, handleOk, handleCancel, handleDownImage, visibleDiagramModal, processDiagramData, formTitle} = this.props;
     const top = this.state.diagramModalMax?"0px":"100px";
+    const cursor = this.state.moveFlag?"move":"auto";
     return  (
       <Modal
         title={this.flowTile(formTitle)}
@@ -129,7 +140,7 @@ class DiagramImgModal  extends PureComponent{
           <Button key="back" onClick={handleCancel}>关闭</Button>
         ]}
       >
-        <div style={{height:this.state.diagramModalHeight,cursor: "move"}}>
+        <div style={{height:this.state.diagramModalHeight,cursor:cursor}}>
           <img alt={formTitle}
                onMouseDown={this.startDrag}
                onLoad={this.setDiagramModalWidth.bind(this)}
