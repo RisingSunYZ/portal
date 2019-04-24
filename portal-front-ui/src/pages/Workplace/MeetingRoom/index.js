@@ -37,8 +37,7 @@ export default class MeetingRoom extends PureComponent {
     this.setState({
       cardType:key,
     });
-
-  }
+  };
 
   // 加载会议页面内容
   componentDidMount(){
@@ -98,7 +97,6 @@ export default class MeetingRoom extends PureComponent {
         pageSize:this.state.pagination.pageSize
       }
     });
-    // console.log('Page: ', pageNumber);
   };
 
   // 搜索会议
@@ -111,7 +109,7 @@ export default class MeetingRoom extends PureComponent {
       pageSize:this.state.pagination.pageSize
     };
 
-    if(cardType==1){
+    if(cardType === 1){
       dispatch({
         type: 'meetingRoom/getWaitStartData',
         payload: params
@@ -119,7 +117,7 @@ export default class MeetingRoom extends PureComponent {
       this.setState({
         query:params
       })
-    }else if(cardType==2){
+    }else if(cardType === 2){
       dispatch({
         type: 'meetingRoom/getMyInviteData',
         payload:params
@@ -127,7 +125,7 @@ export default class MeetingRoom extends PureComponent {
       this.setState({
         query:params
       })
-    }else if(cardType==3){
+    }else if(cardType === 3){
       dispatch({
         type: 'meetingRoom/getHistoryData',
         payload:params
@@ -174,7 +172,7 @@ export default class MeetingRoom extends PureComponent {
 
   handleOk = (id,type) => {
     const { dispatch }=this.props;
-    if(type==1){
+    if(type === 1){
       // 点击删除，删除草稿会议卡片
       dispatch({
         type:'meetingRoom/delDraftData',
@@ -195,7 +193,7 @@ export default class MeetingRoom extends PureComponent {
         });
       },100)
 
-    } else if(type==2) {
+    } else if(type === 2) {
       // 点击删除，删除记录人
       dispatch({
         type:'meetingRoom/delRecordPerson',
@@ -228,10 +226,10 @@ export default class MeetingRoom extends PureComponent {
   handleView = (tab,id) =>{
     let visibleIdStr = this.state.visibleId;
     const index = visibleIdStr.indexOf(tab+"-"+id);
-    if(index!=-1){//如果包含id，则删除id
+    if(index !== -1){//如果包含id，则删除id
       visibleIdStr = visibleIdStr.substr(0,index) + visibleIdStr.substr(index+(tab+"-"+id).length+1,visibleIdStr.length);
     }else{//不包含，则添加
-      visibleIdStr+= tab+"-"+id+","
+      visibleIdStr += tab+"-"+id+","
     }
     this.setState({
       visibleId:visibleIdStr,
@@ -277,12 +275,10 @@ export default class MeetingRoom extends PureComponent {
   render() {
     const {
       meetingRoom: { draftData: { listDraft }, waitData:{ listWait } ,historyData:{listHistory ,pagination} ,inviteData:{ listInvita ,paginations}},
-      loading,
       match
     } = this.props;
     const { type }=this.state;
     const tab = match.params.tab? match.params.tab:1;
-    // console.log(tab);
 
     // 上传附件格式化
     const handleFiles=(files)=>{

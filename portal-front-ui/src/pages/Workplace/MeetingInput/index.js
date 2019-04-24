@@ -1,24 +1,15 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import Editor from 'react-umeditor';
 import { connect } from 'dva';
-import { Tabs, Form, Row, Col, Upload, message, Icon, DatePicker, TimePicker,Select, Button, Input, Card, Modal } from 'antd';
+import {  Form, Row, Col, DatePicker, TimePicker, Button, Input ,message } from 'antd';
 import { UserSelect } from '@/components/Selector';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { simpleFormatTime} from '@/utils/utils';
 import FileList from '@/components/FileList';
 import Plupload from "@/components/Plupload";
-import Link from 'umi/link';
 import moment from 'moment';
-import styles from './index.less'
+import styles from './index.less';
 
-
-
-
-const TabPane = Tabs.TabPane;
-const Search = Input.Search;
-const { Meta } = Card;
-const { Option } = Select;
-const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const FormItem = Form.Item;
 
 
@@ -32,9 +23,7 @@ const FormItem = Form.Item;
 export default class MeetingInput extends PureComponent {
   state = {
     selectedKey: '',
-    visible:false,
     content: "",
-    ModalTextSave:'会议主题不能为空！',
     cardType:1
   };
 
@@ -42,7 +31,7 @@ export default class MeetingInput extends PureComponent {
     this.setState({
       content: content
     })
-  }
+  };
 
   getIcons=()=>{
     const icons = [
@@ -53,7 +42,7 @@ export default class MeetingInput extends PureComponent {
       "horizontal date time  | image emotion spechars | inserttable"
     ];
     return icons;
-  }
+  };
 
   getPlugins=()=>{
     return {
@@ -64,11 +53,11 @@ export default class MeetingInput extends PureComponent {
         }
       }
     }
-  }
+  };
 
   componentDidMount(){
-    const {dispatch, match, form }=this.props;
-    if(match.params.meetId!=":meetId" && match.params.meetId!=undefined){
+    const {dispatch, match }=this.props;
+    if(match.params.meetId != ":meetId" && match.params.meetId != undefined){
       dispatch({
         type:'meetingRoom/loadInput',
         payload:{
@@ -99,9 +88,9 @@ export default class MeetingInput extends PureComponent {
       mandaNo+=mandaPer[i].no+ ',';
     }
     if(str.length>0) str=str.substr(0,str.length-1);
-    if(mandaNo.length>0) mandaNo=mandaNo.substr(0,mandaNo.length-1)
+    if(mandaNo.length>0) mandaNo=mandaNo.substr(0,mandaNo.length-1);
     fieldsValue.mandatoryPersonName=str;
-    fieldsValue.mandatoryPersonNo = mandaNo
+    fieldsValue.mandatoryPersonNo = mandaNo;
 
     // 格式化 可选人员
     let optionPer=fieldsValue.optionalPersonList;
@@ -144,27 +133,24 @@ export default class MeetingInput extends PureComponent {
         filePath += meetingFileList[i].filePath+ ';';
         fileName += meetingFileList[i].name+ ';'+ ' ';
       }
-      if(filePath.length>0) filePath=filePath.substr(0,filePath.length-1)
-      if(fileName.length>0) fileName=fileName.substr(0,fileName.length-1)
+      if(filePath.length>0) filePath=filePath.substr(0,filePath.length-1);
+      if(fileName.length>0) fileName=fileName.substr(0,fileName.length-1);
       fieldsValue.filePath=filePath;
       fieldsValue.fileName=fileName;
       delete fieldsValue.meetingFiles
     }
-    debugger;
-    if(this.state.content==""){
+    if(this.state.content === ""){
       // fieldsValue.content = meeting.content;
       fieldsValue.content = meeting.content;
     }else{
       fieldsValue.content = this.state.content
     }
-
-  }
+  };
 
   // 发送更新
   sendUpdate=()=>{
     const { dispatch ,form, match }=this.props;
     form.validateFields((err, fieldsValue)=>{
-      console.log(fieldsValue)
       if(err) return;
       // 调用公共方法
       this.commonMethod(fieldsValue);
@@ -172,32 +158,20 @@ export default class MeetingInput extends PureComponent {
         type:'meetingRoom/sendInvites',
         payload:{...fieldsValue},
         callback: res=>{
-          if(res.code=='100'){
+          if(res.code === '100'){
             window.location.href='/eip/workplace/meeting-room/'+ match.params.tab
           }
         }
       })
     })
-  }
+  };
  // 发送邀请-按钮
   sendInvite =() =>{
     const {dispatch ,form }=this.props;
     form.validateFields((err, fieldsValue)=>{
-      console.log(fieldsValue)
       if(err) return;
-      if(fieldsValue.theme==undefined || fieldsValue.mandatoryPersonName=="" || fieldsValue.meetingroomName==undefined){
-        //点击显示 弹出框
-        this.setState({
-          visible: true,
-          ModalTextSave:'会议主题、 必选人员 、会议室不能为空 ！'
-        });
-
-        //间隔一段时间，让弹出框消失
-        setTimeout(() => {
-          this.setState({
-            visible: false,
-          });
-        }, 500);
+      if(fieldsValue.theme === undefined || fieldsValue.mandatoryPersonName === "" || fieldsValue.meetingroomName === undefined){
+        message.error("会议主题、 必选人员 、会议室不能为空 ！");
         return;
       }
 
@@ -207,7 +181,7 @@ export default class MeetingInput extends PureComponent {
         type:'meetingRoom/sendInvites',
         payload:{...fieldsValue },
         callback: res => {
-          if (res.code == '100') {
+          if (res.code === '100') {
             form.resetFields();
             window.location.href = '/workplace/meeting-room/1'
           }
@@ -221,21 +195,10 @@ export default class MeetingInput extends PureComponent {
     const { dispatch ,form }= this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      if(fieldsValue.theme==undefined){
-        //点击显示 弹出框
-        this.setState({
-          visible: true,
-          ModalTextSave:'会议主题不能为空！'
-        });
-        //间隔一段时间，让弹出框消失
-        setTimeout(() => {
-          this.setState({
-            visible: false,
-          });
-        }, 500);
+      if(fieldsValue.theme === undefined){
+        message.error("会议主题不能为空！");
         return;
       }
-      // console.log(fieldsValue);
       // 调用公共方法
       this.commonMethod(fieldsValue);
 
@@ -243,7 +206,7 @@ export default class MeetingInput extends PureComponent {
         type:'meetingRoom/saveDrafts',
         payload:{...fieldsValue},
         callback: res => {
-          if (res.code == '100') {
+          if (res.code === '100') {
             // form.resetFields();
             window.location.href = '/workplace/meeting-room/4'
           }
@@ -254,15 +217,12 @@ export default class MeetingInput extends PureComponent {
 
   render() {
     const {
-      meetingRoom: { list, data, meeting, mandatoryPersonList, optionalPersonList, meetingFileList },
+      meetingRoom: { meeting, mandatoryPersonList, optionalPersonList, meetingFileList },
       user:{currentUser},
-      loading,
-      dispatch,
       form,
       match
     } = this.props;
 
-    const { visible, editorState, ModalTextSave ,cardType }=this.state;
     const tab = match.params.tab ? match.params.tab:tab;
 
     // 上传组件相关属性配置
@@ -273,7 +233,6 @@ export default class MeetingInput extends PureComponent {
       { title: 'Cad files', extensions: 'dwg' },
     ];
 
-    console.log(meeting)
     const icons = this.getIcons();
     const plugins = this.getPlugins();
 
@@ -436,7 +395,7 @@ export default class MeetingInput extends PureComponent {
                 </Form.Item>
               </Col>
             </Row>
-            {((tab==1 || tab==2) && match.params.meetId != ':meetId') ? (
+            {((tab == 1 || tab == 2) && match.params.meetId != ':meetId') ? (
               <Row className={styles.rows} style={{left:'535px'}}>
                 <Col span={3}>
                   <Button type="primary" onClick={this.sendUpdate}>发送更新</Button>
@@ -449,15 +408,6 @@ export default class MeetingInput extends PureComponent {
                 </Col>
                 <Col span={3}>
                   <Button onClick={this.saveDraft}>保存草稿</Button>
-                  <Modal
-                    visible={visible}
-                    footer={null}
-                    closable={false}
-                    centered
-                    bodyStyle={{backgroundColor:'#5C5C5C',color:'#fff',textAlign:'center'}}
-                    maskStyle={{backgroundColor:'transparent'}}>
-                    <p>{ModalTextSave}</p>
-                  </Modal>
                 </Col>
               </Row>
             )}
