@@ -114,7 +114,7 @@ export async function getMyInviteData(params){
  * @returns {Promise<Object>}
  */
 export async function getInputData(params){
-  // debugger
+
   return request(`/rest/portal/rscmgmt/meeting/getMeetingById/${params.id}`);
 }
 

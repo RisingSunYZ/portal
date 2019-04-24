@@ -288,8 +288,7 @@ class AddressBook extends PureComponent {
           <Drawer
             placement="right"
             mask={false}
-            closable={true}
-            onClose={this.onClose}
+            closable={false}
             width={830}
             style={{position:'absolute',top:170}}
             visible={this.state.visibleDrawer}
@@ -312,7 +311,8 @@ class AddressBook extends PureComponent {
                   </ul>
                 </div>
               </Col>
-              <Col span={6} pull={18} style={{background:'#FAFAFA'}}>
+              <Col span={6} pull={18} style={{background:'#FAFAFA',height: 830}}>
+                <div className={styles.iconRight} onClick={this.onClose}><Icon type="right" /></div>
                 <div className={styles.LeftBox}>
                   <div className={styles.headerImg}>
                     {personObj.headImg !== null ? (<img src={getConfig().ftpHost+ personObj.headImg} alt=""/>):(<div className={styles.imgBot}/>)}

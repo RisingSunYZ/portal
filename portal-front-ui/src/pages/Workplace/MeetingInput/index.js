@@ -34,18 +34,26 @@ export default class MeetingInput extends PureComponent {
   };
 
   getIcons=()=>{
-    const icons = [
+    var icons = [
       "source | undo redo | bold italic underline strikethrough fontborder emphasis | ",
       "paragraph fontfamily fontsize | superscript subscript | ",
       "forecolor backcolor | removeformat | insertorderedlist insertunorderedlist | selectall | ",
       "cleardoc  | indent outdent | justifyleft justifycenter justifyright | touppercase tolowercase | ",
       "horizontal date time  | image emotion spechars | inserttable"
-    ];
+    ]
     return icons;
   };
 
   getPlugins=()=>{
     return {
+      "toolbar":{
+        "icons":[
+          {
+            name:'test',
+            title:'aaaaaaaaaaaaaaaaaaaaaaaaaaa'
+          }
+        ]
+      },
       "image": {
         "uploader": {
           "name":"file",
@@ -222,7 +230,7 @@ export default class MeetingInput extends PureComponent {
       form,
       match
     } = this.props;
-
+console.log(meeting);
     const tab = match.params.tab ? match.params.tab:tab;
 
     // 上传组件相关属性配置
@@ -235,6 +243,7 @@ export default class MeetingInput extends PureComponent {
 
     const icons = this.getIcons();
     const plugins = this.getPlugins();
+    const format = 'HH:mm';
 
     return (
       <PageHeaderWrapper>
@@ -345,12 +354,10 @@ export default class MeetingInput extends PureComponent {
               <Col span={4}>
                 <FormItem>
                   {form.getFieldDecorator('start', {
-                    initialValue:moment('13:20','HH:mm')
-                    // initialValue:moment(meeting.start).format('HH:mm')
-                    // moment(fieldsValue.start).format('HH:mm');
-                    // initialValue:(meeting.start==null || meeting.start=="" || meeting.start=='Invalid date')?"":moment(simpleFormatTime(meeting.start),'HH:mm')
+                    // initialValue:moment(meeting.start,format)
+                    initialValue:moment("10:30",format)
                   })(
-                    <TimePicker format="HH:mm" placeholder="请选择开始时间" style={{width: '185px'}}/>
+                    <TimePicker format={format} placeholder="请选择开始时间" style={{width: '185px'}}/>
                   )}
                 </FormItem>
               </Col>
@@ -360,28 +367,27 @@ export default class MeetingInput extends PureComponent {
               <Col span={5}>
                 <FormItem>
                   {form.getFieldDecorator('end', {
-                    initialValue:moment('16:30','HH:mm')
+                    initialValue:moment("11:30",format)
                   })(
-                    <TimePicker format="HH:mm" placeholder="请选择结束时间" style={{width: '185px'}} />
+                    <TimePicker format={format} placeholder="请选择结束时间" style={{width: '185px'}} />
                   )}
                 </FormItem>
               </Col>
             </Row>
             <Row className={styles.rows}>
               <Col span={24}>
-                <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
+                <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }} style={{width:'99%'}}>
                       <Editor
                         ref="editor"
                         icons={icons}
                         value={this.state.content=="" ? meeting.content:this.state.content}
-                        // value={"<p>ddddddd</p>"}
                         defaultValue="<p>请输入内容</p>"
                         onChange={this.handleChange.bind(this)}
                         plugins={plugins} />
                 </FormItem>
               </Col>
             </Row>
-            <Row style={{marginLeft:61,top: -20}}>
+            <Row style={{ marginLeft:61,top: -20 }}>
               <Col span={6}>
                 <Form.Item>
                   {form.getFieldDecorator('meetingFiles', {
