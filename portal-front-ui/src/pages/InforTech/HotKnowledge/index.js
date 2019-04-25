@@ -7,7 +7,7 @@ import {getConfig} from "../../../utils/utils";
   inforTech,
   loading: loading.models.inforTech,
 }))
-export default class NewsNotice extends PureComponent {
+export default class HotKnowledge extends PureComponent {
   state = {};
 
   componentDidMount() {
@@ -37,7 +37,7 @@ export default class NewsNotice extends PureComponent {
     } = this.props;
     return (
       <ul className="hot-knowledge">
-        {this.getHotList(hotKnowledge.datas)}
+        {this.getHotList(hotKnowledge)}
       </ul>
     );
   }

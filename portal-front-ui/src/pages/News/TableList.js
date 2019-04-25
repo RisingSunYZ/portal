@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
+import Link from 'umi/link';
 import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 
 @connect(({ newsNotice, loading }) => ({
@@ -70,7 +71,7 @@ export default class TableList extends PureComponent {
         key: 'title',
         width: 700,
         render: (text, record) => (
-          <a href={`/portal/news-notice/detail/notice/${params.typeSn}/${record.id}`} title={text} target="_blank">{text}</a>
+          <Link to={`/news/notice-detail/${record.id}`} title={text} target="_blank">{text}</Link>
         )
       },
       {

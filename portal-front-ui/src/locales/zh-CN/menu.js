@@ -80,4 +80,7 @@ export default {
   'menu.account.logout': '退出登录',
   'menu.table-list': '公告列表',
   'menu.basic-list': '新闻列表',
+  'menu.msg-center': '消息通知',
+  'menu.msg-center.msg-flow': '流程类消息',
+  'menu.msg-center.msg-system': '系统消息',
 };

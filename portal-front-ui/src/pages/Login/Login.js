@@ -73,11 +73,10 @@ class LoginPage extends Component {
     const htmlFont=document.getElementById('login-top-box');
     const height = document.body.offsetHeight;
     const textTopFont = document.getElementById('title-top');
-    // console.log(height);
     height <= 700 ? ((htmlFont.style.display = "none") && (htmlFont.style.transition = "all .3s ease")) :(htmlFont.style.display = "")
     height <= 720 ? ((textTopFont.style.fontSize = "3vh") && (textTopFont.style.transition ="all .3s ease")) :(textTopFont.style.fontSize = "")
     height <= 650 ? (textTopFont.style.display="none") : (textTopFont.style.display="")
-  }
+  };
 
   render() {
     const newsBannerStyle = {
@@ -125,7 +124,9 @@ class LoginPage extends Component {
           <LoginBox dat={login} submitting={submitting} handleSubmit={this.handleSubmit} />
           {/* 左侧轮播和新闻列表 */}
           <div>
-            <NewsBanner newsBannerStyle={newsBannerStyle} />
+            <div style={{width:468}}>
+              <NewsBanner newsBannerStyle={newsBannerStyle} />
+            </div>
             <div className={styles.newsNoticeBox}>
               <NewsList width="100%" title="公司动态" typeSn="company_news" pageSize={4} extra={moreTag} />
             </div>

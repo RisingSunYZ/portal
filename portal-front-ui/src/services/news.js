@@ -42,7 +42,7 @@ export async function queryNewsNotice() {
  */
 
 export async function queryNoticeDetail(params) {
-  return request(`/rest/portal/notice/noticeDetail?${stringify(params)}`);
+  return request(`/rest/portal/notice/noticeDetail/${params}`);
 }
 
 export async function queryNewsDetail(params) {

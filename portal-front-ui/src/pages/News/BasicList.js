@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { List, Avatar, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '../../components/PageHeaderWrapper';
+import Link from 'umi/link';
 import { getConfig } from '../../utils/utils';
 import styles from './News.less';
 
@@ -62,7 +63,7 @@ export default class BasicList extends PureComponent {
   render() {
 
     const {
-      newsNotice:{ tblist }
+      newsNotice:{ companyNewsList }
     } = this.props;
 
     return (
@@ -75,10 +76,10 @@ export default class BasicList extends PureComponent {
           </Row>
           <List
             size="large"
-            dataSource={tblist.data}
+            dataSource={companyNewsList.data}
             pagination={{
               pageSize: 15,
-              total: tblist.total,
+              total: companyNewsList.total,
               onChange: this.updateNewsTable
             }}
             renderItem={item => (
@@ -87,12 +88,15 @@ export default class BasicList extends PureComponent {
               >
                 <div className={styles.newsBox}>
                   <div className={styles.imgBox}>
-                    <a target="_blank" href={`/portal/news/basic-list/detail/${item.id}`}>
+                    <Link to={`/news/news-detail/${item.id}`} target="_blank">
                       <img width={194} height={120} src={ getConfig().ftpHost + item.thumbImg } alt=""/>
-                    </a>
+                    </Link>
                   </div>
                   <div className={styles.textBox}>
-                    <h5><a target="_blank" href={`/portal/news/basic-list/detail/${item.id}`}>{item.title}</a>
+                    <h5>
+                      <Link to={`/news/news-detail/${item.id}`} target="_blank">
+                        <span>{item.title}</span>
+                      </Link>
                     </h5>
                     <p className={styles.content}>{item.remark}</p>
                     <p className={styles.info}>

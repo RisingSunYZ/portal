@@ -103,17 +103,8 @@ export default class MeetingSummary extends PureComponent {
   };
 
   render() {
-    const {
-      meetingRoom: { meetingSummary, meetingFileList ,meetingSummaryFiles},
-      files,
-      loading,
-      match,
-      dispatch,
-      form,
-    } = this.props;
-
-console.log(meetingSummary);
-// console.log(meetingSummary.meetingId)
+    const {meetingRoom: { meetingSummary, meetingFileList ,meetingSummaryFiles}, form } = this.props;
+    console.log(meetingSummary);
     // 上传组件相关属性配置
     const mime_types = [
       { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },

@@ -124,6 +124,28 @@ export default [
           },
         ],
       },
+      {
+        path: '/biz-sys/:systemSn/:sn',
+        name: 'biz-sys',
+        component: '../layouts/HeadSiderLayout',
+        routes: [
+          {
+            path: '/biz-sys/xxzx/lczx',
+            name: 'msg-flow',
+            component: './Workplace/MsgManage/FlowMsg'
+          },
+          {
+            path: '/biz-sys/xxzx/xtxx',
+            name: 'msg-system',
+            component: './Workplace/MsgManage/SysMsg'
+          },
+          {
+            path: '/biz-sys/zygl/hys',
+            name: 'meetingroom-manage',
+            component: './ResourceControl/MeetingRoom'
+          },
+        ]
+      },
       // address-book
       {
         path: '/workplace',
@@ -138,6 +160,11 @@ export default [
             path: '/workplace/address-book',
             name: 'address-book',
             component: './Workplace/AddressBook'
+          },
+          {
+            path: '/workplace/msg-system',
+            name: 'msg-system',
+            component: './Workplace/MsgManage/SysMsg'
           },
           {
             path: '/workplace/schedule',
@@ -167,6 +194,27 @@ export default [
           }
         ]
       },
+      {
+        path: '/infor-tech/knowledge',
+        name: 'infor-tech',
+        component: '../layouts/BasicLayout',
+        routes: [
+          {
+            path: '/infor-tech/knowledge',
+            redirect: '/infor-tech/knowledge/list'
+          },
+          {
+            path: '/infor-tech/knowledge/list',
+            name: 'knowledge-list',
+            component: './InforTech/HotKnowledge/knowledgeList'
+          },
+          {
+            path: '/infor-tech/knowledge/detail/:id',
+            name: 'knowledge-detail',
+            component: './InforTech/HotKnowledge/knowledgeDetail'
+          },
+        ]
+      },
       // news-notice
       {
         path: '/news',
@@ -191,6 +239,11 @@ export default [
             path: '/news/news-detail/:id',
             name: 'news-detail',
             component: './News/NewsDetail',
+          },
+          {
+            path: '/news/notice-detail/:id',
+            name: 'notice-detail',
+            component: './News/NoticeDetail',
           }
         ]
       },
@@ -303,32 +356,32 @@ export default [
           //   name: 'main-workplace',
             // component: './UserCenter/Baseinfo',
           // },
-          // {
-          //   path: '/user-center/attendance',
-          //   name: 'main-workplace',
-          //   component: './UserCenter/Attendance/TabList',
-          //   routes: [
-          //     // {
-          //     //   path: '/user-center/attendance',
-          //     //   redirect: '/user-center/attendance/summary',
-          //     // },
-          //     {
-          //       path: '/user-center/attendance/summary',
-          //       name: 'attendance-summary',
-          //       component: './UserCenter/Attendance/SummaryAttendance',
-          //     },
-          //     {
-          //       path: '/user-center/attendance/record',
-          //       name: 'attendance-record',
-          //       component: './UserCenter/Attendance/AttendanceRecord',
-          //     },
-          //     {
-          //       path: '/user-center/attendance/exception',
-          //       name: 'attendance-exception',
-          //       component: './UserCenter/Attendance/ExceptionHandle',
-          //     },
-          //   ],
-          // },
+          {
+            path: '/user-center/attendance',
+            name: 'main-workplace',
+            component: './UserCenter/Attendance/TabList',
+            routes: [
+              {
+                path: '/user-center/attendance',
+                redirect: '/user-center/attendance/summary',
+              },
+              {
+                path: '/user-center/attendance/summary',
+                name: 'attendance-summary',
+                component: './UserCenter/Attendance/SummaryAttendance',
+              },
+              {
+                path: '/user-center/attendance/record',
+                name: 'attendance-record',
+                component: './UserCenter/Attendance/AttendanceRecord',
+              },
+              {
+                path: '/user-center/attendance/exception',
+                name: 'attendance-exception',
+                component: './UserCenter/Attendance/ExceptionHandle',
+              },
+            ],
+          },
           // {
           //   path: '/user-center/asset',
           //   name: 'main-workplace',
@@ -339,11 +392,11 @@ export default [
           //   name: 'main-workplace',
           //   component: './UserCenter/Performance',
           // },
-          // {
-          //   path: '/user-center/train',
-          //   name: 'main-workplace',
-          //   component: './UserCenter/Train',
-          // },
+          {
+            path: '/user-center/train',
+            name: 'main-workplace',
+            component: './UserCenter/Train',
+          },
           {
             path: '/user-center/edit',
             name: 'edit-info',

@@ -64,7 +64,9 @@ class HrService extends PureComponent {
         <Row>
           <Col span={24}>
             <HrBaseInfo isLeader={hrService.isLeader} />
-            <span style={{margin:'0 15px',}}><NewsBanner newsBannerStyle={newsBannerStyle} /></span>
+            <span style={{width:468,display:'inline-block',margin:'0 16px'}}>
+              <NewsBanner newsBannerStyle={newsBannerStyle} />
+            </span>
             <Card
               className={styles.newsNoticeBox}
               title="人力公告"

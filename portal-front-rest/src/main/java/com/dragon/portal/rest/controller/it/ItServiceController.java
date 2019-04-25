@@ -57,7 +57,7 @@ import java.util.Map;
  * @Copyright: Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
 @RestController
-@RequestMapping("/reset/itService")
+@RequestMapping("/rest/itService")
 @Api(value="IT服务", description = "IT服务", tags={"IT服务 /rest/itService"})
 public class ItServiceController extends BaseController {
 	private static Logger logger = Logger.getLogger(ItServiceController.class);

@@ -53,8 +53,17 @@ export default {
       rows: [],
       total: 0
     },
-    newsDetail: {},
-    noticeDetail: {},
+    newsDetail: {
+      news: {},
+      files: [],
+      newsByKeyword: [],
+    },
+    noticeDetail: {
+      notice: {},
+      files: [],
+      approveRecords: [],
+      watermarkTxt: '',
+    },
     finance_notice: {},
     finance_info: {},
     finance_expense: {},
@@ -121,8 +130,11 @@ export default {
         payload: response,
       });
     },
-    *queryNoticeDetail({ payload }, { call, put }) {
+    *queryNoticeDetail({ payload, callback }, { call, put }) {
       const response = yield call(queryNoticeDetail, payload);
+      if(callback && typeof callback === 'function'){
+        callback(response);
+      }
       yield put({
         type: 'saveNoticeDetail',
         payload: response,
@@ -186,22 +198,22 @@ export default {
         tblist: action.payload,
       };
     },
-    queryCompanyNewsList(state, action) {
+    saveCompanyNewsList(state, action) {
       return {
         ...state,
-        companyNewsList: action.payload,
+        companyNewsList: action.payload.data,
       };
     },
     saveNoticeDetail(state, action) {
       return {
         ...state,
-        noticeDetail: action.payload,
+        noticeDetail: action.payload.data,
       };
     },
     saveNewsDetail(state, action) {
       return {
         ...state,
-        newsDetail: action.payload,
+        newsDetail: action.payload.data,
       };
     },
     savefinance_notice(state, action) {

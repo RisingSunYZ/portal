@@ -1,7 +1,11 @@
 import {
   queryHotKnowledge,
+  getKnowledgeCategory,
+  getKnowledgeList,
+  getKnowledgeDetail,
   getITtrendNews,
   getContactList,
+  getCommonDownloadList,
   queryTSCategory,
   queryTSType,
 } from '@/services/itsm';
@@ -9,13 +13,14 @@ import { message } from 'antd';
 
 export default {
   state: {
-    hotKnowledge: {
-      data: {},
-      datas: [],
-    },
+    hotKnowledge: [],
+    knowledgeCategory: [],
+    knowledgeList: {},
+    knowledgeDetail: {},
     trendNews: [],
     contact: [],
     sugSysList: [],
+    downloadList: [],
     questionRemark: {},
   },
 
@@ -28,6 +33,27 @@ export default {
         type: 'saveHotKnowledge',
         payload: response,
         pagination: payload,
+      });
+    },
+    *getKnowledgeCategory({ payload }, { call, put }) {
+      const response = yield call(getKnowledgeCategory, payload);
+      yield put({
+        type: 'saveKnowledgeCategory',
+        payload: response,
+      });
+    },
+    *getKnowledgeList({ payload }, { call, put }) {
+      const response = yield call(getKnowledgeList, payload);
+      yield put({
+        type: 'saveKnowledgeList',
+        payload: response,
+      });
+    },
+    *getKnowledgeDetail({ payload }, { call, put }) {
+      const response = yield call(getKnowledgeDetail, payload);
+      yield put({
+        type: 'saveKnowledgeDetail',
+        payload: response,
       });
     },
     *getITtrendNews({ payload }, { call, put }) {
@@ -45,19 +71,36 @@ export default {
         payload: response,
       });
     },
-    *queryTSCategory({ payload }, { call, put }) {
-      const response = yield call(queryTSCategory, payload);
+    *getCommonDownloadList({ payload }, { call, put }) {
+      const response = yield call(getCommonDownloadList, payload);
       yield put({
-        type: 'saveTSCategory',
+        type: 'saveDownloadList',
         payload: response,
       });
     },
-    *queryTSType({ payload }, { call, put }) {
+    *queryTSCategory({ payload, callback }, { call, put }) {
+      const response = yield call(queryTSCategory, payload);
+      if(callback && typeof callback === 'function'){
+        callback(response);
+      }
+      if(response && response.code === '100'){
+        yield put({
+          type: 'saveTSCategory',
+          payload: response,
+        });
+      }
+    },
+    *queryTSType({ payload, callback }, { call, put }) {
       const response = yield call(queryTSType, payload);
-      yield put({
-        type: 'saveTSType',
-        payload: response,
-      });
+      if(callback && typeof callback === 'function'){
+        callback(response);
+      }
+      if(response && response.code === '100'){
+        yield put({
+          type: 'saveTSType',
+          payload: response,
+        });
+      }
     },
 
   },
@@ -66,7 +109,25 @@ export default {
     saveHotKnowledge(state, action) {
       return {
         ...state,
-        hotKnowledge: action.payload,
+        hotKnowledge: action.payload.data,
+      };
+    },
+    saveKnowledgeCategory(state, action) {
+      return {
+        ...state,
+        knowledgeCategory: action.payload.data,
+      };
+    },
+    saveKnowledgeList(state, action) {
+      return {
+        ...state,
+        knowledgeList: action.payload.data,
+      };
+    },
+    saveKnowledgeDetail(state, action) {
+      return {
+        ...state,
+        knowledgeDetail: action.payload.data,
       };
     },
     saveTrendNews(state, action) {
@@ -79,6 +140,12 @@ export default {
       return {
         ...state,
         contact: action.payload.data,
+      };
+    },
+    saveDownloadList(state, action) {
+      return {
+        ...state,
+        downloadList: action.payload.datas,
       };
     },
     saveTSCategory(state, action) {

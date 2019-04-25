@@ -1,17 +1,24 @@
 import React, { Fragment, PureComponent } from 'react';
-import { Card, Button, Modal, Form, Input, Select, Row, Col } from 'antd';
+import { Card, Button, Modal, Form, Input, Select, Radio, Row, Col } from 'antd';
 import { connect } from 'dva';
 import { UserSelect } from '@/components/Selector';
 import { Link } from 'dva/router';
 import styles from './index.less';
 import {getConfig} from "../../../utils/utils";
+import {message} from "antd/lib/index";
 
 @connect(({ user, inforTech, loading }) => ({
   user,
   inforTech,
   loading: loading.models.inforTech,
 }))
-@Form.create()
+@Form.create({
+  onValuesChange: (props, changedValues)=>{
+    if(changedValues['case_person']){
+      props.form.setFieldsValue({'telephone': changedValues['case_person'][0].mobile});
+    }
+  }
+})
 
 export default class Suggestion extends PureComponent {
   state = {
@@ -19,21 +26,27 @@ export default class Suggestion extends PureComponent {
     sysFirst: [],
     sysSecond: [],
     sysType: [],
+    saveLoading: false,
   };
 
   componentDidMount() {
-    const { dispatch, sugSysList } = this.props;
-    dispatch({
-      type: 'inforTech/queryTSCategory',
-    });
-    this.setState({
-      sysFirst: sugSysList || []
-    });
+
   }
 
   openSuggestWin = () => {
+    const { dispatch } = this.props;
     this.setState({
       visible: true
+    });
+    dispatch({
+      type: 'inforTech/queryTSCategory',
+      callback: (res)=>{
+        if(res && res.code === '100'){
+          this.setState({
+            sysFirst: res.data || []
+          });
+        }
+      }
     });
   };
 
@@ -44,28 +57,36 @@ export default class Suggestion extends PureComponent {
   };
 
   handleSysFirst = (value) => {
-    const { dispatch, sugSysList } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'inforTech/queryTSCategory',
       payload: {
         classCode: value
+      },
+      callback: (res)=>{
+        if(res && res.code === '100'){
+          this.setState({
+            sysSecond: res.data || []
+          });
+        }
       }
-    });
-    this.setState({
-      sysSecond: sugSysList || []
     });
   };
 
   handleSysSecond = (value) => {
-    const { dispatch, sugSysList } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'inforTech/queryTSCategory',
       payload: {
         classCode: value,
+      },
+      callback: (res)=>{
+        if(res && res.code === '100'){
+          this.setState({
+            sysType: res.data || []
+          });
+        }
       }
-    });
-    this.setState({
-      sysType: sugSysList || []
     });
   };
 
@@ -75,7 +96,39 @@ export default class Suggestion extends PureComponent {
       type: 'inforTech/queryTSType',
       payload: {
         classCode: value
+      },
+      callback: (res)=>{
+        if(res && res.code === '100'){
+          this.setState({
+            others: res.data
+          })
+        }
       }
+    });
+  };
+
+  handleOk = () => {
+    this.setState({
+      saveBtnLoading: true,
+    });
+    const { form } = this.props;
+    form.validateFields((err, fieldsValue) => {
+      if (err) {
+        this.setState({
+          saveBtnLoading: false,
+        });
+        return;
+      }
+      const values = {
+        creatorByMobilePhone : fieldsValue['mobile'],
+        categoryCode : fieldsValue['categoryCode'],
+        categoryName : fieldsValue['categoryName'],
+        businessAddress : fieldsValue['address'],
+        description : fieldsValue['description'],
+        createUserid: fieldsValue['case_person'][0].no,
+        creatorRealName: fieldsValue['case_person'][0].name,
+      };
+      console.log(values);
     });
   };
 
@@ -85,7 +138,7 @@ export default class Suggestion extends PureComponent {
       form: { getFieldDecorator },
       inforTech: { questionRemark },
     } = this.props;
-    const { sysFirst, sysSecond, visible, sysType} = this.state;
+    const { sysFirst, sysSecond, visible, sysType, others} = this.state;
     return (
       <Fragment>
         <Modal
@@ -100,29 +153,47 @@ export default class Suggestion extends PureComponent {
             <Row gutter={8}>
               <Col span={12}>
                 <Form.Item labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="故障用户">
-                  {getFieldDecorator('case_person')(
+                  {getFieldDecorator('case_person',{
+                    initialValue: [currentUser],
+                    rules: [{
+                      required: true,
+                    }]
+                  })(
                     <UserSelect multiple={false} />
                   )}
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="联系方式">
-                  {getFieldDecorator('telephone')(
+                  {getFieldDecorator('mobile',{
+                    initialValue: currentUser.mobile,
+                    rules: [{
+                      required: true,
+                    }]
+                  })(
                     <Input />
                   )}
                 </Form.Item>
               </Col>
             </Row>
             <Form.Item label="办公地点">
-              {getFieldDecorator('address')(
+              {getFieldDecorator('address',{
+                rules: [{
+                  required: true,
+                }]
+              })(
                 <Input />
               )}
             </Form.Item>
             <Form.Item label="所属业务">
-              {getFieldDecorator('sysFirstId')(
+              {getFieldDecorator('sysFirstId',{
+                rules: [{
+                  required: true,
+                }]
+              })(
                 <Select onChange={this.handleSysFirst}>
                   {sysFirst.map((item)=>(
-                    <Select.Option key={item.id}>
+                    <Select.Option key={item.id} value={item.id}>
                       {item.name}
                     </Select.Option>
                   ))}
@@ -130,7 +201,11 @@ export default class Suggestion extends PureComponent {
               )}
             </Form.Item>
             <Form.Item label="所属系统">
-              {getFieldDecorator('sysScdId')(
+              {getFieldDecorator('sysScdId',{
+                rules: [{
+                  required: true,
+                }]
+              })(
                 <Select onChange={this.handleSysSecond}>
                   {sysSecond.map((item)=>(
                     <Select.Option key={item.id}>
@@ -141,7 +216,11 @@ export default class Suggestion extends PureComponent {
               )}
             </Form.Item>
             <Form.Item label="问题分类">
-              {getFieldDecorator('sysType')(
+              {getFieldDecorator('sysType',{
+                rules: [{
+                  required: true,
+                }]
+              })(
                 <Select onChange={this.handleSysType}>
                   {sysType.map((item)=>(
                     <Select.Option key={item.id}>
@@ -151,12 +230,31 @@ export default class Suggestion extends PureComponent {
                 </Select>
               )}
             </Form.Item>
-            <Form.Item label="问题说明">
-              {getFieldDecorator('checkQuestion')(
-                <Input.TextArea />
-              )}
-            </Form.Item>
-
+            {others && others.length>0 ? (
+              <Form.Item label="问题说明">
+                {getFieldDecorator('checkQuestion',{
+                  rules: [{
+                    required: true,
+                  }]
+                })(
+                  <Radio.Group>
+                    {others.map(ques=>(
+                      <Radio value={ques.typename}>{ques.typename}</Radio>
+                    ))}
+                  </Radio.Group>
+                )}
+              </Form.Item>
+            ) : (
+              <Form.Item label="问题说明">
+                {getFieldDecorator('description',{
+                  rules: [{
+                    required: true,
+                  }]
+                })(
+                  <Input.TextArea rows={4} />
+                )}
+              </Form.Item>
+            )}
           </Form>
         </Modal>
         <Card bordered={false} style={{marginTop: 16}}>

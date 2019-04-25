@@ -37,8 +37,7 @@ export default class MeetingRoom extends PureComponent {
     this.setState({
       cardType:key,
     });
-
-  }
+  };
 
   // 加载会议页面内容
   componentDidMount(){
@@ -98,7 +97,6 @@ export default class MeetingRoom extends PureComponent {
         pageSize:this.state.pagination.pageSize
       }
     });
-    // console.log('Page: ', pageNumber);
   };
 
   // 搜索会议
@@ -111,7 +109,7 @@ export default class MeetingRoom extends PureComponent {
       pageSize:this.state.pagination.pageSize
     };
 
-    if(cardType==1){
+    if(cardType === 1){
       dispatch({
         type: 'meetingRoom/getWaitStartData',
         payload: params
@@ -119,7 +117,7 @@ export default class MeetingRoom extends PureComponent {
       this.setState({
         query:params
       })
-    }else if(cardType==2){
+    }else if(cardType === 2){
       dispatch({
         type: 'meetingRoom/getMyInviteData',
         payload:params
@@ -127,7 +125,7 @@ export default class MeetingRoom extends PureComponent {
       this.setState({
         query:params
       })
-    }else if(cardType==3){
+    }else if(cardType === 3){
       dispatch({
         type: 'meetingRoom/getHistoryData',
         payload:params
@@ -174,7 +172,7 @@ export default class MeetingRoom extends PureComponent {
 
   handleOk = (id,type) => {
     const { dispatch }=this.props;
-    if(type==1){
+    if(type === 1){
       // 点击删除，删除草稿会议卡片
       dispatch({
         type:'meetingRoom/delDraftData',
@@ -195,7 +193,7 @@ export default class MeetingRoom extends PureComponent {
         });
       },100)
 
-    } else if(type==2) {
+    } else if(type === 2) {
       // 点击删除，删除记录人
       dispatch({
         type:'meetingRoom/delRecordPerson',
@@ -225,13 +223,14 @@ export default class MeetingRoom extends PureComponent {
   /**
    * 点击 查看 显示内容
    */
-  handleView = (tab,id) =>{
-    let visibleIdStr = this.state.visibleId;
-    const index = visibleIdStr.indexOf(tab+"-"+id);
-    if(index!=-1){//如果包含id，则删除id
-      visibleIdStr = visibleIdStr.substr(0,index) + visibleIdStr.substr(index+(tab+"-"+id).length+1,visibleIdStr.length);
+  handleView = (cardType,id) =>{
+    const { visibleId }=this.state;
+    let visibleIdStr = visibleId;
+    const index = visibleIdStr.indexOf(cardType+"-"+id);
+    if(index !== -1){//如果包含id，则删除id
+      visibleIdStr = visibleIdStr.substr(0,index) + visibleIdStr.substr(index+(cardType+"-"+id).length+1,visibleIdStr.length);
     }else{//不包含，则添加
-      visibleIdStr+= tab+"-"+id+","
+      visibleIdStr += cardType+"-"+id+","
     }
     this.setState({
       visibleId:visibleIdStr,
@@ -277,12 +276,10 @@ export default class MeetingRoom extends PureComponent {
   render() {
     const {
       meetingRoom: { draftData: { listDraft }, waitData:{ listWait } ,historyData:{listHistory ,pagination} ,inviteData:{ listInvita ,paginations}},
-      loading,
       match
     } = this.props;
-    const { type }=this.state;
-    const tab = match.params.tab? match.params.tab:1;
-    // console.log(tab);
+    const { type ,visibleId }=this.state;
+    const tab = match.params.tab ? match.params.tab : 1;
 
     // 上传附件格式化
     const handleFiles=(files)=>{
@@ -310,14 +307,14 @@ export default class MeetingRoom extends PureComponent {
             <li className={styles.liBot}>
               <span className={styles.liDate}>{simpleFormatDate(item.startTime)}</span>&nbsp;&nbsp;&nbsp;
               <span className={styles.liTime}>{simpleFormatTime(item.startTime)}-{simpleFormatTime(item.endTime)}</span>
-              { (cardType === 1 ||cardType === 2||cardType === 3 ) ?
+              { (cardType === 1 || cardType === 2 || cardType === 3 ) ?
                 <span style={{ marginLeft: 60}}>{this.formatterGetTime(item.startTime,item.endTime)}</span> :
                 (<Icon type="delete" theme="twoTone" className={styles.del} onClick={()=>this.showDeleteConfirm(1,item.id)}/>)}
             </li>
           </ul>
           <div className={styles.descRight}>
             <ul style={{padding:0}}>
-              { item.recordPersonName==null ?
+              { item.recordPersonName == null ?
                 (<li style={{color:"#2596FF",marginRight:6}} >
                   <Icon type="setting" theme="filled" />
                   <UserSelect
@@ -341,11 +338,11 @@ export default class MeetingRoom extends PureComponent {
                     onCancel={this.handleCancel}
                     width={356}
                   >
-                    {this.state.type===1?(<p>确定删除会议?</p>):(<p>确定删除记录人吗?</p>)}
+                    {this.state.type === 1?(<p>确定删除会议?</p>):(<p>确定删除记录人吗?</p>)}
                   </Modal>
                 </li>)
               }
-              {(cardType === 4||((cardType === 1 ||cardType === 2||cardType === 3) && this.calculationTime(item.startTime) )) ? (
+              {(cardType === 4 || ((cardType === 1 || cardType === 2 || cardType === 3) && this.calculationTime(item.startTime) )) ? (
                 <li style={{marginLeft:20}}>
                   <Link to={"/workplace/meeting-room/"+cardType+"/meeting-input/"+item.id}>
                     <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
@@ -354,12 +351,12 @@ export default class MeetingRoom extends PureComponent {
                 </li>
               ):('') }
             </ul>
-            <div className={styles.view} onClick={()=>this.handleView(tab,item.id)}>
-              {this.state.visibleId.indexOf(tab+"-"+item.id)!=-1 ?
+            <div className={ styles.view } onClick={()=>this.handleView(cardType,item.id)}>
+              { visibleId.indexOf(cardType+"-"+item.id) !== -1 ?
                 (<Icon type="double-left" className={styles.iconViewTop}/>)
                 : (<Icon type="double-left" className={styles.iconViewBot}/>)
               }
-              &nbsp;&nbsp;<span>{this.state.visibleId.indexOf(tab+"-"+item.id)!=-1  ? '收起':'查看'}</span>
+              &nbsp;&nbsp;<span>{ visibleId.indexOf(cardType+"-"+item.id) !== -1  ? '收起':'查看' }</span>
             </div>
           </div>
         </div>
@@ -382,7 +379,7 @@ export default class MeetingRoom extends PureComponent {
                     description={cardData(item,cardType)}
                   />
                 </Card>
-                <div className={styles.cardBot} style={{display:this.state.visibleId.indexOf(tab+"-"+item.id)!=-1 ? '':'none'}}>
+                <div className={styles.cardBot} style={{display:visibleId.indexOf(cardType+"-"+item.id)!==-1 ? '':'none'}}>
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>参会人员：</Col>
                     <Col span={20}>
@@ -413,12 +410,14 @@ export default class MeetingRoom extends PureComponent {
                     <Col span={2} className={styles.col1}>会议纪要：</Col>
                     <Col span={20}>
                       <span><div dangerouslySetInnerHTML={{__html: item.summaryContent}}/></span>
-                      <div style={{margin: '10px 0'}}>
-                        <Link to={"/workplace/meeting-room/"+cardType+"/meeting-summary/"+item.id}>
-                          <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
-                          <span>编辑</span>
-                        </Link>
-                      </div>
+                      {((cardType === 1 || cardType === 2 || cardType === 3) && !this.calculationTime(item.startTime)) ? (
+                        <div style={{margin: '10px 0'}}>
+                          <Link to={"/workplace/meeting-room/"+cardType+"/meeting-summary/"+item.id}>
+                            <Icon type="edit" theme="filled" className={styles.icon}/>&nbsp;&nbsp;
+                            <span>编辑</span>
+                          </Link>
+                        </div>
+                      ) :('')}
                       <div style={{color:'#2596FF',fontSize:12}}>{item.meetingSummaryFiles && handleFiles(item.meetingSummaryFiles)}</div>
                     </Col>
                   </Row>

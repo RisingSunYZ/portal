@@ -1,10 +1,9 @@
-//YS首页——财务服务
-import React, { PureComponent, Fragment } from 'react';
-import { connect } from 'dva';
-import { Row, Col, Card, Tabs, Icon, Button, Input, Modal, Select, message} from 'antd';
-import NewsBanner from '@/components/NewsBanner';
-import NewsNotice from '@/components/NewsNotice';
-import FileList from '@/components/FileList'
+import React, { PureComponent, Fragment } from "react";
+import { Row, Col, Card, Tabs, Icon, Button, Input, Modal, Select, message} from "antd";
+import { connect } from "dva";
+import NewsBanner from "@/components/NewsBanner";
+import NewsNotice from "@/components/NewsNotice";
+import FileList from "@/components/FileList";
 import styles from './FncService.less';
 
 @connect(({ fncService, loading }) => ({

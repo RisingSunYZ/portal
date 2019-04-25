@@ -35,6 +35,24 @@
   cursor:not-allowed;
 }
 
+
+.iconRight{
+  position:relative;
+  top: 45%;
+  color: #fff;
+  transition:all .5s linear;
+  font-size: 14px;
+  background:#A4A9AE;
+  width:13px;
+  height:60px;
+  line-height: 60px;
+  text-align:center;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.iconRight:hover{
+  background:#C6C9CC;
+}
 // 设置抽屉
 .LeftBox{
 
@@ -46,6 +64,12 @@
     img{
       width:150px;
       height: 150px;
+    }
+    .imgBot{
+      background: url(../../../assets/icons/default-user-head.jpg) no-repeat;
+      background-size:cover;
+      width: 160px;
+      height: 160px;
     }
   }
   .perName{
@@ -70,6 +94,20 @@
     .btnEmail{
       width:144px;
       margin-top:20px;
+    }
+  }
+}
+
+.headStyles{
+  :global{
+    .ant-card-head{
+      border-left:1px solid #e5e5e5;
+      border-right:1px solid #e5e5e5;
+      border-bottom:2px solid #0E65AF;
+      color:#0E65AF;
+      font-size: 14px;
+      top:0;
+      position:relative;
     }
   }
 }
@@ -99,11 +137,6 @@
 }
 
 
-.treeMenu{
-  //background: #F0F0F0;
-}
-
-
 :global{
   .ant-layout-footer{
     display: none;
@@ -114,7 +147,6 @@
   }
   .antd-pro-layouts-basic-layout-contentBox {
     margin: 0;
-    //width:1900px;
     position:relative;
   }
   .antd-pro-layouts-basic-layout-contentBox >div {
@@ -170,5 +202,13 @@
   }
   .ant-layout-content{
     height: 800px
+  }
+
+  .antd-pro-components-page-header-wrapper-index-content{
+    margin: 10px 0 0 !important;
+  }
+
+  .anticon .anticon-close{
+
   }
 }

@@ -9,6 +9,30 @@ import request from '../utils/request';
 export async function queryHotKnowledge(params) {
   return request(`/rest/portal/itsm/getHotKnowledge?${stringify(params)}`);
 }
+/**
+ * 知识库分类
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function getKnowledgeCategory(params) {
+  return request(`/rest/portal/itsm/knowledgeCategory?${stringify(params)}`);
+}
+/**
+ * 知识库查询列表
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function getKnowledgeList(params) {
+  return request(`/rest/portal/itsm/apiKnowledgeController?${stringify(params)}`);
+}
+/**
+ * 知识详情
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function getKnowledgeDetail(params) {
+  return request(`/rest/portal/itsm/knowledgeDetail/${params}`);
+}
 
 /**
  * IT行业资讯
@@ -17,6 +41,15 @@ export async function queryHotKnowledge(params) {
  */
 export async function getITtrendNews(params) {
   return request(`/rest/itService/getItrendNews?${stringify(params)}`);
+}
+
+/**
+ * 常用下载列表
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function getCommonDownloadList(params) {
+  return request(`/rest/itService/getCommonDownloadList?${stringify(params)}`);
 }
 
 /**

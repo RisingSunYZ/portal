@@ -29,7 +29,7 @@ export default class TableList extends PureComponent {
 
   render() {
     const newsBannerStyle = {
-      imgHeight: 200,
+      imgHeight: 180,
       iconTop: 90,
       iconLeftCurrent: 2,
       iconRightCurrent: 375,
@@ -50,21 +50,21 @@ export default class TableList extends PureComponent {
             <Col span={16}>
               <WorkMenus />
             </Col>
-            <Col span={4}>
-              <Searcher/>
+            <Col span={4} style={{marginTop:"22px"}} >
+              <Searcher />
             </Col>
           </Row>
         </Card>
         <Row gutter={16}>
           <Col span={14}>
-            <NewsList width="100%" title="通知公告" typeSn="home_notice" extra={<a href={getConfig().domain + "/portal/newsNotice/homeNoticeList.jhtml?typeSn=home_notice"} target="_blank">更多 &gt;</a>} />
+            <NewsList width="100%" title="通知公告" height="325px"  typeSn="home_notice" extra={<a href={getConfig().domain + "/portal/newsNotice/homeNoticeList.jhtml?typeSn=home_notice"} target="_blank">更多 &gt;</a>} />
             <SysList style={{width: '100%'}} />
           </Col>
           <Col span={10}>
-            <Card className="marginBottom" bordered={false} bodyStyle={{padding:"12px 11px"}}>
+            <Card className="marginBottom" bordered={false} bodyStyle={{padding:"12px 11px 0px"}}>
               <NewsBanner newsBannerStyle={newsBannerStyle} />
             </Card>
-            <NewsList width="100%" title="公司动态" typeSn="company_news" extra={<a href={getConfig().domain +"/portal/newsNotice/companyNewsList.jhtml?typeSn=company_news"} target="_blank">更多 &gt;</a>} />
+            <NewsList width="100%" title="公司动态" height="325px" typeSn="company_news" extra={<a href={getConfig().domain +"/portal/newsNotice/companyNewsList.jhtml?typeSn=company_news"} target="_blank">更多 &gt;</a>} />
           </Col>
         </Row>
       </Fragment>
