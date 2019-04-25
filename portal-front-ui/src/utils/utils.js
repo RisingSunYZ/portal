@@ -10,7 +10,7 @@ export function getConfig() {
     appAuthor: 'xietongjian',
     email: 'xietongjian@chinayasha.com',
     ftpHost : 'http://10.10.20.204',
-    filePreviewPath : '/file-preview/index',
+    filePreviewPath : '/eip/file-preview/index',
     homeText:"http://hometest.chinayasha.com",
     seeyonPath : 'http://neweiptest.chinayasha.com',
     trainSysPath: 'https://traintest.chinayasha.com',

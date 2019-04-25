@@ -132,7 +132,7 @@ public class UserController extends BaseController {
                 Cookie cookie = CommUtil.getCookieByName(request, "SIAMTGT");
                 siamTgt = null == cookie?null:cookie.getValue();
             }
-//            userSessionInfo = userLoginComponent.getCurrentUser(siamTgt, request, response);
+            userSessionInfo = userLoginComponent.getCurrentUser(siamTgt, request, response);
             if(null != userSessionInfo){
                 userSessionInfo.setUserImgUrl (StringUtils.isNotBlank(userSessionInfo.getUserImgUrl())?(commonProperties.getFtpHost() + userSessionInfo.getUserImgUrl()):null);
                 returnVo.setData(userSessionInfo);
@@ -183,7 +183,7 @@ public class UserController extends BaseController {
                 person.put("id", personVo.getId());
                 person.put("userNo", personVo.getNo());
                 person.put("userName", personVo.getName());
-                person.put("userHead",personVo.getHeadImg());
+                person.put("userHead",commonProperties.getFtpHost() + personVo.getHeadImg());
                 person.put("deptId", personVo.getDeptId());
                 person.put("deptName", personVo.getDeptName());
                 person.put("parentDeptId", personVo.getParentDeptId());

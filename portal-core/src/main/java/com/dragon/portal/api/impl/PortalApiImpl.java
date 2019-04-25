@@ -19,6 +19,7 @@ public class PortalApiImpl implements IPortalApi {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PortalApiImpl.class);
 
+    @Override
     public ReturnVo testPortalApi(){
         return null;
     }
