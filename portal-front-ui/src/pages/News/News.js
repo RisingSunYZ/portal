@@ -71,7 +71,7 @@ export default class TableList extends PureComponent {
               title="专题活动"
               bordered={false}
               extra={<Link to={ "/news/table-list/special_events"} className={styles.more}> 更多> </Link>}
-              bodyStyle={{padding:14,paddingTop:1,paddingBottom:1}}
+              bodyStyle={{padding:14}}
             >
               <List
                 itemLayout="vertical"
@@ -81,24 +81,23 @@ export default class TableList extends PureComponent {
                 renderItem={(item, index) => (
                   <List.Item
                     key={item.id}
+                    style={{ padding:0 }}
                   >
                     {
                       index > 1 ?
-                        (<span>
-                          <p style={{fontWeight:"bold" }}>
-                            <Link to="#"  target="_blank">{item.title}</Link>
-                          </p>
-                        </span>) :
-                        (<span>
+                        ( <Link to="#" target="_blank" className={styles.links}>{item.title}</Link> ) :
+                        (<div className={styles.listTop}>
                           <Link to={ftpHost + item.thumbImg} target="_blank">
-                            <img src={ftpHost + item.thumbImg} width="100%" height="130px"/>
+                            <img src={ftpHost + item.thumbImg} className={styles.moveImg}/>
                           </Link>
-                          <p style={{fontWeight:"bold" }}><Link to="#"  target="_blank">{item.title}</Link></p>
-                          <p style={{fontSize:"12px"}}>
+                          <span className={styles.moveTitle}>
+                            <Link to="#"  target="_blank">{item.title}</Link>
+                          </span>
+                          <p className={styles.descTitle}>
                             <span>{item.remark.substr(0, 28) + "..."}</span>
                             <span><Link to="#">【详情】</Link></span>
                           </p>
-                        </span>)
+                        </div>)
                     }
                   </List.Item>
                 )}
@@ -171,7 +170,7 @@ export default class TableList extends PureComponent {
               title="员工风采"
               bordered={false}
               extra={<Link to="#" className={styles.more}> 更多> </Link>}
-              bodyStyle={{padding:'8px 14px 0px 14px'}}
+              bodyStyle={{padding:'8px 16px 0px 16px'}}
             >
               <List
                 itemLayout="vertical"
