@@ -35,15 +35,13 @@ export default class UserHeadBox extends React.Component {
 
   onHeadImgError=(tar)=>{
     var img=tar.currentTarget;
-    img.src=head;
+    img.src=defaultUser;
     img.onerror=null;
   };
 
   componentDidMount(){
     const { src } = this.props;
-    src && this.setState({
-      src
-    });
+    src && this.setState({src});
   };
 
   hide = () => {
