@@ -22,7 +22,8 @@ import com.ys.ucenter.model.vo.PersonnelApiVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -46,9 +47,10 @@ import java.util.List;
  */
 @Component
 public class LoginCheckInterceptor implements HandlerInterceptor {
-	
-	private static final Logger logger = Logger.getLogger(LoginCheckInterceptor.class);
-	@Resource
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginCheckInterceptor.class);
+
+    @Resource
 	private IPersonnelApi personnelApi;
 	@Resource
 	private IOrgApi orgApi;
@@ -63,7 +65,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		logger.info(request.getRequestURI());
+
+        logger.info(request.getRequestURI());
 		HttpSession session = request.getSession();
 		// 判断是否IDM登录
 		if(Boolean.TRUE.toString().equals(commonProperties.getLoginSwitch())){
