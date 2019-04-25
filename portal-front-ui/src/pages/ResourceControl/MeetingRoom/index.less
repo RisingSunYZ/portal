@@ -12,6 +12,33 @@
   margin-top: -3px;
   background: url("../../../../src/assets/icon.png") -285px -446px no-repeat;
 }
+.mtApplyList{
+  font-size: 12px;
+  :global{
+    .ant-table-tbody > tr > td{
+      padding: 0;
+    }
+  }
+}
+.applyContainer{
+  position: relative;
+  height: 130px;
+  .applyBtn{
+    position: absolute;
+    right: 5px;
+    bottom: 8px;
+    font-size: 16px;
+    color: @primary-color;
+    cursor: pointer;
+    display: none;
+  }
+  &.canApply:hover{
+    background-color: #D8E6F1;
+    .applyBtn{
+      display: block;
+    }
+  }
+}
 :global{
   .meetingroom-detail{
     img{

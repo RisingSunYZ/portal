@@ -18,9 +18,9 @@ export async function queryApplyList(params) {
  * @returns {Promise<Object>}
  */
 export async function querymRoomList(params) {
-  return request('/rest/portal/rscmgmt/meetingroom/ajaxList', {
+  return request(`/rest/portal/rscmgmt/meetingroom/ajaxList?${stringify(params.query)}`, {
     method: 'POST',
-    body: params,
+    body: params.meetingroomViewVo,
   });
 }
 

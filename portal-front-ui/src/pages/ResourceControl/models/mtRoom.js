@@ -20,6 +20,11 @@ export default {
     applyList: [],
     meetingroomAddrs: [],
     meetingroomTools: [],
+    roomDetail: {
+      loginUser: {},
+      meetingroom: {},
+      meetingroomAddr: {},
+    },
   },
   namespace: 'mtRoom',
   effects: {
@@ -45,12 +50,10 @@ export default {
     },
     *getmRoomDetail({ payload }, { call, put }) {
       const response = yield call(getmRoomDetail, payload);
-      if(response.code === "100"){
-        yield put({
-          type: 'saveRoomDetail',
-          payload: response
-        })
-      }
+      yield put({
+        type: 'saveRoomDetail',
+        payload: response
+      })
     },
     *getMeetingAddrsTools({payload},{call,put}) {
       const response= yield call(getMeetingAddrsTools,payload);
@@ -68,12 +71,10 @@ export default {
     },
     *queryMyApplyList({payload},{call,put}){
       const response= yield call(queryMyApplyList,payload);
-      if(response.code==="100"){
-        yield put({
-          type: 'saveMeetingData',
-          payload:response.data
-        });
-      }
+      yield put({
+        type: 'saveMeetingData',
+        payload:response.data
+      });
     },
     *saveMtRoomMsg({payload},{call,put}) {
       const response= yield call(saveMtRoomMsg,payload);
@@ -122,7 +123,7 @@ export default {
     saveRoomDetail(state, action) {
       return {
         ...state,
-        roomDetail: action.payload.data
+        roomDetail: action.payload
       };
     },
     saveTools(state, action) {
