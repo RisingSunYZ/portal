@@ -28,37 +28,35 @@ class DiagramImgModal  extends PureComponent{
     const height = imgObj.naturalHeight;
 
     if(width > windowWidth*0.8){
-      this.setState({moveFlag:true});
-      this.setState({diagramModalWidth: '80%',diagramModalMax:false})
+      this.setState({diagramModalWidth: '80%',diagramModalMax:false,moveFlag:true})
     }else{
       this.setState({diagramModalWidth: width+50,diagramModalMax:false})
     }
     if(height > windowHeight*0.8){
-      this.setState({moveFlag:true});
-      this.setState({diagramModalHeight:windowHeight*0.6})
+      this.setState({diagramModalHeight:windowHeight*0.6,moveFlag:true})
     }else{
       this.setState({diagramModalHeight:height})
     }
   }
-
+  // 放大流程图
   setDiagramModalMax = ()=>{
       const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; // heihgt
-      this.setState({diagramModalWidth:"100%",diagramModalHeight:windowHeight-135,diagramModalMax:true})
-
-       const _this = this;
-
-       setTimeout(function(){
-         const ele = document.getElementsByClassName("ant-modal-body")[0]
-         if(ele.scrollHeight > ele.clientHeight || ele.scrollWidth > ele.clientWidth){
-         }else{
-           _this.setState({moveFlag:false});
-         }
-       },200)
+      const antModalBody = document.getElementsByClassName("ant-modal-body")[0];
+      // let imgWrapperHeight;
+      const headerHeight = document.getElementsByClassName("ant-modal-header")[0].offsetHeight;
+      const footerHeight = document.getElementsByClassName("ant-modal-footer")[0].offsetHeight;
+      // 判断当放大后有横向滚动条时，图片父级高度加上17即滚动条高度
+      const imgWrapperHeight = antModalBody.scrollWidth > antModalBody.clientWidth ? windowHeight - headerHeight - footerHeight - 24 - 17:windowHeight - headerHeight - footerHeight - 24;
+      // 判断图片放大后，要不要出现拖动图标
+      if(antModalBody.scrollHeight > antModalBody.clientHeight || antModalBody.scrollWidth > antModalBody.clientWidth){
+        this.setState({moveFlag:true,diagramModalWidth:"100%",diagramModalHeight:imgWrapperHeight,diagramModalMax:true});
+      }else{
+        this.setState({moveFlag:false,diagramModalWidth:"100%",diagramModalHeight:imgWrapperHeight,diagramModalMax:true});
+      }
 
   }
-
+  //
   startDrag = (event)=>{
-
     if(this.state.moveFlag){
       event.preventDefault();
       const target = event.target;
@@ -86,7 +84,6 @@ class DiagramImgModal  extends PureComponent{
         document.onmouseup = null;
       }
     }
-
   }
 
 
@@ -114,8 +111,8 @@ class DiagramImgModal  extends PureComponent{
     return (
       <div>
         {formTitle + ' - 流程图'}
-        <div style={{float:"right",marginRight:"30px"}}>
-          <Icon type="shrink" style={{display:this.state.diagramModalMax?"inline-block":"none"}} onClick={this.setDiagramModalWidth.bind(this)} />
+        <div style={{float:"right",marginRight:"35px"}}>
+          <Icon type="shrink" style={{display:this.state.diagramModalMax?"inline-block":"none"}} onClick={this.setDiagramModalWidth} />
           <Icon type="arrows-alt" style={{display:this.state.diagramModalMax?"none":"inline-block"}} onClick={this.setDiagramModalMax}/>
         </div>
       </div>
@@ -144,7 +141,7 @@ class DiagramImgModal  extends PureComponent{
         <div style={{height:this.state.diagramModalHeight,cursor:cursor}}>
           <img alt={formTitle}
                onMouseDown={this.startDrag}
-               onLoad={this.setDiagramModalWidth.bind(this)}
+               onLoad={this.setDiagramModalWidth}
                src={processDiagramImgUrl}
           />
           {
