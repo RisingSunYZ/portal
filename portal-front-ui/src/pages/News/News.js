@@ -70,7 +70,7 @@ export default class TableList extends PureComponent {
             <Card
               title="专题活动"
               bordered={false}
-              extra={<Link to={ "/news/table-list/special_events"}>更多</Link>}
+              extra={<Link to={ "/news/table-list/special_events"} className={styles.more}> 更多> </Link>}
               bodyStyle={{padding:14,paddingTop:1,paddingBottom:1}}
             >
               <List
@@ -109,40 +109,38 @@ export default class TableList extends PureComponent {
             <Card
               title="公司动态"
               bordered={false}
-              extra={<Link to={ "/news/table-list/company_news"}>更多</Link>}
-              bodyStyle={{padding:'1px 14px'}}>
+              extra={<Link to={"/news/table-list/company_news"} className={styles.more}> 更多> </Link>}
+              bodyStyle={{padding:'10px 14px'}}>
               <List
                 itemLayout="vertical"
-                size="large"
                 dataSource={company.list}
                 split={false}
                 renderItem={(item, index) => (
                   <List.Item
                     key={item.id}
+                    style={{ padding:'4px' }}
                   >
                     {
                       index > 1 ?
-                        (<span>
-                          <p style={{fontWeight:"bold" }}>
-                            <Link to={"/news/table-list/" + item.id}  target="_blank">{item.title}</Link>
-                          </p>
-                        </span>) :
-                        (<span>
-                           <List.Item.Meta
+                        ( <Link to={"/news/table-list/" + item.id}  target="_blank" className={styles.links}>{item.title}</Link> ) :
+                        (<List.Item.Meta
                              avatar={
                                <Link to={ftpHost + item.thumbImg} target="_blank">
-                                 <img src={ftpHost + item.thumbImg} className={styles.dynamicImg}/>
-                               </Link>}
+                                 <img src={ftpHost + item.thumbImg} className={styles.thumbImg}/>
+                               </Link>
+                             }
                              title={
-                               <p style={{fontWeight:"bold" }}><a href={"/news/table-list/" + item.id}  target="_blank">{item.title}</a></p>
+                               <span className={styles.linkTitle}>
+                                 <Link to={"/news/table-list/" + item.id}  target="_blank" >{item.title}</Link>
+                               </span>
                              }
                              description={
-                               <p style={{fontSize:"12px"}}>
+                               <p className={styles.descTitle}>
                                  <span>{item.remark.substr(0, 100) + "..."}</span>
-                                 <span><Link to={"/news/table-list/" + item.id}>【详情】</Link></span>
-                               </p>}
-                           />
-                        </span>)
+                                 <Link to={"/news/table-list/" + item.id}>【详情】</Link>
+                               </p>
+                             }
+                           />)
                     }
                   </List.Item>
                 )}
@@ -151,21 +149,18 @@ export default class TableList extends PureComponent {
             <Card
               title="行业动态"
               bordered={false}
-              extra={<Link to={ "/news/table-list/industry_news"}>更多</Link>}
-              bodyStyle={{padding:"14px",paddingTop:"6px",paddingBottom:"2px"}}>
+              extra={<Link to={"/news/table-list/industry_news"} className={styles.more}> 更多> </Link>}
+              bodyStyle={{padding:14}}>
               <List
                 itemLayout="vertical"
-                size="large"
                 dataSource={industry.list}
                 split={false}
-                renderItem={(item) => (
+                renderItem={ item => (
                   <List.Item
                     key={item.id}
                     style={{padding:0}}
                   >
-                      <p>
-                        <Link to="#"  target="_blank" className={styles.links}>{item.title}</Link>
-                      </p>
+                    <Link to="#"  target="_blank" className={styles.links}>{item.title}</Link>
                   </List.Item>
                 )}
               />
@@ -175,7 +170,7 @@ export default class TableList extends PureComponent {
             <Card
               title="员工风采"
               bordered={false}
-              extra={<Link to="#">更多</Link>}
+              extra={<Link to="#" className={styles.more}> 更多> </Link>}
               bodyStyle={{padding:'8px 14px 0px 14px'}}
             >
               <List
