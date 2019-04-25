@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { ProcessSelector } from '@/components/Selector';
 import { changeParam, getConfig, nullToZero, fileDown } from '@/utils/utils';
 import Plupload from "@/components/Plupload";
-import styles from "./index.less"
+import styles from "./index.less";
 import router from 'umi/router';
 
 /**

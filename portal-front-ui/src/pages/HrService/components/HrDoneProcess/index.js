@@ -1,24 +1,20 @@
 import React, { Component, Fragment } from 'react';
 import { Table } from 'antd';
 import { connect } from 'dva';
-import { nullToZero } from '../../../../utils/utils';
-import ProcessTable from '@/components/StandardTable/ProcessTable';
+import { nullToZero } from '@/utils/utils';
 import styles from './index.less';
-@connect(({ hrProcess, loading }) => ({
-  hrProcess,
-  loading: loading.models.hrProcess,
-}))
+import Link from "umi/link";
 
-@connect(({ hrProcess, loading }) => ({
-  hrProcess,
-  loading: loading.models.hrProcess,
+@connect(({ hrService, loading }) => ({
+  hrService,
+  loading: loading.models.hrService,
 }))
 
 export default class HrDoneProcess extends Component {
 
   componentDidMount () {
-      this.props.dispatch({
-      type: 'hrProcess/queryDone',
+    this.props.dispatch({
+      type: 'hrService/queryDone',
       payload: { page: 1, rows: 5 },
     });
   }
@@ -35,44 +31,41 @@ export default class HrDoneProcess extends Component {
       rows: filtersArg,
       ...filters,
     };
-
     dispatch({
-      type: 'hrProcess/queryDone',
+      type: 'hrService/queryDone',
       payload: params,
     });
   };
 formatterName(val, row, index) {
   const html = (<div
   style={{
-    textOverflow: 'ellipsis',
+      textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
       width: '180px',
       overflow: 'hidden',
   }}
 >
-    <a
-  target="_blank"
-  href={
-      '/ys/process/form/view/' +
-        nullToZero(row.processDefinitionKey) +
-      '/' +
-      nullToZero(row.procInstId) +
-      '/' +
-      nullToZero(row.businessKey) +
-      '/' +
-      nullToZero(row.taskId) +
-      '/0'
-    }
+    <Link target="_blank"
+      to={
+          '/process/form/view/' +
+            nullToZero(row.processDefinitionKey) +
+          '/' +
+          nullToZero(row.procInstId) +
+          '/' +
+          nullToZero(row.businessKey) +
+          '/' +
+          nullToZero(row.taskId) +
+          '/0'
+        }
     >
     {val}
-    </a></div>
+    </Link></div>
 );
   return html;
 }
   render() {
     const {
-      hrProcess: { DoneData },
-    } = this.props;
+      hrService: { DoneData }} = this.props;
     const columns = [
       {
         title: '序号',

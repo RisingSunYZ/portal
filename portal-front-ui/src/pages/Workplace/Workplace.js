@@ -8,7 +8,7 @@ import NewsBanner from '@/components/NewsBanner';
 import Searcher from './components/Searcher';
 import SysList from './components/SysList';
 import styles from './Workplace.less';
-import {getConfig} from "../../utils/utils";
+import {getConfig} from "@/utils/utils";
 
 @connect(({ global,loading }) => ({
   loading: loading.models.process,
@@ -18,12 +18,10 @@ export default class TableList extends PureComponent {
 
   componentWillMount(){
     // 首页未上线，暂跳ysportal项目首页
-    location.href = getConfig().domain
+    // location.href = getConfig().domain
   }
 
   componentDidMount() {
-
-
 
   }
 
