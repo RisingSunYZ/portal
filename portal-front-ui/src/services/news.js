@@ -21,7 +21,7 @@ export async function queryNewsList(params) {
  * @returns {Promise<Object>}
  */
 export async function queryNewsBanner(params) {
-  // return request(`/rest/index/loginNews`);
+
   return request(`/rest/portal/news/ajaxListVo?${stringify(params)}`);
 }
 

@@ -87,6 +87,7 @@ export default class MeetingInput extends PureComponent {
   // 页面底部按钮(发送邀请 ,保存草稿)的公共方法
   commonMethod=(fieldsValue)=>{
     const { meetingRoom:{meetingFileList,meeting},user:{currentUser} }=this.props;
+    const { content }=this.state;
     // 格式化 必选人员
     let mandaPer = fieldsValue.mandatoryPersonList;
     let str="";
@@ -147,11 +148,10 @@ export default class MeetingInput extends PureComponent {
       fieldsValue.fileName=fileName;
       delete fieldsValue.meetingFiles
     }
-    if(this.state.content === ""){
-      // fieldsValue.content = meeting.content;
+    if(content === ""){
       fieldsValue.content = meeting.content;
     }else{
-      fieldsValue.content = this.state.content
+      fieldsValue.content = content
     }
   };
 
@@ -230,7 +230,7 @@ export default class MeetingInput extends PureComponent {
       form,
       match
     } = this.props;
-console.log(meeting);
+    const { content }=this.state;
     const tab = match.params.tab ? match.params.tab:tab;
 
     // 上传组件相关属性配置
@@ -272,7 +272,7 @@ console.log(meeting);
                   })(<UserSelect
                     required={true}
                     type="input"
-                    width='1080px'
+                    width={1080}
                     onChange={(a)=>{this.selectCallback(a)}}
                   />)}
                 </FormItem>
@@ -292,7 +292,7 @@ console.log(meeting);
                   })
                   (<UserSelect
                     type="input"
-                    width='1080px'
+                    width={1080}
                     onChange={(a)=>{this.selectCallback(a)}}
                   />)}
                 </FormItem>
@@ -329,7 +329,7 @@ console.log(meeting);
                   (<UserSelect
                     type="input"
                     multiple={false}
-                    width='508px'
+                    width={508}
                     onChange={(a)=>{this.selectCallback(a)}}
                   />)}
                 </FormItem>
@@ -380,7 +380,7 @@ console.log(meeting);
                       <Editor
                         ref="editor"
                         icons={icons}
-                        value={this.state.content=="" ? meeting.content:this.state.content}
+                        value={ content === "" ? meeting.content : content }
                         defaultValue="<p>请输入内容</p>"
                         onChange={this.handleChange.bind(this)}
                         plugins={plugins} />

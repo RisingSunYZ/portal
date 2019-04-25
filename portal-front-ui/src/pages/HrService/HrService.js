@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Form, Input, Select, Tabs, Icon } from 'antd';
+import { Row, Col, Card, Tabs, Icon } from 'antd';
 import NewsBanner from '@/components/NewsBanner';
 import HrBaseInfo from './components/HrBaseInfo/index';
 import HrDoneProcess from './components/HrDoneProcess/index';
@@ -11,9 +11,7 @@ import HrToDoProcess from './HrTodoProcess/index';
 import {getConfig} from "../../utils/utils";
 import styles from './HrService.less';
 
-const Search = Input.Search;
-const FormItem = Form.Item;
-const { Option } = Select;
+
 const TabPane = Tabs.TabPane;
 
 @connect(({ loading,hrService }) => ({
@@ -74,7 +72,7 @@ class HrService extends PureComponent {
               extra={<a className="moreNews" href={getConfig().domain +'/portal/newsNotice/homeNoticeList.jhtml?typeSn=hr_notice'} target="_blank">更多 <Icon type="ellipsis" /></a>}
               bordered={false}
             >
-              <NewsNotice  typeSn="hr_notice" pageSize={4} />
+              <NewsNotice typeSn="hr_notice" pageSize={4} />
             </Card>
           </Col>
         </Row>

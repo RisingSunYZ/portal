@@ -33,7 +33,6 @@ export default class MeetingRoom extends PureComponent {
   };
 
   callback=(key)=> {
-    console.log(key);
     this.setState({
       cardType:key,
     });
@@ -41,10 +40,11 @@ export default class MeetingRoom extends PureComponent {
 
   // 加载会议页面内容
   componentDidMount(){
-    const {dispatch} =this.props;
+    const { dispatch } =this.props;
+    const { pagination:{pageIndex,pageSize} }=this.state;
     const params={
-      pageIndex:this.state.pagination.pageIndex,
-      pageSize:this.state.pagination.pageSize
+      pageIndex:pageIndex,
+      pageSize:pageSize
     };
     //加载 历史会议 数据
     dispatch({
@@ -78,11 +78,12 @@ export default class MeetingRoom extends PureComponent {
   // 历史会议数据分页查询
   onHistoryChange=(pageNumber)=>{
     const { dispatch }=this.props;
+    const { pagination:{ pageSize }}=this.state;
     dispatch({
       type: 'meetingRoom/getHistoryData',
       payload:{
-        pageIndex:pageNumber,
-        pageSize:this.state.pagination.pageSize
+        pageIndex: pageNumber,
+        pageSize: pageSize
       }
     });
   };
@@ -90,11 +91,12 @@ export default class MeetingRoom extends PureComponent {
   // 我的邀请数据分页查询
   onInviteChange=(pageNumber)=>{
     const { dispatch }=this.props;
+    const { pagination:{ pageSize }}=this.state;
     dispatch({
       type: 'meetingRoom/getMyInviteData',
       payload:{
-        pageIndex:pageNumber-1,
-        pageSize:this.state.pagination.pageSize
+        pageIndex: pageNumber-1,
+        pageSize: pageSize
       }
     });
   };
@@ -102,11 +104,11 @@ export default class MeetingRoom extends PureComponent {
   // 搜索会议
   doSearchMeeting=(value)=> {
     const { dispatch }=this.props;
-    const cardType=this.state.cardType;
+    const { pagination:{ pageIndex,pageSize }, cardType }=this.state;
     const params={
       theme:value,
-      pageIndex:this.state.pagination.pageIndex,
-      pageSize:this.state.pagination.pageSize
+      pageIndex: pageIndex,
+      pageSize: pageSize
     };
 
     if(cardType === 1){
@@ -146,13 +148,13 @@ export default class MeetingRoom extends PureComponent {
 
 
   selectCallback = (datas,id) => {
-   const {dispatch} =this.props;
+   const { dispatch } =this.props;
    dispatch({
      type: 'meetingRoom/saveRecordPer',
      payload:{
-       personName:datas[0].name,
-       personNo:datas[0].no,
-       meetingId:id,
+       personName: datas[0].name,
+       personNo: datas[0].no,
+       meetingId: id,
      }
    });
   };
@@ -275,10 +277,10 @@ export default class MeetingRoom extends PureComponent {
 
   render() {
     const {
-      meetingRoom: { draftData: { listDraft }, waitData:{ listWait } ,historyData:{listHistory ,pagination} ,inviteData:{ listInvita ,paginations}},
+      meetingRoom: { draftData: { listDraft }, waitData:{ listWait } ,historyData:{listHistory ,pagination } ,inviteData:{ listInvita ,paginations }},
       match
     } = this.props;
-    const { type ,visibleId }=this.state;
+    const { type ,visibleId } = this.state;
     const tab = match.params.tab ? match.params.tab : 1;
 
     // 上传附件格式化
@@ -447,30 +449,30 @@ export default class MeetingRoom extends PureComponent {
         <Tabs defaultActiveKey={tab} onChange={this.callback} type="card">
           <TabPane tab={<span>待开会议<Badge count={listWait.length} style={{ backgroundColor: '#FF3D00', color: '#fff', boxShadow: '0 0 0 1px #d9d9d9 inset',left:4,top:-2 ,fontSize:16}} /></span>} key="1">
             {
-              listWait!==undefined && listWait.length>0 ?
+              listWait !== undefined && listWait.length>0 ?
               loopCard(listWait,1):
               (<BlankList emptyText="暂无数据" />)
             }
           </TabPane>
           <TabPane tab="我邀请的" key="2">
             {
-              listInvita!==undefined && listInvita.length>0 ?
+              listInvita !== undefined && listInvita.length>0 ?
                 loopCard(listInvita,2):
                 (<BlankList emptyText="暂无数据" />)
             }
-            <Pagination showQuickJumper defaultCurrent={1} total={paginations} onChange={this.onInviteChange} style={{textAlign:'center'}} />
+            <Pagination showQuickJumper defaultCurrent={1} total={ paginations } onChange={this.onInviteChange} style={{textAlign:'center'}} />
           </TabPane>
           <TabPane tab="历史会议" key="3">
             {
-              listHistory!==undefined && listHistory.length>0 ?
+              listHistory !== undefined && listHistory.length>0 ?
                 loopCard(listHistory,3):
                 (<BlankList emptyText="暂无数据" />)
             }
-            <Pagination showQuickJumper defaultCurrent={1} total={pagination} onChange={this.onHistoryChange} style={{textAlign:'center'}}/>
+            <Pagination showQuickJumper defaultCurrent={1} total={ pagination } onChange={this.onHistoryChange} style={{textAlign:'center'}}/>
           </TabPane>
           <TabPane tab="我的草稿" key="4">
             {
-              listDraft!==undefined && listDraft.length>0 ?
+              listDraft !== undefined && listDraft.length>0 ?
                 loopCard(listDraft,4):
                 (<BlankList emptyText="暂无数据" />) }
           </TabPane>

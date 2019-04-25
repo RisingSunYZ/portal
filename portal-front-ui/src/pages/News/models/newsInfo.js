@@ -1,4 +1,4 @@
-import { queryNewsList,queryDone} from '@/services/news';
+import { queryNewsList,queryDone} from '../../../services/news';
 export default {
   namespace: 'newsInfo',
 
@@ -46,7 +46,6 @@ export default {
     // 获取公司动态列表
     *queryCompanyList({ payload }, { call, put }) {
       const response = yield call(queryNewsList, payload);
-
       yield put({
         type: 'getCompanyList',
         payload: response,
@@ -64,12 +63,13 @@ export default {
       });
     },
 
-    // 获取行业动态列表
+    // 获取员工风采图片列表
     *queryStaffPresenceList({ payload }, { call, put }) {
+      // debugger;
       const response = yield call(queryNewsList, payload);
       yield put({
         type: 'getStaffPresenceList',
-        payload: response,
+        payload: response.data,
         pagination: payload,
       });
     },
@@ -114,10 +114,11 @@ export default {
 
     // 员工风采
     getStaffPresenceList(state, action) {
+      // debugger
       return {
         ...state,
         staffPresence:{
-          list:action.payload.data.data,
+          list:action.payload.data,
           pagination:action.pagination,
         },
         disabled: false,

@@ -26,7 +26,7 @@ export default class MeetingSummary extends PureComponent {
     this.setState({
       content: content
     })
-  }
+  };
 
   getIcons=()=>{
     const icons = [
@@ -37,7 +37,7 @@ export default class MeetingSummary extends PureComponent {
       "horizontal date time  | image emotion spechars | inserttable"
     ];
     return icons;
-  }
+  };
 
   getPlugins=()=>{
     return {
@@ -48,7 +48,7 @@ export default class MeetingSummary extends PureComponent {
         }
       }
     }
-  }
+  };
 
   // 加载会议页面内容
   componentDidMount(){
@@ -64,6 +64,8 @@ export default class MeetingSummary extends PureComponent {
   // 保存会议纪要和上传的文件
   saveUpload = ()=>{
     const { dispatch ,form ,match,meetingRoom:{ meetingFileList , meetingSummary } }=this.props;
+    const { content }=this.state;
+    // debugger;
     form.validateFields((err, fieldsValue)=>{
       if(err) return;
       console.log(fieldsValue);
@@ -81,10 +83,10 @@ export default class MeetingSummary extends PureComponent {
         delete fieldsValue.meetingSummaryFiles
       }
 
-      if(this.state.content==""){
+      if(content === ""){
         fieldsValue.content = meetingSummary.content;
       }else{
-        fieldsValue.content = this.state.content;
+        fieldsValue.content = content;
       }
 
       fieldsValue.meetingId = meetingSummary.meetingId;
@@ -105,6 +107,7 @@ export default class MeetingSummary extends PureComponent {
   render() {
     const {meetingRoom: { meetingSummary, meetingFileList ,meetingSummaryFiles}, form } = this.props;
     console.log(meetingSummary);
+    const { content }=this.state;
     // 上传组件相关属性配置
     const mime_types = [
       { title: 'Image files', extensions: 'png,jpg,jpeg,image/jpg,image/jpeg,image/png' },
@@ -133,7 +136,8 @@ export default class MeetingSummary extends PureComponent {
                 <Form.Item label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }}>
                   <Editor ref="editor"
                           icons={icons}
-                          value={this.state.content=="" ? meetingSummary.content : this.state.content} defaultValue="<p>请输入内容</p>"
+                          value={content === "" ? meetingSummary.content : content}
+                          defaultValue="<p>请输入内容</p>"
                           onChange={this.handleChange.bind(this)}
                           plugins={plugins} />
                 </Form.Item>

@@ -272,7 +272,8 @@ export default {
      * @returns {IterableIterator<*>}
      */
       *getSummaryMeetingData({payload,callback},{call,put}){
-        const response=yield call(getSummaryMeetingDatas, payload);
+        debugger;
+        const response = yield call(getSummaryMeetingDatas, payload);
         yield put({
           type: 'saveSummary',
           payload:response.data
@@ -347,7 +348,7 @@ export default {
      * @returns {{meetingSummary: Array}}
      */
     saveSummary(state,action){
-      // debugger
+      debugger
       const meetingSummary=action.payload;
       return {
         ...state,
@@ -390,8 +391,8 @@ export default {
       return {
         ...state,
         ...meeting,
-        mandatoryPersonList:meeting.mandatoryPersonList,
-        optionalPersonList:meeting.optionalPersonList
+        mandatoryPersonList: meeting.mandatoryPersonList,
+        optionalPersonList: meeting.optionalPersonList
       };
     },
 

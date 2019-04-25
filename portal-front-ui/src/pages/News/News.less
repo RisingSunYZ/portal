@@ -43,3 +43,38 @@
     }
   }
 }
+
+
+.dynamicImg{
+  width: 160px;
+  height: 120px;
+}
+.linkImg{
+  position:relative;
+  .windImg{
+    width: 210px;
+    height: 128px;
+    text-align:center;
+  }
+  .maskImg{
+    position:absolute;
+    top:-52px;
+    left:1px;
+    width:208px;
+    height:0;
+    padding:16px;
+    text-align:center;
+    background:rgba(0, 0, 0, 0.3);
+    opacity:0;
+    color:#fff;
+    transition:all .3s ease-out;
+    span{
+      position:relative;
+      top:30px;
+    }
+  }
+}
+.linkImg:hover .maskImg{
+  opacity: 1;
+  height: 126px;
+}

@@ -19,7 +19,6 @@ export default {
   effects: {
     //检查个人是否考勤异常
     *getQuickProcess({ payload }, { call, put }) {
-      // debugger;
       const response = yield call(getQuickProcess, payload);
       yield put({
         type: 'saveQuickProcess',
@@ -98,14 +97,12 @@ export default {
 
   reducers: {
     saveQuickProcess(state, action) {
-    // debugger;
       return {
         ...state,
         quickProcess:action.payload
     };
     },
     saveContactUs(state, action) {
-
       return {
         ...state,
         contactUs:action.payload
@@ -115,7 +112,7 @@ export default {
       let count =0;
       $.each(action.payload,function (key,val) {
         count=count+val;
-      })
+      });
       return {
         ...state,
         msgCount:count
