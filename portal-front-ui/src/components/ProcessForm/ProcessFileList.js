@@ -17,15 +17,15 @@ export default class ProcessFileList extends Component {
   render() {
     const { processForm:{ formInfo:{files, refDocs} } } = this.props;
     return (
-      <Card style={{ marginBottom: 8, 'display':(files.length>0||refDocs.length>0)?'':'none' }} bordered={false} >
+      <Card style={{ marginBottom: 8, 'display':(files.length>0||refDocs.length>0)?'':'none' }} bodyStyle={{padding:"12px"}} bordered={false} >
         <Row className={styles.rowHeight} style={{'display':(files.length>0?'':'none')}}>
-          <Col style={{textAlign:'right'}} span={3}>上传附件({files.length}):</Col>
+          <Col style={{textAlign:'right',maxWidth:"138px",marginTop:"8px"}} span={3}>上传附件({files.length})：</Col>
           <Col style={{textAlign:'left'}} span={21}>
             <FileList files={files} />
           </Col>
         </Row>
         <Row className={styles.rowHeight} style={{'display':(refDocs.length>0?'':'none')}}>
-          <Col style={{textAlign:'right'}} span={3}>关联流程/文档({refDocs.length}):</Col>
+          <Col style={{textAlign:'right',maxWidth:"138px",marginTop:"8px"}} span={3}>关联流程/文档({refDocs.length})：</Col>
           <Col style={{textAlign:'left'}} span={21}>
             <DocsList refDocs={refDocs} />
           </Col>

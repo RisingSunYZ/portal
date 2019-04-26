@@ -3,12 +3,13 @@ import { connect } from 'dva';
 import { Row, Col, Card, Tabs, Icon } from 'antd';
 import NewsBanner from '@/components/NewsBanner';
 import HrBaseInfo from './components/HrBaseInfo/index';
-import HrDoneProcess from './components/HrDoneProcess/index';
+import HrDoneProcess from './components/HrDoneProcess';
+import HrToDoProcess from './components/HrTodoProcess';
 import NewsNotice from '@/components/NewsNotice';
 import SelfService from './components/SelfService/index';
 import HrTrain from './components/HrTrain/index';
-import HrToDoProcess from './HrTodoProcess/index';
-import {getConfig} from "../../utils/utils";
+
+import {getConfig} from "@/utils/utils";
 import styles from './HrService.less';
 
 
@@ -39,6 +40,7 @@ class HrService extends PureComponent {
       d.body.appendChild(j);
     })(window, document, 'ysf');
   }
+
   callback(key) {
     console.log(key);
   }

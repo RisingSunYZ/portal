@@ -5,7 +5,6 @@ import { Link } from 'dva/router';
 import styles from '../List/BasicList.less';
 import processStyle from './Process.less';
 import TreeMenu from '../../components/TreeMenu';
-import {stringify} from "qs";
 
 const TreeNode = Tree.TreeNode;
 
@@ -40,26 +39,31 @@ function nullToZero(param) {
 }))
 export default class ProcessModel extends PureComponent {
   searchFormObj = {};
+  state = { pageSize: 10,current:1,regularData:[] };
   selectNode(selectedKeys, e) {
     if (e.selected) {
       this.searchFormObj.categoryId = selectedKeys[0];
-      this.props.dispatch({
-        type: 'process/getModelList',
-        payload: { categoryId: selectedKeys[0] },
-      });
-
       this.props.dispatch({
         type: 'process/setSelectedNode',
         payload: {
           selectedNode:e.node.props
         },
       });
+      this.setState({
+        current:1
+      })
+
+      this.props.dispatch({
+        type: 'process/getModelList',
+        payload: { categoryId: selectedKeys[0] },
+      });
+
     }
   }
   doSearch(modelName) {
     this.searchFormObj.name = modelName;
     const {process:{selectedNode}} = this.props;
-    const categoryId = selectedNode.eventKey?selectedNode.eventKey:"";
+    const categoryId = selectedNode.eventKey == "myDraft" ?selectedNode.eventKey:"";
     //如果右侧点击我的草稿，则搜索我的草稿，其他则搜索全部流程模板，
 
     this.props.dispatch({
@@ -67,6 +71,7 @@ export default class ProcessModel extends PureComponent {
       payload: {
         name: modelName,
         categoryId:categoryId,
+        keyWord:modelName,
       },
     });
   }
@@ -83,15 +88,33 @@ export default class ProcessModel extends PureComponent {
     return  `/process/form/launch/${nullToZero(item.processDefinitionKey)}/${nullToZero(item.processInstanceId)}/${nullToZero(item.businessKey)}/${nullToZero(item.taskId)}/0`;
   };
 
-  export=()=>{
+  saveItem = (item) =>{
+    const {process:{selectedNode}} = this.props;
+    if( selectedNode.eventKey && selectedNode.eventKey == "myRegular"){
+      return
+    }
+      this.props.dispatch({
+        type: 'process/saveRegularData',
+        payload: {
+          modelKey:item.modelKey,
+          modelItem:item,
+          userNo:"",
+        },
+      });
 
+  }
+
+  export=()=>{
     var url = '/rest/process/list/exportProcessModel';
     location.href = url;
-
   }
 
   render() {
     const {process: { list,selectedNode }, loading} = this.props;
+
+    // console.log(JSON.parse(sessionStorage.getItem("selectedNode")))
+
+    // const selectedNodeObj = selectedNode.eventKey? selectedNode:JSON.parse( sessionStorage.getItem("selectedNode"));
     const selectedKey = selectedNode.eventKey?selectedNode.eventKey:"";
 
     const Info = ({ title, value, bordered }) => (
@@ -116,9 +139,22 @@ export default class ProcessModel extends PureComponent {
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
-      hideOnSinglePage: true,
-      pageSize: 10,
+      hideOnSinglePage:list.length>0?false:true,
+      current:this.state.current,
       total: list.length,
+      onChange:(page,pageSize) => {
+        this.setState({
+          current:page
+        })
+      },
+      onShowSizeChange: (current,size) => {
+        this.setState({
+          pageSize:size,
+          current:1
+        })
+      },
+      pageSize: this.state.pageSize,
+      defaultPageSize:10
     };
     const menu = (
       <Menu>
@@ -199,10 +235,11 @@ export default class ProcessModel extends PureComponent {
                   pagination={paginationProps}
                   dataSource={list}
                   renderItem={item => (
-                    <List.Item>
+                    <List.Item onClick={this.saveItem.bind(this,item)}>
                       <Link target="_blank" to={item.url}>{item.modelName}</Link>
                       <span style={{ marginLeft: 20, color: '#A5A5A5' }}>
                         {item.belongCategoryStr}
+                        <span style={{display:item.display}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发起次数：{item.launchCount}</span>
                       </span>
                     </List.Item>
                   )}

@@ -33,19 +33,36 @@ const extra = (
   </Fragment>
 );
 
-const actions = <Button type="primary">返回修改</Button>;
 
-export default () => (
-  <PageHeaderLayout className={styles.hidBread}>
-    <Card bordered={false}>
-      <Result
-        type="error"
-        title="提交失败"
-        description="请核对并修改以下信息后，再重新提交。"
-        extra={extra}
-        actions={actions}
-        style={{ marginTop: 48, marginBottom: 16 }}
-      />
-    </Card>
-  </PageHeaderLayout>
-);
+
+export default class Error extends React.Component {
+  componentDidMount() {
+
+  }
+
+  goBack = () =>{
+    history.go(-1);
+  }
+
+  render(){
+
+    const actions = <Button type="primary" onClick={this.goBack}>返回修改</Button>;
+
+    return(
+      <PageHeaderLayout className={styles.hidBread}>
+        <Card bordered={false}>
+          <Result
+            type="error"
+            title="提交失败"
+            description="请核对并修改以下信息后，再重新提交。"
+            extra={extra}
+            actions={actions}
+            style={{ marginTop: 48, marginBottom: 16 }}
+          />
+        </Card>
+      </PageHeaderLayout>
+    );
+  }
+
+}
+

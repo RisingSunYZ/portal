@@ -38,14 +38,13 @@ export default class WorkMenus extends PureComponent {
         <Row className={styles.menuWraper}>
           <Col span={2} />
           <Col span={4}>
-            <a href={ getConfig().domain + "/portal/schedule/list.jhtml"} target={"_blank"}>
+            <Link to="/workplace/schedule" target={"_blank"}>
               <Badge count={global.scheduleCount}>
                 <Avatar shape="square" size={size} src={schedule} />
               </Badge>
               <br />
               <span className="schedule">日程</span>
-            </a>
-
+            </Link>
           </Col>
           <Col span={4}>
             <Link to="/process/list/todo" target={"_blank"}>
@@ -55,17 +54,15 @@ export default class WorkMenus extends PureComponent {
               <br />
               <span>待办事项</span>
             </Link>
-
           </Col>
           <Col span={4}>
-
-            <a href={getConfig().domain+ "/workplace/address-book"} target={"_blank"}>
+            <Link to="/workplace/address-book" target={"_blank"}>
               <Badge>
                 <Avatar shape="square" size={size} src={mail} />
               </Badge>
               <br />
               <span className="mail">通讯录</span>
-            </a>
+            </Link>
           </Col>
           <Col span={4}>
             <a href={"https://mail.chinayasha.com/owa/#path=/mail"} target={"_blank"}>

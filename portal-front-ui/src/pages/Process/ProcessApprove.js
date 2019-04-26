@@ -166,7 +166,6 @@ export default class ProcessApprove extends React.Component {
 
   componentWillMount() {
     const { match } = this.props;
-
     //判断审批状态(已审批跳转到view页面)
     /*this.props.dispatch({
       type: 'processForm/getProcessFormState',
@@ -226,7 +225,36 @@ export default class ProcessApprove extends React.Component {
       },
     });
   };
-
+  /**
+   * 评审
+   * @param msg
+   */
+  doApproveReview = msg =>{
+    this.props.dispatch({
+      type: 'processForm/doApprove',
+      payload: {
+        type: 'PS',
+        message: encodeURIComponent(msg),
+        taskId: this.props.processForm.taskId,
+        processInstanceId: this.props.processForm.instId,
+      },
+    });
+  };
+  /**
+   * 协同
+   * @param msg
+   */
+  doApproveCooperate = msg =>{
+    this.props.dispatch({
+      type: 'processForm/doApprove',
+      payload: {
+        type: 'XT',
+        message: encodeURIComponent(msg),
+        taskId: this.props.processForm.taskId,
+        processInstanceId: this.props.processForm.instId,
+      },
+    });
+  };
   /**
    * 审批并加签
    * @param obj
@@ -248,8 +276,6 @@ export default class ProcessApprove extends React.Component {
    */
   doAddSign = obj => {
     if (obj && obj.datas.length > 0) {
-      debugger
-
       this.props.dispatch({
         type: 'processForm/doAddSign',
         payload: {
@@ -274,8 +300,10 @@ export default class ProcessApprove extends React.Component {
       });
     }
   };
-
-  //转办
+  /**
+   * 转办
+   * @param msg
+   */
   doTurnDo = obj => {
     if (obj && obj.datas.length > 0) {
       this.props.dispatch({
@@ -338,6 +366,9 @@ export default class ProcessApprove extends React.Component {
     doApprove: this.doApprove,
     doTurnDo: this.doTurnDo,
     doAddSign: this.doAddSign,
+    doApproveReview:this.doApproveReview,
+    doApproveCooperate:this.doApproveCooperate,
+
   };
 
   render() {

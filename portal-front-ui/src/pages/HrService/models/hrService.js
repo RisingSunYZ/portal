@@ -1,10 +1,19 @@
-import { checkPersonExp,getMsgCount,checkLeader,getQuickProcess,getContactUs } from '../../../services/hrService';
-import { getAllPerson, } from '../../../services/hrServiceAjax';
-import { getDeptTree,getDeptList,getTopDept,getDeptIds } from '../../../services/hrUserTeamService';
+import { checkPersonExp,getMsgCount,checkLeader,getQuickProcess,getContactUs } from '@/services/hrService';
+import { getAllPerson, } from '@/services/hrServiceAjax';
+import { queryTodo,queryAlreadyDo} from '@/services/process';
+import { getDeptTree,getDeptList,getTopDept,getDeptIds } from '@/services/hrUserTeamService';
 
 export default {
   state: {
     msgCount: 0,
+    todoData: {
+      list: [],
+      pagination: {},
+    },
+    DoneData: {
+      list: [],
+      pagination: {},
+    },
     attendanceData: '0',
     isLeader:0,
     deptTree:[],
@@ -17,12 +26,29 @@ export default {
   namespace: 'hrService',
 
   effects: {
-    //检查个人是否考勤异常
+    // 获取HR服务快速点击数据
     *getQuickProcess({ payload }, { call, put }) {
       const response = yield call(getQuickProcess, payload);
+      if(response.code == "100" && Array.isArray(response.data) && response.data.length > 0 ){
+        yield put({
+          type: 'saveQuickProcess',
+          payload: response.data,
+        });
+      }
+    },
+
+    *queryTodo({ payload }, { call, put }) {
+      const response = yield call(queryTodo, payload);
       yield put({
-        type: 'saveQuickProcess',
+        type: 'queryList',
         payload: response.data,
+      });
+    },
+    *queryDone({ payload }, { call, put }) {
+      const response = yield call(queryAlreadyDo, payload);
+      yield put({
+        type: 'queryDoneList',
+        payload: response.data
       });
     },
 
@@ -96,6 +122,20 @@ export default {
   },
 
   reducers: {
+    queryList(state, action) {
+      return {
+        ...state,
+        todoData: action.payload,
+        disabled: false,
+      };
+    },
+    queryDoneList(state, action) {
+      return {
+        ...state,
+        DoneData: action.payload,
+        disabled: false,
+      };
+    },
     saveQuickProcess(state, action) {
       return {
         ...state,

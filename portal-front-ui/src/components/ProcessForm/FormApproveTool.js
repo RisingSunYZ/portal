@@ -43,17 +43,7 @@ export default class FormApproveTool extends Component {
       message.warn('请填写评审意见！');
       return;
     }
-
-    const { processForm } = this.props;
-    this.props.dispatch({
-      type: 'processForm/doApprove',
-      payload: {
-        type: 'PS',
-        message: encodeURIComponent(this.state.approveMsg),
-        taskId: processForm.taskId,
-        processInstanceId: processForm.instId,
-      },
-    });
+    this.props.doFormFn('doApproveReview', this.state.approveMsg);
   };
 
   //协同
@@ -62,16 +52,7 @@ export default class FormApproveTool extends Component {
       message.warn('请填写协同意见！');
       return;
     }
-    const { processForm } = this.props;
-    this.props.dispatch({
-      type: 'processForm/doApprove',
-      payload: {
-        type: 'XT',
-        message: encodeURIComponent(this.state.approveMsg),
-        taskId: processForm.taskId,
-        processInstanceId: processForm.instId,
-      },
-    });
+    this.props.doFormFn('doApproveCooperate', this.state.approveMsg);
   };
 
   doReject = () => {
@@ -145,7 +126,7 @@ export default class FormApproveTool extends Component {
         },
         callback: res => {
           if (res) {
-            if(res.code ==1 ){
+            if(res.code =="100" ){
               this.props.doFormFn("doReject",'');
             }
           }
@@ -158,7 +139,6 @@ export default class FormApproveTool extends Component {
         type: 'processForm/doReject',
         payload: {
           code: this.state.value,
-          type:processForm.instId,
           processInstanceId: processForm.instId,
           message: encodeURIComponent(this.state.approveMsg),
           taskId: processForm.taskId,
@@ -168,7 +148,7 @@ export default class FormApproveTool extends Component {
         },
         callback: res => {
           if (res) {
-            if(res.code ==1 ){
+            if(res.code =="100" ){
               this.props.doFormFn("doReject",'');
             }
           }
@@ -257,7 +237,6 @@ export default class FormApproveTool extends Component {
       </div>
     );
 
-    // 显示按钮，显示按钮排序
     // 显示按钮，显示按钮排序
     const approveBtns = () => {
       const btns = [];

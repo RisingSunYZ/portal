@@ -23,7 +23,7 @@ class FilePreview extends PureComponent {
 
     if(fileName){
       document.title = `亚厦股份-文档预览 - ${decodeHtmlName}`;
-      const extensionType = decodeHtmlName.substring(decodeHtmlName.lastIndexOf('\\.')+1);
+      const extensionType = decodeHtmlName.substring(decodeHtmlName.lastIndexOf('.')+1);
       if(extensionType.toLowerCase() === 'pdf'){
         convertType = '20';
       }else if(extensionType.toLowerCase() === 'zip'||extensionType.toLowerCase() === 'rar'){

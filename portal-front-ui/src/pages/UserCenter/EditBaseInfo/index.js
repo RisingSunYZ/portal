@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { Row, Col, Card, Form, Input, Select, Tabs, Breadcrumb } from 'antd';
+import Link from 'umi/link';
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -48,8 +49,8 @@ export default class EditBaseInfo extends Component {
         <Card bordered={false} bodyStyle={{padding: 0}}>
           <div className="title-box">
             <Breadcrumb>
-              <Breadcrumb.Item>您所在的位置：<a href="/ys/main/hr-service">HR服务</a></Breadcrumb.Item>
-              <Breadcrumb.Item><a href="/ys/user-center">个人总览</a></Breadcrumb.Item>
+              <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
+              <Breadcrumb.Item><Link to="/ys/user-center">个人总览</Link></Breadcrumb.Item>
               <Breadcrumb.Item>编辑资料</Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-title">编辑资料</div>

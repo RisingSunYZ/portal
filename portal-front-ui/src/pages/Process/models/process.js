@@ -7,6 +7,7 @@ import {
   getAllSystems,
   getProcessEnums,
   queryDrafts,
+  saveRegularData,
   delDraft,
   getModelList,
   getPermission,
@@ -31,7 +32,7 @@ const getFormType = (url)=>{
 
 export default {
   state: {
-    data: {
+    data: {  // 分页表格数据
       list: [],
       pagination: {},
     },
@@ -55,15 +56,15 @@ export default {
       list: [],
       pagination: {},
     },
-    list: [],
-    selectedNode:{},
+    list: [], // 发起页列表数据
+    selectedNode:{}, // 发起页选中节点
     treeData: [],
-    formTypes: [],
-    processStatus: [],
+    formTypes: [], // 发起页选中节点
+    processStatus: [], // 流程状态
     systems: [],
     formTitle: '初始化标题',
-    todoCount: 0,
-    draftCount: 0,
+    todoCount: 0, //待办微标数
+    draftCount: 0, //待办微标数
     returnVo: {},
     disabled:true,
     hasPermission:false,// 是否有表单查询权限
@@ -140,8 +141,6 @@ export default {
           pagination: payload,
         });
       }
-
-
     },
     *delDraft({ payload }, { call, put }) {
       const response = yield call(delDraft, payload);
@@ -195,7 +194,18 @@ export default {
 
     *queryTreeData(_, { call, put }) {
       const response = yield call(queryTreeData);
-      const data = Array.isArray(response.data) ? response.data : []
+      const data = Array.isArray(response.data) ? response.data : [];
+
+      // // treeData数据里添加我常用的选项
+      // const regular = {
+      //   children: null,
+      //   code: "my_regular",
+      //   id: "myRegular",
+      //   name: "我常用的",
+      //   pid: ""
+      // }
+      // data.unshift(regular)
+
       yield put({
         type: 'getTreeData',
         payload: data,
@@ -213,8 +223,13 @@ export default {
       const data = Array.isArray(response.data) ? response.data : [];
       yield put({
         type: 'getTreeData',
-        payload: data,
+        payload: data,saveRegularData
       });
+    },
+    *saveRegularData({ payload }, { call, put }) {
+
+      const response = yield call(saveRegularData,payload);
+      // const data = Array.isArray(response.data) ? response.data : [];
     },
     *changeFormTitle({ payload }, { put }) {
       const response = { formTitle: payload.formTitle };
@@ -233,7 +248,7 @@ export default {
         });
       }
     },
-
+    // 获取草稿微标数
     *getDraftCount(_, { call,put }) {
       const response = yield call(getDraftsCount);
       if(response.code === "100"){
@@ -242,7 +257,6 @@ export default {
           payload: response.data,
         });
       }
-
     },
   },
 
@@ -255,10 +269,10 @@ export default {
       };
     },
     setSelectedNode(state, action) {
-      return {
-        ...state,
-        selectedNode:action.payload.selectedNode
-      };
+        return {
+          ...state,
+          selectedNode:action.payload.selectedNode,
+        };
     },
     queryTodoList(state, action) {
       const sorter = action.payload.sorter;
@@ -371,6 +385,14 @@ export default {
         message.error('删除失败');
       } else {
         message.success('删除成功');
+        action.payload.data.list.map(row => {
+          row.url = `/process/form/launch/${row.modelKey}/0/0/0/${getFormType(row.fromUrl)}`;
+          if(row.launchCount){
+            row.display="inline-block";
+          }else{
+            row.display="none";
+          }
+        });
         return {
           ...state,
           draftData: action.payload.data,
@@ -382,6 +404,12 @@ export default {
     modelCallback(state, action) {
       action.payload.map(row => {
         row.url = `/process/form/launch/${row.modelKey}/0/0/0/${getFormType(row.fromUrl)}`;
+        if(row.launchCount){
+          row.display="inline-block";
+        }else{
+          row.display="none";
+        }
+
       });
       return {
         ...state,
@@ -415,8 +443,6 @@ export default {
     setup({ dispatch, history }) {
 
       regWindowFun();
-      // Subscribe history(url) change, trigger `load` action if pathname is `/`
-
       history.listen(location => {
 
         if(location.pathname.search('list') ===-1 ){
@@ -426,7 +452,7 @@ export default {
         // debugger location.pathname.search('/process/list') === -1
         try{
           if(window.opener && window.opener.location.href.search('/process/list') !== -1){
-            window.close()
+            window.close();
           }
         }catch(e){
           // console.error('=======================',e);

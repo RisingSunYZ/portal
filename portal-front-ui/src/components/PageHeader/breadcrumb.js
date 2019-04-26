@@ -86,7 +86,7 @@ export default class BreadcrumbView extends PureComponent {
 
   AddBreadcrumbDom=(routerLocation)=>{
     switch(routerLocation.split("/")[1]){
-      case "process" :return <a href={ getConfig().domain+"/main.jhtml"}>工作台</a>;break;
+      case "process" :return <Link to={"/main/workplace"}>工作台</Link>;break;
       case "workplace" :return <Link to={"/main/workplace"}>工作台</Link>;break;
       case "hr-service" :return <Link to={"/main/hr-service"}>HR服务</Link>;break;
       case "infor-tech" :return <Link to={"/infor-tech"}>IT服务</Link>;break;

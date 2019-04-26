@@ -1,30 +1,92 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { Button, Icon,Row,Col, Modal, Popover, message } from 'antd';
 import { connect } from 'dva';
-import { ProcessSelector } from '../Selector';
+import { ProcessSelector } from '@/components/Selector';
 import { changeParam, getConfig, nullToZero, fileDown } from '@/utils/utils';
 import Plupload from "@/components/Plupload";
-import styles from "./index.less"
+import styles from "./index.less";
 import router from 'umi/router';
 
 /**
  * 流程图组件
  */
 class DiagramImgModal  extends PureComponent{
-  state = { diagramModalWidth:'50%' };
+  state = {
+    diagramModalWidth:'80%',
+    diagramModalHeight:"50%",
+    diagramModalMax:false,
+    moveFlag:false,
+  };
   // 设置图片弹窗的宽度
   setDiagramModalWidth = ()=>{
     const { processDiagramImgUrl } = this.props;
     const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth; // width
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; // Hidth
     const imgObj = new Image();
     imgObj.src = processDiagramImgUrl;
     const width = imgObj.naturalWidth;
-    if(width > windowWidth*0.9){
-      this.setState({diagramModalWidth: '90%'})
+    const height = imgObj.naturalHeight;
+
+    if(width > windowWidth*0.8){
+      this.setState({diagramModalWidth: '80%',diagramModalMax:false,moveFlag:true})
     }else{
-      this.setState({diagramModalWidth: width+50})
+      this.setState({diagramModalWidth: width+50,diagramModalMax:false})
+    }
+    if(height > windowHeight*0.8){
+      this.setState({diagramModalHeight:windowHeight*0.6,moveFlag:true})
+    }else{
+      this.setState({diagramModalHeight:height})
     }
   }
+  // 放大流程图
+  setDiagramModalMax = ()=>{
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; // heihgt
+      const antModalBody = document.getElementsByClassName("ant-modal-body")[0];
+      // let imgWrapperHeight;
+      const headerHeight = document.getElementsByClassName("ant-modal-header")[0].offsetHeight;
+      const footerHeight = document.getElementsByClassName("ant-modal-footer")[0].offsetHeight;
+      // 判断当放大后有横向滚动条时，图片父级高度加上17即滚动条高度
+      const imgWrapperHeight = antModalBody.scrollWidth > antModalBody.clientWidth ? windowHeight - headerHeight - footerHeight - 24 - 17:windowHeight - headerHeight - footerHeight - 24;
+      // 判断图片放大后，要不要出现拖动图标
+      if(antModalBody.scrollHeight > antModalBody.clientHeight || antModalBody.scrollWidth > antModalBody.clientWidth){
+        this.setState({moveFlag:true,diagramModalWidth:"100%",diagramModalHeight:imgWrapperHeight,diagramModalMax:true});
+      }else{
+        this.setState({moveFlag:false,diagramModalWidth:"100%",diagramModalHeight:imgWrapperHeight,diagramModalMax:true});
+      }
+
+  }
+  //
+  startDrag = (event)=>{
+    if(this.state.moveFlag){
+      event.preventDefault();
+      const target = event.target;
+      const startX = event.pageX;
+      const startY = event.pageY;
+      const ele = document.getElementsByClassName("ant-modal-body")[0];
+
+      const scrollTop =ele.scrollTop;
+      const scrollLeft =ele.scrollLeft;
+      // const scrollTop = $(target).parent().parent().scrollTop();
+      // const scrollLeft = $(target).parent().parent().scrollLeft();
+      document.onmousemove = function(event){
+        event.preventDefault();
+        const top = event.pageY - startY;
+        const left = event.pageX - startX;
+        const endTop = scrollTop - top;
+        const endLeft = scrollLeft - left;
+        ele.scrollTop = endTop;
+        ele.scrollLeft = endLeft;
+        // $(target).parent().parent().scrollTop(endTop)
+        // $(target).parent().parent().scrollLeft(endLeft)
+      }
+      document.onmouseup = function(){
+        document.onmousemove = null;
+        document.onmouseup = null;
+      }
+    }
+  }
+
+
 
   // 流程图节点内容
   flowNodeContent = (item) => {
@@ -44,25 +106,44 @@ class DiagramImgModal  extends PureComponent{
     );
   };
 
+  // 流程图节点内容
+  flowTile = (formTitle) => {
+    return (
+      <div>
+        {formTitle + ' - 流程图'}
+        <div style={{float:"right",marginRight:"35px"}}>
+          <Icon type="shrink" style={{display:this.state.diagramModalMax?"inline-block":"none"}} onClick={this.setDiagramModalWidth} />
+          <Icon type="arrows-alt" style={{display:this.state.diagramModalMax?"none":"inline-block"}} onClick={this.setDiagramModalMax}/>
+        </div>
+      </div>
+    );
+  };
+
   render(){
     const {processDiagramImgUrl, handleOk, handleCancel, handleDownImage, visibleDiagramModal, processDiagramData, formTitle} = this.props;
+    const top = this.state.diagramModalMax?"0px":"100px";
+    const cursor = this.state.moveFlag?"move":"auto";
     return  (
       <Modal
-        title={formTitle + ' - 流程图'}
+        title={this.flowTile(formTitle)}
         width={this.state.diagramModalWidth}
-        keyboard="true"
-        maskClosable="true"
+        style={{ top:top,paddingBottom:"0px" }}
+        maskClosable={false}
         visible={visibleDiagramModal}
         onOk={handleOk}
         onCancel={handleCancel}
-        bodyStyle={{ overflowX:'auto',position:"relative",padding:"0px 20px 30px 0px", minHeight:'200px'}}
+        bodyStyle={{ overflowX:'auto',position:"relative",padding:"0 0 24px 0",minHeight:'200px'}}
         footer={[
           <Button key="downImage" type="primary" onClick={handleDownImage}>导出图片</Button>,
           <Button key="back" onClick={handleCancel}>关闭</Button>
         ]}
       >
-        <div>
-          <img alt={formTitle} onLoad={this.setDiagramModalWidth.bind(this)} src={processDiagramImgUrl} />
+        <div style={{height:this.state.diagramModalHeight,cursor:cursor}}>
+          <img alt={formTitle}
+               onMouseDown={this.startDrag}
+               onLoad={this.setDiagramModalWidth}
+               src={processDiagramImgUrl}
+          />
           {
             processDiagramData && processDiagramData.length>0?(processDiagramData.map((item) =>{
 
@@ -206,7 +287,7 @@ class ProcessBaseAction extends Component {
 
 
   render() {
-    const {processForm:{ visibleDiagramModal, processDiagramData, processDiagramImgUrl, formInfo }, dispatch } = this.props;
+    const {processForm:{ visibleDiagramModal,processDiagramData, processDiagramImgUrl, formInfo }, dispatch } = this.props;
 
     const fileLists = formInfo.files;
     if (fileLists) {
@@ -250,11 +331,11 @@ class ProcessBaseAction extends Component {
           </Popover>
           <Popover content="关联流程">
             <Button onClick={this.selectProcess} icon="link" style={{ marginLeft: '8px' }} />
-            <ProcessSelector
-              visible={this.state.showProcessSelector}
-              onSelect={this.selectedProcess}
-            />
           </Popover>
+          <ProcessSelector
+            visible={this.state.showProcessSelector}
+            onSelect={this.selectedProcess}
+          />
         </Fragment>
       ) : null;
     };

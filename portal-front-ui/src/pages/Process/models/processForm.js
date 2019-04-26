@@ -173,11 +173,10 @@ export default {
       } else if (payload.code === 'backToAnyStep') {
         response = yield call(backToAnyStep, payload);
       }
-
+      if (callback && typeof callback === 'function') {
+        callback(response); // 返回结果
+      }
       if (response.code === '100') {
-        if (callback && typeof callback === 'function') {
-          callback(response); // 返回结果
-        }
         yield put(router.push('/process/result/success/0'));
       } else {
         message.error(response.msg);

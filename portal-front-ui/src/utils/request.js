@@ -2,7 +2,7 @@ import fetch from 'dva/fetch';
 import { notification } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
-import { isAntdPro, getCookie } from './utils';
+import { isAntdPro, getCookie, getConfig } from './utils';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -143,7 +143,7 @@ export default function request(url, option) {
         // window.g_app._store.dispatch({
         //   type: 'login/logout',
         // });
-        router.push('../');
+        router.push('/exception/401');
         return;
       }
       // environment should not be used
