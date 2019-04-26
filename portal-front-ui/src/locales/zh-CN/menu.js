@@ -79,6 +79,7 @@ export default {
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
   'menu.table-list': '公告列表',
+  'menu.staff-list':'员工风采',
   'menu.basic-list': '新闻列表',
   'menu.msg-center': '消息通知',
   'menu.msg-center.msg-flow': '流程类消息',

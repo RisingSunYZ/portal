@@ -377,13 +377,13 @@ export default class MeetingInput extends PureComponent {
             <Row className={styles.rows}>
               <Col span={24}>
                 <FormItem label='会议内容' colon={false} labelCol={{ span: 2 }} wrapperCol={{ span:22 }} style={{width:'99%'}}>
-                      <Editor
-                        ref="editor"
-                        icons={icons}
-                        value={ content === "" ? meeting.content : content }
-                        defaultValue="<p>请输入内容</p>"
-                        onChange={this.handleChange.bind(this)}
-                        plugins={plugins} />
+                  <Editor
+                    ref="editor"
+                    icons={icons}
+                    value={ content === "" ? meeting.content : content }
+                    defaultValue="<p>请输入内容</p>"
+                    onChange={this.handleChange.bind(this)}
+                    plugins={plugins} />
                 </FormItem>
               </Col>
             </Row>

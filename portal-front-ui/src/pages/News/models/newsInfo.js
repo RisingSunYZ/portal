@@ -1,4 +1,4 @@
-import { queryNewsList,queryDone} from '../../../services/news';
+import { queryNewsList,getStaffList,addNewsStaffs } from '../../../services/news';
 export default {
   namespace: 'newsInfo',
 
@@ -25,8 +25,9 @@ export default {
     staffPresence: {
       list: [],
       pagination: {},
-    }
+    },
 
+    staffLists:[] //员工相册 更多
   },
 
   effects: {
@@ -65,13 +66,32 @@ export default {
 
     // 获取员工风采图片列表
     *queryStaffPresenceList({ payload }, { call, put }) {
-      // debugger;
       const response = yield call(queryNewsList, payload);
       yield put({
         type: 'getStaffPresenceList',
         payload: response.data,
         pagination: payload,
       });
+    },
+
+    //获得员工风采的更多页面
+    *getListMedia({ payload }, { call, put }) {
+      const response = yield call(getStaffList, payload);
+      yield put({
+        type: 'staffData',
+        payload: response.data
+      });
+    },
+
+
+    *addNewsStaffPre({ payload ,callback}, { call, put }) {
+      // debugger;
+      const response = yield call(addNewsStaffs, payload);
+      yield put({
+        type: 'staffData',
+        payload: response
+      });
+      if(callback) callback(response);
     },
   },
 
@@ -114,7 +134,6 @@ export default {
 
     // 员工风采
     getStaffPresenceList(state, action) {
-      // debugger
       return {
         ...state,
         staffPresence:{
@@ -124,5 +143,12 @@ export default {
         disabled: false,
       };
     },
+
+    staffData(state, action){
+      return {
+        ...state,
+        staffLists: action.payload.data
+      };
+    }
   },
 };

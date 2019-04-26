@@ -169,12 +169,11 @@ export default class TableList extends PureComponent {
             <Card
               title="员工风采"
               bordered={false}
-              extra={<Link to="#" className={styles.more}> 更多> </Link>}
+              extra={<Link to={"/news/staff-list"} className={styles.more}> 更多> </Link>}
               bodyStyle={{padding:'8px 16px 0px 16px'}}
             >
               <List
                 itemLayout="vertical"
-                size="large"
                 dataSource={ list }
                 split={false}
                 renderItem={ item => (

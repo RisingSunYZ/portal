@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { List, Avatar, Card, Row, Col, Input } from 'antd';
+import { List, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 import Link from 'umi/link';

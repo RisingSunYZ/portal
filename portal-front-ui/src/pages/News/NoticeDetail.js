@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Icon, Card, Row, Col } from 'antd';
+import { Icon, Card } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 import FileList from '@/components/FileList';

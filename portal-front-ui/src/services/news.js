@@ -15,6 +15,13 @@ export async function queryNewsList(params) {
   return request(`/rest/portal/news/ajaxListVo?${stringify(params)}`);
 }
 
+export async function getStaffList(params) {
+  return request(`/rest/portal/news/ajaxListMedia?${stringify(params)}`);
+}
+
+export async function addNewsStaffs(params) {
+  return request(`/rest/portal/news/addNewsStaffPresence?${stringify(params)}`);
+}
 /**
  * 获取新闻banner数据
  * @param params

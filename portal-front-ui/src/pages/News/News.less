@@ -61,7 +61,7 @@
     height:0;
     padding:16px;
     text-align:center;
-    background:rgba(0, 0, 0, 0.3);
+    background:rgba(0, 0, 0, 0.5);
     opacity:0;
     color:#fff;
     transition:all .3s ease-out;
@@ -122,3 +122,116 @@
   }
 }
 
+
+//员工风采  更多
+.imgCard{
+  :global{
+    .ant-card-body{
+      background: #000;
+    }
+  }
+}
+.btn{
+  position: absolute;
+  top: -60px;
+  right: 30px;
+  width:74px;
+  height:30px;
+  line-height:30px;
+  text-align:center;
+  border-radius: 6px;
+  background: #FF3D00;
+  color: #fff;
+  transition: all .3s ease-out;
+  cursor: pointer;
+}
+.btn:hover{
+  opacity: .8;
+  color: #fff;
+}
+.btnPublic{
+  width:66px;
+  height:30px;
+  line-height:30px;
+  text-align:center;
+  background:#3088F4;
+  border-radius: 4px;
+  display: inline-block;
+  color:#fff;
+  margin-left:30px;
+  cursor:pointer;
+}
+.btnPublic:hover{
+  opacity: .8;
+}
+.textDesc{
+  width:100%;
+  height:100px;
+  border:2px solid #44A4F5;
+}
+.inputSty{
+  width:100%;
+  border: 2px solid #44A4F5;
+  border-radius: 0;
+  height:48px;
+}
+.optArea{
+  position:relative;
+  top:-17px;
+  border-bottom:1px solid #ddd;
+  padding-bottom:20px;
+  cursor:pointer;
+  .iconPic{
+    color:#88D403;
+    font-size:16px;
+  }
+  .textSpan{
+    color:#333;
+  }
+  .optRt{
+    float:right;
+  }
+}
+.uploadBtn{
+  .upText{
+    font-size:18px;
+    color:#000;
+    margin:0;
+  }
+  .photoCount{
+    font-size:12px;
+    display:inline-block;
+    margin-bottom:5px;
+  }
+}
+.picImg{
+  width: 305px;
+  height: 258px;
+  padding: 0;
+  margin-bottom: 20px;
+  .imgContent{
+    position: relative;
+    .picItem{
+      width: 275px;
+      height: 258px;
+    }
+    .infoDesc{
+      width:275px;
+      height:60px;
+      background:#fff;
+      position:absolute;
+      top:198px;
+      padding:10px 16px;
+      opacity:0;
+      .infoTitle{
+        font-size:10px;
+      }
+      .infoRight{
+        margin-left:30px;
+      }
+    }
+  }
+}
+.imgContent:hover .infoDesc{
+  opacity:1;
+}

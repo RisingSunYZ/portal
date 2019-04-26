@@ -244,6 +244,11 @@ export default [
             path: '/news/notice-detail/:id',
             name: 'notice-detail',
             component: './News/NoticeDetail',
+          },
+          {
+            path: '/news/staff-list',
+            name: 'staff-list',
+            component: './News/StaffList',
           }
         ]
       },
