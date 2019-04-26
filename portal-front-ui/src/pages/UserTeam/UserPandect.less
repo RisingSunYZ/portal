@@ -1,0 +1,97 @@
+@import '~antd/lib/style/themes/default.less';
+
+.userName{
+  line-height: 104px;
+  font-size: 20px;
+  color: rgba(0,0,0,.65);
+  font-weight: 500;
+  padding-left: 30px;
+  & > span{
+    font-size: 28px;
+    color: #333;
+    padding-right: 24px;
+  }
+}
+:global{
+  .userChannels{
+    .ant-card{
+      margin-bottom: 32px;
+      .ant-card-body{
+        position: relative;
+        padding: 16px 30px;
+        box-shadow: 0 0 18px 0 rgba(232,232,232,0.5);
+        color: #333;
+        overflow: hidden;
+        .channel-bg{
+          position: absolute;
+          width: 200px;
+          height: 200px;
+          &.baseinfo{
+            top: -29px;
+            right: -59px;
+            background: url("../../assets/userCenter/baseinfo.png") center center no-repeat;
+          }
+          &.performance{
+            top: -11px;
+            right: -75px;
+            background: url("../../assets/userCenter/performance.png") center center no-repeat;
+          }
+          &.attendance{
+            top: 3px;
+            right: -77px;
+            background: url("../../assets/userCenter/attendance.png") center center no-repeat;
+          }
+          &.train{
+            top: -17px;
+            right: -68px;
+            background: url("../../assets/userCenter/train.png") center center no-repeat;
+          }
+          &.asset{
+            top: 15px;
+            right: -90px;
+            background: url("../../assets/userCenter/asset.png") center center no-repeat;
+          }
+        }
+        .strength{
+          font-size: 20px;
+          padding-left: 6px;
+          padding-right: 4px;
+          font-weight: bold;
+          &.text{
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
+}
+.authorizedTotal{
+  background:rgba(24,144,255,0.08);
+  padding: 20px 0;
+  margin: 8px 0;
+  text-align: center;
+  color: #333;
+  h5{
+    font-size: 16px;
+    font-weight: 600;
+  }
+  p{
+    font-size:14px;
+    font-weight:400;
+    line-height:20px;
+    margin: 0;
+  }
+}
+.inputcss{
+  width:224px;
+  height:32px;
+  background:rgba(255,255,255,1);
+  border-radius:4px;
+  float:right;
+}
+.marginTop{
+  margin-top: 16px;
+}
+.smMarginTop{
+  margin-top: 8px;
+}

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.schedule.IScheduleEventGrantDao" >
+    <resultMap id="ScheduleEventGrantMap" type="com.dragon.portal.model.schedule.ScheduleEventGrant" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        <result column="grant_person_no" property="grantPersonNo" jdbcType="VARCHAR" />
+        
+        <result column="grant_person_name" property="grantPersonName" jdbcType="VARCHAR" />
+        
+        <result column="granted_person_no" property="grantedPersonNo" jdbcType="VARCHAR" />
+        
+        <result column="granted_person_name" property="grantedPersonName" jdbcType="VARCHAR" />
+        
+        <result column="grant_type" property="grantType" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        grant_person_no,
+        granted_person_no,
+        grant_person_name,
+        granted_person_name,
+        grant_type
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="grantPersonNo!=null and grantPersonNo!=''">
+        and grant_person_no = #{grantPersonNo,jdbcType=VARCHAR}
+        </if>
+        <if test="grantedPersonNo!=null and grantedPersonNo!=''">
+        and granted_person_no = #{grantedPersonNo,jdbcType=VARCHAR}
+        </if>
+        <if test="grantPersonName!=null and grantPersonName!=''">
+        and grant_person_name = #{grantPersonName,jdbcType=VARCHAR}
+        </if>
+        <if test="grantedPersonName!=null and grantedPersonName!=''">
+        and granted_person_name = #{grantedPersonName,jdbcType=VARCHAR}
+        </if>
+        <if test="grantType!=null">
+        and grant_type = #{grantType,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getScheduleEventGrantById" resultMap="ScheduleEventGrantMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_schedule_event_grant
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.schedule.ScheduleEventGrant" resultMap="ScheduleEventGrantMap">
+        select * from tbl_pt_schedule_event_grant where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.schedule.ScheduleEventGrant" resultMap="ScheduleEventGrantMap">
+        select * from tbl_pt_schedule_event_grant where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.schedule.ScheduleEventGrant" resultType="int">
+        select count(1) from tbl_pt_schedule_event_grant where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertScheduleEventGrant" parameterType="com.dragon.portal.model.schedule.ScheduleEventGrant"  >
+        insert into tbl_pt_schedule_event_grant (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{grantPersonNo,jdbcType=VARCHAR},
+        #{grantedPersonNo,jdbcType=VARCHAR},
+        #{grantPersonName,jdbcType=VARCHAR},
+        #{grantedPersonName,jdbcType=VARCHAR},
+        #{grantType,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delScheduleEventGrantById" parameterType="java.lang.String" >
+        delete from tbl_pt_schedule_event_grant
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delScheduleEventGrantByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_schedule_event_grant
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateScheduleEventGrant" parameterType="com.dragon.portal.model.schedule.ScheduleEventGrant" >
+        update tbl_pt_schedule_event_grant
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="grantPersonNo != null" >
+                grant_person_no = #{grantPersonNo,jdbcType=VARCHAR},
+            </if>
+            <if test="grantedPersonNo != null" >
+                granted_person_no = #{grantedPersonNo,jdbcType=VARCHAR},
+            </if>
+            <if test="grantPersonName != null" >
+                grant_person_name = #{grantPersonName,jdbcType=VARCHAR},
+            </if>
+            <if test="grantedPersonName != null" >
+                granted_person_name = #{grantedPersonName,jdbcType=VARCHAR},
+            </if>
+            <if test="grantType != null" >
+                grant_type = #{grantType,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateScheduleEventGrantByIds" parameterType="java.util.Map">
+        update tbl_pt_schedule_event_grant
+        <set>
+            <if test="scheduleEventGrant.id != null" >
+                id = #{scheduleEventGrant.id,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEventGrant.grantPersonNo != null" >
+                grant_person_no = #{scheduleEventGrant.grantPersonNo,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEventGrant.grantedPersonNo != null" >
+                granted_person_no = #{scheduleEventGrant.grantedPersonNo,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEventGrant.grantPersonName != null" >
+                grant_person_name = #{scheduleEventGrant.grantPersonName,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEventGrant.grantedPersonName != null" >
+                granted_person_name = #{scheduleEventGrant.grantedPersonName,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleEventGrant.grantType != null" >
+                grant_type = #{scheduleEventGrant.grantType,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 根据授权工号查询授权信息 -->
+    <select id="getScheduleEventGrantByGrantPersonNo" resultMap="ScheduleEventGrantMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_schedule_event_grant
+        where grant_person_no = #{grantPersonNo,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 根据被授权工号查询授权信息 -->
+    <select id="getScheduleEventGrantByGrantedPersonNo" resultMap="ScheduleEventGrantMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_schedule_event_grant
+        where granted_person_no = #{grantedPersonNo,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 批量添加日程授权信息 -->
+    <insert id="insertScheduleEventGrants" parameterType="java.util.List">
+		insert into tbl_pt_schedule_event_grant (
+		<include refid="Base_Column_List" />
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.id,jdbcType=VARCHAR},
+			#{item.grantPersonNo,jdbcType=VARCHAR},
+			#{item.grantedPersonNo,jdbcType=VARCHAR},
+			#{item.grantPersonName,jdbcType=VARCHAR},
+			#{item.grantedPersonName,jdbcType=VARCHAR},
+			#{item.grantType,jdbcType=INTEGER}
+			)
+		</foreach>
+	</insert>
+	
+	<!-- 批量修改日程授权信息 -->
+	<update id="updateScheduleEventGrants" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+            update tbl_pt_schedule_event_grant
+            <set>  
+                grant_type = #{item.grantType,jdbcType=INTEGER}
+            </set>  
+            where id = #{item.id,jdbcType=VARCHAR} 
+        </foreach>
+    </update>
+</mapper>

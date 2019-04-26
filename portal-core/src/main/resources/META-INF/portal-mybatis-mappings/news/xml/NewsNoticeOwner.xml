@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.news.INewsNoticeOwnerDao" >
+    <resultMap id="NewsNoticeOwnerMap" type="com.dragon.portal.model.news.NewsNoticeOwner" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="pid" property="pid" jdbcType="VARCHAR" />
+        
+        <result column="sn" property="sn" jdbcType="VARCHAR" />
+        
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        
+        <result column="short_name" property="shortName" jdbcType="VARCHAR" />
+        
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        
+        <result column="have_sign" property="haveSign" jdbcType="INTEGER" />
+        
+        <result column="signatory" property="signatory" jdbcType="VARCHAR" />
+        
+        <result column="signatory_no" property="signatoryNo" jdbcType="VARCHAR" />
+        
+        <result column="status" property="status" jdbcType="INTEGER" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        pid,
+        sn,
+        name,
+        short_name,
+        sort_no,
+        have_sign,      
+        signatory,
+        signatory_no,
+        status,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="pid!=null and pid!=''">
+        and pid = #{pid,jdbcType=VARCHAR}
+        </if>
+         <if test="sn!=null and sn!=''">
+        and sn = #{sn,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+        and name = #{name,jdbcType=VARCHAR}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+        and short_name = #{shortName,jdbcType=VARCHAR}
+        </if>
+        <if test="sortNo!=null">
+        and sort_no = #{sortNo,jdbcType=INTEGER}
+        </if>
+        <if test="haveSign!=null">
+        and have_sign = #{haveSign,jdbcType=INTEGER}
+        </if>
+        <if test="signatory!=null and signatory!=''">
+        and signatory = #{signatory,jdbcType=VARCHAR}
+        </if>
+        <if test="signatoryNo!=null and signatoryNo!=''">
+        and signatory_no = #{signatoryNo,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null">
+        and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getNewsNoticeOwnerById" resultMap="NewsNoticeOwnerMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_pt_news_notice_owner
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" resultMap="NewsNoticeOwnerMap">
+        select * from tbl_pt_news_notice_owner where 1=1 
+        <include refid="where" />
+        order by sort_no asc
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" resultMap="NewsNoticeOwnerMap">
+        select * from tbl_pt_news_notice_owner where 1=1 
+        <include refid="where" />
+		order by sort_no asc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" resultType="int">
+        select count(1) from tbl_pt_news_notice_owner where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertNewsNoticeOwner" parameterType="com.dragon.portal.model.news.NewsNoticeProcess"  >
+        insert into tbl_pt_news_notice_owner (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{pid,jdbcType=VARCHAR},
+        #{sn,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{shortName,jdbcType=VARCHAR},
+        #{sortNo,jdbcType=INTEGER},
+        #{haveSign,jdbcType=INTEGER},
+        #{signatory,jdbcType=VARCHAR},
+        #{signatoryNo,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delNewsNoticeOwnerById" parameterType="java.lang.String" >
+        delete from tbl_pt_news_notice_owner
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delNewsNoticeOwnerByIds" parameterType="java.lang.String" >
+        delete from tbl_pt_news_notice_owner
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateNewsNoticeOwner" parameterType="com.dragon.portal.model.news.NewsNoticeProcess" >
+        update tbl_pt_news_notice_owner
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null" >
+                pid = #{pid,jdbcType=VARCHAR},
+            </if>
+            <if test="sn != null" >
+                sn = #{sn,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="shortName != null" >
+                short_name = #{shortName,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNo != null" >
+                sort_no = #{sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="haveSign != null" >
+                have_sign = #{haveSign,jdbcType=INTEGER},
+            </if>
+            <if test="signatory != null" >
+                signatory = #{signatory,jdbcType=VARCHAR},
+            </if>
+            <if test="signatoryNo!=null">
+	        	signatory_no = #{signatoryNo,jdbcType=VARCHAR},
+	        </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateNewsNoticeOwnerByIds" parameterType="java.util.Map">
+        update tbl_pt_news_notice_owner
+        <set>
+            <if test="newsNoticeOwner.id != null" >
+                id = #{newsNoticeOwner.id,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeOwner.pid != null" >
+                pid = #{newsNoticeOwner.pid,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeOwner.sn != null" >
+                sn = #{newsNoticeOwner.sn,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeOwner.name != null" >
+                name = #{newsNoticeOwner.name,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeOwner.shortName != null" >
+                short_name = #{newsNoticeOwner.shortName,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeOwner.sortNo != null" >
+                sort_no = #{newsNoticeOwner.sortNo,jdbcType=INTEGER},
+            </if>
+            <if test="newsNoticeOwner.haveSign != null" >
+                have_sign = #{newsNoticeOwner.haveSign,jdbcType=INTEGER},
+            </if>
+            <if test="newsNoticeOwner.signatory != null" >
+                signatory = #{newsNoticeOwner.signatory,jdbcType=VARCHAR},
+            </if>
+             <if test="newsNoticeOwner.signatoryNo != null" >
+                signatory_no = #{newsNoticeOwner.signatoryNo,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeOwner.status != null" >
+                status = #{newsNoticeOwner.status,jdbcType=INTEGER},
+            </if>
+            <if test="newsNoticeOwner.createTime != null" >
+                create_time = #{newsNoticeOwner.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newsNoticeOwner.creator != null" >
+                creator = #{newsNoticeOwner.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeOwner.updateTime != null" >
+                update_time = #{newsNoticeOwner.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newsNoticeOwner.updator != null" >
+                updator = #{newsNoticeOwner.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="newsNoticeOwner.delFlag != null" >
+                del_flag = #{newsNoticeOwner.delFlag,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+
+    <select id="getAllPidIsNull" resultMap="NewsNoticeOwnerMap">
+        select * from tbl_pt_news_notice_owner where 1=1
+        and (pid is null or pid = "")
+        and status = 1
+        and del_flag = 1
+        order by sort_no asc
+    </select>
+
+    
+</mapper>

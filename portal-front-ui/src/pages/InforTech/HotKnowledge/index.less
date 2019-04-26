@@ -1,0 +1,47 @@
+@import '~antd/lib/style/themes/default.less';
+
+:global{
+  .hot-knowledge{
+    line-height: 32px;
+    list-style: none;
+    padding: 0;
+    height: 160px;
+    overflow: hidden;
+    margin: 8px 0 0;
+    li{
+      padding: 0 3px;
+      overflow: hidden;
+      cursor: pointer;
+      a{
+        position: relative;
+        padding-left: 10px;
+        display: block;
+        overflow: hidden;
+        white-space:nowrap;
+        text-overflow: ellipsis;
+        i{
+          position: absolute;
+          top: 14px;
+          left: 0;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background-color: @primary-color;
+        }
+      }
+      &.hot i{
+        top: 2px;
+        width: 28px;
+        height: 28px;
+        border-radius: 0;
+        background: url(../../../assets/icon.png) no-repeat -565px -491px;
+      }
+      a.already{
+        color: #333;
+        i{
+          background-color: #333;
+        }
+      }
+    }
+  }
+}

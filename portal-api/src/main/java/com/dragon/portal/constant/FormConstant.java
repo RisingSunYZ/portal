@@ -9,7 +9,6 @@ package com.dragon.portal.constant;
  */
 public class FormConstant {
 
-
 }
 
 

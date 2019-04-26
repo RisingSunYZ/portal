@@ -1,0 +1,41 @@
+.formContentBox{
+  width:1171px;
+  height:100%;
+  border:0;
+  margin-right: -20px;
+  padding:0;
+  overflow: hidden;
+}
+.formMainBox{
+  margin-bottom: 8px;
+  :global{
+
+    .ant-card-body{
+      margin: 24px;
+      overflow: hidden;
+      padding: 0!important;
+    }
+    .ant-card-head{
+      padding:0 24px;
+      height:46px;
+      .ant-card-head-title {
+        font-size: 16px;
+        font-weight:600 !important;
+        padding: 0;
+        margin-top: 12px;
+      }
+    }
+  }
+  .formMainLoadingBox{
+    margin:0;
+    height:0;
+    padding: 0;
+    :global{
+      .ant-card-body{
+        margin:0;
+        padding:0 !important;
+      }
+    }
+  }
+}
+

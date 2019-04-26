@@ -1,0 +1,143 @@
+@import '~antd/lib/style/themes/default.less';
+
+.navRight{
+  z-index: 100;
+  position:relative;
+  left: 797px;
+  top: 35px;
+  .icon{
+    color: #2775B7;
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .text{
+    color: #000;
+    font-size: 14px;
+    text-align: right;
+    vertical-align: middle;
+    display: inline-block;
+    margin: 0 0 6px 7px;
+  }
+}
+
+.rights:hover {
+  cursor: pointer;
+}
+
+.img{
+  width: 112px;
+  height: 84px;
+  float: left;
+}
+
+.descLeft{
+  padding: 0;
+  margin: 0;
+  float: left;
+  margin-left:20px;
+  .liTitle {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+  }
+  .liTop {
+    color: #333;
+  }
+  .liBot{
+    margin-top: 4px;
+    font-size :16px;
+    color: #333;
+    .liTime {
+      font-weight: bold;
+    }
+    .del {
+      display: none;
+    }
+  }
+}
+
+.descLeft:hover .del{
+  display: inline-block;
+  transition:all .1s linear;
+}
+
+.descRight {
+  text-align:right;
+  float:right;
+  ul{
+    height: 22px;
+    color: #666;
+    li{
+      float:left;
+    }
+    li:first-child {
+      margin-right: 30px;
+    }
+    li:nth-child(2){
+      color: #0E65AF;
+    }
+  }
+  .view {
+    color: #333;
+    font-size: 10px;
+    margin-top: 13px;
+    display: block;
+    .iconViewBot {
+      transform: rotate(-90deg);
+    }
+    .iconViewTop {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.cardBot {
+  background: #F8F8F8;
+  padding: 20px 0 0 0;
+  color: #333;
+  border:1px solid #ddd;
+  .rows{
+    margin-bottom: 8px;
+    .col1{
+      text-align: right;
+    }
+  }
+}
+.BotCount {
+  background: #fff;
+  height: 40px;
+  line-height: 40px;
+  border-top: 1px solid #ddd;
+  padding-left: 28px;
+}
+
+.cards {
+  :global{
+    .ant-card-meta-detail > div:not(:last-child){
+      margin: 6px 0 4px 0 !important;
+      width: 50%;
+    }
+    .ant-card-meta-avatar {
+      padding-right: 26px;
+    }
+    .ant-btn-primary{
+      background-color:#fff;
+      border-color:#fff;
+      color:#2596FF;
+      box-shadow:none;
+    }
+  }
+}
+
+
+//.liModal {
+//  :global{
+//    .ant-card-wider-padding .ant-card-body {
+//      padding: 20px !important;
+//    }
+//    .ant-modal{
+//      width: 346px !important;
+//    }
+//  }
+//}
+

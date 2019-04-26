@@ -1,0 +1,54 @@
+:global{
+  .DraggableTags {
+    position: relative;
+    height: 100%;
+    &::after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+  }
+  .DraggableTags-tag {
+    display: inline-block;
+    float: none !important;
+    position: relative;
+    vertical-align: top;
+    &:before, &:after{
+      content: " ";
+      display: table;
+      line-height: 0;
+    }
+    &:hover .drag-handle{
+      display: block;
+    }
+  }
+  .DraggableTags-undraggable {
+    cursor: default;
+
+  }
+  .DraggableTags-dragging{
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+  }
+  .drag-handle{
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    color: #666;
+    width: 20px;
+    text-align: center;
+    background: #efefef;
+    cursor: move;
+    display: none;
+    .drag-handle-icon{
+      position: absolute;
+      top: 50%;
+      margin-top: -10px;
+      margin-left: 4px;
+      color: #999;
+    }
+  }
+}

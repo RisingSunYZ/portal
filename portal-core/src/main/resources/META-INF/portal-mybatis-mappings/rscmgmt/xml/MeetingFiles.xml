@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dragon.portal.dao.rscmgmt.IMeetingFilesDao" >
+    <resultMap id="MeetingFilesMap" type="com.dragon.portal.model.rscmgmt.MeetingFiles" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        
+        
+        <result column="meeting_id" property="meetingId" jdbcType="VARCHAR" />
+        
+        <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+        
+        <result column="file_path" property="filePath" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        
+        <result column="updator" property="updator" jdbcType="VARCHAR" />
+        
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER" />
+        
+        <result column="use_type" property="useType" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id,
+        meeting_id,
+        file_name,
+        file_path,
+        create_time,
+        creator,
+        update_time,
+        updator,
+        del_flag,
+        use_type
+    </sql>
+    
+    <sql id="where">
+        <if test="id!=null and id!=''">
+        and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="meetingId!=null and meetingId!=''">
+        and meeting_id = #{meetingId,jdbcType=VARCHAR}
+        </if>
+        <if test="fileName!=null and fileName!=''">
+        and file_name = #{fileName,jdbcType=VARCHAR}
+        </if>
+        <if test="filePath!=null and filePath!=''">
+        and file_path = #{filePath,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="creator!=null and creator!=''">
+        and creator = #{creator,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updator!=null and updator!=''">
+        and updator = #{updator,jdbcType=VARCHAR}
+        </if>
+        <if test="delFlag!=null">
+        and del_flag = #{delFlag,jdbcType=INTEGER}
+        </if>
+        <if test="useType!=null">
+        and use_type = #{useType,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <select id="getMeetingFilesById" resultMap="MeetingFilesMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from tbl_mt_meeting_files
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getAll" parameterType="com.dragon.portal.model.rscmgmt.MeetingFiles" resultMap="MeetingFilesMap">
+        select * from tbl_mt_meeting_files where 1=1 
+        <include refid="where" />
+    </select>
+    
+    <select id="getPagerModelByQuery" parameterType="com.dragon.portal.model.rscmgmt.MeetingFiles" resultMap="MeetingFilesMap">
+        select * from tbl_mt_meeting_files where 1=1 
+        <include refid="where" />
+		order by update_time desc
+    </select>
+    
+    <select id="getByPageCount" parameterType="com.dragon.portal.model.rscmgmt.MeetingFiles" resultType="int">
+        select count(1) from tbl_mt_meeting_files where 1=1 
+        <include refid="where" />
+    </select>
+    <insert id="insertMeetingFiles" parameterType="com.dragon.portal.model.rscmgmt.MeetingFiles"  >
+        insert into tbl_mt_meeting_files (<include refid="Base_Column_List" />)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{meetingId,jdbcType=VARCHAR},
+        #{fileName,jdbcType=VARCHAR},
+        #{filePath,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{creator,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{updator,jdbcType=VARCHAR},
+        #{delFlag,jdbcType=INTEGER},
+        #{useType,jdbcType=INTEGER}
+        )
+    </insert>
+    
+    <delete id="delMeetingFilesById" parameterType="java.lang.String" >
+        delete from tbl_mt_meeting_files
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <delete id="delMeetingFilesByIds" parameterType="java.lang.String" >
+        delete from tbl_mt_meeting_files
+        where id in(${ids}) 
+    </delete>
+    
+    <update id="updateMeetingFiles" parameterType="com.dragon.portal.model.rscmgmt.MeetingFiles" >
+        update tbl_mt_meeting_files
+        <set>
+            <if test="id != null" >
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingId != null" >
+                meeting_id = #{meetingId,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null" >
+                file_name = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null" >
+                file_path = #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updator != null" >
+                updator = #{updator,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+            <if test="useType != null" >
+                use_type = #{useType,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateMeetingFilesByIds" parameterType="java.util.Map">
+        update tbl_mt_meeting_files
+        <set>
+            <if test="meetingFiles.id != null" >
+                id = #{meetingFiles.id,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingFiles.meetingId != null" >
+                meeting_id = #{meetingFiles.meetingId,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingFiles.fileName != null" >
+                file_name = #{meetingFiles.fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingFiles.filePath != null" >
+                file_path = #{meetingFiles.filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingFiles.createTime != null" >
+                create_time = #{meetingFiles.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingFiles.creator != null" >
+                creator = #{meetingFiles.creator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingFiles.updateTime != null" >
+                update_time = #{meetingFiles.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="meetingFiles.updator != null" >
+                updator = #{meetingFiles.updator,jdbcType=VARCHAR},
+            </if>
+            <if test="meetingFiles.delFlag != null" >
+                del_flag = #{meetingFiles.delFlag,jdbcType=INTEGER}
+            </if>
+            <if test="meetingFiles.useType != null" >
+                use_type = #{meetingFiles.useType,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id in(${ids}) 
+    </update>
+    
+    <!-- 根据meeting_id查询会议对应的附件 -->
+    <select id="getMeetingFilesByMeetingId" parameterType="java.lang.String" resultMap="MeetingFilesMap">
+        select * from tbl_mt_meeting_files where del_flag = 1 and meeting_id = #{meeting_id}
+    </select>
+    
+    <!-- 批量添加会议附件 -->
+    <insert id="insertMeetingFilesList" parameterType="java.util.List">
+		insert into tbl_mt_meeting_files (
+		<include refid="Base_Column_List" />
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.id,jdbcType=VARCHAR},
+			#{item.meetingId,jdbcType=VARCHAR},
+			#{item.fileName,jdbcType=VARCHAR},
+			#{item.filePath,jdbcType=VARCHAR},
+			#{item.createTime,jdbcType=TIMESTAMP},
+			#{item.creator,jdbcType=VARCHAR},
+			#{item.updateTime,jdbcType=TIMESTAMP},
+			#{item.updator,jdbcType=VARCHAR},
+			#{item.delFlag,jdbcType=INTEGER},
+			#{item.useType,jdbcType=INTEGER}
+			)
+		</foreach>
+	</insert>
+	
+	<delete id="delMeetingFilesByMeetingId" parameterType="java.util.Map" >
+        delete from tbl_mt_meeting_files
+        where meeting_id = #{meeting_id,jdbcType=VARCHAR} and use_type = #{use_type,jdbcType=INTEGER}
+    </delete>
+    
+    <!-- 会议管理页面初始化加载会议附件 -->
+    <select id="getMeetingFiles" parameterType="java.util.List" resultMap="MeetingFilesMap">
+        select * from tbl_mt_meeting_files where meeting_id 
+        in 
+        (
+        <foreach collection="list" item="item" index="index"
+			separator=",">
+			#{item.id,jdbcType=VARCHAR}
+		</foreach>
+        )
+    </select>
+</mapper>

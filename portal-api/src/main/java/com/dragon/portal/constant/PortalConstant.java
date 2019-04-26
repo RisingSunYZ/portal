@@ -13,9 +13,76 @@ public class PortalConstant {
     public static final Integer NO_DELETE_FLAG = 1;
 
     /**
+     * 流程表单参数无值的情况
+     */
+    public static final String PROCESS_FORM_PARAM_NO_VALUE = "0";
+
+    /**
+     * 用户Cookie相关的key
+     */
+    //cookie存活时间一个月
+    public static final int COOKIE_TITLE_MONTH = 2592000;
+    /** IT服务=1 */
+    public static final int IT_SERVICE_FLAG = 1;
+
+    /** HR服务=2 */
+    public static final int HR_SERVICE_FLAG = 2;
+
+    /** 启用[上架]状态 */
+    public static final int STATUS_ENABLED = 1;
+    //用户会话信息对象在redis中的生命周期(单位/小时)
+    public static final int SESSION_INFO_TTL = 12;
+    /** HTTP返回登录拦截状态 */
+    public static final int NO_LOGIN_CODE = 999;
+    /**
+     * 系统名称
+     */
+    public static final String SYSTEM_SN = "ys_portal";
+
+
+    //用户名
+    public static final String COOKIE_USERNAME = "userName";
+
+    //登录个人信息相关
+    public static final String SESSION_PERSON_INFO = "personInfo";
+
+    //登录个人信息领导部门相关
+    public static final String SESSION_PERSON_LEADERDEPT_INFO = "personLeaderDeptInfo";
+
+    /**
+     * Redis Session共享中存储的Cookie值
+     */
+    public static final String SESSION = "SESSION";
+
+    //用户信息
+    public static final String COOKIE_PERSONINFO = "personInfo";
+
+    /**
+     * 浏览器Cookie
+     */
+    public static final String COOKIE_JSESSIONID = "JSESSIONID";
+
+    /**
      * windows操作系统
      */
     public static final String OPERATE_SYSTEM_WINDOWS = "windows";
+    /**
+     * 用户会话ID【随机ID】
+     */
+    public static final String COOKIE_USER_SESSION_ID = "usid";
+
+
+    // 用户中心加密的key
+    public static final String CRYPT_KEY = "4de5v45wqeQ6e9";
+    /**
+     * 用户工号加密串键-值为：(USER_REDIS_ID_PREFIX+userNo)加密
+     */
+    public static final String COOKIE_USER_REDIS_ID = "urid";
+    /**
+     * 用户工号Redis前缀
+     */
+    public static final String USER_REDIS_ID_PREFIX = "USER_NO_";
+
 
 
     /**
@@ -38,11 +105,21 @@ public class PortalConstant {
      */
     public static final String GDKQ_SN = "CSHR";
 
+    /**
+     * 无内容
+     */
+    public static final String NULL = "NULL";
+
+
+    /**
+     * 用户头像，Redis存储前缀
+     */
+    public static final String USER_HEAD_IMG = "USER_HEAD_IMG";
 
     // 流程图片文件类型
     public static final String WF_IMAGE = "png";
     // 流程的xml文件类型
-    public static final String WF_XML = "xml";
+    public static final String WF_XML = "cstm1.xml";
     // 模式bpmn
     public static final String WF_BPMN = "bpmn";
     // 模式json
@@ -233,6 +310,30 @@ public class PortalConstant {
     public static final String[] WF_FLOW_LEVEL_FIELDS = {"statusStr", "flowlevelCode", "startDeptName", "oneDeptName", "twoDeptName", "threeDeptName", "deptHeaderName", "areaOneName", "areaDeputyName", "areaHeaderName", "centerdeputyHeaderName", "centerHeaderName", "companyHeaderName", "groupLeaderName", "startTime", "endTime"};
     public static final String[] WF_FLOW_LEVEL_FIELDNAMES = {"状态", "序号", "单位名称", "一级部门", "上级部门", "提交部门", "部门负责人", "区域公司一级部门负责人", "区域副总", "区域总经理", "中心副总", "中心总经理", "单位总经理", "集团分管领导", "创建时间", "更新时间"};
 
+    /**用户账号*/
+    public static final String SESSION_USER_UID = "uid";
+    /**用户*/
+    public static final String SESSION_SYS_USER = "sys_user";
+    /**临时用户账号*/
+    public static final String SESSION_TEMPORARY_USER_UID = "temporaryUserUid";
+    /**用户验证码*/
+    public static final String SESSION_VERIFICATION_CODE = "verificationCode";
+    /**用户验证结果*/
+    public static final String SESSION_CHECK_CODE_FLAG = "checkCodeFlag";
+    //**********************************
 
+    /** 普通分割符 */
+    public static final String SEPARATOR = ",";
+    /** 序列基数 */
+    public static final Integer BASE_INDEX = 100;
+
+    /** 最大分页显示的数据 */
+    public static final Integer MAX_PAGE_SIZE = 10000;
+
+    /** 是 */
+    public static final Integer YES = 1;
+
+    /** 否 */
+    public static final Integer NO = 0;
 
 }

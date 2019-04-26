@@ -1,0 +1,69 @@
+@import '~antd/lib/style/themes/default.less';
+
+.skinHeader{
+  :global{
+    background: #a3232b;
+    .ant-menu.ant-menu-holidayHead {
+      background: none;
+      color: #fff;
+      line-height: 36px;
+      font-size: 16px;
+      margin-top: 22px;
+      border: none;
+      .ant-menu-item {
+        border-radius: 18px;
+        border: none;
+        &:hover {
+          border: none;
+          color: #fff;
+        }
+      }
+      .ant-menu-item-selected{
+        border: none;
+        background-color: #85040c;
+        color: #fff;
+        &:hover {
+          background-color: #85040c;
+        }
+      }
+    }
+  }
+}
+:global{
+  .ant-layout-footer .holidayMainFooter{
+    background: #faf6eb;
+    color: #d49962;
+    li{
+      border-color: #d49962!important;
+      a{
+        color: #d49962!important;
+      }
+    }
+  }
+}
+
+.mainContentBg{
+  background: linear-gradient(180deg, #faf4e6 0%, #fff 100%);
+  .skinPadding{
+    padding: 16px 30px;
+    border-radius: 8px;
+    width: 1260px;
+    background: rgba(255,255,255,.4);
+    z-index: 9;
+    position: relative;
+  }
+  .c-banner{
+    position: absolute;
+    top: 81px;
+    width: 390px;
+    height: 814px;
+  }
+  .lBanner{
+    left: 0;
+    background: url("../assets/skin/main-content-l.png") left top no-repeat;
+  }
+  .rBanner{
+    right: 0;
+    background: url("../assets/skin/main-content-r.png") right -4px no-repeat;
+  }
+}

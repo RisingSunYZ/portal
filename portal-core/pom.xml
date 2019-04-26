@@ -15,6 +15,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dubbo-spring-boot>0.2.0</dubbo-spring-boot>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <dubbo-version>2.7.0</dubbo-version>
+        <curator-version>4.1.0</curator-version>
+        <zookeeper-version>3.4.9</zookeeper-version>
+        <druid-version>1.1.10</druid-version>
         <start-class>com.dragon.portal.main.PortalApplication</start-class>
     </properties>
     <dependencies>
@@ -85,23 +90,93 @@
             <artifactId>portal-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <!-- DUBBO 配置  -->
         <dependency>
-            <groupId>com.alibaba.boot</groupId>
+            <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>0.2.0</version>
+            <version>${dubbo-version}</version>
         </dependency>
         <dependency>
-            <groupId>com.101tec</groupId>
-            <artifactId>zkclient</artifactId>
-            <version>0.4</version>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-actuator</artifactId>
+            <version>${dubbo-version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>${dubbo-version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>${curator-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>${curator-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>${zookeeper-version}</version>
+        </dependency>
+
+        <!-- 生成二维码 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <!-- 条形码 -->
+        <dependency>
+            <groupId>net.sf.barcode4j</groupId>
+            <artifactId>barcode4j-light</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <!-- 图片缩略图 -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
+        </dependency>
+
         <!-- rabbitmq 配置 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
-        <!-- mongodb 配置 -->
+        <!-- springboot整合redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.ys</groupId>
             <artifactId>mqpms-api</artifactId>
@@ -130,12 +205,12 @@
             <groupId>com.ys</groupId>
             <artifactId>mis-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-           <!-- <exclusions>
-                <exclusion>
-                    <groupId>com.ys</groupId>
-                    <artifactId>base-tools</artifactId>
-                </exclusion>
-            </exclusions>-->
+            <!-- <exclusions>
+                 <exclusion>
+                     <groupId>com.ys</groupId>
+                     <artifactId>base-tools</artifactId>
+                 </exclusion>
+             </exclusions>-->
         </dependency>
         <!-- 数据源配置 -->
         <dependency>
@@ -143,9 +218,56 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.1.10</version>
         </dependency>
+        <!-- 短信配置 -->
+        <dependency>
+            <groupId>com.mhome</groupId>
+            <artifactId>se-api</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
+        <!-- Exchange Start -->
+        <dependency>
+            <groupId>com.microsoft.ews-java-api</groupId>
+            <artifactId>ews-java-api</artifactId>
+            <version>2.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>httpclient</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>httpcore</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
+        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.htmlparser</groupId>-->
+        <!--<artifactId>htmlparser</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>com.ys</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ys</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.9.1</version>
+        </dependency>
+        <!-- Exchange End -->
     </dependencies>
     <build>
-        <finalName>flow-core</finalName>
+        <finalName>portal-core</finalName>
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/java</directory>
