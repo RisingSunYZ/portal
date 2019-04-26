@@ -7,7 +7,11 @@ import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
+import com.dragon.tools.common.FileUtils;
 import com.dragon.tools.common.ReturnCode;
+import com.dragon.tools.common.UUIDGenerator;
+import com.dragon.tools.ftp.FtpTools;
+import com.dragon.tools.ftp.UploadUtils;
 import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
@@ -29,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,6 +73,8 @@ public class NewsIndexController extends BaseController {
 	private INewsSignRecordService newsSignRecordService;
 	@Autowired
     private INewsCommentService newsCommentService;
+    @Autowired
+    private FtpTools ftpTools;
 
 	/**
 	 * 获取新闻资讯列表
@@ -274,6 +281,46 @@ public class NewsIndexController extends BaseController {
         }
         return returnVo;
     }
+
+    /**
+     * 上传图片
+     */
+    @PostMapping("/uploadFile")
+    @ApiOperation("新闻资讯-员工风采-我要秀  上传图片")
+    @ApiImplicitParams({})
+    public ReturnVo uploadFile(@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response,
+                               MultipartFile file, String filePath, Integer canDown, String noticeId, Integer sortNo) {
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "上传失败!" );
+        try {
+            UserSessionInfo userSessionInfo = getUserSessionInfo( request, response );
+            filePath = StringUtils.isBlank( filePath ) ? "p" : filePath;
+
+            // FTP上传文件
+            String fileExtension = UploadUtils.getExtension( file.getOriginalFilename() );
+            String fileName = UUIDGenerator.generate() + "." + fileExtension;
+            String path = "/" + filePath + FileUtils.getDateFmtFilePath() + "/";
+            Boolean result = ftpTools.uploadFile( file.getInputStream(), fileName, path );
+            String destFilePath = path + fileName;
+            NewsFile newsFile = new NewsFile();
+            newsFile.setCreator( userSessionInfo.getNo() );
+            newsFile.setFileName( file.getOriginalFilename() );
+            newsFile.setFileType( 5 );
+            newsFile.setRefId( noticeId );
+            newsFile.setCanDown( canDown );
+            newsFile.setFileSize( (int) file.getSize() / 1000 );
+            newsFile.setFilePath( destFilePath );
+            newsFile.setSortNo( sortNo );
+            this.newsFileService.insertNewsFile( newsFile );
+            if (result) {
+                returnVo = new ReturnVo( ReturnCode.SUCCESS, "上传成功!", destFilePath );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error( "NewsIndexController-uploadFile:" + e.getMessage() );
+        }
+        return returnVo;
+    }
+
 
 
     /**
