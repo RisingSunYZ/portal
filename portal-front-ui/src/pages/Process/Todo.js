@@ -66,10 +66,6 @@ class TodoList extends PureComponent {
         payload: values,
       });
     });
-
-    // dispatch({
-    //   type: 'process/fetchAllSystems',
-    // });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -146,11 +142,6 @@ class TodoList extends PureComponent {
         payload: values,
       });
     });
-
-    //获取待办数量
-    // dispatch({
-    //   type: 'process/getTodoCount',
-    // });
   };
 
   renderSimpleForm() {
@@ -185,18 +176,6 @@ class TodoList extends PureComponent {
                   })(<RangePicker format={dateFormat} />)}
                 </FormItem>
               </Col>
-              {/*<Col span={8}>*/}
-                {/*<FormItem label="所属系统" {...formItemLayout}>*/}
-                  {/*{getFieldDecorator(`systemSn`, {*/}
-                    {/*rules: [*/}
-                      {/*{*/}
-                        {/*required: false,*/}
-                        {/*message: '请选择系统!',*/}
-                      {/*},*/}
-                    {/*],*/}
-                  {/*})(<Select placeholder="请选择系统">{systemOpts}</Select>)}*/}
-                {/*</FormItem>*/}
-              {/*</Col>*/}
               <Col span={10}>
                 <FormItem label="关键字" {...formItemLayout}>
                   {getFieldDecorator(`keyWords`, {
@@ -321,6 +300,7 @@ class TodoList extends PureComponent {
         dataIndex: 'processStatusName',
         width: 60,
         key: 'processStatusName',
+        align: 'center',
         render: text => (
           <Tag style={{ width: 60, textAlign: 'center' }} color="volcano">
             {text}
@@ -349,6 +329,7 @@ class TodoList extends PureComponent {
       {
         title: '提交时间',
         sorter: true,
+        align: 'center',
         dataIndex: 'startTime',
         width: 165,
         key: 'startTime',

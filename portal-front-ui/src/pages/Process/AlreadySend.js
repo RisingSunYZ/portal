@@ -7,6 +7,7 @@ import ProcessTable from '@/components/StandardTable/ProcessTable';
 
 import processStyles from './Process.less';
 import {genProcessViewUrl, genSearchDateBox, getFormType} from '../../utils/utils';
+
 const Search = Input.Search;
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -59,10 +60,6 @@ export default class TableList extends PureComponent {
         payload: values,
       });
     });
-
-    // dispatch({
-    //   type: 'process/fetchAllSystems',
-    // });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -203,18 +200,6 @@ export default class TableList extends PureComponent {
                   })(<RangePicker format={dateFormat} />)}
                 </FormItem>
               </Col>
-              {/*<Col span={8}>*/}
-                {/*<FormItem label="所属系统" {...formItemLayout}>*/}
-                  {/*{getFieldDecorator(`systemSn`, {*/}
-                    {/*rules: [*/}
-                      {/*{*/}
-                        {/*required: false,*/}
-                        {/*message: 'Input something!',*/}
-                      {/*},*/}
-                    {/*],*/}
-                  {/*})(<Select placeholder="请选择系统">{systemOpts}</Select>)}*/}
-                {/*</FormItem>*/}
-              {/*</Col>*/}
               <Col span={8}>
                 <FormItem label="状态" {...formItemLayout}>
                   {getFieldDecorator(`processStatus`, {
@@ -232,6 +217,7 @@ export default class TableList extends PureComponent {
                       <option value="CH">撤回</option>
                       <option value="ZC">暂存</option>
                       <option value="JQ">加签</option>
+                      <option value="ZB">转办</option>
                       <option value="BJ">办结</option>
                       <option value="ZZ">终止</option>
                     </Select>
@@ -330,14 +316,15 @@ export default class TableList extends PureComponent {
         title: '状态',
         dataIndex: 'processStatusName',
         width: 80,
+        align: 'center',
         key: 'processStatusName',
         render: text =>
           text === '办结' || text === '终止' ? (
-            <Tag style={{ width: 50, textAlign: 'center' }} color="green">
+            <Tag style={{ width: 60, textAlign: 'center' }} color="green">
               {text}
             </Tag>
           ) : (
-            <Tag style={{ width: 50, textAlign: 'center' }} color="volcano">
+            <Tag style={{ width: 60, textAlign: 'center' }} color="volcano">
               {text}
             </Tag>
           ),
@@ -352,6 +339,7 @@ export default class TableList extends PureComponent {
         title: '待办人',
         dataIndex: 'approver',
         width: 120,
+        className: 'morePerson',
         key: 'approver',
       },
       {
@@ -359,6 +347,7 @@ export default class TableList extends PureComponent {
         sorter: true,
         dataIndex: 'startTime',
         width: 165,
+        align: 'center',
         key: 'startTime',
       },
       {

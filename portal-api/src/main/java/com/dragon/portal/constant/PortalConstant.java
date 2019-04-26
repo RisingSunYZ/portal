@@ -12,7 +12,10 @@ public class PortalConstant {
     public static final Integer DEL_FLAG = 0;
     public static final Integer NO_DELETE_FLAG = 1;
 
-
+    /**
+     * 流程表单参数无值的情况
+     */
+    public static final String PROCESS_FORM_PARAM_NO_VALUE = "0";
 
     /**
      * 用户Cookie相关的key

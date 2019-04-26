@@ -36,11 +36,24 @@ export default class ProcessFormPrint extends React.Component {
 
   // 获取父页面的样式和脚本
   loadScript= () =>{
+    const iframe = document.getElementById('formData');
+    let baseUrl = iframe.getAttribute('src');
+    if(baseUrl && typeof baseUrl != 'undefined'){
+      var indexCustmForm = baseUrl.indexOf('page');
+      if(indexCustmForm != -1){
+        baseUrl = baseUrl.substr(0,indexCustmForm)
+      }
+    }
+
+
     // 获取父页面里面的表单内容对象
     var links = [];
-    var styles = []
+    var urls = [];
     $.each($($("#formData").contents()).find('link'), function(i, o){
-      links.push(o.outerHTML);
+      urls.push(o.href);
+    });
+    $.each(urls, function(i, o){
+      links.push('<link rel="stylesheet" href="'+o+'">');
     });
     $.each($($("#formData").contents()).find('style'), function(i, o){
       var newStyle = document.createElement('style');
@@ -112,7 +125,7 @@ export default class ProcessFormPrint extends React.Component {
       $("#formDataDiv").append(fMainCttObj);
       window.print();
       window.location.reload(); //重新渲染当前页面html元素
-    }, 1500); //坑吐血系列。。。。 不加定时器iframe没有渲染完毕 打印是空白 我的天啊！！！
+    }, 1500);
   };
 
   closePrint = () => {

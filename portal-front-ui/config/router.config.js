@@ -58,6 +58,11 @@ export default [
         routes: [
           // exception
           {
+            path: '/exception/401',
+            name: 'not-login',
+            component: './Exception/401',
+          },
+          {
             path: '/exception/403',
             name: 'not-permission',
             component: './Exception/403',

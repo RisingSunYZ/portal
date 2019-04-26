@@ -18,6 +18,9 @@ export default class Success extends React.Component {
 
   componentDidMount() {
      const _this = this;
+
+     window.opener?window.opener.location.reload():null;
+
      this.tId = setInterval(function(){
        _this.setState({
         seconds: _this.state.seconds-1,
@@ -31,8 +34,12 @@ export default class Success extends React.Component {
       const isSubmit = match.params.isSubmit;
       clearInterval(this.tId);
 
-      const href = window.opener?(isSubmit==1?'/process/list/already-send':window.opener.location.href):"/process/list/already-send";
-      router.push(href);
+      const href = window.opener?(isSubmit==1?'/eip/process/list/already-send':window.opener.location.href):"/eip/process/list/already-send";
+      if(href.search('/eip') !== -1 ){
+        router.push( href.split("eip")[1] );
+      }else{
+        window.opener?window.close():location.href = href;
+      }
 
     }
   }

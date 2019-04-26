@@ -41,16 +41,15 @@ import net.sf.json.JsonConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -65,9 +64,9 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/rest/process/list")
-@Api(value="流程中心-列表操作", description = "流程中心-列表操作", tags={"流程中心-列表操作 /rest/process/list"})
+@Api(value="流程中心-列表操作", tags={"流程中心-列表操作 /rest/process/list"})
 public class ProcessListController extends BaseController {
-    private static Logger logger = Logger.getLogger(ProcessListController.class);
+    private static Logger logger = LoggerFactory.getLogger(ProcessListController.class);
 
     @Autowired
     private IFlowApi flowApi;
@@ -81,7 +80,25 @@ public class ProcessListController extends BaseController {
     IAreaApi areaApi;
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * 格式化时间为XX天XX小时 301天1小时
+     * @param finishedTime
+     * @param startTime
+     * @return
+     */
+    private String formatTotalTime(Date finishedTime, Date startTime){
+        StringBuffer sbf = new StringBuffer();
+        Date date = finishedTime != null?finishedTime:new Date();
 
+        long hour = (date.getTime()-startTime.getTime())/(60*60*1000);
+        long minite = (date.getTime()-startTime.getTime() - hour*60*60*1000)/(1000);
+        if(hour != 0){
+            sbf.append(String.valueOf(hour/24)).append("天").append(String.valueOf(hour%24)).append("小时");
+        }else{
+            sbf.append(String.valueOf(minite/60)).append("分钟").append(String.valueOf(minite%60)).append("秒");
+        }
+        return sbf.toString();
+    }
 
     /**
      * 查询待办事项未办理
@@ -89,9 +106,9 @@ public class ProcessListController extends BaseController {
     @GetMapping("/queryTodo")
     @ApiOperation("查询待办事项未办理")
     @ApiImplicitParams({})
-    public ReturnVo queryTodo(String sort, String page, Integer rows, String order, Query query, TaskQueryParamsVo param,
-                                         @ApiIgnore HttpServletRequest request,
-                                         @ApiIgnore HttpServletResponse response) {
+    public ReturnVo queryTodo(String page, Integer rows, Query query, TaskQueryParamsVo param,
+                              @ApiIgnore HttpServletRequest request,
+                              @ApiIgnore HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
         try {
             PagerModel<TaskVo> pm = new PagerModel<TaskVo>();
@@ -111,38 +128,12 @@ public class ProcessListController extends BaseController {
                                 long hour = (date.getTime() - task.getCreateTime().getTime())/(60*60*1000);
                                 task.setStayHour(String.valueOf(hour));
                             }
-
-                            StringBuffer sbf=new StringBuffer("");
-                            if(task.getFinishedTime() != null){
-                                long hour = (task.getFinishedTime().getTime()-task.getStartTime().getTime())/(60*60*1000);
-                                long minite = (task.getFinishedTime().getTime()-task.getStartTime().getTime()-hour*60*60*1000)/(1000);
-                                if(hour != 0){
-                                    sbf.append(String.valueOf(hour/24)).append("天").append(String.valueOf(hour%24)).append("小时");
-                                }else{
-                                    sbf.append(String.valueOf(minite/60)).append("分钟").append(String.valueOf(minite%60)).append("秒");
-                                }
-                            }else{
-                                long hour = (date.getTime()-task.getStartTime().getTime())/(60*60*1000);
-                                long minite = (date.getTime()-task.getStartTime().getTime() - hour*60*60*1000)/(1000);
-                                if(hour != 0){
-                                    sbf.append(String.valueOf(hour/24)).append("天").append(String.valueOf(hour%24)).append("小时");
-                                }else{
-                                    sbf.append(String.valueOf(minite/60)).append("分钟").append(String.valueOf(minite%60)).append("秒");
-                                }
-                            }
-                            task.setTotalTime(sbf.toString());
+                            String sbf = formatTotalTime(task.getFinishedTime(), task.getStartTime());
+                            task.setTotalTime(sbf);
                         }
                     }
-
                 }
-                Map<String, Object> maps = new HashMap<>();
-                maps.put("list", pm.getRows());
-
-                Map<String, Object> pageMap = new HashMap<>();
-                pageMap.put("current",query.getPageIndex() - 1);
-                pageMap.put("pageSize", query.getPageSize());
-                pageMap.put("total", pm.getTotal());
-                maps.put("pagination", pageMap);
+                Map<String, Object> maps = genPager(pm, query);
                 returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询用户系统菜单成功！", maps );
             }else {
                 // 用户未登录
@@ -181,13 +172,13 @@ public class ProcessListController extends BaseController {
     }
 
     /**
-     * 查询待办事项已办理
+     * 查询流程-已办数据
      */
     @GetMapping("/queryAlreadyDo")
-    @ApiOperation("查询待办事项未办理")
+    @ApiOperation("查询流程-已办数据")
     @ApiImplicitParams({})
-    public ReturnVo queryAlreadyDo(String sort, String page , Integer rows, String order, Query query, QueryTaskVo param,
-                                              @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
+    public ReturnVo queryAlreadyDo(String page , Integer rows, Query query, QueryTaskVo param,
+                                   @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
         try {
             PagerModel<SearchTaskVo> pm = new PagerModel<SearchTaskVo>();
@@ -207,14 +198,7 @@ public class ProcessListController extends BaseController {
                         task.setStartTime(getProcessTime(task.getProcInstStartTime(),task.getProcInstEndTime()));
                     }
                 }
-                Map<String, Object> maps = new HashMap<>();
-                maps.put("list", pm.getRows());
-
-                Map<String, Object> pageMap = new HashMap<>();
-                pageMap.put("current",query.getPageIndex()-1);
-                pageMap.put("pageSize", query.getPageSize());
-                pageMap.put("total", pm.getTotal());
-                maps.put("pagination", pageMap);
+                Map<String, Object> maps = genPager(pm, query);
                 returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功！", maps );
             }else {
                 // 用户未登录
@@ -252,7 +236,7 @@ public class ProcessListController extends BaseController {
     @GetMapping("/getAlreadySend")
     @ApiOperation("查询我的已发起流程")
     @ApiImplicitParams({})
-    public ReturnVo getAlreadySend(String sort,String page,Integer rows, String order, Query query,
+    public ReturnVo getAlreadySend(String page,Integer rows, Query query,
                                    QueryTaskVo param, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
         try {
@@ -272,18 +256,11 @@ public class ProcessListController extends BaseController {
                             task.setStartTime(task.getStartTime().substring(0, index));
                         }
                         if(StringUtils.isNotBlank(task.getProcessStatus())){
-                            task.setStatus( ProcessStatusEnum.getEnumMsgByType(task.getProcessStatus()));
+                            task.setStatus(ProcessStatusEnum.getEnumMsgByType(task.getProcessStatus()));
                         }
                     }
                 }
-                Map<String, Object> maps = new HashMap<>();
-                maps.put("list", pm.getRows());
-
-                Map<String, Object> pageMap = new HashMap<>();
-                pageMap.put("current", query.getPageIndex()-1);
-                pageMap.put("pageSize", query.getPageSize());
-                pageMap.put("total", pm.getTotal());
-                maps.put("pagination", pageMap);
+                Map<String, Object> maps = genPager(pm, query);
                 returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功！", maps );
             }else {
                 // 用户未登录
@@ -297,15 +274,14 @@ public class ProcessListController extends BaseController {
     }
 
 
-
-    /*
-    *
-     * @Author yangzhao
-     * @Description //TODO 获取草稿数量
-     * @Date 11:24 2019/3/13
-     * @Param [formDraft, query, request, response]
-     * @return com.dragon.tools.vo.ReturnVo
-     **/
+    /**
+     * 获取草稿数量
+     * @param formDraft
+     * @param query
+     * @param request
+     * @param response
+     * @return
+     */
     @GetMapping("/ajaxListMyDraftCount")
     @ApiOperation("获取草稿数量")
     public ReturnVo ajaxListMyDraftCount(@ApiIgnore FormDraft formDraft,@ApiIgnore Query query, @ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
@@ -314,7 +290,7 @@ public class ProcessListController extends BaseController {
             UserSessionInfo user=getUserSessionInfo(request,response);
             if (null != user){
                 formDraft.setCreator(user.getNo());
-                formDraft.setStatus( FormDraftStatusEnum.CG.getStatus());
+                formDraft.setStatus(FormDraftStatusEnum.CG.getStatus());
                 ReturnVo<PagerModel<FormDraft>> vo = flowApi.getFormDraftPagerModel(formDraft,query);
                 if (null != vo && FlowConstant.SUCCESS.equals(vo.getCode()) &&null != vo.getData()){
                     returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询草稿数量成功！", vo.getData().getTotal() );
@@ -331,6 +307,14 @@ public class ProcessListController extends BaseController {
         }
         return returnVo;
     }
+
+    /**
+     * 删除草稿
+     * @param map
+     * @param request
+     * @param response
+     * @return
+     */
     @ApiOperation("删除草稿")
     @RequestMapping(value = "/delDraft",method = RequestMethod.POST)
     public ReturnVo<Map<String, Object>> delDraft( @RequestBody @ApiParam(value = "流程参数对象") Map<String,String> map, HttpServletRequest request, HttpServletResponse response) {
@@ -340,6 +324,7 @@ public class ProcessListController extends BaseController {
                 ReturnVo<String> vo=flowApi.updateFormDraftStatus(map.get("businessKey"), FormDraftStatusEnum.SC.getStatus());
                 if(FlowConstant.SUCCESS.equals(vo.getCode())){
                     Query query=new Query();
+                    query.setPageSize(PortalConstant.MAX_PAGE_SIZE);
                     Map<String, Object> maps = getMyDraft(query,null,null, new FormDraft(), request, response);
                     returnVo = new ReturnVo<Map<String, Object>>(FlowConstant.SUCCESS, "删除成功");
                     returnVo.setData(maps);
@@ -353,14 +338,17 @@ public class ProcessListController extends BaseController {
         return returnVo;
     }
 
-    /*
-    *
-     * @Author yangzhao
-     * @Description //TODO 表单模板目录
-     * @Date 13:05 2019/3/13
-     * @Param [model, wfCategoryVo, request, response]
-     * @return java.lang.String
-     **/
+    /**
+     * 表单模板目录
+     * @param modelVo
+     * @param name
+     * @param rows
+     * @param query
+     * @param page
+     * @param request
+     * @param response
+     * @return
+     */
     @ApiOperation("表单模板列表")
     @GetMapping("/ajaxListModel")
     @ApiImplicitParams({
@@ -390,6 +378,11 @@ public class ProcessListController extends BaseController {
         return JsonUtils.toJson(pm.getRows());
     }
 
+    /**
+     * 获取表单模板目录
+     * @param wfCategoryVo
+     * @return
+     */
     @GetMapping("/ajaxListWfCategory")
     @ApiOperation("获取表单模板目录")
     public ReturnVo ajaxListWfCategory(@ApiIgnore FlowCategory wfCategoryVo) {
@@ -417,23 +410,11 @@ public class ProcessListController extends BaseController {
         return returnVo;
     }
 
-    /*
-    *
-     * @Author yangzhao
-     * @Description //TODO 表单模板列表
-     * @Date 13:23 2019/3/13
-     * @Param [model, modelVo, name, rows, query, page, request, response]
-     * @return java.lang.String
-     **/
-
-    /*
-    *
-     * @Author yangzhao
-     * @Description //TODO 递归方法
-     * @Date 13:23 2019/3/13
-     * @Param [pid, parent]
-     * @return void
-     **/
+    /**
+     * 递归方法
+     * @param pid
+     * @param parent
+     */
     private void getChildren(String pid,WfCategoryTree parent){
         FlowCategory wfCategory = new FlowCategory();
         wfCategory.setPid(pid);
@@ -457,14 +438,16 @@ public class ProcessListController extends BaseController {
 
     }
 
-    /*
-    *
-     * @Author yangzhao
-     * @Description //TODO 获取我的草稿
-     * @Date 13:26 2019/3/13
-     * @Param [query, page, rows, formDraft, request, response]
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     **/
+    /**
+     * 获取我的草稿
+     * @param query
+     * @param page
+     * @param rows
+     * @param formDraft
+     * @param request
+     * @param response
+     * @return
+     */
     private Map<String, Object> getMyDraft(Query query,String page,Integer rows, FormDraft formDraft, HttpServletRequest request, HttpServletResponse response) {
         UserSessionInfo user=getUserSessionInfo(request,response);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
@@ -476,27 +459,31 @@ public class ProcessListController extends BaseController {
             try {
                 ReturnVo<PagerModel<FormDraft>> vo = flowApi.getFormDraftPagerModel(formDraft,query);
                 if(vo!=null && FlowConstant.SUCCESS.equals(vo.getCode()) && vo.getData()!=null){
-                    pm=vo.getData();
-                    for(FormDraft draft:pm.getRows()){
-                        if(draft.getStatus()!=null){
-                            for(FormDraftStatusEnum e : FormDraftStatusEnum.values()){
-                                if(e.getStatus()==draft.getStatus()){
-                                    draft.setStatusName(e.getName());
-                                }
-                            }
-                        }
+                    pm = vo.getData();
+                    pm.getRows().forEach(draft -> {
+                        draft.setStatusName(FormDraftStatusEnum.getNameByStatus(draft.getStatus()));
                         if(draft.getCreateTime()!=null){
                             draft.setCreateTimeStr(sdf.format(draft.getCreateTime()));
                         }
-                    }
+                    });
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.error("获取草稿数据异常！" +  e);
             }
         }
+        return genPager(pm, query);
+    }
+
+    /**
+     * 组装前端分页器
+     * @param pm
+     * @param query
+     * @return
+     */
+    public Map genPager(PagerModel pm, Query query){
         Map<String, Object> maps = new HashMap<>();
         maps.put("list", pm.getRows());
-
         Map<String, Object> pageMap = new HashMap<>();
         pageMap.put("current", query.getPageIndex()-1);
         pageMap.put("pageSize", query.getPageSize());
@@ -506,14 +493,12 @@ public class ProcessListController extends BaseController {
     }
 
 
-    /*
-    *
-     * @Author yangzhao
-     * @Description //TODO 查询是否有表单查询权限
-     * @Date 14:50 2019/3/15
-     * @Param [model, request, response]
-     * @return java.lang.String
-     **/
+    /**
+     * 查询是否有表单查询权限
+     * @param request
+     * @param response
+     * @return
+     */
     @ApiOperation("查询是否有表单查询权限")
     @GetMapping("/hasPermission")
     public ReturnVo hasPermission(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
@@ -524,6 +509,8 @@ public class ProcessListController extends BaseController {
                 vo = flowApi.hasAuthorization(user.getNo());
                 if(FlowConstant.SUCCESS.equals(vo.getCode())){
                     vo = new ReturnVo(ReturnCode.SUCCESS, "查询是否有表单查询权限成功",vo.getData());
+                }else{
+                    logger.error(vo.getMsg());
                 }
             }
         } catch (Exception e) {
@@ -547,37 +534,16 @@ public class ProcessListController extends BaseController {
     }
 
     /**
-     *
      * @param startTimeStr
      * @param endTimeStr
      * @return
      * @throws ParseException
      */
-    private String getProcessTime( String startTimeStr,String endTimeStr) throws ParseException {
-        Date date=new Date();
-        StringBuffer sbf=new StringBuffer("");
+    private String getProcessTime( String startTimeStr, String endTimeStr) throws ParseException {
         startTimeStr=startTimeStr.substring(0,startTimeStr.length()-2);
         Date startTime=sdf.parse(startTimeStr);
-        if(StringUtils.isNotBlank(endTimeStr)){
-            endTimeStr=endTimeStr.substring(0,endTimeStr.length()-2);
-            Date endTime=sdf.parse(endTimeStr);
-            long hour=(endTime.getTime()-startTime.getTime())/(60*60*1000);
-            long minite=(endTime.getTime()-startTime.getTime()-hour*60*60*1000)/(1000);
-            if(hour!=0){
-                sbf.append(String.valueOf(hour/24)).append("天").append(String.valueOf(hour%24)).append("小时");
-            }else{
-                sbf.append(String.valueOf(minite/60)).append("分钟").append(String.valueOf(minite%60)).append("秒");
-            }
-        }else{
-            long hour=(date.getTime()-startTime.getTime())/(60*60*1000);
-            long minite=(date.getTime()-startTime.getTime()-hour*60*60*1000)/(1000);
-            if(hour!=0){
-                sbf.append(String.valueOf(hour/24)).append("天").append(String.valueOf(hour%24)).append("小时");
-            }else{
-                sbf.append(String.valueOf(minite/60)).append("分钟").append(String.valueOf(minite%60)).append("秒");
-            }
-        }
-        return sbf.toString();
+        Date endTime = StringUtils.isNotBlank(endTimeStr)?sdf.parse(endTimeStr.substring(0,endTimeStr.length()-2)):null;
+        return formatTotalTime(endTime, startTime);
     }
 
     /**
@@ -592,7 +558,6 @@ public class ProcessListController extends BaseController {
     })
     @RequestMapping(value="/getWfCategoryByUser",method = RequestMethod.GET)
     public ReturnVo getWfCategoryByUser(String keyword, @Ignore HttpServletRequest request, @Ignore HttpServletResponse response) {
-        List<FlowCategory> list=new ArrayList<FlowCategory>();
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
         //增加一个树结构的list
         List<WfCategoryTree> listTree = new ArrayList<WfCategoryTree>();
@@ -601,18 +566,18 @@ public class ProcessListController extends BaseController {
             if(user!=null && StringUtils.isNotBlank(user.getNo())){
                 ReturnVo<LinkedHashSet<FlowCategory>> vo=flowApi.getProcessListByUser(user.getNo(), keyword);
                 if(vo!=null && FlowConstant.SUCCESS.equals(vo.getCode()) && CollectionUtils.isNotEmpty(vo.getData())){
-                    list=new ArrayList<FlowCategory>(vo.getData());
-                    for(FlowCategory wfCategoryVo:list){
-                        //查找出pid为空的数据
-                        if(StringUtils.isBlank(wfCategoryVo.getPid())){
+                    List<FlowCategory> list = new ArrayList<FlowCategory>(vo.getData());
+                    //查找出pid为空的数据
+                    list.forEach(item->{
+                        if(StringUtils.isBlank(item.getPid())){
                             //将数据封装成树结构的数据
-                            WfCategoryTree wfCategoryTree = new WfCategoryTree(wfCategoryVo.getId(),wfCategoryVo.getName(),wfCategoryVo.getPid(),wfCategoryVo.getCode());
+                            WfCategoryTree wfCategoryTree = new WfCategoryTree(item.getId(),item.getName(),item.getPid(),item.getCode());
                             //用递归方法查找出下级，下下级的数据
-                            getTreeChildren(wfCategoryVo.getId(),wfCategoryTree,list);
+                            getTreeChildren(item.getId(),wfCategoryTree, list);
                             //加入到树结构的list中
                             listTree.add(wfCategoryTree);
                         }
-                    }
+                    });
                 }
             }
             returnVo=new ReturnVo(ReturnCode.SUCCESS,"查询成功",listTree);
@@ -627,22 +592,21 @@ public class ProcessListController extends BaseController {
     private void getTreeChildren(String pid,WfCategoryTree parent,List<FlowCategory> wfCategoryVoList){
         //创建子类的树结构list
         List<WfCategoryTree> list = new ArrayList<WfCategoryTree>();
-        if(wfCategoryVoList.size()>0){
+        if(CollectionUtils.isNotEmpty(wfCategoryVoList)){
             //循环总的list(这样省略了查询数据库)
-            for(FlowCategory vo : wfCategoryVoList){
-                //查到子类,将子类转化为树结构类型，再查找下级子类，加入到父类中
+            wfCategoryVoList.forEach(vo->{});
+            wfCategoryVoList.forEach(vo->{
                 if(pid.equals(vo.getPid())){
                     WfCategoryTree wfCategoryTree = new WfCategoryTree(vo.getId(),vo.getName(),vo.getPid(),vo.getCode());
                     getTreeChildren(vo.getId(),wfCategoryTree,wfCategoryVoList);
                     list.add(wfCategoryTree);
                 }
-            }
+            });
             parent.setChildren(list);
         }
-
     }
+
     /**
-     *
      * @param request
      * @return
      * @Description:表单查询结果
@@ -680,8 +644,6 @@ public class ProcessListController extends BaseController {
                         if(StringUtils.isNotBlank(value2)){
                             userNos.add(value2);
                         }
-                        //翻译审批类型
-
                     }
                     Map<String, com.dragon.flow.model.org.Department> deptMap=this.getDeptVoMapByNos(new ArrayList<String>(deptIds));
                     Map<String, com.dragon.flow.model.org.Company> comMap=this.getComVoMapByNos();
@@ -706,20 +668,22 @@ public class ProcessListController extends BaseController {
                     pm.setRows(pm.getData());
                 }
             }
-            Map<String, Object> maps = new HashMap<>();
-            maps.put("list", pm.getRows());
 
-            Map<String, Object> pageMap = new HashMap<>();
-            pageMap.put("current", query.getPageIndex()-1);
-            pageMap.put("pageSize", query.getPageSize());
-            pageMap.put("total", pm.getTotal());
-            maps.put("pagination", pageMap);
-            returnVo=new ReturnVo( ReturnCode.SUCCESS, "查询成功！", maps );
+            Map<String, Object> maps = genPager(pm, query);
+            returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功！", maps );
         } catch (Exception e) {
             logger.error("MyApplyController-getFormDesList:",e);
         }
         return returnVo;
     }
+
+    /**
+     * 导出流程模板
+     * @param modelVo
+     * @param request
+     * @param response
+     * @return
+     */
     @GetMapping("/exportProcessModel")
     @ApiOperation("导出流程模板")
     public String exportProcessModel(ModelVo modelVo,HttpServletRequest request, HttpServletResponse response){
@@ -774,6 +738,7 @@ public class ProcessListController extends BaseController {
                     // 把字体应用到当前的样式
                     style2.setFont(font2);
                     String[] titles=new String[]{"所属系统","应用范围","流程目录","流程模板名称","流程模板所属单位","流程模板归属部门","流程owner","流程BP"};
+
                     for (int i=0;i<titles.length;i++){
                         sheet.setDefaultColumnStyle(i,style2);
                         sheet.setColumnWidth(i,6000);
@@ -812,7 +777,6 @@ public class ProcessListController extends BaseController {
                     //第三行
                     HSSFRow row= sheet.createRow(2);
                     row.setHeight((short)600);
-
                     for (int i = 0; i < titles.length; i++) {
                         HSSFCell cell = row.createCell(i);
                         cell.setCellStyle(style);
@@ -872,16 +836,17 @@ public class ProcessListController extends BaseController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("导出流程模板", e);
         }
         return JsonUtils.toJson(returnVo);
     }
+
     /**
      * 导出表单查询结果
      * @param param
      * @param formName
      * @param response
      * @param request
-     * @param sessionId
      * @return
      */
     @GetMapping("/export2Excel")
@@ -1075,15 +1040,10 @@ public class ProcessListController extends BaseController {
                                     } else {
                                         if(itemCodeList.size()>0)
                                             item.put(key, itemCodeList.get(0));
-
-
                                     }
                                 }
                             }
-
                         }
-
-
                     }
                     Map<String, com.dragon.flow.model.org.Department> deptMap = this.getDeptVoMapByNos(deptIds);
                     Map<String, com.dragon.flow.model.org.Company> comMap = this.getComVoMapByNos();
@@ -1383,9 +1343,7 @@ public class ProcessListController extends BaseController {
         try {
             List<com.dragon.flow.model.org.Department> list = flowApi.getDepartmentByIdList(ids);
             if(CollectionUtils.isNotEmpty(list)) {
-                for(com.dragon.flow.model.org.Department vo : list){
-                    dMap.put(vo.getId(), vo);
-                }
+                list.forEach(vo->dMap.put(vo.getId(), vo));
             }
         } catch (Exception e) {
             logger.error("调用部门主数据接口【flowApi.getDepartmentByIdsList(nos)】异常！" + e);
@@ -1399,8 +1357,8 @@ public class ProcessListController extends BaseController {
 
         try {
             List<UserVo> list = flowApi.getUserInfoByNoList(nos);
-            for(UserVo vo : list){
-                pMap.put(vo.getUserId(), vo);
+            if(CollectionUtils.isNotEmpty(list)){
+                list.forEach(vo->pMap.put(vo.getUserId(), vo));
             }
         } catch (Exception e) {
             logger.error("调用人员主数据接口【personnelApi.getPersonnelApiVoByNos(nos)】异常！" + e);
@@ -1414,8 +1372,8 @@ public class ProcessListController extends BaseController {
 
         try {
             List<com.dragon.flow.model.org.Company> list = flowApi.getCompanyAll(new com.dragon.flow.model.org.Company());
-            for(com.dragon.flow.model.org.Company vo : list){
-                cMap.put(vo.getId(), vo);
+            if(CollectionUtils.isNotEmpty(list)){
+                list.forEach(vo->cMap.put(vo.getId(), vo));
             }
         } catch (Exception e) {
             logger.error("调用公司主数据接口【orgApi.getAllCompany】异常！" + e);
@@ -1423,6 +1381,7 @@ public class ProcessListController extends BaseController {
         }
         return cMap;
     }
+
     @ApiIgnore
     private Map<String,List<Map<String, String>>> getDictMap(List<FormItem> list) {
         Map<String,List<Map<String, String>>> dictMap=new HashMap<String, List<Map<String,String>>>();
@@ -1435,6 +1394,7 @@ public class ProcessListController extends BaseController {
                     returnVo = flowApi.getDicItem(dictionaryitem);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    logger.error("获取数据字典接口异常！" + e);
                 }
                 if(null != returnVo && FlowConstant.SUCCESS.equals(returnVo.getCode())&& CollectionUtils.isNotEmpty(returnVo.getData())){
                     dictMap.put(formItem.getFieldName(), returnVo.getData());

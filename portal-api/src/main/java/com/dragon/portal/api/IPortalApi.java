@@ -1,5 +1,7 @@
 package com.dragon.portal.api;
 
+import com.dragon.tools.vo.ReturnVo;
+
 /**
  * @Description: 流程提供对外api接口
  * @Author: Bruce.liu
@@ -8,5 +10,6 @@ package com.dragon.portal.api;
  */
 public interface IPortalApi {
 
+    public ReturnVo testPortalApi();
 
 }

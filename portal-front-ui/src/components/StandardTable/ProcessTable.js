@@ -19,22 +19,9 @@ class ProcessTable extends PureComponent {
     const needTotalList = initTotalList(columns);
 
     this.state = {
-      // selectedRowKeys: [],
-      needTotalList,
+      needTotalList
     };
   }
-
-  // static getDerivedStateFromProps(nextProps) {
-  //   // clean state
-  //   if (nextProps.selectedRows.length === 0) {
-  //     const needTotalList = initTotalList(nextProps.columns);
-  //     return {
-  //       selectedRowKeys: [],
-  //       needTotalList,
-  //     };
-  //   }
-  //   return null;
-  // }
 
   handleRowSelectChange = (selectedRowKeys, selectedRows) => {
     let { needTotalList } = this.state;
@@ -78,7 +65,7 @@ class ProcessTable extends PureComponent {
         {notShowAlert?(<span></span>):(<div className={styles.tableAlert}><Alert
           message={
             <Fragment>
-              共筛选<a style={{ fontWeight: 600 }}>{pagination.total}</a>条符合条件的事项。
+              共筛选<a style={{ fontWeight: 600 }}>{pagination.total}</a>条符合条件的数据。
             </Fragment>
           }
           type="info"

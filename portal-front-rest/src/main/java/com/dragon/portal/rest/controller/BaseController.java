@@ -54,10 +54,7 @@ public class BaseController {
      * @return
      */
     public UserSessionInfo getLoginUser(HttpServletRequest request, HttpServletResponse response){
-        UserSessionInfo userSessionInfo = new UserSessionInfo();
-        userSessionInfo.setName("admin");
-        userSessionInfo.setNo("00004907");
-        return userSessionInfo;
+        return getUserSessionInfo(request, response);
     }
 
     //FIXME 用户登录接口暂未完成，完成后需用注释部分

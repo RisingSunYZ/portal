@@ -1,11 +1,32 @@
-import React, { Component } from 'react';
-import classNames from 'classnames';
-import { Modal, Tabs } from 'antd';
+import React, {  PureComponent, Fragment } from 'react';
+import { connect } from 'dva/index';
+import { Row, Col, Card,Modal,Tabs, Form, Input, Select, Button, DatePicker, Badge, Tag, Tooltip,message } from 'antd';
 import Link from "umi/link";
 import ProcessTable from '@/components/StandardTable/ProcessTable';
-import { connect } from 'dva/index';
 import styles from './index.less';
 import { getFormType, nullToZero } from '@/utils/utils';
+import {genSearchDateBox} from "../../utils/utils";
+
+const Search = Input.Search;
+const FormItem = Form.Item;
+const Option = Select.Option;
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 6 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 18 },
+    sm: { span: 18 },
+  },
+};
+
+const dateFormat = 'YYYY-MM-DD';
 
 const TabPane = Tabs.TabPane;
 
@@ -13,10 +34,13 @@ const TabPane = Tabs.TabPane;
   process,
   loading: loading.models.process,
 }))
-class ProcessSelector extends Component {
+@Form.create()
+class ProcessSelector extends PureComponent {
   state = {
     visible: this.props.visible,
     selectedRows: [],
+    formValues:{},
+    currentTab:"queryTodo",
     disabled: true,
   };
 
@@ -25,29 +49,50 @@ class ProcessSelector extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch,form } = this.props;
   }
 
   handleSearch = e => {
-    e.preventDefault();
+    e && e.preventDefault();
+    this.search();
+  };
+
+  handleSearch2 = (val, e) => {
+    e && e.preventDefault();
+    this.search();
+  };
+  handleReset = () => {
+    this.props.form.resetFields();
+  };
+
+  search = () => {
     const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
-      if (err) return;
 
+      if (err) return;
       const values = {
         ...fieldsValue,
         updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        keyWords:fieldsValue.executionName,
       };
-
       this.setState({
         formValues: values,
       });
+      switch (this.state.currentTab) {
+        case 'queryTodo':
+          dispatch({type: 'process/queryTodo',payload: values,});
+          break;
+        case 'queryAlreadyDo':
+          dispatch({type: 'process/queryAlreadyDo',payload: values,});
+          break;
+        case 'queryAlreadySend':
+          dispatch({type: 'process/queryAlreadySend',payload: values,});
+          break;
+        default:
+          break;
+      }
 
-      dispatch({
-        type: 'process/queryTodo',
-        payload: values,
-      });
     });
   };
 
@@ -366,9 +411,67 @@ class ProcessSelector extends Component {
     });
   };
 
+  renderSimpleForm(){
+
+    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+    const RangePicker = DatePicker.RangePicker;
+
+    const {process: { systems }, loading} = this.props;
+
+    const systemOpts = systems.map(system => (
+      <Option key={system.sn ? system.sn : 'all'}>{system.name}</Option>
+    ));
+
+    const moments = genSearchDateBox();
+
+    return (
+      <Form className="ant-advanced-search-form" onSubmit={this.handleSearch}>
+        <Row>
+          <Col span={9}>
+            <FormItem label="提交日期" {...formItemLayout} style={{marginBottom:"8px"}}>
+              {getFieldDecorator(`date`, {
+                initialValue: moments,
+                rules: [
+                  {
+                    required: false,
+                  },
+                ],
+              })(<RangePicker format={dateFormat} />)}
+            </FormItem>
+          </Col>
+          <Col span={9}>
+            <FormItem label="关键字" {...formItemLayout} style={{marginBottom:"8px"}}>
+              {getFieldDecorator(`executionName`, {
+                initialValue: '',
+                rules: [
+                  {
+                    required: false,
+                  },
+                ],
+              })(<Search placeholder="标题/流程编号/提交人" onSearch={this.handleSearch2} />)}
+            </FormItem>
+          </Col>
+          <Col span={6}>
+            <FormItem style={{marginBottom:"8px",float:"right"}}>
+              <Button type="primary" htmlType="submit">
+                查询
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                {' '}
+                重置{' '}
+              </Button>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+    );
+  }
+
   changeTab =(key)=> {
 
     const { dispatch } = this.props;
+    this.setState({currentTab:key})
+    this.props.form.resetFields();
     //点击tab切换时禁用tab等数据加载完毕启用tab切换
     dispatch({type: 'process/disabledTab'});
     switch (key) {
@@ -396,16 +499,15 @@ class ProcessSelector extends Component {
         title: '序号',
         dataIndex: 'num',
         key: 'processInstanceId',
-        width: 60,
         render: (text, r, i) => <span>{i + 1}</span>,
+        width: 60,
       },
       {
         title: '状态',
         dataIndex: 'processStatusName',
         key: 'processStatusName',
-        width: 100,
+        width: 80,
       },
-
       {
         title: '流程标题',
         dataIndex: 'formName',
@@ -416,14 +518,14 @@ class ProcessSelector extends Component {
         title: '提交人',
         dataIndex: 'startPersonName',
         key: 'startPersonName',
-        width: 100,
+        width: 80,
       },
       {
         title: '提交时间',
         sorter: true,
         dataIndex: 'startTime',
         key: 'startTime',
-        width: 140,
+        width: 160,
       },
     ];
 
@@ -439,6 +541,7 @@ class ProcessSelector extends Component {
         title: '状态',
         dataIndex: 'processStatusName',
         key: 'processStatusName',
+        align: 'center',
         width: 100,
       },
       {
@@ -458,13 +561,13 @@ class ProcessSelector extends Component {
         sorter: true,
         dataIndex: 'endTime',
         key: 'endTime',
-        width: 140,
+        width: 160,
       },
       {
         title: '总耗时',
         dataIndex: 'startTime',
         key: 'startTime',
-        width: 100,
+        width: 120,
       },
       {
         title: '所属系统',
@@ -481,12 +584,14 @@ class ProcessSelector extends Component {
         key: 'procInstId',
         render: (text, r, i) => <span>{i + 1}</span>,
         width: 60,
+        align: 'center'
       },
       {
         title: '状态',
         dataIndex: 'processStatusName',
         key: 'processStatusName',
-        width: 100,
+        width: 80,
+        align:'center'
       },
       {
         title: '流程标题',
@@ -498,20 +603,23 @@ class ProcessSelector extends Component {
         title: '待办人',
         dataIndex: 'approver',
         key: 'approver',
-        width: 100,
+        width: 90,
+        align: 'center',
+        className:'morePerson',
       },
       {
         title: '提交时间',
         sorter: true,
         dataIndex: 'startTime',
         key: 'startTime',
-        width: 140,
+        align:'center',
+        width: 160,
       },
       {
         title: '流程耗时',
         dataIndex: 'endTime',
         key: 'endTime',
-        width: 100,
+        width: 120,
       },
       {
         title: '所属系统',
@@ -521,9 +629,11 @@ class ProcessSelector extends Component {
       },
     ];
     const rowSelection = {
+      selectedRows,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({selectedRows:selectedRows});
       },
+      // onChange: this.onSelectChange,
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User', // Column configuration not to be checked
         name: record.name,
@@ -545,15 +655,17 @@ class ProcessSelector extends Component {
         onCancel={this.handleCancel}
         cancelText=""
         bodyStyle={{ padding:'4px 24px 0' }}
-        zIndex={10000}
+        zIndex={1000}
       >
         <Tabs defaultActiveKey="queryTodo" onChange={this.changeTab.bind(this)}>
           <TabPane tab="未处理"  disabled={this.state.disabled} key="queryTodo">
-            <div style={{height:'500px'}} >
+            <div style={{height:'520px'}} >
+              <div>{this.renderSimpleForm()}</div>
               <ProcessTable
                 loading={loading}
                 data={data}
                 columns={columnsTodo}
+                rowKey="processInstanceId"
                 showPagination={true}
                 scroll={{y: 300 }}
                 rowSelection={rowSelection}
@@ -562,10 +674,12 @@ class ProcessSelector extends Component {
             </div>
           </TabPane>
           <TabPane tab="已处理" disabled={this.state.disabled} key="queryAlreadyDo">
-            <div style={{height:'500px'}}>
+            <div style={{height:'550px'}}>
+              <div>{this.renderSimpleForm()}</div>
               <ProcessTable
                 loading={loading}
                 data={data}
+                rowKey="taskId"
                 columns={columnsAlreadyDo}
                 showPagination={true}
                 scroll={{y: 300 }}
@@ -575,13 +689,15 @@ class ProcessSelector extends Component {
             </div>
           </TabPane>
           <TabPane tab="我发起的" disabled={this.state.disabled} key="queryAlreadySend">
-            <div style={{height:'500px'}}>
+            <div style={{height:'520px'}}>
+              <div>{this.renderSimpleForm()}</div>
               <ProcessTable
                 loading={loading}
                 data={data}
+                rowKey="procInstId"
                 columns={columnsAlreadySend}
                 showPagination={true}
-                scroll={{y: 300 }}
+                scroll={{ y: 300 }}
                 rowSelection={rowSelection}
                 onChange={this.handleStandardTableChangeToAlreadySend}
               />

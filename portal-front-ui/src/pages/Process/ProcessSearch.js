@@ -44,7 +44,7 @@ class ProcessSearch extends PureComponent {
     dispatch({
       type: 'process/queryList',
       payload: {
-        list: [],
+        data: [],
         pagination: {},
       },
     });
@@ -53,7 +53,7 @@ class ProcessSearch extends PureComponent {
   selectNode(selectedKeys, e) {
     this.props.form.validateFields((err, fieldsValue) => {
        if (err) return;
-       if( Array.isArray( fieldsValue.creatorName ) ){
+       if( Array.isArray( fieldsValue.creatorName ) && fieldsValue.creatorName.length >0 ){
          const person = JSON.parse( JSON.stringify(fieldsValue.creatorName) );
          delete fieldsValue.creatorName ;// 删除属性
          fieldsValue['creatorName'] = person[0].name;
@@ -238,7 +238,7 @@ class ProcessSearch extends PureComponent {
           <Col span={20}>
             <Row gutter={24}>
               <Col span={8}>
-                <FormItem label="提交人" {...formItemLayout}>
+                <FormItem label="提交人" {...formItemLayout} className={processStyle.creatorName}>
                   {getFieldDecorator(`creatorName`, {
                     initialValue: [],
                     rules: [
@@ -356,10 +356,7 @@ class ProcessSearch extends PureComponent {
 
   render() {
     const { match, routerData } = this.props;
-    const {
-      process: { list, formData},
-      loading,
-    } = this.props;
+    const { process: { formData}, loading} = this.props;
     const columns = [
       {
         title: '序号',
@@ -377,10 +374,11 @@ class ProcessSearch extends PureComponent {
       {
         title: '状态',
         dataIndex: 'process_type',
-        width: 80,
+        width: 100,
+        align: 'center',
         key: 'process_type',
         render: text => (
-          <Tag style={{ width: 50, textAlign: 'center' }} color="volcano">
+          <Tag style={{ width: 60, textAlign: 'center' }} color="volcano">
             {text}
           </Tag>
         ),
@@ -389,6 +387,7 @@ class ProcessSearch extends PureComponent {
         title: '提交时间',
         dataIndex: 'launch_time',
         width: 120,
+        align: 'center',
         key: 'launch_time',
         render: time => <div>{time && time.slice(0, 10)}</div>,
       },

@@ -18,7 +18,7 @@ export default class PageHeader extends PureComponent {
   };
   changeFixHeight = (affixed) => {
     if (affixed) {
-      this.setState({height: "135px"})
+      this.setState({height: "85px"})
     } else {
       this.setState({height: "auto"})
     }
@@ -90,7 +90,6 @@ export default class PageHeader extends PureComponent {
         </div>
       </div>
     )
-    return isAffix ? <Affix offsetTop={this.state.top} onChange={this.changeFixHeight} className={styles.affixBox}
-                            style={{height: this.state.height}}>{boxContent}</Affix> : boxContent;
+    return isAffix ? <Affix offsetTop={this.state.top} onChange={this.changeFixHeight} className={styles.affixBox} style={{height: this.state.height}}>{boxContent}</Affix> : boxContent;
   }
 }
