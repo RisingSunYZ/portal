@@ -18,17 +18,15 @@ import com.dragon.flow.vo.flowable.run.FlowNodeVo;
 import com.dragon.flow.vo.mongdb.SearchTaskVo;
 import com.dragon.portal.component.IProcessMainComponent;
 import com.dragon.portal.constant.PortalConstant;
-import com.dragon.portal.enm.process.OptionEnum;
 import com.dragon.portal.properties.CommonProperties;
+import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.utils.CommUtil;
 import com.dragon.portal.vo.process.*;
 import com.dragon.portal.vo.user.UserSessionInfo;
-import com.dragon.portal.rest.controller.BaseController;
-import com.dragon.tools.common.BaseCommonConstant;
-import com.dragon.tools.pager.Query;
-import com.dragon.tools.vo.ReturnVo;
 import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.ReturnCode;
+import com.dragon.tools.pager.Query;
+import com.dragon.tools.vo.ReturnVo;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.constant.UcenterConstant;
 import com.ys.ucenter.model.vo.PersonnelApiVo;
@@ -36,11 +34,15 @@ import io.swagger.annotations.*;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -56,7 +58,7 @@ import java.util.regex.Pattern;
 @RequestMapping("/rest/process/form")
 @Api(value="流程中心-表单操作", tags={"流程中心-表单操作 /rest/process/form"})
 public class ProcessFormController extends BaseController {
-	private static Logger logger = Logger.getLogger(ProcessFormController.class);
+	private static Logger logger = LoggerFactory.getLogger(ProcessFormController.class);
 
 	@Autowired
 	private IFlowApi flowApi;

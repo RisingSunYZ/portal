@@ -41,10 +41,11 @@ import net.sf.json.JsonConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -65,7 +66,7 @@ import java.util.*;
 @RequestMapping("/rest/process/list")
 @Api(value="流程中心-列表操作", tags={"流程中心-列表操作 /rest/process/list"})
 public class ProcessListController extends BaseController {
-    private static Logger logger = Logger.getLogger(ProcessListController.class);
+    private static Logger logger = LoggerFactory.getLogger(ProcessListController.class);
 
     @Autowired
     private IFlowApi flowApi;
@@ -176,8 +177,8 @@ public class ProcessListController extends BaseController {
     @GetMapping("/queryAlreadyDo")
     @ApiOperation("查询流程-已办数据")
     @ApiImplicitParams({})
-    public ReturnVo queryAlreadyDo(String sort, String page , Integer rows, String order, Query query, QueryTaskVo param,
-                                              @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
+    public ReturnVo queryAlreadyDo(String page , Integer rows, Query query, QueryTaskVo param,
+                                   @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
         try {
             PagerModel<SearchTaskVo> pm = new PagerModel<SearchTaskVo>();
@@ -255,7 +256,7 @@ public class ProcessListController extends BaseController {
                             task.setStartTime(task.getStartTime().substring(0, index));
                         }
                         if(StringUtils.isNotBlank(task.getProcessStatus())){
-                            task.setStatus( ProcessStatusEnum.getEnumMsgByType(task.getProcessStatus()));
+                            task.setStatus(ProcessStatusEnum.getEnumMsgByType(task.getProcessStatus()));
                         }
                     }
                 }

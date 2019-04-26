@@ -36,6 +36,10 @@ export function getConfig() {
     config.seeyonPath = 'http://neweip.chinayasha.com';
     config.trainSysPath='https://train.chinayasha.com';
     config.recruitSysPath='http://10.10.15.14:19081/overview';
+
+    config.idmBaseUrl='https://siam.chinayasha.com:8443/siam/login';// IDM登录服务
+    config.idmLoginCallbackUrl='http://home.chinayasha.com/rest/user/userLogin';// IDM登录回调URL
+    config.idmLogoutUrl='https://siam.chinayasha.com:8443/siam/logout';// IDM 退出请求地址
   }
   return config;
 }
