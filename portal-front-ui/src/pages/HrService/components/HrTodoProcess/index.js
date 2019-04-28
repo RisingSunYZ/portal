@@ -80,7 +80,12 @@ export default class HrToDoProcess extends Component {
         }
       }
     }
-    return html;
+    return (<div style={{
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      width: '180px',
+      overflow: 'hidden',
+    }}> {html}</div>);
   }
 
   render() {

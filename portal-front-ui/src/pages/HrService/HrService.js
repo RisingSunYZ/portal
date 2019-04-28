@@ -42,7 +42,7 @@ class HrService extends PureComponent {
   }
 
   callback(key) {
-    console.log(key);
+    // console.log(key);
   }
   changeSysEnter = (key) => {
     const isShow = (key == 1 ? true : false);
