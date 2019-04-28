@@ -25,6 +25,10 @@ export default {
       meetingroom: {},
       meetingroomAddr: {},
     },
+    myApply: {
+      total: 0,
+      rows: []
+    }
   },
   namespace: 'mtRoom',
   effects: {
@@ -72,19 +76,14 @@ export default {
     *queryMyApplyList({payload},{call,put}){
       const response= yield call(queryMyApplyList,payload);
       yield put({
-        type: 'saveMeetingData',
-        payload:response.data
+        type: 'saveMyApplyList',
+        payload:response
       });
     },
-    *saveMtRoomMsg({payload},{call,put}) {
+    *saveMtRoomMsg({payload, callback},{call,put}) {
       const response= yield call(saveMtRoomMsg,payload);
-      if(response.code === "100"){
-        yield put({
-          type: 'saveMeetingData',
-          payload:response.data
-        });
-      }else{
-        message.error(response.msg);
+      if(callback && typeof callback === 'function'){
+        callback(response)
       }
     },
     *submitProcess({payload,callback},{call,put}) {
@@ -131,6 +130,12 @@ export default {
         ...state,
         meetingroomAddrs: action.payload.meetingroomAddrs,
         meetingroomTools: action.payload.meetingroomTools,
+      };
+    },
+    saveMyApplyList(state, action) {
+      return {
+        ...state,
+        myApply: action.payload,
       };
     },
   },
