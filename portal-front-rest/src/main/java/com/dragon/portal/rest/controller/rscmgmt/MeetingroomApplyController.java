@@ -280,10 +280,14 @@ public class MeetingroomApplyController extends BaseController {
     @ApiOperation("查询我的申请加载数据")
     public PagerModel<MeetingroomMyApplyVo> myApplyAjaxList(@RequestBody MeetingroomApply meetingRoomApply, Query query,@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
         PagerModel<MeetingroomMyApplyVo> myApplyPm = new PagerModel<>();
+        PagerModel<MeetingroomApply> pm = new PagerModel<>();
         try {
             UserSessionInfo user = this.getUserSessionInfo(request, response);
             meetingRoomApply.setProposerNo(user.getNo());
-            myApplyPm = this.meetingroomApplyService.getPagerModelByMeetingroomMyApplyVo(meetingRoomApply, query);
+            pm = this.meetingroomApplyService.getPagerModelByMeetingroomMyApplyVo(meetingRoomApply, query);
+            //更新过期状态
+            this.meetingroomApplyService.updateMeetingroomApplyStatusToExpireByList(pm.getRows());
+            myApplyPm = this.meetingroomApplyService.handleMeetData(pm);
         } catch (Exception e) {
             logger.error("MeetingroomApplyController-myApplyAjaxList-查询我的申请加载数据失败:" + e);
             e.printStackTrace();

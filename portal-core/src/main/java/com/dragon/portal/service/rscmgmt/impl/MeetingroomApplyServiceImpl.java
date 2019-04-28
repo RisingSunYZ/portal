@@ -15,6 +15,7 @@ import com.dragon.portal.model.rscmgmt.Meetingroom;
 import com.dragon.portal.model.rscmgmt.MeetingroomApply;
 import com.dragon.portal.model.rscmgmt.MeetingroomApplyUndoMsg;
 import com.dragon.portal.model.rscmgmt.MeetingroomApprover;
+import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.service.rscmgmt.IMeetingroomApplyService;
 import com.dragon.portal.service.rscmgmt.IMeetingroomApplyUndoMsgService;
@@ -77,8 +78,8 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
     private IMeetingroomApprovalLogService meetingroomApprovalLogService;
     @Resource
     private IFlowApi flowApi;
-//    @Resource
-//    private ReadProperty readProperty;
+    @Resource
+    private CommonProperties commonProperties;
     @Resource
     private IMeetingroomApproverDao IMeetingroomApproverDao;
     @Resource
@@ -318,9 +319,9 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
         variables.put("userIds", userIds);
         StartProcessInstanceVo process = new StartProcessInstanceVo();
         process.setVariables(variables);
-        process.setSystemSn(null);//readProperty.getValue("systemSn"));
-        process.setFormName(null);//readProperty.getValue("meetingroom.formName") + "-" + applyNo);
-        process.setProcessDefinitionKey(null);//readProperty.getValue("meetingroom.definitionKey"));
+        process.setSystemSn(commonProperties.getSystemSn());
+        process.setFormName(commonProperties.getMeetingroomFormName() + "-" + applyNo);
+        process.setProcessDefinitionKey(commonProperties.getMeetingroomDefinitionKey());
         process.setBusinessKey(applyNo);
         process.setCurrentUserCode(meetingroomApplyVo.getProposerNo());
         process.setFlowLevelFlag(false);
@@ -404,10 +405,8 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
     }
 
     @Override
-    public PagerModel<MeetingroomMyApplyVo> getPagerModelByMeetingroomMyApplyVo(
+    public PagerModel<MeetingroomApply> getPagerModelByMeetingroomMyApplyVo(
             MeetingroomApply meetingroomApply, Query query) throws Exception {
-
-        PagerModel<MeetingroomMyApplyVo> MeetingroomMyApplyVoPm = new PagerModel<MeetingroomMyApplyVo>();
         Page<MeetingroomApply> page = null;
         PageHelper.startPage(query.getInitPageIndex(),query.getPageSize());
         page = meetingroomApplyDao.getPagerModelByQueryOfMyApply(meetingroomApply);
@@ -415,9 +414,14 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
         PagerModel<MeetingroomApply> pm = new PagerModel<>();
         pm.setRows(page);
 
-        //更新过期状态
-        updateMeetingroomApplyStatusToExpireByList(pm.getRows());
+        return pm;
 
+    }
+
+    @Override
+    public PagerModel<MeetingroomMyApplyVo> handleMeetData(PagerModel<MeetingroomApply> pm){
+
+        PagerModel<MeetingroomMyApplyVo> MeetingroomMyApplyVoPm = new PagerModel<MeetingroomMyApplyVo>();
         List<MeetingroomMyApplyVo> list = new ArrayList<MeetingroomMyApplyVo>(pm.getRows().size());
 
         for (MeetingroomApply temp : pm.getRows()) {
