@@ -413,7 +413,7 @@ public class MeetingroomApplyServiceImpl implements IMeetingroomApplyService {
 
         PagerModel<MeetingroomApply> pm = new PagerModel<>();
         pm.setRows(page);
-
+        pm.setTotal(page.getTotal());
         return pm;
 
     }
