@@ -4,6 +4,7 @@ import com.dragon.flow.vo.flowable.comment.FlowCommentVo;
 import com.dragon.portal.model.news.*;
 import com.dragon.portal.service.news.*;
 import com.dragon.portal.service.redis.RedisService;
+import com.dragon.portal.utils.CommUtil;
 import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
@@ -16,7 +17,6 @@ import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
-import com.seeyon.ctp.util.BeanUtils;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.user.Department;
@@ -441,8 +441,142 @@ public class NewsIndexController extends BaseController {
 		return returnVo;
 	}
 
+    /**
+     * 新闻资讯-员工风采 图片详情
+     *
+     */
+    @GetMapping("/getStaffData")
+    @ApiOperation("新闻资讯-员工风采 图片详情")
+    @ApiImplicitParams({})
+    public ReturnVo getStaffData(String id, @ApiIgnore  HttpServletRequest request, @ApiIgnore  HttpServletResponse response) {
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!" );
+        if (StringUtils.isBlank( id )) {
+            returnVo.setMsg( "参数为空！" );
+            return returnVo;
+        }
 
-	/**
+        try {
+            UserSessionInfo userSessionInfo = getUserSessionInfo( request, response );
+            if (null == userSessionInfo) {
+                returnVo.setMsg( "用户未登录！" );
+                throw new Exception( "用户未登录" );
+            }
+
+            HashMap map = new HashMap();
+            Query query = new Query( 1000 );
+            Map sqlOrderBy = new LinkedMap();
+            sqlOrderBy.put( "publish_time", ORDERBY.DESC );
+            query.setSqlOrderBy( sqlOrderBy );
+            NewsNotice notice = new NewsNotice();
+            NewsType newsType = newsTypeService.queryNewsTypeBySn( "staff_presence" );
+            notice.setTypeId( newsType.getId() );
+            notice.setPublishStatus( 1 );
+            PagerModel<NewsNotice> pagerModelByQueryOfImage = this.newsNoticeService.getPagerModelByQueryOfImage( notice, query );
+            List<NewsNotice> rows = pagerModelByQueryOfImage.getRows();
+
+            String preId = "";
+            String nextId = "";
+            int rowSize = rows.size();
+            if (CollectionUtils.isNotEmpty( rows )) {
+                for (int i = 0; i < rowSize; i++) {
+                    NewsNotice temp = rows.get( i );
+                    if (temp.getId().equals( id )) {
+                        //添加日志
+                        try {
+                            newsNoticeVisitLogService.insertNewsNoticeVisitLog( userSessionInfo, CommUtil.getRealRemoteIP( request ), id, NewsNoticeEnum.NEWS );
+                        } catch (Exception e) {
+                            throw new Exception( "添加日志失败 " );
+                        }
+
+                        if (i > 0) {
+                            preId = rows.get( i - 1 ).getId();
+                        }
+
+                        if (i + 1 < rowSize) {
+                            nextId = rows.get( i + 1 ).getId();
+                        }
+
+                        map.put( "title", temp.getTitle() );
+                        map.put( "publisher", tranRealName( temp.getCreator() ) );
+                        map.put( "publishTime", temp.getPublishTime() );
+                        map.put( "visitCount", temp.getVisitCount() );
+                        map.put( "remark", temp.getRemark() );
+                        map.put( "thumbsUp", temp.getThumbsUp() );
+                        break;
+                    }
+                }
+
+                NewsFile newsFile = new NewsFile();
+                newsFile.setFileType( 5 );
+                Query queryfile = new Query( 100 );
+                Map<String, ORDERBY> sqlOrderByFile = new LinkedMap();
+                sqlOrderByFile.put( "sort_no", ORDERBY.ASC );
+                queryfile.setSqlOrderBy( sqlOrderByFile );
+
+
+                newsFile.setRefId( id );
+                PagerModel<NewsFile> pm = newsFileService.getPagerModelByQuery( newsFile, queryfile );
+                map.put( "list", pm.getRows() );
+
+                if (StringUtils.isNotBlank( preId )) {
+                    newsFile.setRefId( preId );
+                    pm = newsFileService.getPagerModelByQuery( newsFile, queryfile );
+                    if (pm.getTotal() > 0) {
+                        map.put( "prePath", pm.getRows().get( 0 ).getFilePath() );
+                    }
+                }
+                if (StringUtils.isNotBlank( nextId )) {
+                    newsFile.setRefId( nextId );
+                    pm = newsFileService.getPagerModelByQuery( newsFile, queryfile );
+                    if (pm.getTotal() > 0) {
+                        map.put( "nextPath", pm.getRows().get( 0 ).getFilePath() );
+                    }
+                }
+                //评论
+                NewsComment newsComment = new NewsComment();
+                newsComment.setRefId( id );
+                newsComment.setType( 0 );
+                List<NewsComment> comments = newsCommentService.getAll( newsComment );
+                map.put( "comments", comments );
+                //点赞
+                newsComment.setType( 1 );
+                newsComment.setUserNo( userSessionInfo.getNo() );
+                List<NewsComment> hasThumbsUp = newsCommentService.getAll( newsComment );
+
+                if (CollectionUtils.isNotEmpty( hasThumbsUp )) {
+                    map.put( "hasThumbsUp", 1 );
+                } else {
+                    map.put( "hasThumbsUp", 0 );
+                }
+            }
+            map.put( "preId", preId );
+            map.put( "nextId", nextId );
+            returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功！", map );
+        } catch (Exception e) {
+            logger.error( "NewsIndexController-getStaffData: " + e );
+            e.printStackTrace();
+        }
+
+        return returnVo;
+    }
+
+
+    /**
+     * 将工号转变为名字
+     * @param no 工号
+     * @return
+     */
+    private String tranRealName(String no) {
+        String regx = "^\\d+$";
+        if (StringUtils.isNotBlank( no ) && no.matches( regx )) {
+            com.ys.tools.vo.ReturnVo<PersonnelApiVo> personnelApiVoByNo = personnelApi.getPersonnelApiVoByNo( no );
+            return (personnelApiVoByNo.getCode() == 1) ? personnelApiVoByNo.getData().getName() : no;
+        }
+        return no;
+    }
+
+
+    /**
 	 *
 	 * @param deptId
 	 * @return
