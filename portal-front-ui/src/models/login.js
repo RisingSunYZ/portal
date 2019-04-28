@@ -43,15 +43,16 @@ export default {
    * @returns {IterableIterator<*>}
    */
     *logOut({ payload ,callback }, { call }) {
-      if(getConfig().idmLoginSwitch){
-        var img=document.createElement("iframe");
-        img.src=getConfig().idmLogoutUrl + "?t=" + Math.random();
-        img.style.width=0;
-        img.style.height=0;
-        img.style.border=0;
-        document.body.appendChild(img);
-      }
+      // if(getConfig().idmLoginSwitch){
+      //   var img=document.createElement("iframe");
+      //   img.src=getConfig().idmLogoutUrl + "?t=" + Math.random();
+      //   img.style.width=0;
+      //   img.style.height=0;
+      //   img.style.border=0;
+      //   document.body.appendChild(img);
+      // }
       const response = yield call(logOutSyn);
+      // debugger
       if(response.code=='100'){
         if (callback && typeof callback === 'function') {
           callback(response);
