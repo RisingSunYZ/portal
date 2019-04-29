@@ -74,14 +74,14 @@ public class ApiHrServiceController extends BaseController {
     @ResponseBody
     @RequestMapping("/checkLeader")
     public ReturnVo checkLeader(HttpServletRequest request, HttpServletResponse response) {
-        UserSessionInfo userInfo = getUserSessionInfo(request,response);
+        UserSessionInfo userInfo = getUserSessionInfo(request, response);
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "获取数据失败");
         Personnel personnel = new Personnel();
         Integer isLeader = 0;
-        if(StringUtils.isNotBlank(userInfo.getNo())){
+        if (StringUtils.isNotBlank(userInfo.getNo())) {
             personnel.setLeaderNo(userInfo.getNo());
             com.ys.tools.vo.ReturnVo<Personnel> rVo = personnelApi.getAllPersonnelExt(personnel);
-            if(rVo.getCode() == UcenterConstant.SUCCESS && CollectionUtils.isNotEmpty(rVo.getDatas())){
+            if (rVo.getCode() == UcenterConstant.SUCCESS && CollectionUtils.isNotEmpty(rVo.getDatas())) {
                 isLeader = 1;
             }
             returnVo = new ReturnVo<Integer>(ReturnCode.SUCCESS, "获取数据成功", isLeader);
