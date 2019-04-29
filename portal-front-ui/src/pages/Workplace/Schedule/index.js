@@ -5,6 +5,7 @@ import ScheduleGrant from './ScheduleGrant';
 import ScheduleEventDetail from './ScheduleEventDetail';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styles from './index.less';
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -177,83 +178,86 @@ export default class Schedule extends PureComponent {
       }
     });
     return (
-      <Fragment>
-        <Card bordered={false} bodyStyle={{padding: 16}}>
-          <Row className={styles.toolbar}>
-            <Col offset={10} span={6}>
-              <Radio.Group name="eventType" defaultValue={0} onChange={this.onEventTypeChange} style={{marginTop: 5}}>
-                <Radio value={0}>全部</Radio>
-                <Radio value={1}>事项<i className="event-type type-1" /></Radio>
-                <Radio value={2}>会议<i className="event-type type-2" /></Radio>
-              </Radio.Group>
-            </Col>
-            <Col span={4}>
-              <Select style={{width: 150}} defaultValue={currentUser.no} onChange={this.updateEventsByNo}>
-                <Select.Option key={0} value={currentUser.no} gratype={1}>我的日程</Select.Option>
-                {scheduleEventGrantList.length>0 ? scheduleEventGrantList.map((grant, i) => (
-                  <Select.Option key={i+1} value={grant.grantPersonNo} gratype={grant.grantType}>{`${grant.grantPersonName}(${grant.grantTypeStr})`}</Select.Option>
-                )) : ''}
-              </Select>
-            </Col>
-            <Col span={2}>
-              {eventType === 2 ? (
-                <Button disabled={graType===0} onClick={this.addMeeting}><Icon type="plus" style={{color: '#1890FF'}} />新建</Button>
-              ) : (
-                <ScheduleEventDetail
-                  eventId={selEvent}
-                  disabled={graType===0}
-                  onChange={this.queryEventByDate}
+      <PageHeaderWrapper>
+        <Fragment>
+          <Card bordered={false} bodyStyle={{padding: 16}}>
+            <Row className={styles.toolbar}>
+              <Col offset={10} span={6}>
+                <Radio.Group name="eventType" defaultValue={0} onChange={this.onEventTypeChange} style={{marginTop: 5}}>
+                  <Radio value={0}>全部</Radio>
+                  <Radio value={1}>事项<i className="event-type type-1" /></Radio>
+                  <Radio value={2}>会议<i className="event-type type-2" /></Radio>
+                </Radio.Group>
+              </Col>
+              <Col span={4}>
+                <Select style={{width: 150}} defaultValue={currentUser.no} onChange={this.updateEventsByNo}>
+                  <Select.Option key={0} value={currentUser.no} gratype={1}>我的日程</Select.Option>
+                  {scheduleEventGrantList.length>0 ? scheduleEventGrantList.map((grant, i) => (
+                    <Select.Option key={i+1} value={grant.grantPersonNo} gratype={grant.grantType}>{`${grant.grantPersonName}(${grant.grantTypeStr})`}</Select.Option>
+                  )) : ''}
+                </Select>
+              </Col>
+              <Col span={2}>
+                {eventType === 2 ? (
+                  <Button disabled={graType===0} onClick={this.addMeeting}><Icon type="plus" style={{color: '#1890FF'}} />新建</Button>
+                ) : (
+                  <ScheduleEventDetail
+                    eventId={selEvent}
+                    disabled={graType===0}
+                    onChange={this.queryEventByDate}
+                  />
+                )}
+              </Col>
+              <Col span={2}>
+                <ScheduleGrant enable={graType !== 0} />
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={6}>
+                <Calendar
+                  className={styles.leftCalendar}
+                  fullscreen={false}
+                  value={ currDate }
+                  dateFullCellRender={this.dateCellRender}
+                  onChange={this.onDateChange}
                 />
-              )}
-            </Col>
-            <Col span={2}>
-              <ScheduleGrant enable={graType !== 0} />
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={6}>
-              <Calendar
-                className={styles.leftCalendar}
-                fullscreen={false}
-                value={ currDate }
-                dateFullCellRender={this.dateCellRender}
-                onChange={this.onDateChange}
-              />
-            </Col>
-            <Col span={18}>
-              <div style={{height: 600}}>
-                <BigCalendar
-                  popup
-                  className="schedule-container"
-                  date={currDate.toDate()}
-                  localizer={localizer}
-                  view={view}
-                  onView={this.onViewChange}
-                  events={filterEvents}
-                  startAccessor={e=>new Date(e.startTime)}
-                  endAccessor={e=>new Date(e.endTime)}
-                  views={['month', 'week', 'day']}
-                  onNavigate={(d)=>this.onDateChange(moment(d))}
-                  messages= {{
-                    allDay: "全天",
-                    day: "日",
-                    month: "月",
-                    next: view === 'month' ? "下月" : (view === 'week' ? '下周' : '明天'),
-                    previous:  view === 'month' ? "上月" : (view === 'week' ? '上周' : '昨天'),
-                    today: "今天",
-                    tomorrow: "明天",
-                    week: "周",
-                    yesterday: "昨天",
-                  }}
-                  components={{
-                    eventWrapper: this.renderEvent
-                  }}
-                />
-              </div>
-            </Col>
-          </Row>
-        </Card>
-      </Fragment>
+              </Col>
+              <Col span={18}>
+                <div style={{height: 600}}>
+                  <BigCalendar
+                    popup
+                    className="schedule-container"
+                    date={currDate.toDate()}
+                    localizer={localizer}
+                    view={view}
+                    onView={this.onViewChange}
+                    events={filterEvents}
+                    startAccessor={e=>new Date(e.startTime)}
+                    endAccessor={e=>new Date(e.endTime)}
+                    views={['month', 'week', 'day']}
+                    onNavigate={(d)=>this.onDateChange(moment(d))}
+                    messages= {{
+                      allDay: "全天",
+                      day: "日",
+                      month: "月",
+                      next: view === 'month' ? "下月" : (view === 'week' ? '下周' : '明天'),
+                      previous:  view === 'month' ? "上月" : (view === 'week' ? '上周' : '昨天'),
+                      today: "今天",
+                      tomorrow: "明天",
+                      week: "周",
+                      yesterday: "昨天",
+                    }}
+                    components={{
+                      eventWrapper: this.renderEvent
+                    }}
+                  />
+                </div>
+              </Col>
+            </Row>
+          </Card>
+        </Fragment>
+
+      </PageHeaderWrapper>
     )
   }
 }

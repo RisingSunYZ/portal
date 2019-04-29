@@ -24,7 +24,8 @@ export default {
   'menu.custom-form.design form': '表单设计',
   'menu.drag': '拖拽',
   'menu.drag.draggable': '拖拽demo',
-  'menu.drag.draggabletags': '拖拽tag',
+  'menu.schedule': '日程',
+
 
   // 'menu.user':'用户',
   // 'menu.user.login':'登录',

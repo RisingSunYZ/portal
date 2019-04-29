@@ -62,7 +62,7 @@ export async function logOutIdmSyn() {
  * @returns {Promise<Object>}
  */
 export async function logOutSyn() {
-  return request('/rest/portal/user/userLogin/out');
+  return request('/rest/portal/user/userLogin/out?t='+ Math.random());
 }
 
 /**

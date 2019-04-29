@@ -52,11 +52,20 @@ export default {
       //   document.body.appendChild(img);
       // }
       const response = yield call(logOutSyn);
-      // debugger
       if(response.code=='100'){
-        if (callback && typeof callback === 'function') {
-          callback(response);
+        if(getConfig().idmLoginSwitch){
+          const image = new Image();
+          image.src = getConfig().idmLogoutUrl;
+          image.style.width = 0;
+          image.style.height = 0;
+          location.href = getConfig().idmBaseUrl+"?service=" + encodeURIComponent(getConfig().domain+"/main.jhtml");
+        }else{
+          router.push({
+                pathname:'/user/login',
+          });
         }
+      }else{
+        message.error(response.msg);
       }
     },
 
@@ -118,32 +127,31 @@ export default {
         callback(response); // 返回结果
       }
     },
-
-    *logout({ payload }, { call ,put }) {
-
-      const response = yield call(logoutAccount,payload);
-
-      if(response.code == "0"){
-        message.error(response.msg);
-        return
-      }
-      yield put({
-        type: 'changeLoginStatus',
-        payload: {
-          status: false,
-          currentAuthority: 'guest',
-        },
-      });
-      reloadAuthorized();
-      yield put(
-        routerRedux.push({
-          pathname: '/user/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
-        })
-      );
-    },
+    // *logout({ payload }, { call ,put }) {
+    //
+    //   const response = yield call(logoutAccount,payload);
+    //
+    //   if(response.code == "0"){
+    //     message.error(response.msg);
+    //     return
+    //   }
+    //   yield put({
+    //     type: 'changeLoginStatus',
+    //     payload: {
+    //       status: false,
+    //       currentAuthority: 'guest',
+    //     },
+    //   });
+    //   reloadAuthorized();
+    //   yield put(
+    //     routerRedux.push({
+    //       pathname: '/user/login',
+    //       search: stringify({
+    //         redirect: window.location.href,
+    //       }),
+    //     })
+    //   );
+    // },
 
   },
 
