@@ -24,18 +24,20 @@ export default class MeetingRoomApplyDetail extends PureComponent {
   };
 
   componentDidMount(){
-    const { mtRoom: { roomDetail: { currentDateTime } }, dispatch, roomId, applyDate } = this.props;
-    if(roomId){
-      dispatch({
-        type: 'mtRoom/queryApplyList',
-        payload: {
-          startDateStr: applyDate,
-          endDateStr: applyDate,
-          meetingroomId: roomId
-        },
-      })
-    }
+    document.body.onselectstart=function(){
+      return false;
+    };
   }
+
+  clearFormValues = () => {
+    const { form } = this.props;
+    form.resetFields();
+    this.setState({
+      meetingStartTime: null,
+      meetingEndTime: null,
+      cyclicity: false,
+    })
+  };
 
   onApplyTypeChange = (e) => {
     if(e.target.value === 1){
@@ -55,7 +57,10 @@ export default class MeetingRoomApplyDetail extends PureComponent {
     const { meetingStartTime, meetingEndTime } = this.state;
     let disableList = [], disableNum = 0, columns = [];
     applies && applies.length && applies.map(apply=>{
-      console.log(apply);
+      const start = apply.startTimeStr.split(":"), end = apply.endTimeStr.split(":");
+      let sNum = start[1] === '30' ? parseInt(start[0])*2+1 : parseInt(start[0])*2,
+        eNum = end[1] === '30' ? parseInt(end[0])*2+1 : parseInt(end[0])*2;
+      disableList = disableList.concat(Array.from({length: eNum-sNum},(v,k)=>sNum+k+1));
     });
     if(moment(currentDateTime, "YYYY-MM-DD").valueOf() === moment(date).valueOf()){
       disableNum = moment(currentDateTime).hours()*2;
@@ -65,11 +70,11 @@ export default class MeetingRoomApplyDetail extends PureComponent {
     }
     for(let i=1; i<=48; i++){
       columns.push(
-        <li key={i} className={'item '+ (i<=disableNum ? 'used' : (meetingStartTime<=i && i<=meetingEndTime ? 'selected' : ''))} />
+        <li key={i} className={'item '+ ((i<=disableNum || disableList.indexOf(i) > -1) ? 'used' : (meetingStartTime<=i && i<=meetingEndTime ? 'selected' : ''))} />
       )
     }
     return (
-      <ul className="apply-time" onMouseDown={this.onSelApplyTime}>
+      <ul className="apply-time" onMouseDown={this.onSelApplyTime} onDragStart={()=>{return false}}>
         {columns}
       </ul>
     )
@@ -77,21 +82,23 @@ export default class MeetingRoomApplyDetail extends PureComponent {
 
   onSelApplyTime = (e) => {
     const wrapperX = e.currentTarget.getBoundingClientRect().x;
-    let target = e.target, add = true, startNum = Math.min(Math.ceil((e.clientX - wrapperX)/17), 48), endNum = null;
-    const { meetingStartTime, meetingEndTime } = this.state;console.log(meetingStartTime, meetingEndTime, startNum);
+    let target = e.target, add = true, startNum = Math.min(Math.ceil((e.clientX - wrapperX)/17), 48), endNum = null, step = true;
+    const { meetingStartTime, meetingEndTime } = this.state;
     if(target.classList.contains("used")) return;
     if(meetingStartTime && meetingEndTime && ((meetingStartTime<startNum && startNum<meetingEndTime) || meetingEndTime+1<startNum || meetingStartTime-1>startNum)) return false;
     if(target.classList.contains("selected")){add = false}
     const onUpdateSelTime = e => {
       const tar = e.target, isSel = tar.classList.contains("selected"), idx = Math.ceil((e.clientX - wrapperX)/17);
-      if(!tar.classList.contains("item") || target.classList.contains("used")){
-        return;
+      if(!tar.classList.contains("item") || tar.classList.contains("used")){
+        step = false;
       }
-      endNum = idx;
-      if(add && !isSel){
-        tar.classList.add("selected");
-      }else if(!add && isSel){
-        tar.classList.remove("selected");
+      if(step){
+        endNum = idx;
+        if(add && !isSel){
+          tar.classList.add("selected");
+        }else if(!add && isSel){
+          tar.classList.remove("selected");
+        }
       }
     };
     const onSelTimeEnd = (e) =>{
@@ -135,7 +142,7 @@ export default class MeetingRoomApplyDetail extends PureComponent {
     if(!meetingStartTime || !meetingEndTime){
       message.error("请选择会议时间"); return false;
     }
-    const formData = form.getFieldsValue();console.log(formData);
+    const formData = form.getFieldsValue();
     const saveObj = {
       ...applyData,
       ...formData,
@@ -171,8 +178,12 @@ export default class MeetingRoomApplyDetail extends PureComponent {
         this.setState({
           confirmLoading: false,
         });
-        message.success(res.msg);
-        onSave && onSave(res);
+        if(res.code === '100'){
+          message.success(res.msg);
+          onSave && onSave(res);
+        }else{
+          message.error(res.msg);
+        }
       }
     });
   };
@@ -198,14 +209,18 @@ export default class MeetingRoomApplyDetail extends PureComponent {
       applyData,
       loading,
     } = this.props;
-    const { cyclicity, weekDays } = this.state;
+    const { cyclicity, weekDays, confirmLoading } = this.state;
     return (
       <Modal
         visible={visible || false}
         title={applyId ? '查看申请' : '申请会议室'}
         width={900}
+        footer={<div>
+          <Button loading={confirmLoading} onClick={this.saveApply} type="primary">确定</Button>
+          <Button onClick={()=> onCancel && onCancel()}>取消</Button>
+        </div>}
         onCancel={()=> onCancel && onCancel()}
-        onOk={this.saveApply}
+        loading={loading}
       >
         <Form layout="inline">
           <Row gutter={{ md: 8, lg: 16}}>

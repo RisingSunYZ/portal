@@ -38,6 +38,24 @@
       display: block;
     }
   }
+  :global{
+    .record-box{
+      font-size: 12px;
+      line-height: 24px;
+      .time-range{
+        padding-right: 5px;
+      }
+      .anticon{
+        margin: 0 3px;
+        &.ok{
+          color: @success-color;
+        }
+        &.in-approve{
+          color: @warning-color;
+        }
+      }
+    }
+  }
 }
 :global{
   .meetingroom-detail{

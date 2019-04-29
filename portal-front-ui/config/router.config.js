@@ -144,6 +144,11 @@ export default [
             name: 'meetingroom-manage',
             component: './ResourceControl/MeetingRoom'
           },
+          {
+            path: '/biz-sys/zygl/hys/my-apply',
+            name: 'meetingroom-apply-list',
+            component: './ResourceControl/MeetingRoom/MyApplyList'
+          }
         ]
       },
       // address-book

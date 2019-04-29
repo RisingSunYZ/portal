@@ -54,9 +54,9 @@ export async function getMeetingApplyById(params){
  * @returns {Promise<Object>}
  */
 export async function queryMyApplyList(params) {
-  return request('/rest/portal/rscmgmt/meetingroom/myApplyAjaxList', {
+  return request(`/rest/portal/rscmgmt/meetingroom/myApplyAjaxList?${stringify(params.query)}`, {
     method: 'POST',
-    body: params,
+    body: params.meetingRoomApply || {},
   });
 }
 
