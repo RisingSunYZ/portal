@@ -1,16 +1,25 @@
 package com.dragon.portal.web.controller.hr;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import com.dragon.portal.model.basedata.Dictionary;
 import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.basedata.IDictionaryService;
+import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
+import com.ys.ucenter.api.IPersonnelApi;
+import com.ys.ucenter.model.user.Personnel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import com.ys.ucenter.constant.UcenterConstant;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +42,8 @@ public class ApiHrServiceController extends BaseController {
     private IDictionaryService dictionaryService;
     @Autowired
     private CommonProperties commonProperties;
+    @Autowired
+    private IPersonnelApi personnelApi;
 
     @ResponseBody
     @RequestMapping("/getQuickProcess")
@@ -60,4 +71,21 @@ public class ApiHrServiceController extends BaseController {
         return returnVo;
     }
 
+    @ResponseBody
+    @RequestMapping("/checkLeader")
+    public ReturnVo checkLeader(HttpServletRequest request, HttpServletResponse response) {
+        UserSessionInfo userInfo = getUserSessionInfo(request,response);
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "获取数据失败");
+        Personnel personnel = new Personnel();
+        Integer isLeader = 0;
+        if(StringUtils.isNotBlank(userInfo.getNo())){
+            personnel.setLeaderNo(userInfo.getNo());
+            com.ys.tools.vo.ReturnVo<Personnel> rVo = personnelApi.getAllPersonnelExt(personnel);
+            if(rVo.getCode() == UcenterConstant.SUCCESS && CollectionUtils.isNotEmpty(rVo.getDatas())){
+                isLeader = 1;
+            }
+            returnVo = new ReturnVo<Integer>(ReturnCode.SUCCESS, "获取数据成功", isLeader);
+        }
+        return returnVo;
+    }
 }
