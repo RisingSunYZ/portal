@@ -198,16 +198,16 @@ public class ProcessFormController extends BaseController {
 			if(ModelAppliedRangeEnum.YWXTMH.getStatus().equals(appliedRange)
 					|| ModelAppliedRangeEnum.YWXTYW.getStatus().equals(appliedRange)){
 				url = rVo.getData().getBusinessUrl();
-				if(url.indexOf("/portal/form/biz/index-")>-1){
+				if(url.contains(PortalConstant.FLOW_BIZ_FORM_URL_PREFIX)){
 					Boolean isEditData=false;
 					ReturnVo<Boolean> editData = processMainComponent.isEditData(user.getNo(), taskId, instId);
 					if(ReturnCode.SUCCESS.equals(editData.getCode())){
 						isEditData=editData.getData();
 					}
-					url = "/flow/form/s/page/biz-form.html?isEditorData="+isEditData;
+					url = PortalConstant.FLOW_FORM_IFRAME_BIZ_URL + "?isEditorData="+isEditData;
 				}
 			}else{
-				url="/flow/form/s/page/custm-form.html";
+				url = PortalConstant.FLOW_FORM_IFRAME_CSTM_URL;
 			}
 			if(StringUtils.isNotBlank(bizId) && !PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(bizId)){
 				url= changeParam(url,"bizId",bizId);
@@ -225,7 +225,7 @@ public class ProcessFormController extends BaseController {
 			if(StringUtils.isNotBlank(expType)){
 				url=changeParam(url,"formType",expType);
 			}
-			formInfo.put("formUrl",errorFlag?"/error404.jhtml":url);
+			formInfo.put("formUrl",errorFlag?"/error404.html":url);
 		}catch (Exception e){
 			e.printStackTrace();
 			logger.error("获取流程表单iframe连接异常！ ApiProcessController-getFromUrl"+e);
