@@ -45,6 +45,11 @@ public class ApiHrServiceController extends BaseController {
     @Autowired
     private IPersonnelApi personnelApi;
 
+    /**
+     * 常用流程
+     *
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/getQuickProcess")
     public ReturnVo getQuickProcess() {
@@ -71,6 +76,13 @@ public class ApiHrServiceController extends BaseController {
         return returnVo;
     }
 
+    /**
+     * 判断是否是领导
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/checkLeader")
     public ReturnVo checkLeader(HttpServletRequest request, HttpServletResponse response) {
@@ -84,7 +96,7 @@ public class ApiHrServiceController extends BaseController {
             if (rVo.getCode() == UcenterConstant.SUCCESS && CollectionUtils.isNotEmpty(rVo.getDatas())) {
                 isLeader = 1;
             }
-            returnVo = new ReturnVo<Integer>(ReturnCode.SUCCESS, "获取数据成功", isLeader);
+            returnVo = new ReturnVo<>(ReturnCode.SUCCESS, "获取数据成功", isLeader);
         }
         return returnVo;
     }

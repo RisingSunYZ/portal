@@ -24,7 +24,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/portal/api/attendance")
-public class ApiAttendanceController extends BaseController{
+public class ApiAttendanceController extends BaseController {
 
     private static Logger logger = Logger.getLogger(ApiAttendanceController.class);
 
@@ -32,7 +32,8 @@ public class ApiAttendanceController extends BaseController{
     private IAtdsApi atdsApi;
 
     /**
-     *检查个人是否考勤异常
+     * 检查个人是否考勤异常
+     *
      * @param request
      * @param response
      * @param userNo

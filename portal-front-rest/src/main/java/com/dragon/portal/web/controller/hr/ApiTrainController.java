@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * @Description: 培训相关
  * @Author: liuxuan
- * @Since:16:47  2019/04/28
+ * @Since:16:47 2019/04/28
  * 浙江亚厦 2018 ~ 2030 版权所有
  */
 @RestController
@@ -42,6 +42,7 @@ public class ApiTrainController extends BaseController {
 
     /**
      * Fixme: 暂时未曾得知此方法有何作用，后期添加必要注释
+     *
      * @param page
      * @param rows
      * @param time
@@ -52,7 +53,7 @@ public class ApiTrainController extends BaseController {
      */
     @RequestMapping("/queryTrain")
     private ReturnVo<Map> queryTrain(Integer page, Integer rows, String time, String userNo,
-                              HttpServletRequest request, HttpServletResponse response) {
+                                     HttpServletRequest request, HttpServletResponse response) {
         ReturnVo<Map> returnVo = new ReturnVo<>(ReturnCode.FAIL, "获取数据失败");
         PagerModel<CourseDetailVo> pm = new PagerModel<>();
         try {
