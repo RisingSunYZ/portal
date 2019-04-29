@@ -74,6 +74,7 @@ export default class FormBox extends React.Component {
         }
         if($(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
           iframeWin.YSForm.formApprove(con);
+
         }else{
 
           this.props.doApproveCooperate(approveMsg);
