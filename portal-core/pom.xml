@@ -264,6 +264,17 @@
             <artifactId>okhttp</artifactId>
             <version>3.9.1</version>
         </dependency>
+        <!-- 培训接口 -->
+        <dependency>
+            <groupId>com.ys</groupId>
+            <artifactId>train-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ys</groupId>
+            <artifactId>ys-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!-- Exchange End -->
     </dependencies>
     <build>

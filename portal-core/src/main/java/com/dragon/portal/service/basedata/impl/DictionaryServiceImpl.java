@@ -1,6 +1,7 @@
 package com.dragon.portal.service.basedata.impl;
 
 import com.dragon.portal.dao.basedata.IDictionaryDao;
+import com.dragon.portal.model.basedata.Dictionary;
 import com.dragon.portal.service.basedata.IDictionaryService;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
@@ -13,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,41 +31,41 @@ public class DictionaryServiceImpl implements IDictionaryService {
     private IDictionaryDao dictionaryDao;
 
     @Override
-    public com.dragon.portal.model.basedata.Dictionary getDictionaryById(String id) throws Exception {
+    public Dictionary getDictionaryById(String id) throws Exception {
         return StringUtils.isNotBlank(id) ? this.dictionaryDao.getDictionaryById(id.trim()) : null;
     }
 
     @Override
-    public List<com.dragon.portal.model.basedata.Dictionary> getDictionaryByIds(String ids) throws Exception {
+    public List<Dictionary> getDictionaryByIds(String ids) throws Exception {
         ids = StringTools.converString(ids);
         return StringUtils.isNotBlank(ids) ? this.dictionaryDao.getDictionaryByIds(ids) : null;
     }
 
     @Override
-    public List<com.dragon.portal.model.basedata.Dictionary> getDictionaryByIdsList(List<String> ids) throws Exception {
+    public List<Dictionary> getDictionaryByIdsList(List<String> ids) throws Exception {
         return CollectionUtils.isNotEmpty(ids) ? this.dictionaryDao.getDictionaryByIdsList(ids) : null;
     }
 
     @Override
-    public List<com.dragon.portal.model.basedata.Dictionary> getAll(com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception {
+    public List<Dictionary> getAll(Dictionary dictionary) throws Exception {
         return null != dictionary ? this.dictionaryDao.getAll(dictionary) : null;
     }
 
     @Override
-    public PagerModel<com.dragon.portal.model.basedata.Dictionary> getPagerModelByQuery(com.dragon.portal.model.basedata.Dictionary dictionary, Query query)
+    public PagerModel<Dictionary> getPagerModelByQuery(Dictionary dictionary, Query query)
             throws Exception {
         PageHelper.startPage(query.getPageIndex(), query.getPageSize());
-        Page<com.dragon.portal.model.basedata.Dictionary> page = this.dictionaryDao.getPagerModelByQuery(dictionary);
-        return new PagerModel<com.dragon.portal.model.basedata.Dictionary>(page);
+        Page<Dictionary> page = this.dictionaryDao.getPagerModelByQuery(dictionary);
+        return new PagerModel<Dictionary>(page);
     }
 
     @Override
-    public int getByPageCount(com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception {
+    public int getByPageCount(Dictionary dictionary) throws Exception {
         return (null != dictionary) ? this.dictionaryDao.getByPageCount(dictionary) : 0;
     }
 
     @Override
-    public void insertDictionary(com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception {
+    public void insertDictionary(Dictionary dictionary) throws Exception {
         if (StringUtils.isBlank(dictionary.getId())) {
             dictionary.setId(UUIDGenerator.generate());
         }
@@ -74,6 +76,7 @@ public class DictionaryServiceImpl implements IDictionaryService {
         this.dictionaryDao.insertDictionary(dictionary);
     }
 
+    @Override
     public String getMaxCode() throws Exception {
         Page<String> page = PageHelper.startPage(1,1).doSelectPage(()->{
             try {
@@ -96,8 +99,19 @@ public class DictionaryServiceImpl implements IDictionaryService {
     }
 
     @Override
-    public void insertDictionaryBatch(List<com.dragon.portal.model.basedata.Dictionary> dictionarys) throws Exception {
-        for (com.dragon.portal.model.basedata.Dictionary dictionary : dictionarys) {
+    public List<Dictionary> getBaseDataByType(String typeCode) throws Exception {
+        List<Dictionary> list = new ArrayList<Dictionary>();
+        if(StringUtils.isNotBlank(typeCode)){
+            Dictionary dict = new Dictionary();
+            dict.setTypeCode(typeCode);
+            list = getAll(dict);
+        }
+        return list;
+    }
+
+    @Override
+    public void insertDictionaryBatch(List<Dictionary> dictionarys) throws Exception {
+        for (Dictionary dictionary : dictionarys) {
             if (StringUtils.isBlank(dictionary.getId())) {
                 dictionary.setId(UUIDGenerator.generate());
             }
@@ -130,25 +144,25 @@ public class DictionaryServiceImpl implements IDictionaryService {
     }
 
     @Override
-    public int updateDictionary(com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception {
+    public int updateDictionary(Dictionary dictionary) throws Exception {
         dictionary.setUpdateTime(new Date());
         return this.dictionaryDao.updateDictionary(dictionary);
     }
 
     @Override
-    public int updateDictionaryByIds(String ids, com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception {
+    public int updateDictionaryByIds(String ids, Dictionary dictionary) throws Exception {
         dictionary.setUpdateTime(new Date());
         return this.dictionaryDao.updateDictionaryByIds(StringTools.converString(ids), dictionary);
     }
 
     @Override
-    public int updateDictionaryByIdsList(List<String> ids, com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception {
+    public int updateDictionaryByIdsList(List<String> ids, Dictionary dictionary) throws Exception {
         dictionary.setUpdateTime(new Date());
         return this.dictionaryDao.updateDictionaryByIdsList(ids, dictionary);
     }
 
     @Override
-    public int updateDictionaryList(List<com.dragon.portal.model.basedata.Dictionary> dictionarys) throws Exception {
+    public int updateDictionaryList(List<Dictionary> dictionarys) throws Exception {
         return this.dictionaryDao.updateDictionaryList(dictionarys);
     }
 

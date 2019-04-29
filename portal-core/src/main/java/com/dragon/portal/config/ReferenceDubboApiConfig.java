@@ -8,6 +8,7 @@ import com.mhome.se.api.ISendSmsApi;
 import com.ys.mis.api.IMisApi;
 import com.ys.mqpms.api.IMqPmsApi;
 import com.ys.pms.api.IPmsApi;
+import com.ys.train.api.ITrainApi;
 import com.ys.ucenter.api.IAreaApi;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
@@ -15,7 +16,6 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.Resource;
 
 /**
  * @Description: 对接的dubbo接口
@@ -46,6 +46,7 @@ public class ReferenceDubboApiConfig {
 
     @Reference(version = "1.0",check = false)
     private IOrgApi orgApi;
+
     @Reference(version = "1.0",check = false)
     private IAreaApi areaApi;
 
@@ -57,6 +58,9 @@ public class ReferenceDubboApiConfig {
 
     @Reference(version = "1.0",check = false)
     private ISendEmailApi sendEmailApi;
+
+    @Reference(version = "1.0",check = false)
+    private ITrainApi trainApi;
 
     @Bean
     public IMisApi misApi() {
@@ -107,5 +111,12 @@ public class ReferenceDubboApiConfig {
     }
 
     @Bean
-    public ISendEmailApi sendEmailApi() {return sendEmailApi;}
+    public ISendEmailApi sendEmailApi() {
+        return sendEmailApi;
+    }
+
+    @Bean
+    public ITrainApi trainApi() {
+        return trainApi;
+    }
 }

@@ -92,6 +92,10 @@ public class CommonProperties {
 
     // ############################# IDM配置 end #############################
 
+    // ############################# #数据字典，数据类型 hr常用流程 start ###########################
+    @Value("${type_hrcommonprocess}")
+    private String typeHrcommonProcess;
+    // ############################# #数据字典，数据类型 hr常用流程 end #############################
 
     /**
      * 开发环境使用,默认账号
@@ -205,6 +209,13 @@ public class CommonProperties {
         this.idmUrl = idmUrl;
     }
 
+    public String getTypeHrcommonProcess() {
+        return typeHrcommonProcess;
+    }
+
+    public void setTypeHrcommonProcess(String typeHrcommonProcess) {
+        this.typeHrcommonProcess = typeHrcommonProcess;
+    }
 
     public String getLoginSwitch() {
         return loginSwitch;

@@ -19,10 +19,22 @@ public class Dictionary extends BaseModel implements Serializable {
      * 数据字典id
      */
     private String dicTypeId;
+
+    /**
+     * 字典数据类型编码
+     */
+    private String typeCode;
+
     /**
      * 编码
      */
     private String code;
+
+    /**
+     * 名称
+     */
+    private String name;
+
     /**
      * 英文名称
      */
@@ -66,6 +78,14 @@ public class Dictionary extends BaseModel implements Serializable {
         this.code = code;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getEname() {
         return ename;
     }
@@ -96,5 +116,13 @@ public class Dictionary extends BaseModel implements Serializable {
 
     public void setKeyWord(String keyWord) {
         this.keyWord = keyWord;
+    }
+
+    public String getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
     }
 }

@@ -2,6 +2,7 @@ package com.dragon.portal.service.basedata;
 
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
+import com.dragon.portal.model.basedata.Dictionary;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public com.dragon.portal.model.basedata.Dictionary getDictionaryById(String id) throws Exception;
+    public Dictionary getDictionaryById(String id) throws Exception;
 
     /**
      * 通过ids批量得到字典管理Dictionary
@@ -31,7 +32,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public List<com.dragon.portal.model.basedata.Dictionary> getDictionaryByIds(String ids) throws Exception;
+    public List<Dictionary> getDictionaryByIds(String ids) throws Exception;
 
     /**
      * 通过ids批量得到字典管理Dictionary
@@ -41,7 +42,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public List<com.dragon.portal.model.basedata.Dictionary> getDictionaryByIdsList(List<String> ids) throws Exception;
+    public List<Dictionary> getDictionaryByIdsList(List<String> ids) throws Exception;
 
     /**
      * 得到所有字典管理Dictionary
@@ -51,7 +52,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public List<com.dragon.portal.model.basedata.Dictionary> getAll(com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception;
+    public List<Dictionary> getAll(Dictionary dictionary) throws Exception;
 
     /**
      * 分页查询字典管理Dictionary
@@ -62,7 +63,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public PagerModel<com.dragon.portal.model.basedata.Dictionary> getPagerModelByQuery(com.dragon.portal.model.basedata.Dictionary dictionary, Query query) throws Exception;
+    public PagerModel<Dictionary> getPagerModelByQuery(Dictionary dictionary, Query query) throws Exception;
 
     /**
      * 查询记录数
@@ -72,7 +73,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public int getByPageCount(com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception;
+    public int getByPageCount(Dictionary dictionary) throws Exception;
 
     /**
      * 添加字典管理Dictionary
@@ -81,7 +82,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public void insertDictionary(com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception;
+    public void insertDictionary(Dictionary dictionary) throws Exception;
 
     /**
      * 批量添加字典管理Dictionary
@@ -90,7 +91,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public void insertDictionaryBatch(List<com.dragon.portal.model.basedata.Dictionary> dictionarys) throws Exception;
+    public void insertDictionaryBatch(List<Dictionary> dictionarys) throws Exception;
 
     /**
      * 通过id删除字典管理Dictionary
@@ -126,7 +127,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public int updateDictionary(com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception;
+    public int updateDictionary(Dictionary dictionary) throws Exception;
 
     /**
      * 通过ids批量修改字典管理Dictionary
@@ -136,7 +137,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public int updateDictionaryByIds(String ids, com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception;
+    public int updateDictionaryByIds(String ids, Dictionary dictionary) throws Exception;
 
     /**
      * 通过ids批量修改字典管理Dictionary
@@ -146,7 +147,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public int updateDictionaryByIdsList(List<String> ids, com.dragon.portal.model.basedata.Dictionary dictionary) throws Exception;
+    public int updateDictionaryByIdsList(List<String> ids, Dictionary dictionary) throws Exception;
 
     /**
      * 通过id批量修改字典管理Dictionary
@@ -155,9 +156,7 @@ public interface IDictionaryService {
      * @throws Exception
      * @Description:
      */
-    public int updateDictionaryList(List<com.dragon.portal.model.basedata.Dictionary> dictionarys) throws Exception;
-
-
+    public int updateDictionaryList(List<Dictionary> dictionarys) throws Exception;
 
     /**
      * 查询最大编码
@@ -168,6 +167,14 @@ public interface IDictionaryService {
      * @author wangzhaoliao 2017年6月16日 下午5:24:07
      */
     public String getMaxCode() throws Exception;
+
+    /**
+     *  通过数据类型获取所有的数据字典
+     * @param typeCode
+     * @return
+     * @throws Exception
+     */
+    public List<Dictionary> getBaseDataByType(String typeCode) throws Exception;
 
     //------------api------------
 }
