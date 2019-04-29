@@ -39,7 +39,7 @@ export default class HrBaseInfo extends PureComponent {
         actions={[
           <div className="actionBtn">
             {attendanceData == '1' ? (
-              <a href="/user-center/attendance/summary" target="_blank">
+              <a href="/ys/user-center/attendance/summary" target="_blank">
                 考勤情况
                 <Icon
                   type="close-circle"
@@ -48,7 +48,7 @@ export default class HrBaseInfo extends PureComponent {
                 />
               </a>
             ) : (
-              <a href="/user-center/attendance/summary" target="_blank">
+              <a href="/ys/user-center/attendance/summary" target="_blank">
                 考勤情况
                 <Icon
                   type="check-circle"
@@ -59,12 +59,12 @@ export default class HrBaseInfo extends PureComponent {
             )}
           </div>,
           <div className="actionBtn">
-            <a href="/user-center/train" target="_blank">我的学时
+            <a href="/ys/user-center/train" target="_blank">我的学时
               <span className="learnHours">0</span>
             </a>
           </div>,
           <div className="actionBtn">
-            <a href="/user-center" target="_blank">更多</a>
+            <a href="/ys/user-center" target="_blank">更多</a>
           </div>,
         ]}
       >
@@ -80,7 +80,7 @@ export default class HrBaseInfo extends PureComponent {
                 <p title={userInfo.postname}><Ellipsis length={12}>{userInfo.postname}</Ellipsis></p>
                 <p>
                   {userInfo.positionLevel}
-                  {isLeader?(<a href="/user-team" target="_blank" className={styles.teamBtn}>我的团队</a>):""}
+                  {isLeader?(<a href="/ys/user-team" target="_blank" className={styles.teamBtn}>我的团队</a>):""}
                 </p>
               </div>
             </div>

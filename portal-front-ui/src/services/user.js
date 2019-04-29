@@ -65,7 +65,6 @@ export async function logOutSyn() {
   return request('/rest/portal/user/userLogin/out');
 }
 
-
 /**
  * 忘记密码--修改密码
  * @param params
