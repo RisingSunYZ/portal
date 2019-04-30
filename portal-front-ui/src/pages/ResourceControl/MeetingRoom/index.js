@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import { Form, Popover, Icon, Row, Col, Input, InputNumber, Card, Modal, Select, Button, Table  } from 'antd';
 import styles from './index.less';
@@ -10,8 +10,7 @@ import { getConfig } from '../../../utils/utils.js';
 import moment from 'moment';
 
 const FormItem = Form.Item;
-let applyLists = [];
-
+const applyMap = {};
 const SearchMtRoomForm = Form.create({
   onValuesChange: (props, changedValues, allValues)=>{
     const confToolsStr = allValues['confToolsStr'] ? allValues['confToolsStr'].join(',') : undefined;
@@ -25,49 +24,39 @@ const SearchMtRoomForm = Form.create({
   const { form: { getFieldDecorator }, meetingroomAddrs, meetingroomTools } = props;
   return (
     <Form layout="inline">
-      <Row gutter={{ md: 8, lg: 16}}>
-        <Col md={5} sm={24}>
-          <FormItem label="地点">
-            {getFieldDecorator('meetingroomAddrId')(
-              <Select placeholder="请选择" style={{ width: 120 }}>
-                {meetingroomAddrs.map(addr => (
-                  <Select.Option key={addr.id}>{addr.address}</Select.Option>
-                ))}
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-        <Col md={6} sm={24}>
-          <FormItem label="可容纳人数">
-            {getFieldDecorator('personNumMin')(
-              <InputNumber style={{ width: 50 }} />
-            )}&nbsp;&nbsp;&nbsp;&nbsp;—
-          </FormItem>
-          <FormItem>
-            {getFieldDecorator('personNumMax')(
-              <InputNumber style={{ width: 50 }} />
-            )}
-          </FormItem>
-        </Col>
-        <Col md={5} sm={24}>
-          <FormItem label="设备">
-            {getFieldDecorator('confToolsStr')(
-              <Select mode="multiple" style={{ width: 120 }}>
-                {meetingroomTools.map(tool => (
-                  <Select.Option key={tool.id}>{tool.name}</Select.Option>
-                ))}
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-        <Col md={6} sm={24}>
-          <FormItem label="会议室名称">
-            {getFieldDecorator('meetingroomName')(
-              <Input />
-            )}
-          </FormItem>
-        </Col>
-      </Row>
+      <FormItem label="地点">
+        {getFieldDecorator('meetingroomAddrId')(
+          <Select placeholder="请选择" style={{ width: 120 }}>
+            {meetingroomAddrs.map(addr => (
+              <Select.Option key={addr.id}>{addr.address}</Select.Option>
+            ))}
+          </Select>
+        )}
+      </FormItem>
+      <FormItem label="可容纳人数">
+        {getFieldDecorator('personNumMin')(
+          <InputNumber style={{ width: 50 }} />
+        )}&nbsp;&nbsp;&nbsp;&nbsp;—
+      </FormItem>
+      <FormItem>
+        {getFieldDecorator('personNumMax')(
+          <InputNumber style={{ width: 50 }} />
+        )}
+      </FormItem>
+      <FormItem label="设备">
+        {getFieldDecorator('confToolsStr')(
+          <Select mode="multiple" style={{ width: 180 }}>
+            {meetingroomTools.map(tool => (
+              <Select.Option key={tool.id}>{tool.name}</Select.Option>
+            ))}
+          </Select>
+        )}
+      </FormItem>
+      <FormItem label="会议室名称">
+        {getFieldDecorator('meetingroomName')(
+          <Input />
+        )}
+      </FormItem>
     </Form>
   );
 });
@@ -77,12 +66,13 @@ const SearchMtRoomForm = Form.create({
   loading: loading.models.mtRoom,
 }))
 
-export default class MeetingRoom extends PureComponent {
+export default class MeetingRoom extends Component {
 
   state = {
     currDate: moment(),
     pagination: { pageIndex: 1, pageSize: 10 },
     query: {},
+    applyMap: {},
     selMtRoomId: "",
     detailVisible: false,
   };
@@ -111,12 +101,13 @@ export default class MeetingRoom extends PureComponent {
   };
 
   loadApplyList = (data) => {
-    applyLists = data;
+    const { applyMap } = this.state;
     if(data && data.length){
       const { dispatch } = this.props;
       const { currDate } = this.state;
-      const start = moment(currDate).day(1).format('YYYY-MM-DD'), end = moment(currDate).day(7).format('YYYY-MM-DD');
+      const start = moment(currDate).startOf('week').format('YYYY-MM-DD'), end = moment(currDate).endOf('week').format('YYYY-MM-DD');
       data.map((room, index)=>{
+        applyMap[room.meetingroomId] = room;
         dispatch({
           type: 'mtRoom/queryApplyList',
           payload: {
@@ -127,7 +118,7 @@ export default class MeetingRoom extends PureComponent {
           callback: (res)=>{
             if(res && res.length){
               res.map((apply)=>{
-                applyLists[index][apply.applyDateStr] = apply.applyItemVo || [];
+                applyMap[room.meetingroomId][apply.applyDateStr] = apply.applyItemVo || [];
               });
             }
           }
@@ -140,7 +131,7 @@ export default class MeetingRoom extends PureComponent {
     this.setState({
       currDate: moment()
     }, ()=>{
-      this.loadApplyList(applyLists);
+      this.loadApplyList();
     })
   };
   goPrevWeek = () => {
@@ -148,7 +139,7 @@ export default class MeetingRoom extends PureComponent {
     this.setState({
       currDate: moment(currDate).subtract(7, 'day')
     }, ()=>{
-      this.loadApplyList(applyLists);
+      this.loadApplyList();
     })
   };
   goNextWeek = () => {
@@ -156,7 +147,7 @@ export default class MeetingRoom extends PureComponent {
     this.setState({
       currDate: moment(currDate).add(7, 'day')
     }, ()=>{
-      this.loadApplyList(applyLists);
+      this.loadApplyList();
     })
   };
 
@@ -171,7 +162,7 @@ export default class MeetingRoom extends PureComponent {
   renderRoomColumn = (record) => {
     return (
       <Popover placement="right" content={
-        <Row className="meetingroom-detail">
+        <Row className={styles.meetingroomDetail}>
           <Col span={11}><img src={`${getConfig().ftpHost + record.roomImg}`} alt=""/></Col>
           <Col span={13}>
             <h5>{record.meetingroomName}</h5>
@@ -193,7 +184,9 @@ export default class MeetingRoom extends PureComponent {
     )
   };
 
-  renderApplyList = (date, list, record) => {
+  renderApplyList = (date, record) => {
+    const { applyMap } = this.state;
+    const list = applyMap[record.meetingroomId] ? applyMap[record.meetingroomId][date.format("YYYY-MM-DD")] : [];
     const arr = [];
     const canApply = date.valueOf() >= moment().startOf('date').valueOf();
     if(canApply){
@@ -215,17 +208,24 @@ export default class MeetingRoom extends PureComponent {
 
   applyRoom = (date, record) => {
     const { dispatch } = this.props;
-    this.setState({
-      selMtRoomId: record.meetingroomId,
-      applyDate: date.format("YYYY-MM-DD"),
-      applyData: record[date.format("YYYY-MM-DD")],
-      detailVisible: true
-    });
     dispatch({
       type: 'mtRoom/getmRoomDetail',
       payload: {
         mrId: record.meetingroomId
       }
+    });
+    dispatch({
+      type: 'mtRoom/queryApplyList',
+      payload: {
+        meetingroomId: record.meetingroomId,
+        startDateStr: date.format("YYYY-MM-DD"),
+        endDateStr: date.format("YYYY-MM-DD"),
+      }
+    });
+    this.setState({
+      selMtRoomId: record.meetingroomId,
+      applyDate: date.format("YYYY-MM-DD"),
+      detailVisible: true
     });
   };
 
@@ -240,51 +240,74 @@ export default class MeetingRoom extends PureComponent {
     });
   };
 
+  reloadMeetRoomList = (applyVo) => {
+    const { applyMap } = this.state;
+    this.props.dispatch({
+      type: 'mtRoom/queryApplyList',
+      payload: {
+        meetingroomId: applyVo.meetingroomId,
+        startDateStr: applyVo.startDateStr,
+        endDateStr: applyVo.endDateStr,
+      },
+      callback: (res)=>{
+        res && res.length && res.map(dateapply => {
+          applyMap[applyVo.meetingroomId][dateapply.applyDateStr] = dateapply.applyItemVo;
+        });console.log(applyMap);
+        this.setState({
+          applyMap,
+          detailVisible: false
+        });
+      }
+    });
+  };
+
   render() {
     const {
       mtRoom: { roomList, meetingroomAddrs, meetingroomTools },
       loading,
     } = this.props;
-    const { currDate, pagination, detailVisible, selMtRoomId, applyData, applyDate } = this.state;
+    const { currDate, pagination, detailVisible, applyDate } = this.state;
     const columns = [{
       dataIndex: 'meetingRoom',
       title: '会议室',
       render: (text,  record)=> this.renderRoomColumn(record)
     }];
     for(let i=0; i<7; i++){
-      const str = moment(currDate).day(i+1);
+      const str = moment(currDate).startOf('week').add(i, 'day');
       columns.push({
         dataIndex: str.format("YYYY-MM-DD"),
         title: `${moment.weekdays(i+1)}(${str.format("MM月DD日")})`,
-        render: (text, record) => this.renderApplyList(str, text, record)
+        render: (text, record) => this.renderApplyList(str, record)
       })
     }
     return (
       <PageHeaderWrapper>
         <Card>
-          <Row>
-            <Col md={9} sm={12}>
+          <Row style={{lineHeight: '40px', marginBottom: 10}}>
+            <Col md={6} sm={12}>
               <Button onClick={this.goToCurrent} type="primary">本周</Button>
               <Button className={styles.weekBtn} onClick={this.goPrevWeek}><Icon type="left" /></Button>
-              <span>{moment(currDate).day(1).format('YYYY-MM-DD')}日 - {moment(currDate).day(7).format('YYYY-MM-DD')}日 {moment(currDate).week()}周</span>
+              <span>{moment(currDate).startOf('week').format('YYYY-MM-DD')}日 - {moment(currDate).endOf('week').format('YYYY-MM-DD')}日 {moment(currDate).week()}周</span>
               <Button className={styles.weekBtn} onClick={this.goNextWeek}><Icon type="right" /></Button>
             </Col>
-            <Col span={4} offset={11}>
+            <Col md={14} sm={20}>
+              <SearchMtRoomForm
+                meetingroomAddrs={meetingroomAddrs}
+                meetingroomTools={meetingroomTools}
+                onFieldsChange={this.onSearchMtRoom}
+              />
+            </Col>
+            <Col span={4}>
               <Link to={`/biz-sys/zygl/hys/my-apply`}><Icon style={{color: '#0e65af', fontSize: 16, marginRight: 3}} type="profile" />我的申请</Link>
             </Col>
           </Row>
-          <SearchMtRoomForm
-            meetingroomAddrs={meetingroomAddrs}
-            meetingroomTools={meetingroomTools}
-            onFieldsChange={this.onSearchMtRoom}
-          />
           <Table
             bordered
             rowKey="meetingroomId"
             className={styles.mtApplyList}
             loading={loading}
             columns={columns}
-            dataSource={applyLists || []}
+            dataSource={roomList.data || []}
             pagination={{
               ...pagination,
               total: roomList.total,
@@ -292,14 +315,12 @@ export default class MeetingRoom extends PureComponent {
             onChange={this.handleRoomChange}
           />
         </Card>
-        <MeetingRoomApplyDetail
+        {detailVisible ? <MeetingRoomApplyDetail
           visible={detailVisible}
-          roomId={selMtRoomId}
-          applyDate={applyDate}
-          applyData={applyData}
+          meetDate={applyDate}
           onCancel={()=>this.setState({detailVisible: false })}
-          onSave={()=>this.setState({detailVisible: false })}
-        />
+          onSave={this.reloadMeetRoomList}
+        /> : ''}
       </PageHeaderWrapper>
     )
   }

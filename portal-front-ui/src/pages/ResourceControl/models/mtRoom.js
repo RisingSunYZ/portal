@@ -6,7 +6,7 @@ import {
   getMeetingApplyById ,
   queryMyApplyList,
   saveMtRoomMsg,
-  submitProcess,
+  ReSubmitProcess,
   updateMeetingStatus,
 } from '@/services/meetingRoom';
 import { message } from 'antd';
@@ -20,7 +20,8 @@ export default {
     applyList: [],
     meetingroomAddrs: [],
     meetingroomTools: [],
-    roomDetail: {
+    applyDetail: {
+      applyVo: {},
       loginUser: {},
       meetingroom: {},
       meetingroomAddr: {},
@@ -86,23 +87,15 @@ export default {
         callback(response)
       }
     },
-    *submitProcess({payload,callback},{call,put}) {
-      const response= yield call(submitProcess,payload);
-      if(response.code === '100'){
-        yield put({
-          type: 'delDraftById',
-          payload:{ id: payload.id }
-        });
-        message.success(response.msg)
+    *ReSubmitProcess({payload,callback},{call,put}) {
+      const response= yield call(ReSubmitProcess,payload);
+      if(callback && typeof callback === 'function'){
+        callback(response)
       }
     },
     *updateMeetingStatus({payload,callback},{call,put}){
       const response= yield call(updateMeetingStatus,payload);
-      yield put({
-        type: 'sendData',
-        payload:response
-      });
-      if(callback) callback(response);
+      if(callback && typeof callback === 'function') callback(response);
     },
   },
 
@@ -122,7 +115,7 @@ export default {
     saveRoomDetail(state, action) {
       return {
         ...state,
-        roomDetail: action.payload
+        applyDetail: action.payload
       };
     },
     saveTools(state, action) {
