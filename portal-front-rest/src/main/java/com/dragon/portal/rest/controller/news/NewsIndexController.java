@@ -293,6 +293,16 @@ public class NewsIndexController extends BaseController {
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "上传失败!" );
         try {
             UserSessionInfo userSessionInfo = getUserSessionInfo( request, response );
+            if (userSessionInfo == null) {
+                returnVo.setMsg( "用户未登录" );
+                throw new Exception( "用户未登录" );
+            }
+
+            if (file == null) {
+                returnVo.setMsg( "上传文件为空" );
+                throw new Exception( "上传文件为空" );
+            }
+
             filePath = StringUtils.isBlank( filePath ) ? "p" : filePath;
 
             // FTP上传文件
