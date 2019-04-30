@@ -401,7 +401,7 @@ export default class MeetingRoom extends PureComponent {
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>会议内容：</Col>
-                      <Col span={20}><div dangerouslySetInnerHTML={{__html: item.content}}/></Col>
+                      <Col span={20}><div dangerouslySetInnerHTML={{ __html: item.content }}/></Col>
                   </Row>
                   <Row className={styles.rows}>
                     <Col span={24} style={{left:30,fontSize:18}}>
@@ -411,7 +411,7 @@ export default class MeetingRoom extends PureComponent {
                   <Row className={styles.rows}>
                     <Col span={2} className={styles.col1}>会议纪要：</Col>
                     <Col span={20}>
-                      <span><div dangerouslySetInnerHTML={{__html: item.summaryContent}}/></span>
+                      <span><div dangerouslySetInnerHTML={{ __html: item.summaryContent }}/></span>
                       {((cardType === 1 || cardType === 2 || cardType === 3) && !this.calculationTime(item.startTime)) ? (
                         <div style={{margin: '10px 0'}}>
                           <Link to={"/workplace/meeting-room/"+cardType+"/meeting-summary/"+item.id}>

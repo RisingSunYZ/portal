@@ -18,12 +18,7 @@ class StaffList extends PureComponent {
   state = {
     visible: false, //我要秀 弹框
     uploadVisible: true, //上传部分
-    fileList: [{
-      uid: '-1',
-      name: 'xxx.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    }],
+    fileList: [],
   };
 
 
@@ -58,9 +53,14 @@ class StaffList extends PureComponent {
   };
 
 
-  handleChange = ({ fileList }) => {
+  handleChange = ( { fileList } ) => {
+    const { dispatch }=this.props;
+    dispatch({
+      type: 'newsInfo/addPhotos',
+      payload: { fileList },
+    });
     this.setState({ fileList });
-  }
+  };
 
 
   handleUpDown = () => {
@@ -69,26 +69,24 @@ class StaffList extends PureComponent {
     })
   };
 
+  // 发布
   sendPublic = () => {
-    const {dispatch ,form }=this.props;
-    // debugger;
+    const { dispatch ,form } = this.props;
     form.validateFields((err, fieldsValue)=>{
       console.log(fieldsValue);
       if(err) return;
       if(fieldsValue.title === ""){
-        message.error('标题不能为空')
+        message.error( '标题不能为空!')
       }else if(fieldsValue.remark === ""){
-        message.error('简介不能为空')
+        message.error( '简介不能为空!')
+      }else{
+        dispatch({
+          type:'newsInfo/addNewsStaffPre',
+          payload:{ ...fieldsValue }
+        });
+        this.handleOk()
       }
-      dispatch({
-        type:'newsInfo/addNewsStaffPre',
-        payload:{...fieldsValue },
-        // callback: res => {
-        //   if (res.code === '100') {
-        //       message.success(res.msg)
-        //   }
-        // },
-      });
+
     })
   };
 
@@ -102,6 +100,13 @@ class StaffList extends PureComponent {
         <div className="ant-upload-text">Upload</div>
       </div>
     );
+
+    const uploadProps={
+      action: `/rest/portal/news/uploadFile`,
+      listType:"picture-card",
+      onChange:this.handleChange
+    };
+
     return (
       <PageHeaderWrapper>
         <Card className={styles.imgCard}>
@@ -128,33 +133,30 @@ class StaffList extends PureComponent {
                 })
                 (<textarea name="remark" className={styles.textDesc} /> )}
               </FormItem>
-            </Form>
-            <div className={styles.optArea}>
-              <span onClick={this.handleUpDown}>
-                <Icon type="picture" className={styles.iconPic}/>&nbsp;&nbsp;
-                <span className={styles.textSpan}>图片</span>
-              </span>
-              <span className={styles.optRt}>
-                <span className={styles.textSpan}>随意秀</span>
-                <Icon type="down"/>
-                <span className={styles.btnPublic} onClick={this.sendPublic}>发布</span>
-              </span>
-            </div>
+              <FormItem>
+                <div className={styles.optArea}>
+                 <span onClick={this.handleUpDown}>
+                   <Icon type="picture" className={styles.iconPic}/>&nbsp;&nbsp;
+                   <span className={styles.textSpan}>图片</span>
+                 </span>
+                 <span className={styles.optRt}>
+                  <span className={styles.textSpan}>随意秀</span>
+                  <Icon type="down"/>
+                  <span className={styles.btnPublic} onClick={this.sendPublic}>发布</span>
+                 </span>
+                </div>
 
-            <div className={styles.uploadBtn} style={{display: uploadVisible ? '': 'none'}}>
-              <h4 className={styles.upText}>本地上传</h4>
-              <span className={styles.photoCount}>共0张，还能上传9张</span>
-              <div>
-                <Upload
-                  action="//jsonplaceholder.typicode.com/posts/"
-                  listType="picture-card"
-                  fileList={fileList}
-                  onChange={this.handleChange}
-                >
-                  {fileList.length >= 9 ? null : uploadButton}
-                </Upload>
-              </div>
-            </div>
+                <div className={styles.uploadBtn} style={{display: uploadVisible ? '': 'none'}}>
+                  <h4 className={styles.upText}>本地上传</h4>
+                  <span className={styles.photoCount}>共{ 0 + fileList.length }张，还能上传{ 9 - fileList.length }张</span>
+                  <div className="clearfix">
+                    <Upload {...uploadProps}>
+                      {fileList.length >= 9 ? null : uploadButton}
+                    </Upload>
+                  </div>
+                </div>
+              </FormItem>
+            </Form>
           </Modal>
           <List
             dataSource={ staffLists }
