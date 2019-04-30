@@ -1,4 +1,4 @@
-package com.dragon.portal.web.controller.hr;
+package com.dragon.portal.rest.controller.hr;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +33,7 @@ import java.util.Map;
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
 @Controller
-@RequestMapping("/portal/api/hrService")
+@RequestMapping("/rest/portal/hrService")
 public class ApiHrServiceController extends BaseController {
 
     private static Logger logger = Logger.getLogger(ApiHrServiceController.class);
@@ -46,7 +46,7 @@ public class ApiHrServiceController extends BaseController {
     private IPersonnelApi personnelApi;
 
     /**
-     * 常用流程
+     * 常用流程s
      *
      * @return
      */
@@ -100,4 +100,5 @@ public class ApiHrServiceController extends BaseController {
         }
         return returnVo;
     }
+
 }

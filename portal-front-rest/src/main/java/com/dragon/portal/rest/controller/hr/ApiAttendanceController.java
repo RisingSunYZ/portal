@@ -1,4 +1,4 @@
-package com.dragon.portal.web.controller.hr;
+package com.dragon.portal.rest.controller.hr;
 
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.vo.user.UserSessionInfo;
@@ -23,7 +23,7 @@ import java.util.*;
  * @Since:2019年04月29日 10:29:21
  */
 @Controller
-@RequestMapping("/portal/api/attendance")
+@RequestMapping("/rest/portal/attendance")
 public class ApiAttendanceController extends BaseController {
 
     private static Logger logger = Logger.getLogger(ApiAttendanceController.class);
@@ -72,3 +72,4 @@ public class ApiAttendanceController extends BaseController {
     }
 
 }
+

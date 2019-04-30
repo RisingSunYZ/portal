@@ -1,4 +1,4 @@
-package com.dragon.portal.web.controller.hr;
+package com.dragon.portal.rest.controller.hr;
 
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.vo.user.UserSessionInfo;
@@ -32,7 +32,8 @@ import java.util.Map;
  * 浙江亚厦 2018 ~ 2030 版权所有
  */
 @RestController
-@RequestMapping("/portal/api/train")
+@RequestMapping("/rest/portal/train")
+
 public class ApiTrainController extends BaseController {
 
     private static Logger logger = Logger.getLogger(ApiTrainController.class);
@@ -94,6 +95,4 @@ public class ApiTrainController extends BaseController {
         returnVo = new ReturnVo<>(ReturnCode.SUCCESS, "获取数据成功", maps);
         return returnVo;
     }
-
-
-}
+    }
