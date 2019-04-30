@@ -11,4 +11,5 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @Configuration
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds=86400) //启动springSession 过期时间24小时
 public class RedisSessionConfig {
+
 }

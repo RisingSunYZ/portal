@@ -20,7 +20,7 @@ export function getConfig() {
     mqStaffId : '1816145',
     zsTargetGroupId : '264104623',
     zsStaffId : '1815233',
-    idmLoginSwitch : true,// 是否启用IDM登录
+    idmLoginSwitch : false,// 是否启用IDM登录
     idmBaseUrl:'https://idmtest.chinayasha.com:8443/siam/login',// IDM登录服务
     idmLoginCallbackUrl:'http://homedev.chinayasha.com/rest/user/userLogin',// IDM登录回调URL
     idmLogoutUrl:'https://idmtest.chinayasha.com:8443/siam/logout',// IDM 退出请求地址
@@ -473,14 +473,14 @@ export function regWindowFun() {
           img.attr('src', ftpHost + (o.url.indexOf('/')===0 ? o.url: `/${o.url}`));
         }
         img.on('error', function(){
-          img.unbind('error')
+          img.unbind('error');
           this.src = `${getConfig().domain}/assets/img/public/img-onerror.png`;
         });
         img.attr('alt', o.name);
         _box.append(img);
       })
     }else{
-      message.error("属性不正确，请设置【opt.imgs】！", 2000)
+      message.error("属性不正确，请设置【opt.imgs】！", 2000);
       return null;
     }
     const viewer = new Viewer(_box[0], {zIndex:999999,
@@ -491,7 +491,7 @@ export function regWindowFun() {
     });
     viewer.view(opt.current>opt.imgs.length-1?opt.imgs.length-1:opt.current);
     viewer.show();
-  }
+  };
   return null;
 }
 

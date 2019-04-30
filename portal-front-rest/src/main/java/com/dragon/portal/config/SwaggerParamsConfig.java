@@ -60,7 +60,7 @@ public class SwaggerParamsConfig implements ParameterBuilderPlugin {
                 String UUIDName = name + UUIDGenerator.generate();
                 ApiJsonProperty[] properties = optional.get().value();
 
-                parameterContext.getDocumentationContext().getAdditionalModels().add(typeResolver.resolve(createRefModel(properties, UUIDName)));  //像documentContext的Models中添加我们新生成的Class
+                parameterContext.getDocumentationContext().getAdditionalModels().add(typeResolver.resolve(createRefModel(properties, UUIDName)));  //向documentContext的Models中添加我们新生成的Class
 
                 parameterContext.parameterBuilder()  //修改Map参数的ModelRef为我们动态生成的class
                         .parameterType("body")

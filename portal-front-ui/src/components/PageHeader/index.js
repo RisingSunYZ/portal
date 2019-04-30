@@ -22,7 +22,7 @@ export default class PageHeader extends PureComponent {
     } else {
       this.setState({height: "auto"})
     }
-  }
+  };
 
   render() {
     const {

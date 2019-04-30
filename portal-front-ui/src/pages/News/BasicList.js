@@ -1,3 +1,4 @@
+//实际效果详见  财经服务--财经资讯--更多（链接）
 import React, { PureComponent } from 'react';
 import { List, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
@@ -18,11 +19,11 @@ export default class BasicList extends PureComponent {
   };
 
   componentDidMount () {
-    const { match: { params }, dispatch } = this.props;
+    const { location: { query }, dispatch } = this.props;
     dispatch({
       type: 'newsNotice/queryCompanyNewsList',
       payload: {
-        typeSn: params.typeSn,
+        typeSn: query.typeSn,
         pageSize: 15,
         pageNum: 1,
       }
@@ -30,14 +31,14 @@ export default class BasicList extends PureComponent {
   }
 
   searchHandle = (value) => {
-    const { match: { params }, dispatch } = this.props;
+    const { location: { query }, dispatch } = this.props;
     this.setState({
       searchText: value
     });
     dispatch({
       type: 'newsNotice/queryCompanyNewsList',
       payload: {
-        typeSn: params.typeSn,
+        typeSn: query.typeSn,
         pageNum: 1,
         pageSize: 15,
         title: value,
@@ -46,13 +47,13 @@ export default class BasicList extends PureComponent {
   };
 
   updateNewsTable = (pagination) =>{
-    const { match: { params }, dispatch } = this.props;
+    const { location: { query }, dispatch } = this.props;
     const { searchText } = this.state;
 
     dispatch({
       type: 'newsNotice/queryCompanyNewsList',
       payload: {
-        typeSn: params.typeSn,
+        typeSn: query.typeSn,
         pageNum: pagination.current,
         pageSize: pagination.pageSize,
         title: searchText,
@@ -63,23 +64,25 @@ export default class BasicList extends PureComponent {
   render() {
 
     const {
-      newsNotice:{ companyNewsList }
+      newsNotice:{ tblist }
     } = this.props;
+
+    const tableList = tblist.data ? (tblist.data.data ? tblist.data.data : []) : [];
 
     return (
       <PageHeaderWrapper>
-        <Card bordered={false} bodyStyle={{padding: '16px 24px'}}>
-          <Row style={{marginBottom: 16}}>
-            <Col offset={19} span={5}>
-              <Input.Search placeholder="新闻/公告" onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} />
-            </Col>
-          </Row>
+        <Row style={{marginTop: -60}}>
+          <Col offset={19} span={5}>
+            <Input.Search placeholder="新闻/公告" onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} />
+          </Col>
+        </Row>
+        <Card bordered={false} bodyStyle={{padding: '16px 24px'}} style={{marginTop: 18}}>
           <List
             size="large"
-            dataSource={companyNewsList.data}
+            dataSource={tableList}
             pagination={{
               pageSize: 15,
-              total: companyNewsList.total,
+              total: tableList.total,
               onChange: this.updateNewsTable
             }}
             renderItem={item => (
@@ -88,14 +91,14 @@ export default class BasicList extends PureComponent {
               >
                 <div className={styles.newsBox}>
                   <div className={styles.imgBox}>
-                    <Link to={`/news/news-detail/${item.id}`} target="_blank">
+                    <Link target="_blank" href={`/news/basic-list/detail/${item.id}`}>
                       <img width={194} height={120} src={ getConfig().ftpHost + item.thumbImg } alt=""/>
                     </Link>
                   </div>
                   <div className={styles.textBox}>
                     <h5>
-                      <Link to={`/news/news-detail/${item.id}`} target="_blank">
-                        <span>{item.title}</span>
+                      <Link target="_blank" href={`/news/basic-list/detail/${item.id}`}>
+                        {item.title}
                       </Link>
                     </h5>
                     <p className={styles.content}>{item.remark}</p>

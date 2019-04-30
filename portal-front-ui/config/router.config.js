@@ -584,6 +584,19 @@ export default [
         ],
       },
 
+      // materialFilePage
+      {
+        path: '/fnc-service/material-filepage',
+        name: 'materialFilePage',
+        component: '../layouts/BasicLayout',
+        routes:[
+          {
+            path: '/fnc-service/material-filepage',
+            name: 'material-filepage',
+            component: './FncService/MaterialFilePage',
+          },
+        ],
+      },
       // file preview
       {
         path: '/file-preview',
