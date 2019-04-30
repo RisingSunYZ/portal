@@ -441,8 +441,10 @@ export default {
       };
       return result;
     },
+
     // 删除附件
     delProcessFile(state, action) {
+      console.log("删除附件测试");
       const id = action.payload.id;
       const files = state.formInfo.files.filter(file => file.id !== id);
 

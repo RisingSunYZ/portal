@@ -12,6 +12,7 @@ import com.dragon.portal.properties.CommonProperties;
 import com.dragon.portal.rest.controller.BaseController;
 import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.service.user.IUserLoginService;
+import com.dragon.portal.service.user.impl.UserLoginServiceImpl;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.utils.CookiesUtil;
@@ -35,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -60,7 +60,7 @@ public class UserLoginController extends BaseController{
 
     @Autowired
     private IUserLoginService userLoginService;
-    @Resource
+    @Autowired
     private AuthUtils authUtils;
     @Autowired
     private CommonProperties commonProperties;

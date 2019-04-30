@@ -261,7 +261,7 @@ public class FncController extends BaseController {
     }
 
     /**
-     * 文件下载
+     * 文件下载(重构后，暂时未使用此方法)
      * @Description:
      * @param request
      * @param response

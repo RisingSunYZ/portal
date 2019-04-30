@@ -12,6 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @Author: Bruce.liu
  * @Since:17:32 2019/1/9
  * 浙江亚厦 2018 ~ 2030 版权所有
+ * @MapperScan("", "")可以指定要扫描的Mapper类的包的路径，允许指定多个;
  */
 @SpringBootApplication(scanBasePackages = {"com.dragon", "com.ecnice", "org.apache.dubbo"})
 @MapperScan("com.dragon.*.dao.*")

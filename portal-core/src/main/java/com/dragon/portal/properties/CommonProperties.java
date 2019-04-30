@@ -11,8 +11,8 @@ import org.springframework.context.annotation.PropertySource;
  * @Version: 1.1.0
  * @Copyright: Copyright (c) 亚厦股份有限公司 2018 ~ 2020 版权所有
  */
-@PropertySource(value="classpath:/dict.properties")
 @Configuration
+@PropertySource(value="classpath:/dict.properties")
 public class CommonProperties {
 
     @Value("${ysportal.manager.url}")
@@ -115,6 +115,15 @@ public class CommonProperties {
 
     @Value("${finance.email.fromEmail}")
     private  String financeEmailFromEmail;
+
+    @Value("${meetingroom.formName}")
+    private String meetingroomFormName;
+
+    @Value("${systemSn}")
+    private String systemSn;
+
+    @Value("${meetingroom.definitionKey}")
+    private String meetingroomDefinitionKey;
 
     public String getYsportalManagerURL() { return ysportalManagerURL; }
 
@@ -223,5 +232,18 @@ public class CommonProperties {
 
     public void setLoginSwitch(String loginSwitch) {
         this.loginSwitch = loginSwitch;
+    }
+
+
+    public String getMeetingroomFormName() {
+        return meetingroomFormName;
+    }
+
+    public String getSystemSn() {
+        return systemSn;
+    }
+
+    public String getMeetingroomDefinitionKey() {
+        return meetingroomDefinitionKey;
     }
 }

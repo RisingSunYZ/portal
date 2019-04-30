@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -46,7 +45,7 @@ public class FileOperationController {
 	@Autowired
 	private CommonProperties commonProperties;
 
-	@Resource
+    @Autowired
 	private FtpTools ftpTools;
 
 
@@ -354,7 +353,6 @@ public class FileOperationController {
 			InputStream is = conn.getInputStream(); //得到网络返回的输入流
 			response.setContentType("application/force-download");// 设置强制下载不打开
 			String s1 ="attachment;fileName=\"" + fileName + "\"; filename*=\"utf-8''" + fileName+"\""+";filename*=utf-8''"+fileName;
-
 			response.addHeader("Content-Disposition", s1);// 设置文件名
 			byte[] buffer = new byte[1024];
 			bis = new BufferedInputStream(is);

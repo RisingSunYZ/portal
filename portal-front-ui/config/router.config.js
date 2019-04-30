@@ -144,6 +144,11 @@ export default [
             name: 'meetingroom-manage',
             component: './ResourceControl/MeetingRoom'
           },
+          {
+            path: '/biz-sys/zygl/hys/my-apply',
+            name: 'meetingroom-apply-list',
+            component: './ResourceControl/MeetingRoom/MyApplyList'
+          }
         ]
       },
       // address-book
@@ -579,6 +584,19 @@ export default [
         ],
       },
 
+      // materialFilePage
+      {
+        path: '/fnc-service/material-filepage',
+        name: 'materialFilePage',
+        component: '../layouts/BasicLayout',
+        routes:[
+          {
+            path: '/fnc-service/material-filepage',
+            name: 'material-filepage',
+            component: './FncService/MaterialFilePage',
+          },
+        ],
+      },
       // file preview
       {
         path: '/file-preview',

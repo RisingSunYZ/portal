@@ -19,9 +19,7 @@ export default {
     ntlist: {},
     newsBanners:[],
     tblist: {
-      data: [],
-      rows: [],
-      total: 0
+
     },
     companyNewsList: {
       data: [],
@@ -202,6 +200,12 @@ export default {
       return {
         ...state,
         companyNewsList: action.payload.data,
+      };
+    },
+    saveCompanyNewsList(state, action) {
+      return {
+        ...state,
+        tblist: action.payload,
       };
     },
     saveNoticeDetail(state, action) {

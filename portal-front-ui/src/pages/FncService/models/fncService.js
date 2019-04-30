@@ -7,7 +7,7 @@ export default {
   state: {
     materialFiles:{},
     opinion: [],
-    opinions: {}
+    opinions: {},
   },
 
   namespace: 'fncService',

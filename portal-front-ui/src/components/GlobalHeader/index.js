@@ -40,26 +40,6 @@ export default class GlobalHeader extends PureComponent {
       type: 'login/logOut',
       payload: {
       },
-      callback: (res) => {
-        debugger
-        // window.location.href = getConfig().seeyonPath+'seeyon/main.do?method=logoutFromhome';
-        window.location.href = getConfig().domain+'/main.jhtml';
-
-        // const url = '/portal/ulogin/loginoutSyn.jhtml';
-        // $.ajax({url:url, data:{}, async:false, type:'POST', dataType:'JSON', success:function(dt){
-        //     if(dt.code == 1){
-        //       $.ajax({dataType:'jsonp',url:"${seeyonPath}/seeyon/main.do?method=logoutFromhome"});
-        //       window.location.href = getConfig().domain
-        //     }
-        //   }});
-
-        // if (res.code == '100' ) {
-        //   // 判断如果是IDM，如果是IDM，将IDM也退出
-        //   router.push({
-        //     pathname:'/user/login',
-        //   });
-        // }
-      }
     });
   }
 

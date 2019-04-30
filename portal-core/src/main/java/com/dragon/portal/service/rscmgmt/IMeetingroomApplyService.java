@@ -136,7 +136,7 @@ public interface IMeetingroomApplyService {
 	 * @Description:
 	 * @author v-zhaohaishan 2017年4月18日 下午3:42:52
 	 */
-	public PagerModel<MeetingroomMyApplyVo> getPagerModelByMeetingroomMyApplyVo(MeetingroomApply meetingroomApply,Query query) throws Exception;
+	public PagerModel<MeetingroomApply> getPagerModelByMeetingroomMyApplyVo(MeetingroomApply meetingroomApply,Query query) throws Exception;
 
 	
 	/**
@@ -178,5 +178,14 @@ public interface IMeetingroomApplyService {
 
 
 	public void updateMeetingroomApplyStatusToExpireByList(List<MeetingroomApply> list) throws Exception;
+
+	/**
+	 * @Author YangZhao
+	 * @Description 处理会议室列表
+	 * @Date 13:05 2019/4/28
+	 * @Param [pm]
+	 * @return com.dragon.tools.pager.PagerModel<com.dragon.portal.vo.rscmgmt.MeetingroomMyApplyVo>
+	 **/
+	public PagerModel<MeetingroomMyApplyVo> handleMeetData(PagerModel<MeetingroomApply> pm) throws Exception;
 
 }

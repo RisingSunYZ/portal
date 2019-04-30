@@ -3,8 +3,9 @@ import { connect } from 'dva';
 import { Form, Popover, Icon, Row, Col, Input, InputNumber, Card, Modal, Select, Button, Table  } from 'antd';
 import styles from './index.less';
 import Link from 'umi/link';
-import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import MeetingRoomApplyDetail from '../components/MeetingRoomApplyDetail';
+import { UserHeadBox } from '@/components/User';
 import { getConfig } from '../../../utils/utils.js';
 import moment from 'moment';
 
@@ -196,10 +197,14 @@ export default class MeetingRoom extends PureComponent {
     const arr = [];
     const canApply = date.valueOf() >= moment().startOf('date').valueOf();
     if(canApply){
-      arr.push(<Icon onClick={()=>this.applyRoom(date, record)} className={styles.applyBtn} type="plus" />);
+      arr.push(<Icon key={date.format()} onClick={()=>this.applyRoom(date, record)} className={styles.applyBtn} type="plus" />);
     }
     list && list.length && list.map((item, index) => {
-
+      arr.push(<div className="record-box" key={index+1}>
+        {item.status === 1 ? <Icon type="check-circle" theme="filled" className="ok" /> : <Icon type="info-circle" theme="filled" className="in-approve" />}
+        <span className="time-range">{item.startTimeStr}-{item.endTimeStr}</span>
+        <UserHeadBox userNo={item.applyPersonNo} textRender={()=><span className="apply-user">{item.applyPersonName}</span>} />
+      </div>)
     });
     return (
       <div className={`${styles.applyContainer} ${canApply ? styles.canApply : ''}`}>
@@ -264,7 +269,8 @@ export default class MeetingRoom extends PureComponent {
               <span>{moment(currDate).day(1).format('YYYY-MM-DD')}日 - {moment(currDate).day(7).format('YYYY-MM-DD')}日 {moment(currDate).week()}周</span>
               <Button className={styles.weekBtn} onClick={this.goNextWeek}><Icon type="right" /></Button>
             </Col>
-            <Col span={15}>
+            <Col span={4} offset={11}>
+              <Link to={`/biz-sys/zygl/hys/my-apply`}><Icon style={{color: '#0e65af', fontSize: 16, marginRight: 3}} type="profile" />我的申请</Link>
             </Col>
           </Row>
           <SearchMtRoomForm
