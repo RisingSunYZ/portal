@@ -19,8 +19,22 @@ export async function getStaffList(params) {
   return request(`/rest/portal/news/ajaxListMedia?${stringify(params)}`);
 }
 
+/**
+ * 点击发布增加员工相册
+ * @param params
+ * @returns {Promise<Object>}
+ */
 export async function addNewsStaffs(params) {
   return request(`/rest/portal/news/addNewsStaffPresence?${stringify(params)}`);
+}
+
+/**
+ *员工风采 点击查看图片详情
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function queryPhoDetail(params) {
+  return request(`/rest/portal/news/getStaffData?id=${params.id}`);
 }
 /**
  * 获取新闻banner数据

@@ -1,4 +1,4 @@
-import { queryNewsList,getStaffList,addNewsStaffs } from '../../../services/news';
+import { queryNewsList,getStaffList,addNewsStaffs ,queryPhoDetail} from '../../../services/news';
 export default {
   namespace: 'newsInfo',
 
@@ -27,7 +27,9 @@ export default {
       pagination: {},
     },
 
-    staffLists:[] //员工相册 更多
+    staffLists:[], //员工相册 更多
+    photoFile:[],
+    picFiles:[]
   },
 
   effects: {
@@ -74,6 +76,17 @@ export default {
       });
     },
 
+
+    *queryStaffPhotoDetail({ payload }, { call, put }) {
+
+      const response = yield call(queryPhoDetail, payload);
+      yield put({
+        type: 'getStaffDetail',
+        payload: response.data,
+        pagination: payload,
+      });
+    },
+
     //获得员工风采的更多页面
     *getListMedia({ payload }, { call, put }) {
       const response = yield call(getStaffList, payload);
@@ -84,13 +97,16 @@ export default {
     },
 
 
+    /**
+     * 点击发布增加员工相册
+     * @param payload
+     * @param callback
+     * @param call
+     * @param put
+     * @returns {IterableIterator<*>}
+     */
     *addNewsStaffPre({ payload ,callback}, { call, put }) {
-      // debugger;
       const response = yield call(addNewsStaffs, payload);
-      yield put({
-        type: 'staffData',
-        payload: response
-      });
       if(callback) callback(response);
     },
   },
@@ -149,6 +165,46 @@ export default {
         ...state,
         staffLists: action.payload.data
       };
-    }
+    },
+
+    /**
+     * 上传图片
+     * @param state
+     * @param action
+     * @returns {*}
+     */
+    addPhotos(state, action) {
+      const photoList = action.payload.fileList[0];
+      if(photoList.response){
+        if (photoList && photoList.percent === 100) {
+          return { ...state };
+        }
+
+        const file = {
+          id: photoList.uid,
+          name: photoList.name,
+          filePath: photoList.response ? photoList.response.data : '',
+          ...photoList,
+        };
+
+        let picFiles = [];
+        if(state.photoFile){
+          picFiles = state.photoFile.concat(file);
+        }else{
+          picFiles.push(file);
+        }
+        const result = {
+          ...state,
+          picFiles
+        };
+        return result;
+      }
+
+      const result = {
+        ...state,
+      };
+      return result;
+
+    },
   },
 };

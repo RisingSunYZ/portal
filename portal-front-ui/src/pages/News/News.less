@@ -61,7 +61,7 @@
     height:0;
     padding:16px;
     text-align:center;
-    background:rgba(0, 0, 0, 0.5);
+    background:rgba(0, 0, 0, 0.7);
     opacity:0;
     color:#fff;
     transition:all .3s ease-out;
@@ -75,6 +75,11 @@
   opacity: 1;
   height: 126px;
 }
+.linkImg:hover{
+  cursor:pointer;
+}
+
+//相册弹窗
 
 
 //行业动态
@@ -90,6 +95,10 @@
 :global{
   .ant-list-vertical .ant-list-item-meta-title{
     margin-bottom:6px;
+  }
+  .ant-comment-inner{
+    padding-bottom:0 !important;
+    border-bottom: 1px solid #ddd;
   }
 }
 .thumbImg{
@@ -234,4 +243,126 @@
 }
 .imgContent:hover .infoDesc{
   opacity:1;
+}
+
+
+//员工风采Modal部分
+.modalContent{
+  :global{
+    .ant-modal-body{
+      padding:0;
+    }
+  }
+}
+.topArea{
+  margin:50px 0 10px 24px;
+  padding-right:12px;
+  .topTitle{
+    font-size:18px;
+    color:#333;
+    word-break: break-all;
+  }
+  .publickPer{
+    display:inline-block;
+    margin-right: 20px;
+    font-size:10px;
+    color:#8C8C8C;
+  }
+  .spanText{
+    font-size:10px;
+    color:#8C8C8C;
+    display:inline-block;
+    margin-right:30px;
+  }
+  .spanCount{
+    font-size:10px;
+    color:#8C8C8C;
+  }
+  .botTitle{
+    font-size:14px;
+    color:#333;
+    text-indent:1.5rem;
+    margin:20px 0;
+  }
+}
+
+
+//追加评论内容
+.nameDate{
+  font-size:12px;
+  color:#8c8c8c;
+}
+.valueContent{
+  word-break:break-all;
+  font-size:14px;
+  color:#333;
+}
+.commentArea{
+  padding-right:12px;
+}
+
+
+
+:global{
+  .wp-news-box .slick-dots {
+    top: -26px;
+  }
+  .marginBottom{
+    margin-bottom: 16px;
+  }
+  .marginBottomSm{
+    margin-bottom: 8px;
+  }
+  .marginBottomLg{
+    margin-bottom: 32px;
+  }
+  #phoBox {
+    vertical-align: top;
+    position: relative;
+    margin: 50px 35px;
+    .anticon {
+      position: absolute;
+      top: 27%;
+      margin-top: -12px;
+      cursor: pointer;
+      &:hover {
+        color: #999 !important;
+        transition: ease-in-out .3s;
+      }
+      &.anticon-left {
+        left: -24px;
+      }
+      &.anticon-right {
+        right: -24px;
+      }
+    }
+    .photo-view {
+      height: 560px;
+      overflow: hidden;
+      .photo-list {
+        text-align:center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        li {
+          display: inline-block;
+          width: 105px;
+          vertical-align: top;
+          & > a {
+            display: block;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+            color: #333;
+            text-align: center;
+            border-radius: 3px;
+          }
+          p{
+            text-align: center;
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
 }
