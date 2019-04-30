@@ -136,9 +136,9 @@ public class ProcessFormController extends BaseController {
 					formInfo.put("processDockingName",actReModelExtend.getProcessDockingName());
 					formInfo.put("processDockingNo",actReModelExtend.getProcessDockingNo());
 					String formTitle = "";
-					formTitle = StringUtils.isNotBlank(bizId)&&!"0".equals(bizId)?actReModelExtend.getName()+"-"+bizId:actReModelExtend.getName();
+					formTitle = StringUtils.isNotBlank(bizId)&&!PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(bizId)?actReModelExtend.getName()+"-"+bizId:actReModelExtend.getName();
 					formInfo.put("formTitle",formTitle);
-					if(StringUtils.isNotBlank(instId)&&"0".equals(instId)){
+					if(StringUtils.isNotBlank(instId)&&PortalConstant.PROCESS_FORM_PARAM_NO_VALUE.equals(instId)){
 						processDefineId = actReModelExtend.getProcessDefinitionId();
 					}else{
 						//获取流程提交人信息
@@ -294,7 +294,7 @@ public class ProcessFormController extends BaseController {
 								// logger.error("调用接口【flowApi.getNodeInfoByTaskId(actReProcdefExtendVo.getTaskId())】失败！"+vo.getMsg());
 							}
 						}
-						//4、审批记录
+						// 4、审批记录
 						this.approvalHistoryMsg(formInfo,instId);
 					}
 					//2、附件
@@ -311,7 +311,6 @@ public class ProcessFormController extends BaseController {
 					formInfo.put("refDocs",refDocs);
 					//5、附言
 					WfPostscript wfPostscript =new WfPostscript();
-					//				wfPostscript.setCreator(senderNo);
 					wfPostscript.setProcFormId(bizId);
 					List<Map<String,Object>> postscripts= getAttachMsg(wfPostscript);
 					formInfo.put("postscripts",postscripts);
@@ -349,7 +348,6 @@ public class ProcessFormController extends BaseController {
 						// 添加附件
 						processMainComponent.formAttOpt(CommUtil.decodeString(processMainVo.getAttachMsgAttAdd(),"UTF-8"), processMainVo.getAttachMsgAttDel(), loginUser.getNo(), rVo.getData());
 						WfPostscript wfPostscript2 =new WfPostscript();
-//						wfPostscript2.setCreator(processMainVo.getSenderNo());
 						wfPostscript2.setProcFormId(processMainVo.getBizId());
 						returnVo.setData(this.getAttachMsg(wfPostscript2));
 						returnVo.setCode(ReturnCode.SUCCESS);
