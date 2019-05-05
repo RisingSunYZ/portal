@@ -10,7 +10,6 @@ import { getConfig } from '../../../utils/utils.js';
 import moment from 'moment';
 
 const FormItem = Form.Item;
-const applyMap = {};
 const SearchMtRoomForm = Form.create({
   onValuesChange: (props, changedValues, allValues)=>{
     const confToolsStr = allValues['confToolsStr'] ? allValues['confToolsStr'].join(',') : undefined;
@@ -23,12 +22,12 @@ const SearchMtRoomForm = Form.create({
 })((props) => {
   const { form: { getFieldDecorator }, meetingroomAddrs, meetingroomTools } = props;
   return (
-    <Form layout="inline">
+    <Form layout="inline" style={{display:'inline-block', verticalAlign: 'middle'}}>
       <FormItem label="地点">
         {getFieldDecorator('meetingroomAddrId')(
-          <Select placeholder="请选择" style={{ width: 120 }}>
+          <Select placeholder="请选择" style={{ width: 130 }}>
             {meetingroomAddrs.map(addr => (
-              <Select.Option key={addr.id}>{addr.address}</Select.Option>
+              <Select.Option key={addr.id} title={addr.address}>{addr.address}</Select.Option>
             ))}
           </Select>
         )}
@@ -284,13 +283,11 @@ export default class MeetingRoom extends Component {
       <PageHeaderWrapper>
         <Card>
           <Row style={{lineHeight: '40px', marginBottom: 10}}>
-            <Col md={6} sm={12}>
+            <Col span={20}>
               <Button onClick={this.goToCurrent} type="primary">本周</Button>
               <Button className={styles.weekBtn} onClick={this.goPrevWeek}><Icon type="left" /></Button>
               <span>{moment(currDate).startOf('week').format('YYYY-MM-DD')}日 - {moment(currDate).endOf('week').format('YYYY-MM-DD')}日 {moment(currDate).week()}周</span>
               <Button className={styles.weekBtn} onClick={this.goNextWeek}><Icon type="right" /></Button>
-            </Col>
-            <Col md={14} sm={20}>
               <SearchMtRoomForm
                 meetingroomAddrs={meetingroomAddrs}
                 meetingroomTools={meetingroomTools}
