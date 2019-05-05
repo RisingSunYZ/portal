@@ -3,14 +3,19 @@ import { List, Col, Icon } from 'antd';
 import Ellipsis from '@/components/Ellipsis'
 import styles from './index.less';
 import { connect } from 'dva';
-import {getConfig} from "../../utils/utils";
+import Link from "umi/link";
+import {getConfig} from "@/utils/utils";
 
 @connect(({ newsNotice, loading }) => ({
   newsNotice,
   loading: loading.models.newsNotice,
 }))
 export default class NewsNotice extends PureComponent {
-  state = {};
+  state = {
+      data: [],
+      rows: [],
+      total: 0
+  };
 
   componentDidMount() {
     const { dispatch, typeSn, pageSize } = this.props;
@@ -20,20 +25,27 @@ export default class NewsNotice extends PureComponent {
         typeSn: typeSn,
         pageNumber: 1,
         pageSize: pageSize
-      }
+      },
+      callback: (res) => {
+        this.setState({
+          data:res.data,
+          rows:res.rows,
+          total:res.total,
+        });
+      },
     });
   }
 
   getNewsList = news => {
+    const { type } = this.props;
+    const url = type == "notice"?"/news-notice/notice-detail/":"/news-notice/news-detail/";
     return news &&news.length >0 && news.map((item, index) => {
       return (
         <li key={index}>
           <span className={styles.content}>
-            <a title={item.title}
-               href={getConfig().domain +'/portal/news/noticeDetail.jhtml?id='+item.id+'&typeSn=hr_notice'} target="_blank"
-            >
+            <Link title={item.title} to={url + item.id} target="_blank">
               {item.title}
-            </a>
+            </Link>
           </span>
           <span className={styles.pubTime}>
             {item.publishTime.split(" ")[0]}
@@ -44,13 +56,10 @@ export default class NewsNotice extends PureComponent {
   };
 
   render() {
-    const {
-      newsNotice,
-      typeSn="hr_notice",
-    } = this.props;
+    const {data} = this.state
     return (
       <ul className={styles.newsList}>
-        {this.getNewsList(newsNotice[typeSn].data)}
+        {this.getNewsList(data)}
       </ul>
     );
   }

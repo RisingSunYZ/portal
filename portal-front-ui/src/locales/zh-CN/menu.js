@@ -25,6 +25,10 @@ export default {
   'menu.drag': '拖拽',
   'menu.drag.draggable': '拖拽demo',
   'menu.schedule': '日程',
+  "menu.news-detail":"正文",
+  "menu.notice-detail":"正文",
+
+  "menu.material-filepage":"资料下载",
 
 
   // 'menu.user':'用户',

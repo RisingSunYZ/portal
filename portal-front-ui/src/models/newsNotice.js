@@ -46,6 +46,11 @@ export default {
       rows: [],
       total: 0
     },
+    finance_info:{
+      data: [],
+      rows: [],
+      total: 0
+    },
     hr_notice:{
       data: [],
       rows: [],
@@ -63,7 +68,6 @@ export default {
       watermarkTxt: '',
     },
     finance_notice: {},
-    finance_info: {},
     finance_expense: {},
     finance_pro: {},
   },
@@ -102,17 +106,11 @@ export default {
       }
     },
 
-    *queryNewsNoticeData({ payload }, { call, put }) {
+    *queryNewsNoticeData({ payload,callback }, { call, put }) {
       const response = yield call(queryNewsList, payload);
-      // response.typeSn = payload.typeSn
-      if(response.code === "100"){
-        yield put({
-          type:  "save" + payload.typeSn,
-          payload: response,
-          typeSn:payload.typeSn
-        });
+      if(response.code === "100" && callback && typeof callback === 'function'){
+        callback(response.data);
       }
-
     },
     *queryNoticeList({ payload }, { call, put }) {
       const response = yield call(queryNoticeList, payload);
@@ -166,30 +164,7 @@ export default {
         notice: action.payload.data,
       };
     },
-    savehome_notice(state, action) {
-      return {
-        ...state,
-        home_notice: action.payload.data,
-      };
-    },
-    savecompany_news(state, action) {
-      return {
-        ...state,
-        company_news: action.payload.data,
-      };
-    },
-    savemsg_notice(state, action){
-      return {
-        ...state,
-        msg_notice: action.payload.data,
-      };
-    },
-    savehr_notice(state, action) {
-      return {
-        ...state,
-        hr_notice: action.payload.data,
-      };
-    },
+
     saveNoticeList(state, action) {
       return {
         ...state,
@@ -200,12 +175,6 @@ export default {
       return {
         ...state,
         companyNewsList: action.payload.data,
-      };
-    },
-    saveCompanyNewsList(state, action) {
-      return {
-        ...state,
-        tblist: action.payload,
       };
     },
     saveNoticeDetail(state, action) {
@@ -220,30 +189,5 @@ export default {
         newsDetail: action.payload.data,
       };
     },
-    savefinance_notice(state, action) {
-      return {
-        ...state,
-        finance_notice: action.payload.data,
-      };
-    },
-    savefinance_info(state, action) {
-      return {
-        ...state,
-        finance_info: action.payload.data,
-      };
-    },
-    savefinance_expense(state, action) {
-      return {
-        ...state,
-        finance_expense: action.payload.data,
-      };
-    },
-    savefinance_pro(state, action) {
-      return {
-        ...state,
-        finance_pro: action.payload.data,
-      };
-    }
-
   },
 };
