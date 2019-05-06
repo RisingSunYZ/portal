@@ -125,7 +125,7 @@ class ProcessSearch extends PureComponent {
       if( Array.isArray( fieldsValue.creatorName ) ){
         const person = JSON.parse( JSON.stringify(fieldsValue.creatorName) );
         delete fieldsValue.creatorName ;// 删除属性
-        fieldsValue['creatorName'] = person[0].name;
+        fieldsValue['creatorName'] = person&& person.size >0 && person[0].name;
       };
 
       const values = {
