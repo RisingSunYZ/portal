@@ -319,7 +319,8 @@ public class PortalConstant {
     /**用户验证码*/
     public static final String SESSION_VERIFICATION_CODE = "-verificationCode";
     /**用户验证结果*/
-    public static final String SESSION_CHECK_CODE_FLAG = "checkCodeFlag";
+    public static final String SESSION_CHECK_CODE_FLAG = "checkCodeFlag"; /**用户验证结果*/
+
     //**********************************
 
     /** 普通分割符 */
@@ -336,4 +337,17 @@ public class PortalConstant {
     /** 否 */
     public static final Integer NO = 0;
 
+    /**
+     * 业务表单链接匹配符（/portal/form/biz/index-【modelKey】）
+     */
+    public static final String FLOW_BIZ_FORM_URL_PREFIX = "/portal/form/biz/index-";
+
+    /**
+     * 流程表单请求Iframe链接【业务表单】
+     */
+    public static final String FLOW_FORM_IFRAME_BIZ_URL= "/flow/form/s/page/biz-form.html";
+    /**
+     * 流程表单请求Iframe链接【自定义表单】
+     */
+    public static final String FLOW_FORM_IFRAME_CSTM_URL= "/flow/form/s/page/custm-form.html";
 }
