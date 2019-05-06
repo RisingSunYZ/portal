@@ -155,6 +155,7 @@ export default class Schedule extends PureComponent {
     const {
       schedule: { scheduleList, scheduleEventGrantList },
       user: { currentUser },
+      loading,
     } = this.props;
     const { currDate, view, selEvent, graType, eventType } = this.state;
     const filterEvents = [];
@@ -188,12 +189,12 @@ export default class Schedule extends PureComponent {
               </Radio.Group>
             </Col>
             <Col span={4}>
-              <Select style={{width: 150}} defaultValue={currentUser.no} onChange={this.updateEventsByNo}>
+              {currentUser && currentUser.no ? <Select style={{width: 150}} defaultValue={currentUser.no} onChange={this.updateEventsByNo}>
                 <Select.Option key={0} value={currentUser.no} gratype={1}>我的日程</Select.Option>
                 {scheduleEventGrantList.length>0 ? scheduleEventGrantList.map((grant, i) => (
                   <Select.Option key={i+1} value={grant.grantPersonNo} gratype={grant.grantType}>{`${grant.grantPersonName}(${grant.grantTypeStr})`}</Select.Option>
                 )) : ''}
-              </Select>
+              </Select> : ''}
             </Col>
             <Col span={2}>
               {eventType === 2 ? (
