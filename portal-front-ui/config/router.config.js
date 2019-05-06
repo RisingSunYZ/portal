@@ -236,7 +236,12 @@ export default [
             component: './News/BasicList'
           },
           {
-            path: '/news/news-detail/:id',
+            path: '/news/search-list',
+            name: 'search-list',
+            component: './News/SearchList',
+          },
+          {
+            path: '/news/news-detail',
             name: 'news-detail',
             component: './News/NewsDetail',
           },

@@ -894,10 +894,10 @@
         </if>
         and publish_status = 1
         and publish_time &lt;= now() 
-        <if test="start != null and start != ''">
+        <if test="start != null ">
         	and publish_time &gt;= #{start,jdbcType=TIMESTAMP}
         </if>
-        <if test="end != null and end != ''">
+        <if test="end != null ">
         	and publish_time &lt;= #{end,jdbcType=TIMESTAMP}
         </if>
         and del_flag = 1

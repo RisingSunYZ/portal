@@ -56,6 +56,9 @@ export async function queryNoticeList(params) {
 export async function queryCompanyNewsList(params) {
   return request(`/rest/portal/news/ajaxCompanyNewsList?${stringify(params)}`);
 }
+export async function ajaxSearchNoticeList(params) {
+  return request(`/rest/portal/notice/ajaxSearchNoticeList?${stringify(params)}`);
+}
 
 
 
