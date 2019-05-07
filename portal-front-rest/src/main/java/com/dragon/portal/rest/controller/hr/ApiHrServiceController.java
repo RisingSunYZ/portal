@@ -16,6 +16,7 @@ import com.ys.ucenter.model.user.Personnel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ys.ucenter.constant.UcenterConstant;
@@ -54,7 +55,7 @@ public class ApiHrServiceController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/getQuickProcess")
+    @GetMapping("/getQuickProcess")
     @ApiOperation(" HR服务 >> 获取HR快捷流程")
     public ReturnVo getQuickProcess() {
         ReturnVo<List> returnVo = new ReturnVo<>(ReturnCode.FAIL, "获取数据失败");
@@ -88,7 +89,7 @@ public class ApiHrServiceController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/checkLeader")
+    @GetMapping("/checkLeader")
     @ApiOperation(" HR服务 >> 判断是否是领导")
     public ReturnVo checkLeader(HttpServletRequest request, HttpServletResponse response) {
         UserSessionInfo userInfo = getUserSessionInfo(request, response);
