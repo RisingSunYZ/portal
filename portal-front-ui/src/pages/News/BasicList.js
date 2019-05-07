@@ -7,9 +7,9 @@ import Link from 'umi/link';
 import { getConfig } from '../../utils/utils';
 import styles from './News.less';
 
-@connect(({ newsNotice, loading }) => ({
-  newsNotice,
-  loading: loading.models.newsNotice,
+@connect(({ newsInfo, loading }) => ({
+  newsInfo,
+  loading: loading.models.newsInfo,
 }))
 
 export default class BasicList extends PureComponent {
@@ -19,11 +19,11 @@ export default class BasicList extends PureComponent {
   };
 
   componentDidMount () {
-    const { location: { query }, dispatch } = this.props;
+    const { match: { params }, dispatch } = this.props;
     dispatch({
-      type: 'newsNotice/queryCompanyNewsList',
+      type: 'newsInfo/queryNewsDataList',
       payload: {
-        typeSn: query.typeSn,
+        typeSn: params.typeSn,
         pageSize: 15,
         pageNum: 1,
       }
@@ -31,14 +31,14 @@ export default class BasicList extends PureComponent {
   }
 
   searchHandle = (value) => {
-    const { location: { query }, dispatch } = this.props;
+    const { match: { params }, dispatch } = this.props;
     this.setState({
       searchText: value
     });
     dispatch({
-      type: 'newsNotice/queryCompanyNewsList',
+      type: 'newsInfo/queryNewsDataList',
       payload: {
-        typeSn: query.typeSn,
+        typeSn: params.typeSn,
         pageNum: 1,
         pageSize: 15,
         title: value,
@@ -47,13 +47,13 @@ export default class BasicList extends PureComponent {
   };
 
   updateNewsTable = (pagination) =>{
-    const { location: { query }, dispatch } = this.props;
+    const { match: { params }, dispatch } = this.props;
     const { searchText } = this.state;
 
     dispatch({
-      type: 'newsNotice/queryCompanyNewsList',
+      type: 'newsInfo/queryCompanyNewsList',
       payload: {
-        typeSn: query.typeSn,
+        typeSn: params.typeSn,
         pageNum: pagination.current,
         pageSize: pagination.pageSize,
         title: searchText,
@@ -63,11 +63,7 @@ export default class BasicList extends PureComponent {
 
   render() {
 
-    const {
-      newsNotice:{ tblist }
-    } = this.props;
-
-    const tableList = tblist.data ? (tblist.data.data ? tblist.data.data : []) : [];
+    const {newsInfo:{ NewsDataList }} = this.props;
 
     return (
       <PageHeaderWrapper>
@@ -79,10 +75,10 @@ export default class BasicList extends PureComponent {
         <Card bordered={false} bodyStyle={{padding: '16px 24px'}} style={{marginTop: 18}}>
           <List
             size="large"
-            dataSource={tableList}
+            dataSource={NewsDataList.data}
             pagination={{
               pageSize: 15,
-              total: tableList.total,
+              total: NewsDataList.total,
               onChange: this.updateNewsTable
             }}
             renderItem={item => (
@@ -91,13 +87,13 @@ export default class BasicList extends PureComponent {
               >
                 <div className={styles.newsBox}>
                   <div className={styles.imgBox}>
-                    <Link target="_blank" href={`/news/basic-list/detail/${item.id}`}>
+                    <Link target="_blank" to={`/news-notice/news-detail/${item.id}`}>
                       <img width={194} height={120} src={ getConfig().ftpHost + item.thumbImg } alt=""/>
                     </Link>
                   </div>
                   <div className={styles.textBox}>
                     <h5>
-                      <Link target="_blank" href={`/news/basic-list/detail/${item.id}`}>
+                      <Link target="_blank" to={`/news-notice/news-detail/${item.id}`}>
                         {item.title}
                       </Link>
                     </h5>

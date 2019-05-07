@@ -1,4 +1,4 @@
-import { queryNewsList,getStaffList,addNewsStaffs ,queryPhoDetail} from '../../../services/news';
+import { queryCompanyNewsList,queryNewsList,getStaffList,addNewsStaffs ,queryPhoDetail} from '@/services/news';
 export default {
   namespace: 'newsInfo',
 
@@ -8,25 +8,26 @@ export default {
       list: [],
       pagination: {},
     },
-
+    // 新闻类数据列表
+    NewsDataList:{
+      data:[],
+      total:0
+    },
     // 公司动态
     company: {
       list: [],
       pagination: {},
     },
-
     // 行业动态
     industry: {
       list: [],
       pagination: {},
     },
-
     // 员工风采
     staffPresence: {
       list: [],
       pagination: {},
     },
-
     staffLists:[], //员工相册 更多
     photoFile:[],
     picFiles:[]
@@ -64,6 +65,16 @@ export default {
         payload: response,
         pagination: payload,
       });
+    },
+    // 获取新闻类数据列表数据
+    *queryNewsDataList({ payload }, { call, put }) {
+      const response = yield call(queryCompanyNewsList, payload);
+      if(response.code === "100"){
+        yield put({
+          type: 'saveNewsDataList',
+          payload: response,
+        });
+      }
     },
 
     // 获取员工风采图片列表
@@ -133,6 +144,13 @@ export default {
           pagination:action.pagination,
         },
         disabled: false,
+      };
+    },
+    // 公司动态
+    saveNewsDataList(state, action) {
+      return {
+        ...state,
+        NewsDataList: action.payload.data,
       };
     },
 

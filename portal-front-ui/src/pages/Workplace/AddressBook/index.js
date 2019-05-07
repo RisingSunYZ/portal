@@ -25,7 +25,7 @@ class AddressBook extends PureComponent {
     selectedRowKeys: [],
     visibleDrawer: false,
     visible:false ,//弹窗初始化状态
-    pagination: { pageIndex: 0, pageSize: 20 },
+    pagination: { pageIndex: 0, pageSize: 10 },
     query:{},
     nos:"",
     personObj:{},
@@ -36,14 +36,15 @@ class AddressBook extends PureComponent {
   };
 
   componentDidMount(){
-    const { dispatch, user:{ currentUser } }=this.props;
+    const { dispatch, user:{ currentUser } } = this.props;
+    const { pagination:{ pageIndex,pageSize }} = this.state;
     dispatch({
       type: 'addressBook/getTableList',
       payload: {
         deptId: currentUser.depId,
-        companyId:currentUser.companyId,
-        pageIndex:0,
-        pageSize:10
+        companyId: currentUser.companyId,
+        pageIndex: pageIndex,
+        pageSize: pageSize
       },
     });
     this.setState({
@@ -59,13 +60,14 @@ class AddressBook extends PureComponent {
 
   // 树的点击事件
   selectNode(selectedKeys, e) {
-    const key=e.selectedNodes[0].key;
+    const key = e.selectedNodes[0].key;
+    const { pagination:{ pageIndex,pageSize }}=this.state;
     if (e.selected) {
       const params={
         deptId: selectedKeys[0],
-        companyId:e.selectedNodes[0].props.companyId,
-        pageIndex:this.state.pagination.pageIndex,
-        pageSize:this.state.pagination.pageSize
+        companyId: e.selectedNodes[0].props.companyId,
+        pageIndex: pageIndex,
+        pageSize: pageSize
       };
       this.props.dispatch({
         type: 'addressBook/getTableList',
@@ -73,23 +75,22 @@ class AddressBook extends PureComponent {
       });
       this.setState({
         query:params,
-        selectedKey:selectedKeys,
-        companyId:params.companyId,
-        selectTreeStr:key
+        selectedKey: selectedKeys,
+        companyId: params.companyId,
+        selectTreeStr: key
       });
     }
   }
 
   // 点击分页改变时，触发的函数
   handleTableChange = (pagination) => {
+    const {query:{ deptId,companyId }}=this.state;
     const { dispatch ,user:{ currentUser }} = this.props;
-    const deptId = this.state.query.deptId;
-    const companyId = this.state.query.companyId;
     const params={
-      pageIndex:pagination.current-1,
-      pageSize:pagination.pageSize,
-      deptId:deptId === undefined ? currentUser.deptId : deptId,
-      companyId:companyId === undefined ? currentUser.companyId : companyId
+      pageIndex: pagination.current-1,
+      pageSize: pagination.pageSize,
+      deptId: deptId === undefined ? currentUser.depId : deptId,
+      companyId: companyId === undefined ? currentUser.companyId : companyId
     };
     dispatch({
       type: 'addressBook/getTableList',
@@ -115,9 +116,9 @@ class AddressBook extends PureComponent {
     const {companyId, pagination:{pageIndex,pageSize }} = this.state;
     const  params={
       deptId: record.deptId,
-      companyId:companyId,
-      pageIndex:pageIndex,
-      pageSize:pageSize
+      companyId: companyId,
+      pageIndex: pageIndex,
+      pageSize: pageSize
     };
 
     if(record.gender === null){
@@ -126,19 +127,19 @@ class AddressBook extends PureComponent {
         payload: params
       });
       this.setState({
-        selectTreeStr:record.deptId,
+        selectTreeStr: record.deptId,
       })
     }
 
     this.setState({
-      query:params,
+      query: params,
     });
   };
 
   // 搜索table数据
   doSearch=( value )=>{
     const { dispatch } = this.props;
-    const {pagination:{pageIndex,pageSize}}=this.state;
+    const { pagination:{pageIndex,pageSize} }=this.state;
     const params={
         keyword: value,
         pageIndex:pageIndex,
@@ -159,12 +160,11 @@ class AddressBook extends PureComponent {
     for(let i=0;i<selectedRows.length; i++){
       no += selectedRows[i].no+",";
     }
-    if(no.length>0) no=no.substr(0,no.length-1);
+    if(no.length>0) no = no.substr(0,no.length-1);
     this.setState({
       selectedRowKeys,
       nos:no
     });
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
   };
 
   // Drawer添加到常用联系人
@@ -180,7 +180,7 @@ class AddressBook extends PureComponent {
   // (页面头部)添加到常用联系人
   addContactPer = ()=> {
     const { dispatch }=this.props;
-    const { selectedRowKeys  }=this.state;
+    const { selectedRowKeys ,nos }=this.state;
     const hasSelected = selectedRowKeys.length >0;
     if(!hasSelected){
       message.error('请勾选要添加的项');
@@ -188,7 +188,7 @@ class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/addContactPer',
-        payload:{contactNo:this.state.nos}
+        payload:{ contactNo:nos }
       })
     }
   };
@@ -230,6 +230,11 @@ class AddressBook extends PureComponent {
     }
   };
 
+  //判断是否展示企业邮箱
+  emailShow=( text,record ) =>{
+    return record.showContact === 1 ? <span>{text}</span> : <span style={{display:'none'}}>{text}</span>
+  };
+
   // 区分人员与部门
   disDepartment=(text,record)=>{
     return ( record.gender===null ? <span style={{color:'#0E65AF'}}>{text}</span> : <span>{text}</span>)
@@ -238,7 +243,7 @@ class AddressBook extends PureComponent {
 
   render() {
     const { addressBook: {  list, pagination } } = this.props;
-    const { selectedRowKeys, personObj ,selectTreeStr}=this.state;
+    const { selectedRowKeys, personObj ,selectTreeStr }=this.state;
     const hasSelected = selectedRowKeys.length > 0;
 
     const columns = [
@@ -256,6 +261,7 @@ class AddressBook extends PureComponent {
       {
         title: '企业邮箱',
         dataIndex: 'email',
+        render:this.emailShow
       },
       {
         title: '单位',
@@ -303,11 +309,11 @@ class AddressBook extends PureComponent {
                     <li>办公地址 ：<span>{personObj.workAddress}</span></li>
                   </ul>
                   <ul className={styles.boxBotMsg}>
-                    <li>手机 ：<span>{personObj.mobile}</span></li>
-                    <li>短号 ：<span>{personObj.shortPhone}</span></li>
-                    <li>座机号码 ：<span>{personObj.companyMobile}</span></li>
+                    <li>手机 ：<span>{personObj.showContact === 1 ? personObj.mobile : ''}</span></li>
+                    <li>短号 ：<span>{personObj.showContact === 1 ? personObj.shortPhone : ''}</span></li>
+                    <li>座机号码 ：<span>{personObj.showContact === 1 ? personObj.companyMobile : ''}</span></li>
                     <li>座机短号 ：<span>{personObj.shortWorkPhone}</span></li>
-                    <li>邮箱 ：<span>{personObj.email}</span></li>
+                    <li>邮箱 ：<span>{personObj.showContact === 1 ? personObj.email : ''}</span></li>
                   </ul>
                 </div>
               </Col>

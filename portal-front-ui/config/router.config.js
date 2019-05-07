@@ -222,36 +222,36 @@ export default [
       },
       // news-notice
       {
-        path: '/news',
+        path: '/news-notice',
         name: 'news-notice',
         component: '../layouts/BasicLayout',
         routes:[
           {
-            path: '/news',
+            path: '/news-notice',
             redirect: '/news/table-list',
           },
           {
-            path: '/news/table-list/:typeSn',
+            path: '/news-notice/notice-table/:typeSn',
             name: 'table-list',
             component: './News/TableList',
           },
           {
-            path: '/news/basic-list/:typeSn',
+            path: '/news-notice/news-list/:typeSn',
             name: 'basic-list',
             component: './News/BasicList'
           },
           {
-            path: '/news/news-detail/:id',
+            path: '/news-notice/news-detail/:id',
             name: 'news-detail',
             component: './News/NewsDetail',
           },
           {
-            path: '/news/notice-detail/:id',
+            path: '/news-notice/notice-detail/:id',
             name: 'notice-detail',
             component: './News/NoticeDetail',
           },
           {
-            path: '/news/staff-list',
+            path: '/news-notice/staff-list',
             name: 'staff-list',
             component: './News/StaffList',
           }
@@ -457,115 +457,6 @@ export default [
           },
         ],
       },
-      // {
-      //   path: '/user-team',
-      //   name: 'user-team',
-      //   component: '../layouts/CommonLayout',
-      //   routes: [
-      //     {
-      //       path: '/user-team',
-      //       redirect: '/user-team/pandect',
-      //     },
-      //     {
-      //       path: '/user-team/pandect',
-      //       name: 'user-team-pandect',
-      //       component: './UserTeam/TeamPandect',
-      //     },
-      //     {
-      //       path: '/user-team/framework',
-      //       name: 'team-framework',
-      //       component: './UserTeam/Framework',
-      //     },
-      //     {
-      //       path: '/user-team/userPandectForTeam/:userNo',
-      //       name: 'team-framework',
-      //       component: './UserTeam/UserPandectForTeam',
-      //     },
-      //     {
-      //       path: '/user-team/entry',
-      //       name: 'annual-entry',
-      //       component: './UserTeam/AnnualEntry',
-      //     },
-      //     {
-      //       path: '/user-team/leave',
-      //       name: 'annual-leave',
-      //       component: './UserTeam/AnnualLeave',
-      //     },
-      //     {
-      //       path: '/user-team/authorized',
-      //       name: 'authorized-strength',
-      //       component: './UserTeam/AuthorizedStrength',
-      //     },
-      //     {
-      //       path: '/user-team/authorizedDetails',
-      //       name: 'authorized-strength-details',
-      //       component: './UserTeam/AuthorizedStrengthDetails',
-      //     },
-      //     {
-      //       path: '/user-team/baseinfo',
-      //       name: 'personal-info',
-      //       component: './UserTeam/BaseInfo',
-      //     },
-      //     {
-      //       path: '/user-team/asset',
-      //       name: 'main-workplace',
-      //       component: './UserTeam/Assets',
-      //     },
-      //     {
-      //       path: '/user-team/attendance',
-      //       name: 'main-workplace',
-      //       component: './UserTeam/Attendance/TabList',
-      //       routes: [
-      //         {
-      //           path: '/user-team/attendance',
-      //           redirect: '/user-team/attendance/summary',
-      //         },
-      //         {
-      //           path: '/user-team/attendance/summary',
-      //           name: 'attendance-summary',
-      //           component: './UserTeam/Attendance/SummaryAttendance',
-      //         },
-      //         {
-      //           path: '/user-team/attendance/record',
-      //           name: 'attendance-record',
-      //           component: './UserTeam/Attendance/AttendanceRecord',
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       path: '/user-team/attendanceChart',
-      //       component: './UserTeam/Attendance/AttendanceChart',
-      //     },
-      //     {
-      //       path: '/user-team/attendanceRateChart',
-      //       component: './UserTeam/Attendance/AttendanceRateChart',
-      //     },
-      //     {
-      //       path: '/user-team/performance',
-      //       name: 'main-workplace',
-      //       component: './UserTeam/Performance',
-      //       routes: [
-      //         {
-      //           path: '/user-team/performance',
-      //           redirect: '/user-team/performance/information',
-      //         },
-      //         {
-      //           path: '/user-team/performance/information',
-      //           component: './UserTeam/Performance/Information',
-      //         },
-      //         {
-      //           path: '/user-team/performance/reward',
-      //           component: './UserTeam/Performance/Reward',
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       path: '/user-team/train',
-      //       name: 'main-workplace',
-      //       component: './UserTeam/Train',
-      //     },
-      //   ],
-      // },
       // print
       {
         path: '/print',

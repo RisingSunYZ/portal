@@ -51,12 +51,12 @@ export default class TableList extends PureComponent {
                 <NewsBanner newsBannerStyle={newsBannerStyle} />
               </Col>
               <Col span={12}>
-                <Card bordered={false} bodyStyle={{padding: 0}} title="IT公告" extra={<Link target="_blank" to="/news/table-list/msg_notice">更多&gt;</Link>}>
+                <Card bordered={false} bodyStyle={{padding: 0}} title="IT公告" extra={<Link target="_blank" to="/news-notice/notice-table/msg_notice">更多&gt;</Link>}>
                   <NewsNotice typeSn="msg_notice" pageSize={5} />
                 </Card>
               </Col>
               <Col span={24}>
-                <Card bordered={false} style={{marginTop: 16}} title="IT行业资讯" extra={<Link target="_blank" to="/news/basic-list/itrend_news">更多&gt;</Link>}>
+                <Card bordered={false} style={{marginTop: 16}} title="IT行业资讯" extra={<Link target="_blank" to="/news-notice/news-list/itrend_news">更多&gt;</Link>}>
                   <TrendNews />
                 </Card>
               </Col>

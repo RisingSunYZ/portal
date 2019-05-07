@@ -88,8 +88,9 @@ export default class BreadcrumbView extends PureComponent {
     switch(routerLocation.split("/")[1]){
       case "process" :return <Link to={"/main/workplace"}>工作台</Link>;break;
       case "workplace" :return <Link to={"/main/workplace"}>工作台</Link>;break;
+      case "biz-sys" :return <Link to={"/main/workplace"}>工作台</Link>;break;
       case "hr-service" :return <Link to={"/main/hr-service"}>HR服务</Link>;break;
-      case "infor-tech" :return <Link to={"/infor-tech"}>IT服务</Link>;break;
+      case "infor-tech" :return <Link to={"/main/infor-tech"}>IT服务</Link>;break;
       case "fnc-service" :return <Link to={"/main/fnc-service"}>财务服务</Link>;break;
       case "news" :return <Link to={"/main/news"}>新闻资讯</Link>;break;
       default : return <a href={ getConfig().domain+"/main.jhtml"}>工作台</a>;break;

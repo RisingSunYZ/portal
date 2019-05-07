@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Table, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import PageHeaderWrapper from '../../components/PageHeaderWrapper';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 @connect(({ newsNotice, loading }) => ({
   newsNotice,
@@ -17,11 +17,11 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount () {
-    const { location: { query }, dispatch } = this.props;
+    const { match: { params }, dispatch } = this.props;
     dispatch({
       type: 'newsNotice/queryNoticeList',
       payload: {
-        typeSn: query.typeSn,
+        typeSn: params.typeSn,
         pageSize: 15,
         pageNum: 1,
       }
@@ -63,7 +63,7 @@ export default class TableList extends PureComponent {
 
     const {
       newsNotice:{ tblist },
-      location: { query }
+      match: { params }
     } = this.props;
     const columns = [
       {
@@ -72,7 +72,7 @@ export default class TableList extends PureComponent {
         key: 'title',
         width: 700,
         render: (text, record) => (
-          <Link to={`/news/notice-detail/notice/${query.typeSn}/${record.id}`} title={text} target="_blank">{text}</Link>
+          <Link to={`/news-notice/notice-detail/${record.id}`} title={text} target="_blank">{text}</Link>
         )
       },
       {
@@ -102,9 +102,10 @@ export default class TableList extends PureComponent {
           <Table
             bordered
             columns={columns}
+            rowKey="id"
             dataSource={tblist.data}
             pagination={{
-              pageSize: 15,
+              pageSize: 10,
               total: tblist.total,
               onChange: this.updateNewsTable
             }}
