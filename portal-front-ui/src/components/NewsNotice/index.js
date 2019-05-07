@@ -1,6 +1,4 @@
 import React, { PureComponent } from 'react';
-import { List, Col, Icon } from 'antd';
-import Ellipsis from '@/components/Ellipsis'
 import styles from './index.less';
 import { connect } from 'dva';
 import Link from "umi/link";
