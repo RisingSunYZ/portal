@@ -53,15 +53,18 @@ class StaffList extends PureComponent {
   };
 
 
+  // Change事件处理
   handleChange = ( { fileList } ) => {
-    const { dispatch }=this.props;
-    dispatch({
-      type: 'newsInfo/addPhotos',
-      payload: { fileList },
+
+    fileList = fileList.map((file) => {
+      if (file.response && file.response.code === '100') {
+        file.url = file.response.msg;
+      }
+      return file;
     });
+
     this.setState({ fileList });
   };
-
 
   handleUpDown = () => {
     this.setState({
@@ -69,20 +72,34 @@ class StaffList extends PureComponent {
     })
   };
 
+
   // 发布
   sendPublic = () => {
     const { dispatch ,form } = this.props;
+    const { fileList } = this.state;
     form.validateFields((err, fieldsValue)=>{
-      console.log(fieldsValue);
       if(err) return;
       if(fieldsValue.title === ""){
         message.error( '标题不能为空!')
       }else if(fieldsValue.remark === ""){
         message.error( '简介不能为空!')
+      }else if(fileList.length < 1 || fileList.length > 9){
+        message.error( '上传图片不能为空或者超过9张!')
       }else{
+        const files = [];
+        fileList.forEach((file, index) => {
+          const temp = {
+            canDown : 1,                         // 是否允许下载（1：是；0：否）
+            sortNo  : 1000 + index * 100,        // 排序字段 默认初始 1000 递增100 升序
+            filePath: file.url,                  // url
+            fileName: file.name,                 // 文件名
+            fileSize : file.size                 // 文件大小
+          }
+          files.push(temp);
+        });
         dispatch({
           type:'newsInfo/addNewsStaffPre',
-          payload:{ ...fieldsValue }
+          payload:{ ...fieldsValue , files }
         });
         this.handleOk()
       }
@@ -97,14 +114,16 @@ class StaffList extends PureComponent {
     const uploadButton = (
       <div>
         <Icon type="plus" />
-        <div className="ant-upload-text">Upload</div>
+        <div className="ant-upload-text"></div>
       </div>
     );
 
     const uploadProps={
-      action: `/rest/portal/news/uploadFile`,
-      listType:"picture-card",
-      onChange:this.handleChange
+      action : `/rest/portal/file-operation/uploadFile`,     // 上传URL
+      listType : "picture-card",                             // 上传列表的内建样式
+      onChange : this.handleChange,                          // Change事件处理
+      multiple : true,                                       // 批量上传
+      accept :".jpg, .jpeg, .png",                           // 文件格式
     };
 
     return (

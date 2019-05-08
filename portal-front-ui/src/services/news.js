@@ -25,7 +25,10 @@ export async function getStaffList(params) {
  * @returns {Promise<Object>}
  */
 export async function addNewsStaffs(params) {
-  return request(`/rest/portal/news/addNewsStaffPresence?${stringify(params)}`);
+  return request(`/rest/portal/news/addNewsStaffPresence`, {
+    method : 'POST',
+    body: params
+  });
 }
 
 /**

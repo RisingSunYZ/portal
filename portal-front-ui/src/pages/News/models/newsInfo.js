@@ -184,45 +184,5 @@ export default {
         staffLists: action.payload.data
       };
     },
-
-    /**
-     * 上传图片
-     * @param state
-     * @param action
-     * @returns {*}
-     */
-    addPhotos(state, action) {
-      const photoList = action.payload.fileList[0];
-      if(photoList.response){
-        if (photoList && photoList.percent === 100) {
-          return { ...state };
-        }
-
-        const file = {
-          id: photoList.uid,
-          name: photoList.name,
-          filePath: photoList.response ? photoList.response.data : '',
-          ...photoList,
-        };
-
-        let picFiles = [];
-        if(state.photoFile){
-          picFiles = state.photoFile.concat(file);
-        }else{
-          picFiles.push(file);
-        }
-        const result = {
-          ...state,
-          picFiles
-        };
-        return result;
-      }
-
-      const result = {
-        ...state,
-      };
-      return result;
-
-    },
   },
 };
