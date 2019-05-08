@@ -25,7 +25,7 @@ export async function querymRoomList(params) {
 }
 
 /**
- * 获取会议室详情
+ * 获取会议室申请详情
  * @returns {Promise<Object>}
  */
 export async function getmRoomDetail(params){
@@ -77,8 +77,8 @@ export async function saveMtRoomMsg(params) {
  * @param params
  * @returns {Promise<Object>}
  */
-export async function submitProcess(params) {
-  return request('/rest/portal/rscmgmt/meetingroom/submitProcess', {
+export async function ReSubmitProcess(params) {
+  return request(`/rest/portal/rscmgmt/meetingroom/?${stringify(params)}`, {
     method: 'POST',
     body: params,
   });
@@ -90,7 +90,7 @@ export async function submitProcess(params) {
  * @returns {Promise<Object>}
  */
 export async function updateMeetingStatus(params) {
-  return request('/rest/portal/rscmgmt/meetingroom/updateMeetingroomStatus', {
+  return request(`/rest/portal/rscmgmt/meetingroom/updateMeetingroomStatus?${stringify(params)}`, {
     method: 'POST',
     body: params,
   });

@@ -46,6 +46,45 @@
         &.selected{
           background-color: @primary-color;
         }
+        &.occupy{
+          background-color: @primary-color;
+        }
+      }
+      &.can-update li.occupy{
+        background-color: #5DD7AE;
+        &.selected{
+          background-color: @primary-color;
+        }
+      }
+    }
+    .tip-list{
+      text-align: right;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      line-height: 40px;
+      li{
+        display: inline-block;
+        margin: 0 10px;
+        i{
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          margin-right: 3px;
+          border: 1px solid #E9E9E9;
+          vertical-align: middle;
+          position: relative;
+          top: -2px;
+        }
+        &.enable i{
+          background-color: #fff;
+        }
+        &.used i{
+          background-color: #F1F1F1;
+        }
+        &.occupy i{
+          background-color: #5DD7AE;
+        }
       }
     }
   }

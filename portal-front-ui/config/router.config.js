@@ -254,7 +254,12 @@ export default [
             path: '/news-notice/staff-list',
             name: 'staff-list',
             component: './News/StaffList',
-          }
+          },
+          {
+            path: '/news-notice/search-list',
+            name: 'search-list',
+            component: './News/SearchList',
+          },
         ]
       },
       {

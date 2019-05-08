@@ -3,6 +3,7 @@ package com.dragon.portal.rest.controller.news;
 import com.dragon.flow.vo.flowable.comment.FlowCommentVo;
 import com.dragon.portal.model.news.*;
 import com.dragon.portal.service.news.*;
+import com.dragon.portal.util.DateUtils;
 import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
@@ -11,6 +12,7 @@ import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.dragon.tools.vo.ReturnVo;
+import com.mhome.tools.common.JsonUtils;
 import com.ys.ucenter.api.IOrgApi;
 import com.ys.ucenter.api.IPersonnelApi;
 import com.ys.ucenter.model.company.Company;
@@ -185,6 +187,93 @@ public class NewsNoticeController extends BaseController {
         }
         return returnVo;
     }
+
+    /**
+     * 工作台 >>搜索结果 --列表数据查询
+     */
+    @GetMapping("/ajaxSearchNoticeList")
+    @ApiOperation("工作台 >>搜索结果 --列表数据查询")
+    public PagerModel<NewsNotice> ajaxSearchNoticeList(NewsNotice notice, Query query, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
+        UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
+        String no = userSessionInfo.getNo();
+        com.ys.tools.vo.ReturnVo<PersonnelApiVo> ReturnVo = personnelApi.getPersonnelApiVoByNo(no);
+        PersonnelApiVo PersonnelApiVo = ReturnVo.getDatas().get(0);
+        notice.setRangeDeftId(getRangeDeftId(PersonnelApiVo.getDeptId()));
+        notice.setUserNo(no);
+        String typeSn = request.getParameter("typeSn");
+        String start = request.getParameter("startStr");
+        String end = request.getParameter("endStr");
+
+        PagerModel<NewsNotice> pm = new PagerModel<NewsNotice>();
+        try {
+            NewsType newsType = new NewsType();
+            if(StringUtils.isNotBlank(typeSn)){
+                newsType = newsTypeService.queryNewsTypeBySn(typeSn);
+                notice.setTypeId(newsType.getId());
+            }else{//为空的时候查询新闻（不包含员工风采和集团视频）
+                List<String> typeIds = new ArrayList<String>();
+                List<NewsType> newTypes = newsTypeService.getAll(newsType);
+                if(newTypes.size()>0){
+                    for(NewsType n : newTypes){
+                        //staff_presence:员工风采;group_video集团视频
+                        if(!"staff_presence".equals(n.getSn()) || !"group_video".equals(n.getSn())){
+                            typeIds.add(n.getId());
+                        }
+                    }
+                    notice.setTypeIds(typeIds);
+                }
+            }
+            if(StringUtils.isNotBlank(start)){
+                notice.setStart(DateUtils.StringToDate(start, "yyyy-MM-dd HH:mm:ss"));
+            }
+            if(StringUtils.isNotBlank(end)){
+                notice.setEnd(DateUtils.StringToDate(end, "yyyy-MM-dd HH:mm:ss"));
+            }
+            pm = this.newsNoticeService.getPagerModelByQueryOfRangeSearch(notice, query);
+        } catch (Exception e) {
+            logger.error("NewsNoticeController-ajaxSearchNoticeList:"+e);
+            e.printStackTrace();
+        }
+        return pm;
+    }
+//
+//    /**
+//     * 获取新闻公告详情页链接
+//     * @param id
+//     * @param request
+//     * @param response
+//     * @return
+//     */
+//    @ApiOperation("获取新闻公告详情页链接")
+//    @ApiImplicitParams({})
+//    @RequestMapping(value = "/getNewNoticeUrl",method = RequestMethod.GET)
+//    private Map<String,Object> getNewNoticeUrl( String id, HttpServletRequest request, HttpServletResponse response) {
+//        Map<String,Object> newsInfo = new HashMap<String,Object>();
+//        String url = "";
+//        boolean errorFlag=false;
+//        try{
+//            NewsNotice noticeById = newsNoticeService.getNoticeById(id);
+//            String typeId = StringUtils.isNotBlank(noticeById.getTypeId())?noticeById.getTypeId():noticeById.getTypeIdArray().split(",")[0];
+//            NewsType newsTypeById = newsTypeService.getNewsTypeById(typeId);
+//            String sn = newsTypeById.getSn();
+//            if(sn.indexOf("notice") > 0){
+//                url = "/eip/news/notice-detail/"+id;
+//            }else if(sn.equals("company_news")||sn.equals("itrend_news")
+//                    ||sn.equals("finance_info")||sn.equals("finance_pro")
+//                    ||sn.equals("finance_expense")||sn.equals("rszd")){
+//                url = "/eip/news/news-detail/"+id;
+//            }else if(sn.equals("special_events")){
+//                url = "/eip/news/notice-detail/"+id;
+//            }else if(sn.equals("industry_news")){
+//                url = "/eip/news/notice-detail/"+id;
+//            }
+//            newsInfo.put("url", errorFlag ? "/error404.jhtml" : url);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            logger.error("获取新闻公告详情页链接 NewsNoticeController-getNewNoticeUrl"+e);
+//        }
+//        return newsInfo;
+//    }
 
 	/**
 	 *

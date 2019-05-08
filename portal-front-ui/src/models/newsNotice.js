@@ -6,6 +6,7 @@ import {
   queryNoticeDetail,
   queryNewsNotice,
   queryNewsBanner,
+  ajaxSearchNoticeList,
 } from '../services/news';
 
 export default {
@@ -16,10 +17,13 @@ export default {
       list: [],
       pagination: {},
     },
+
     ntlist: {},
     newsBanners:[],
     tblist: {
-
+      data: [],
+      rows: [],
+      total: 0
     },
     companyNewsList: {
       data: [],
@@ -30,6 +34,11 @@ export default {
       data: [],
       rows: [],
       total: 0
+    },
+    searchList: {
+      data: [],
+      rows: [],
+      total: 0,
     },
     company_news: {
       data: [],
@@ -42,16 +51,6 @@ export default {
       total: 0
     },
     msg_notice: {
-      data: [],
-      rows: [],
-      total: 0
-    },
-    finance_info:{
-      data: [],
-      rows: [],
-      total: 0
-    },
-    hr_notice:{
       data: [],
       rows: [],
       total: 0
@@ -116,6 +115,13 @@ export default {
       const response = yield call(queryNoticeList, payload);
       yield put({
         type: 'saveNoticeList',
+        payload: response,
+      });
+    },
+    *ajaxSearchNoticeList({ payload }, { call, put }) {
+      const response = yield call(ajaxSearchNoticeList, payload);
+      yield put({
+        type: 'saveSearchList',
         payload: response,
       });
     },
@@ -189,5 +195,11 @@ export default {
         newsDetail: action.payload.data,
       };
     },
+    saveSearchList(state, action){
+      return {
+        ...state,
+        searchList: action.payload
+      }
+    }
   },
 };
