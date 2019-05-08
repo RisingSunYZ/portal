@@ -1,22 +1,22 @@
 package com.dragon.portal.rest.controller.hr;
 
 import com.dragon.portal.rest.controller.BaseController;
-import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import com.ys.common.vo.PagerModel;
 import com.ys.common.vo.Query;
-import com.ys.tools.common.JsonUtils;
 import com.ys.train.api.ITrainApi;
 import com.ys.train.vo.course_record.CourseDetailVo;
 import com.ys.train.vo.student_manager.PersonalYearCourseResultVo;
-import io.swagger.models.auth.In;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
@@ -31,9 +31,9 @@ import java.util.Map;
  * @Since:16:47 2019/04/28
  * 浙江亚厦 2018 ~ 2030 版权所有
  */
-@RestController
+@Controller
 @RequestMapping("/rest/portal/train")
-
+@Api(value = "培训相关", description = "培训相关", tags={"培训 /rest/portal/train"})
 public class ApiTrainController extends BaseController {
 
     private static Logger logger = Logger.getLogger(ApiTrainController.class);
@@ -42,7 +42,7 @@ public class ApiTrainController extends BaseController {
     private ITrainApi trainApi;
 
     /**
-     * Fixme: 暂时未曾得知此方法有何作用，后期添加必要注释
+     *培训数据对接
      *
      * @param page
      * @param rows
@@ -52,7 +52,9 @@ public class ApiTrainController extends BaseController {
      * @param response
      * @return
      */
-    @RequestMapping("/queryTrain")
+    @ResponseBody
+    @GetMapping("/queryTrain")
+    @ApiOperation("HR频道培训 >> 培训数据对接")
     private ReturnVo<Map> queryTrain(Integer page, Integer rows, String time, String userNo,
                                      HttpServletRequest request, HttpServletResponse response) {
         ReturnVo<Map> returnVo = new ReturnVo<>(ReturnCode.FAIL, "获取数据失败");
@@ -95,4 +97,5 @@ public class ApiTrainController extends BaseController {
         returnVo = new ReturnVo<>(ReturnCode.SUCCESS, "获取数据成功", maps);
         return returnVo;
     }
-    }
+
+}

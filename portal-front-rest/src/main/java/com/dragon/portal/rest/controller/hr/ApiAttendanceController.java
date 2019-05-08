@@ -6,6 +6,8 @@ import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.vo.ReturnVo;
 import com.ys.atds.api.IAtdsApi;
 import com.ys.atds.model.personal.Personnel;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,11 @@ import java.util.*;
 /**
  * @Description:HR服务-考勤相关
  * @Author: liuxuan
- * @Since:2019年04月29日 10:29:21
+ * @Since:2019年05月07日 10:29:21
  */
 @Controller
 @RequestMapping("/rest/portal/attendance")
+@Api(value = "HR服务", description = "考勤相关", tags={"考勤 /rest/portal/attendance"})
 public class ApiAttendanceController extends BaseController {
 
     private static Logger logger = Logger.getLogger(ApiAttendanceController.class);
@@ -40,6 +43,7 @@ public class ApiAttendanceController extends BaseController {
      * @return
      */
     @RequestMapping("/checkPersonExp")
+    @ApiOperation("考勤-检查个人是否考勤异常")
     public ReturnVo checkPersonExp(HttpServletRequest request, HttpServletResponse response, String userNo) {
         ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "获取数据失败");
         Map<String, String> map = new HashMap<>();

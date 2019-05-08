@@ -60,6 +60,7 @@ import java.util.Map;
 @RequestMapping("/rest/itService")
 @Api(value="IT服务", description = "IT服务", tags={"IT服务 /rest/itService"})
 public class ItServiceController extends BaseController {
+
 	private static Logger logger = Logger.getLogger(ItServiceController.class);
 
 	@Autowired

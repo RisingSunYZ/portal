@@ -35,10 +35,10 @@ export default {
         response = yield call(getTableList, payload);
       }
       let list = Array.isArray(response.rows) ? response.rows : [];
-      let pagination={current:payload.pageIndex+1,pageSize:payload.pageSize,total:response.total};
+      let pagination={current: payload.pageIndex+1, pageSize: payload.pageSize, total: response.total};
       yield put({
         type: 'tableCallback',
-        payload:{list:list,pagination:pagination},
+        payload:{ list,pagination }
       });
     },
 
@@ -79,7 +79,7 @@ export default {
      * @param put
      * @returns {IterableIterator<*>}
      */
-    *delContactPer({payload},{call, put}){
+    *delContactPer({ payload },{call, put}){
       const response= yield call(delContactPerData,payload);
       if(response.code === '100'){
         message.success(response.msg)

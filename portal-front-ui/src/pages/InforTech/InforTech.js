@@ -52,7 +52,7 @@ export default class TableList extends PureComponent {
               </Col>
               <Col span={12}>
                 <Card bordered={false} bodyStyle={{padding: 0}} title="IT公告" extra={<Link target="_blank" to="/news-notice/notice-table/msg_notice">更多&gt;</Link>}>
-                  <NewsNotice typeSn="msg_notice" pageSize={5} />
+                  <NewsNotice typeSn="msg_notice" type="notice" pageSize={5} />
                 </Card>
               </Col>
               <Col span={24}>

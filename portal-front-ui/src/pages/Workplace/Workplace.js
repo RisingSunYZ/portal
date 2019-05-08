@@ -4,6 +4,7 @@ import { Row, Col, Card, Form, Input, Select, Icon, Button, message } from 'antd
 import Calendar from '@/components/Calendar';
 import WorkMenus from '@/components/WorkMenus';
 import NewsList from '@/components/NewsList';
+import Link from "umi/link";
 import NewsBanner from '@/components/NewsBanner';
 import Searcher from './components/Searcher';
 import SysList from './components/SysList';
@@ -55,14 +56,14 @@ export default class TableList extends PureComponent {
         </Card>
         <Row gutter={16}>
           <Col span={14}>
-            <NewsList width="100%" title="通知公告" height="325px"  typeSn="home_notice" extra={<a href={getConfig().domain + "/portal/newsNotice/homeNoticeList.jhtml?typeSn=home_notice"} target="_blank">更多 &gt;</a>} />
+            <NewsList width="100%" title="通知公告" type="notice" height="325px"  typeSn="home_notice" extra={<Link to={"/news-notice/notice-table/home_notice"} target="_blank"> 更多&gt; </Link>} />
             <SysList style={{width: '100%'}} />
           </Col>
           <Col span={10}>
             <Card className="marginBottom" bordered={false} bodyStyle={{padding:"12px 11px 0px"}}>
               <NewsBanner newsBannerStyle={newsBannerStyle} />
             </Card>
-            <NewsList width="100%" title="公司动态" height="325px" typeSn="company_news" extra={<a href={getConfig().domain +"/portal/newsNotice/companyNewsList.jhtml?typeSn=company_news"} target="_blank">更多 &gt;</a>} />
+            <NewsList width="100%" title="公司动态" type="news" height="325px" typeSn="company_news" extra={<Link to={"/news-notice/news-list/company_news"} target="_blank"> 更多&gt; </Link>} />
           </Col>
         </Row>
       </Fragment>
