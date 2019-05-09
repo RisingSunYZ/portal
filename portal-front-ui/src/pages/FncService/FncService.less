@@ -1,10 +1,44 @@
+@import '~antd/lib/style/themes/default.less';
 
 .newBannerStyle {
   height: 200px;
   width: 420px;
 }
-
+.moreList{
+  padding-right: 12px;
+}
+.contactPerson{
+  line-height: 32px;
+  :global{
+    .anticon{
+      color: @primary-color;
+    }
+  }
+}
+.opinionListBox{
+  padding: 12px 30px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  position: relative;
+  line-height: 28px;
+  :global{
+    .anticon{
+      position: absolute;
+      top: 50%;
+      margin-top: -8px;
+      &.anticon-left{
+        left: 5px;
+      }
+      &.anticon-right{
+        right: 5px;
+      }
+    }
+  }
+}
 :global{
+  .tRight{
+    text-align: right;
+  }
   .marginBottom{
     margin-bottom: 16px;
   }

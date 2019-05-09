@@ -9,16 +9,16 @@ import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.tools.common.ReturnCode;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
-import com.mhome.tools.common.JsonUtils;
 
 import com.dragon.tools.vo.ReturnVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +33,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,8 +45,8 @@ import java.util.Map;
  * @Version:1.1.0
  * @Copyright:Copyright (c) 浙江蘑菇加电子商务有限公司 2015 ~ 2016 版权所有
  */
-@Controller
-@RequestMapping("rest/portal/fnc")
+@RestController
+@RequestMapping("/rest/portal/fnc")
 @Api(value="门户首页（工作台）-财务服务", description = "门户首页（工作台）-财务服务", tags={"门户首页（工作台）-财务服务 /rest/portal/fnc"})
 public class FncController extends BaseController {
 
@@ -65,52 +64,71 @@ public class FncController extends BaseController {
     @Autowired
     private IFncContactUsService contactUsService;
 
+    /**
+     * @Description 获取资料下载类型列表
+     * @Param [query, request, response]
+     **/
     @ResponseBody
-    @GetMapping("/index")
-    @ApiOperation("财务服务首页 数据组装")
-    @ApiImplicitParams({})
-    public String index(HttpServletRequest request, HttpServletResponse response) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "数据查询失败");
+    @GetMapping("/getFileTypeList")
+    @ApiOperation("获取资料下载类型列表")
+    public PagerModel<MaterialFileType> getFileTypeList(Query query, HttpServletRequest request,HttpServletResponse response) {
+        PagerModel<MaterialFileType> pm = new PagerModel<MaterialFileType>();
         try {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
-            UserSessionInfo session = this.getUserSessionInfo(request,response);
-            dataMap.put("session", session);
-            Query query = new Query();
-            query.setPageSize(3);
             MaterialFileType materialFileType = new MaterialFileType();
-            PagerModel<MaterialFileType> pagerModel = this.materialFileTypeService.getPagerModelByQuery(materialFileType, query);
-            dataMap.put("fileTypeList", pagerModel.getRows());
-            query.setPageSize(10);
-            int i= 0;
-            Map<String,List<MaterialFile>> map = new HashMap<>();
-            for(MaterialFileType temp : pagerModel.getRows()){
-                i++;
-                MaterialFile materialFile = new MaterialFile();
-                materialFile.setTypeId(temp.getId());
-                materialFile.setStatus(YsportalConstant.STATUS_ENABLED);
-                PagerModel<MaterialFile> pmFile = materialFileService.getPagerModelByQuery(materialFile, query);
-                map.put("fileList"+i, pmFile.getRows());
-            }
-            dataMap.put("fileListMap", map);
-            //联系人
+            pm = this.materialFileTypeService.getPagerModelByQuery(materialFileType, query);
+        } catch (Exception e) {
+            logger.info("FncController-getFileTypeList:",e);
+        }
+        return pm;
+    }
+
+    /**
+     * @Description 获取财务模块联系人列表
+     * @Param [request, response]
+     **/
+    @ResponseBody
+    @GetMapping("/getContactList")
+    @ApiOperation("获取财务模块联系人列表")
+    public PagerModel<ContactUs> getContactList(HttpServletRequest request,HttpServletResponse response) {
+        PagerModel<ContactUs> pm = new PagerModel<ContactUs>();
+        try {
+            Query query = new Query();
             ContactUs contactUs = new ContactUs();
             contactUs.setStatus(YsportalConstant.STATUS_ENABLED);
             query.setPageSize(2);
-            PagerModel<ContactUs> pagerModelByQuery = contactUsService.getPagerModelByQuery(contactUs, query);
-            dataMap.put("contactUsList",pagerModelByQuery.getRows());
-            //意见建议
+            pm = contactUsService.getPagerModelByQuery(contactUs, query);
+        } catch (Exception e) {
+            logger.info("FncController-getContactList:",e);
+        }
+        return pm;
+    }
+
+    /**
+     * 获取意见与建议列表
+     * @Description:
+     * @author zhaohaishan 2017年9月6日 下午3:55:29
+     */
+    @ResponseBody
+    @GetMapping("/getOpinionList")
+    @ApiOperation("获取意见与建议列表")
+    @ApiImplicitParams({})
+    public ReturnVo getOpinionList(HttpServletRequest request, HttpServletResponse response) {
+        UserSessionInfo session = this.getUserSessionInfo(request,response);
+        ReturnVo<List> returnVo = new ReturnVo(ReturnCode.FAIL,"查询数据失败");
+        try {
             Opinion opinion = new Opinion();
             opinion.setStatus(YsportalConstant.STATUS_ENABLED);
             opinion.setCreatorNo(session.getNo());
             List<Opinion> opinionList = opinionService.getAll(opinion);
-            dataMap.put("opinionList", opinionList);
-            returnVo.setCode(ReturnCode.SUCCESS);
-            returnVo.setMsg("数据查询成功");
-            returnVo.setData(dataMap);
+            if (null != opinionList) {
+                returnVo.setCode(ReturnCode.SUCCESS);
+                returnVo.setMsg("获取数据成功");
+                returnVo.setData(opinionList);
+            }
         } catch (Exception e) {
-            logger.info("FncController-index:",e);
+            logger.info("FncController-getOpinionList",e);
         }
-        return JsonUtils.toJson(returnVo);
+        return returnVo;
     }
 
     /**
@@ -136,9 +154,29 @@ public class FncController extends BaseController {
                  returnVo.setData(opinionTypeList);
              }
         } catch (Exception e) {
-            logger.info("FncController-index:getOpinionPage",e);
+            logger.info("FncController-getOpinionPage",e);
         }
         return returnVo;
+    }
+
+    /**
+     * 获取意见反馈详情
+     * @Description:
+     * @author zhaohaishan 2017年9月6日 下午3:55:29
+     */
+    @RequestMapping("/getOpinionDetail")
+    public Map<String,Object> getOpinionDetail(String id) {
+        Map<String,Object> res = new HashedMap();
+        try {
+            Opinion opinionById = opinionService.getOpinionById(id);
+            OpinionType opinionTypeById = opinionTypeService.getOpinionTypeById(opinionById.getTypeId());
+            res.put("opinion", opinionById);
+            res.put("opinionTypeName",opinionTypeById.getName());
+        } catch (Exception e) {
+            logger.info("FncController-getOpinionDetail",e);
+            e.printStackTrace();
+        }
+        return res;
     }
 
     /**
@@ -191,7 +229,7 @@ public class FncController extends BaseController {
     }
 
     /**
-     * 获取未读数量
+     * 获取意见反馈未读数量
      * @param request
      * @param response
      * @return
@@ -200,7 +238,7 @@ public class FncController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/getOpinionReadNum")
-    @ApiOperation("获取未读数量")
+    @ApiOperation("获取意见反馈未读数量")
     @ApiImplicitParams({})
     public ReturnVo getOpinionReadNum(HttpServletRequest request, HttpServletResponse response){
         UserSessionInfo session = this.getUserSessionInfo(request,response);
@@ -213,7 +251,8 @@ public class FncController extends BaseController {
                 opinion.setCreatorNo(session.getNo());
                 List<Opinion> all = opinionService.getAll(opinion);
                 returnVo.setCode(ReturnCode.SUCCESS);
-                returnVo.setMsg(String.valueOf(all.size()));
+                returnVo.setMsg("获取数据成功");
+                returnVo.setData(String.valueOf(all.size()));
             }
         }catch (Exception e) {
             logger.info("getOpinionRead 跟新意见读取状态失败");
@@ -223,41 +262,36 @@ public class FncController extends BaseController {
     }
 
     /**
-     * 更新已读状态
+     * 更新意见反馈已读状态
      * @param request
      * @param response
      * @Description:
      * @author zhaohaishan 2017年9月13日 下午4:41:57
      */
-    @ResponseBody
-    @GetMapping("/updateOpinionRead")
-    @ApiOperation("更新已读状态")
+    @GetMapping("/updateOpinionReadById")
+    @ApiOperation("更新意见反馈已读状态")
     @ApiImplicitParams({})
-    public void updateOpinionRead(HttpServletRequest request, HttpServletResponse response){
+    public ReturnVo updateOpinionReadById(String id, HttpServletRequest request, HttpServletResponse response){
+        ReturnVo vo = new ReturnVo(ReturnCode.FAIL,"更新意见反馈读取状态失败");
         UserSessionInfo session = this.getUserSessionInfo(request,response);
         try {
             if(StringUtils.isBlank(session.getNo())){
-                return;
+                return vo;
             }
-            Opinion opinion = new Opinion();
-            opinion.setStatus(YsportalConstant.STATUS_ENABLED);
-            opinion.setIsRead(YsportalConstant.STATUS_DISABLED);
-            opinion.setCreatorNo(session.getNo());
-            List<Opinion> all = opinionService.getAll(opinion);
-            StringBuffer ids = new StringBuffer();
-            int i = 0;
-            int size = all.size();
-            for(Opinion temp : all){
-                i++;
-                ids.append(temp.getId());
-                if(i!=size)ids.append(",");
+            if(StringUtils.isNotBlank(id)){
+                Opinion opinion = opinionService.getOpinionById(id);
+                if(opinion != null && opinion.getStatus() == YsportalConstant.STATUS_ENABLED){
+                    opinion.setIsRead(YsportalConstant.STATUS_ENABLED);
+                    opinionService.updateOpinion(opinion);
+                    vo.setCode(ReturnCode.SUCCESS);
+                    vo.setMsg("更新意见反馈读取状态成功");
+                }
             }
-            opinion.setIsRead(YsportalConstant.STATUS_ENABLED);
-            opinionService.updateOpinionByIds(ids.toString(),opinion);
         } catch (Exception e) {
-            logger.info("updateOpinionRead 跟新意见读取状态失败");
+            logger.info("updateOpinionReadById 更新意见反馈读取状态失败");
             e.printStackTrace();
         }
+        return vo;
     }
 
     /**
@@ -352,29 +386,19 @@ public class FncController extends BaseController {
      * @Description:
      * @author zhaohaishan 2017年9月13日 下午3:23:23
      */
-    @ResponseBody
-    @GetMapping("/ajaxListMaterialFile")
+    @GetMapping("/ajaxMaterialFileList")
     @ApiOperation("资料文件数据")
     @ApiImplicitParams({})
-    public ReturnVo ajaxList(MaterialFile materialFile,Integer page,Integer rows) {
-        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL,"获取数据失败");
-        PagerModel<MaterialFile> pm = null;
-        Query query = new Query();
-        query.setPageSize(rows);
-        query.setPageIndex(page-1);
+    public PagerModel<MaterialFile> ajaxMaterialFileList(MaterialFile materialFile, Query query) {
+        PagerModel<MaterialFile> pm = new PagerModel<MaterialFile>();
         try {
             materialFile.setStatus(YsportalConstant.STATUS_ENABLED);
             pm = this.materialFileService.getPagerModelByQuery(materialFile, query);
-            if (null != pm) {
-                returnVo.setData(pm);
-                returnVo.setCode(ReturnCode.SUCCESS);
-                returnVo.setMsg("获取数据成功");
-            }
         } catch (Exception e) {
             logger.error("MaterialFileController-ajaxList:"+e);
             e.printStackTrace();
         }
-        return returnVo;
+        return pm;
     }
 
 }

@@ -26,7 +26,7 @@
         
         <result column="status" property="status" jdbcType="INTEGER" />
         
-        <result column="isRead" property="is_read" jdbcType="INTEGER" />
+        <result column="is_read" property="isRead" jdbcType="INTEGER" />
         
         <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
         

@@ -25,6 +25,8 @@ export default class NoticeDetail extends PureComponent {
   }
 
   watermark = (settings={}) => {
+    const arr = document.getElementsByClassName('water_mask_box');
+    arr.length && this.refs.waterMarker && this.refs.waterMarker.removeChild(arr[0]);
     //默认设置
     var defaultSettings={
       watermark_txt:"",
@@ -58,7 +60,6 @@ export default class NoticeDetail extends PureComponent {
     var page_width = Math.max(document.body.scrollWidth,document.body.clientWidth);
     //获取页面最大长度
     var page_height = Math.max(document.body.scrollHeight,document.body.clientHeight,document.body.offsetHeight,window.screen.availHeight);
-    
 
     //如果将水印列数设置为0，或水印列数设置过大，超过页面最大宽度，则重新计算水印列数和水印x轴间隔
     if (defaultSettings.watermark_cols == 0 ||
@@ -106,7 +107,7 @@ export default class NoticeDetail extends PureComponent {
 
         var mask_div = document.createElement('div');
         mask_div.id = 'mask_div' + i + j;
-
+        mask_div.classList.add('water_mask_box');
 
 
         var texts = defaultSettings.watermark_txt.split("_");
@@ -156,14 +157,14 @@ export default class NoticeDetail extends PureComponent {
     const { match: { params }, dispatch } = this.props;
     dispatch({
       type: 'newsNotice/queryNoticeDetail',
-      payload: params.id,
-      callback: (res)=>{
-        if(res.code === '100' && res.data){
-          this.watermark({
-            watermark_txt: res.data.watermarkTxt
-          });
-        }
-      }
+      payload: params.id
+    });
+  }
+
+  componentDidUpdate(props){
+    const { newsNotice:{ noticeDetail: { watermarkTxt} } } = props;
+    watermarkTxt && this.watermark({
+      watermark_txt: watermarkTxt
     });
   }
 
