@@ -48,9 +48,6 @@ export default class Detail extends PureComponent {
           case "/main/fnc-service" : breadRoot.url="/main/fnc-service";breadRoot.rootName="财务服务";break;
           case "/main/news" : breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
         }
-      }else if(window.opener.location.href.search('notice') !== -1 && window.opener.location.href.split("eip")[1]){
-
-
       }
     }
 

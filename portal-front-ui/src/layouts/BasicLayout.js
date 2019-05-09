@@ -184,10 +184,7 @@ class BasicLayout extends React.PureComponent {
           </Header>
           <Content className={styles.contentBox} style={contentStyle}>
             <Authorized authority={routerConfig} noMatch={<Exception403 />}>
-
-                {children}
-
-
+              {children}
             </Authorized>
           </Content>
           <Footer style={{ padding: 0 }}>
