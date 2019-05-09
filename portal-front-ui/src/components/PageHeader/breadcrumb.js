@@ -85,9 +85,6 @@ export default class BreadcrumbView extends PureComponent {
   };
 
   AddBreadcrumbDom=(routerLocation)=>{
-    if(this.props.diyBreadCrumb && this.props.diyBreadCrumb.length>0){
-       return <Link to={this.props.diyBreadCrumb[0].url}>{this.props.diyBreadCrumb[0].name}</Link>;
-    }else{
       switch(routerLocation.split("/")[1]){
         case "process" :return <Link to={"/main/workplace"}>工作台</Link>;break;
         case "workplace" :return <Link to={"/main/workplace"}>工作台</Link>;break;
@@ -98,8 +95,6 @@ export default class BreadcrumbView extends PureComponent {
         case "news" :return <Link to={"/main/news"}>新闻资讯</Link>;break;
         default : return <a href={ getConfig().domain+"/main.jhtml"}>工作台</a>;break;
       }
-    }
-
   }
 
   conversionFromLocation = (routerLocation, breadcrumbNameMap) => {
@@ -109,14 +104,14 @@ export default class BreadcrumbView extends PureComponent {
 
     // Loop data mosaic routing
     let extraBreadcrumbItems  = [];
-    console.log(this.props)
+    // 当有自定义面包屑数据时，创建自定义面包屑 ，否则按照路由创建
     if(this.props.diyBreadCrumb && this.props.diyBreadCrumb.length>0){
-      console.log("ceshi")
       extraBreadcrumbItems = this.props.diyBreadCrumb.map((obj, index) => {
         const isLinkable = index !== this.props.diyBreadCrumb.length - 1 ;
         const name = obj ?  obj.name:"";
         return (
             <Breadcrumb.Item key={obj.url}>
+              { index == 0? "您所在的位置：":""}
               {createElement(
                 isLinkable ? linkElement : 'span',
                 { [linkElement === 'a' ? 'href' : 'to']: obj.url },
@@ -143,23 +138,22 @@ export default class BreadcrumbView extends PureComponent {
           </Breadcrumb.Item>
         ) : null;
       });
-
-    }
-
-    // Add home breadcrumbs to your head
-    const  homeDem  = this.AddBreadcrumbDom(routerLocation.pathname);
-    extraBreadcrumbItems.unshift(
-      <Breadcrumb.Item key="home">
-        您所在的位置：{homeDem}
-        {/*{createElement(*/}
+      // Add home breadcrumbs to your head
+      const  homeDem  = this.AddBreadcrumbDom(routerLocation.pathname);
+      extraBreadcrumbItems.unshift(
+        <Breadcrumb.Item key="home">
+          您所在的位置：{homeDem}
+          {/*{createElement(*/}
           {/*linkElement,*/}
           {/*{*/}
-            {/*[linkElement === 'a' ? 'href' : 'to']: '/',*/}
+          {/*[linkElement === 'a' ? 'href' : 'to']: '/',*/}
           {/*},*/}
           {/*home || 'Home'*/}
-        {/*)}*/}
-      </Breadcrumb.Item>
-    );
+          {/*)}*/}
+        </Breadcrumb.Item>
+      );
+    }
+
     return (
       <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
         {extraBreadcrumbItems}
