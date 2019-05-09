@@ -1,0 +1,191 @@
+@import '~antd/lib/style/themes/default.less';
+:global{
+  .fujian-box{
+    width: 100%;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background: #fff;
+    padding: 15px 0 0;
+    .fujian{
+      color:#333;
+      width:1200px;
+      margin:auto;
+      &>span, .fujian-list{
+        display: inline-block;
+        vertical-align: top;
+        line-height: 32px;
+      }
+      &>.fujian-list{
+        width: 1150px;
+      }
+    }
+  }
+  .notice-detail-container{
+    background-color: #fff;
+    padding: 0 100px;
+    .title-box{
+      position: relative;
+      text-align: center;
+      p{
+        font-size: 22px;
+        color: #333;
+        font-weight: bold;
+        word-wrap: break-word;
+        margin-bottom: 10px;
+        .art-no{
+          padding-right: 30px;
+        }
+      }
+      .u-activity{
+        display: inline-block;
+        margin: 0;
+        li{
+          float: left;
+          font-size: 12px;
+          color: #8c8c8c;
+          margin: 0 21px;
+          &.category-text{
+            width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+    .text-content {
+      position: relative;
+      min-height: 700px;
+      font-size: 16px;
+      width: 890px;
+      overflow-wrap: break-word;
+      word-break: break-all;
+      border-top: 1px solid rgb(229, 229, 229);
+      padding: 18px 80px 100px;
+      margin: auto;
+      overflow: hidden;
+      .content-view{
+        clear: both;
+      }
+    }
+    .fixed-msg-box {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      margin-left: -600px;
+      width: 1200px;
+      padding: 0 100px;
+      background: #fff;
+      .anns-msg{
+        margin: 0 50px;
+        border-top: 1px solid #e5e5e5;
+        .anns-list{
+          padding: 15px 90px;
+          line-height: 28px;
+          font-size: 12px;
+          color: #333;
+          em{
+            font-style: normal;
+            color: #8c8c8c;
+          }
+        }
+      }
+      .fujian-box{
+        width: auto;
+        margin: 0 50px;
+        position: static;
+        border-top: 1px solid #e5e5e5;
+        padding: 5px 90px 0;
+        font-size: 12px;
+        line-height: 30px;
+        .fujian{
+          width: 810px;
+          &>span, .fujian-list{
+            display: inline-block;
+            vertical-align: top;
+          }
+          &>.fujian-list{
+            width: 770px;
+          }
+        }
+      }
+    }
+  }
+  .news-detail-container{
+    background-color: #fff;
+    min-height: 600px;
+    .ant-layout{
+      background-color: #fff;
+      .ant-layout-header{
+        background-color: #fff;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 0;
+        height: 80px;
+        line-height: 1.2;
+      }
+      .ant-layout-sider{
+        background-color: #fff;
+        border-left: 1px solid #e5e5e5;
+      }
+    }
+    .content-title {
+      text-align: center;
+      position: relative;
+      padding-right: 240px;
+      p{
+        font-size: 22px;
+        color: #333;
+        font-weight: bold;
+        padding: 15px 0;
+        margin: 0;
+      }
+      ul{
+        display: inline-block;
+        li{
+          float: left;
+          font-size: 12px;
+          color: #8c8c8c;
+          margin: 0 21px;
+          max-width: 200px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+    .article-text {
+      padding: 18px 50px 0;
+      font-size: 16px;
+      color: #333;
+      overflow: hidden;
+    }
+    .relevant-news{
+      p {
+        font-size: 14px;
+        line-height: 50px;
+        color: #333;
+        padding-left: 18px;
+        background: #F8F8F8;
+        margin: 0 0 16px;
+      }
+      ul {
+        padding-left: 19px;
+        li{
+          text-align: center;
+          img{
+            width: 220px;
+            height: 148px;
+          }
+          span {
+            display: block;
+            width: 190px;
+            text-align: center;
+            font-size: 14px;
+            margin: 10px auto 18px auto;
+          }
+        }
+      }
+    }
+  }
+}

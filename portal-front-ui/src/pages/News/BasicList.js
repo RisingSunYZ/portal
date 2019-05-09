@@ -1,10 +1,9 @@
-//实际效果详见  财经服务--财经资讯--更多（链接）
 import React, { PureComponent } from 'react';
 import { List, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
-import PageHeaderWrapper from '../../components/PageHeaderWrapper';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Link from 'umi/link';
-import { getConfig } from '../../utils/utils';
+import { getConfig } from '@/utils/utils';
 import styles from './News.less';
 
 @connect(({ newsInfo, loading }) => ({
@@ -63,7 +62,7 @@ export default class BasicList extends PureComponent {
 
   render() {
 
-    const {newsInfo:{ NewsDataList }} = this.props;
+    const {newsInfo:{ NewsDataList }, match: { params }} = this.props;
 
     return (
       <PageHeaderWrapper>
@@ -87,13 +86,13 @@ export default class BasicList extends PureComponent {
               >
                 <div className={styles.newsBox}>
                   <div className={styles.imgBox}>
-                    <Link target="_blank" to={`/news-notice/news-detail/${item.id}`}>
+                    <Link target="_blank" to={`/news-notice/${params.typeSn}/${item.id}`}>
                       <img width={194} height={120} src={ getConfig().ftpHost + item.thumbImg } alt=""/>
                     </Link>
                   </div>
                   <div className={styles.textBox}>
                     <h5>
-                      <Link target="_blank" to={`/news-notice/news-detail/${item.id}`}>
+                      <Link target="_blank" to={`/news-notice/${params.typeSn}/${item.id}`}>
                         {item.title}
                       </Link>
                     </h5>

@@ -3,7 +3,8 @@ import { Icon, Card } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import FileList from '@/components/FileList';
-import './detail.less';
+import './index.less';
+
 
 @connect(({ newsNotice, loading }) => ({
   newsNotice,
@@ -25,8 +26,6 @@ export default class NoticeDetail extends PureComponent {
   }
 
   watermark = (settings={}) => {
-    const arr = document.getElementsByClassName('water_mask_box');
-    arr.length && this.refs.waterMarker && this.refs.waterMarker.removeChild(arr[0]);
     //默认设置
     var defaultSettings={
       watermark_txt:"",
@@ -108,7 +107,7 @@ export default class NoticeDetail extends PureComponent {
 
         var mask_div = document.createElement('div');
         mask_div.id = 'mask_div' + i + j;
-        mask_div.classList.add('water_mask_box');
+
 
 
         var texts = defaultSettings.watermark_txt.split("_");
@@ -155,22 +154,24 @@ export default class NoticeDetail extends PureComponent {
   };
 
   componentDidMount () {
-    const { match: { params }, dispatch } = this.props;
+    const { match: { params },dispatch} = this.props;
+
     dispatch({
       type: 'newsNotice/queryNoticeDetail',
-      payload: params.id
-    });
-  }
-
-  componentDidUpdate(props){
-    const { newsNotice:{ noticeDetail: { watermarkTxt} } } = props;
-    watermarkTxt && this.watermark({
-      watermark_txt: watermarkTxt
+      payload: params.id,
+      callback: (res)=>{
+        if(res.code === '100' && res.data){
+          this.watermark({
+            watermark_txt: res.data.watermarkTxt
+          });
+        }
+      }
     });
   }
 
   createApproveItem = (records) => {
-    const {newsNotice:{ noticeDetail: {notice} }} = this.props;
+    const {
+      newsNotice:{ noticeDetail: {notice} }} = this.props;
     let approveRemark = '' , dom = [];
     if(records && records.length>0){
       records.map((record)=> {
@@ -187,6 +188,7 @@ export default class NoticeDetail extends PureComponent {
     return dom
   };
 
+
   render() {
 
     const {
@@ -194,7 +196,6 @@ export default class NoticeDetail extends PureComponent {
     } = this.props;
 
     return (
-      <PageHeaderWrapper>
         <div className="notice-detail-container">
           <Card bordered={false} bodyStyle={{padding: '32px 0 0'}}>
             <div className="title-box">
@@ -236,9 +237,9 @@ export default class NoticeDetail extends PureComponent {
                 </div>
               </div>
             ) : ''}
-            </div>
           </div>
-      </PageHeaderWrapper>
+        </div>
+
     );
   }
 }

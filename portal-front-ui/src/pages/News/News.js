@@ -237,17 +237,17 @@ export default class TableList extends PureComponent {
                   >
                     {
                       index > 1 ?
-                        ( <Link to={`/news-notice/news-detail/${item.id}`} target="_blank" className={styles.links}>{item.title}</Link> ) :
+                        ( <Link to={`/news-notice/special_events/${item.id}`} target="_blank" className={styles.links}>{item.title}</Link> ) :
                         (<div className={styles.listTop}>
                           <Link to={ftpHost + item.thumbImg} target="_blank">
                             <img src={ftpHost + item.thumbImg} className={styles.moveImg}/>
                           </Link>
                           <span className={styles.moveTitle}>
-                            <Link to={`/news-notice/news-detail/${item.id}`}  target="_blank">{item.title}</Link>
+                            <Link to={`/news-notice/special_events/${item.id}`}  target="_blank">{item.title}</Link>
                           </span>
                           <p className={styles.descTitle}>
                             <span>{item.remark.substr(0, 28) + "..."}</span>
-                            <span><Link to={`/news-notice/news-detail/${item.id}`}>【详情】</Link></span>
+                            <span><Link to={`/news-notice/special_events/${item.id}`}>【详情】</Link></span>
                           </p>
                         </div>)
                     }
@@ -273,7 +273,7 @@ export default class TableList extends PureComponent {
                   >
                     {
                       index > 1 ?
-                        ( <Link to={`/news-notice/news-detail/${item.id}`}  target="_blank" className={styles.links}>{item.title}</Link> ) :
+                        ( <Link to={`/news-notice/company_news/${item.id}`}  target="_blank" className={styles.links}>{item.title}</Link> ) :
                         (<List.Item.Meta
                              avatar={
                                <Link to={ftpHost + item.thumbImg} target="_blank">
@@ -282,13 +282,13 @@ export default class TableList extends PureComponent {
                              }
                              title={
                                <span className={styles.linkTitle}>
-                                 <Link to={`/news-notice/news-detail/${item.id}`}  target="_blank" >{item.title}</Link>
+                                 <Link to={`/news-notice/company_news/${item.id}`}  target="_blank" >{item.title}</Link>
                                </span>
                              }
                              description={
                                <p className={styles.descTitle}>
                                  <span>{item.remark.substr(0, 100) + "..."}</span>
-                                 <Link to={`/news-notice/news-detail/${item.id}`}>【详情】</Link>
+                                 <Link to={`/news-notice/company_news/${item.id}`}>【详情】</Link>
                                </p>
                              }
                            />)
@@ -313,7 +313,7 @@ export default class TableList extends PureComponent {
                     key={item.id}
                     style={{padding:0}}
                   >
-                    <Link to={`/news-notice/news-detail/${item.id}`} target="_blank" className={styles.links}>{item.title}</Link>
+                    <Link to={`/news-notice/industry_news/${item.id}`} target="_blank" className={styles.links}>{item.title}</Link>
                   </List.Item>
                 )}
               />

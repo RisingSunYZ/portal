@@ -85,40 +85,67 @@ export default class BreadcrumbView extends PureComponent {
   };
 
   AddBreadcrumbDom=(routerLocation)=>{
-    switch(routerLocation.split("/")[1]){
-      case "process" :return <Link to={"/main/workplace"}>工作台</Link>;break;
-      case "workplace" :return <Link to={"/main/workplace"}>工作台</Link>;break;
-      case "biz-sys" :return <Link to={"/main/workplace"}>工作台</Link>;break;
-      case "hr-service" :return <Link to={"/main/hr-service"}>HR服务</Link>;break;
-      case "infor-tech" :return <Link to={"/main/infor-tech"}>IT服务</Link>;break;
-      case "fnc-service" :return <Link to={"/main/fnc-service"}>财务服务</Link>;break;
-      case "news" :return <Link to={"/main/news"}>新闻资讯</Link>;break;
-      default : return <a href={ getConfig().domain+"/main.jhtml"}>工作台</a>;break;
+    if(this.props.diyBreadCrumb && this.props.diyBreadCrumb.length>0){
+       return <Link to={this.props.diyBreadCrumb[0].url}>{this.props.diyBreadCrumb[0].name}</Link>;
+    }else{
+      switch(routerLocation.split("/")[1]){
+        case "process" :return <Link to={"/main/workplace"}>工作台</Link>;break;
+        case "workplace" :return <Link to={"/main/workplace"}>工作台</Link>;break;
+        case "biz-sys" :return <Link to={"/main/workplace"}>工作台</Link>;break;
+        case "hr-service" :return <Link to={"/main/hr-service"}>HR服务</Link>;break;
+        case "infor-tech" :return <Link to={"/main/infor-tech"}>IT服务</Link>;break;
+        case "fnc-service" :return <Link to={"/main/fnc-service"}>财务服务</Link>;break;
+        case "news" :return <Link to={"/main/news"}>新闻资讯</Link>;break;
+        default : return <a href={ getConfig().domain+"/main.jhtml"}>工作台</a>;break;
+      }
     }
+
   }
 
   conversionFromLocation = (routerLocation, breadcrumbNameMap) => {
     const { breadcrumbSeparator, home, itemRender, linkElement = 'a' } = this.props;
     // Convert the url to an array
     const pathSnippets = urlToList(routerLocation.pathname);
+
     // Loop data mosaic routing
-    const extraBreadcrumbItems = pathSnippets.map((url, index) => {
-      const currentBreadcrumb = getBreadcrumb(breadcrumbNameMap, url);
-      if (currentBreadcrumb.inherited) {
-        return null;
-      }
-      const isLinkable = index !== pathSnippets.length - 1 && currentBreadcrumb.component;
-      const name = itemRender ? itemRender(currentBreadcrumb) : currentBreadcrumb.name;
-      return currentBreadcrumb.name && !currentBreadcrumb.hideInBreadcrumb ? (
-        <Breadcrumb.Item key={url}>
-          {createElement(
-            isLinkable ? linkElement : 'span',
-            { [linkElement === 'a' ? 'href' : 'to']: url },
-            name
-          )}
-        </Breadcrumb.Item>
-      ) : null;
-    });
+    let extraBreadcrumbItems  = [];
+    console.log(this.props)
+    if(this.props.diyBreadCrumb && this.props.diyBreadCrumb.length>0){
+      console.log("ceshi")
+      extraBreadcrumbItems = this.props.diyBreadCrumb.map((obj, index) => {
+        const isLinkable = index !== this.props.diyBreadCrumb.length - 1 ;
+        const name = obj ?  obj.name:"";
+        return (
+            <Breadcrumb.Item key={obj.url}>
+              {createElement(
+                isLinkable ? linkElement : 'span',
+                { [linkElement === 'a' ? 'href' : 'to']: obj.url },
+                name
+              )}
+            </Breadcrumb.Item>
+          );
+      });
+    }else{
+      extraBreadcrumbItems = pathSnippets.map((url, index) => {
+        const currentBreadcrumb = getBreadcrumb(breadcrumbNameMap, url);
+        if (currentBreadcrumb.inherited) {
+          return null;
+        }
+        const isLinkable = index !== pathSnippets.length - 1 && currentBreadcrumb.component;
+        const name = itemRender ? itemRender(currentBreadcrumb) : currentBreadcrumb.name;
+        return currentBreadcrumb.name && !currentBreadcrumb.hideInBreadcrumb ? (
+          <Breadcrumb.Item key={url}>
+            {createElement(
+              isLinkable ? linkElement : 'span',
+              { [linkElement === 'a' ? 'href' : 'to']: url },
+              name
+            )}
+          </Breadcrumb.Item>
+        ) : null;
+      });
+
+    }
+
     // Add home breadcrumbs to your head
     const  homeDem  = this.AddBreadcrumbDom(routerLocation.pathname);
     extraBreadcrumbItems.unshift(

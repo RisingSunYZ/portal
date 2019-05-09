@@ -17,6 +17,7 @@ import Exception403 from '../pages/Exception/403';
 import { title } from '../defaultSettings';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo.svg';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 // lazy load SettingDrawer
 const SettingDrawer = React.lazy(() => import('@/components/SettingDrawer'));
@@ -183,7 +184,10 @@ class BasicLayout extends React.PureComponent {
           </Header>
           <Content className={styles.contentBox} style={contentStyle}>
             <Authorized authority={routerConfig} noMatch={<Exception403 />}>
-              {children}
+
+                {children}
+
+
             </Authorized>
           </Content>
           <Footer style={{ padding: 0 }}>

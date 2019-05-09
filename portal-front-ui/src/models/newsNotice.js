@@ -113,10 +113,12 @@ export default {
     },
     *queryNoticeList({ payload }, { call, put }) {
       const response = yield call(queryNoticeList, payload);
-      yield put({
-        type: 'saveNoticeList',
-        payload: response,
-      });
+      if(response && response.data && response.data.length>0 ){
+        yield put({
+          type: 'saveNoticeList',
+          payload: response,
+        });
+      }
     },
     *ajaxSearchNoticeList({ payload }, { call, put }) {
       const response = yield call(ajaxSearchNoticeList, payload);

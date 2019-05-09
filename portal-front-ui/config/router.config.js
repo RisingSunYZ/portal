@@ -232,18 +232,18 @@ export default [
           },
           {
             path: '/news-notice/notice-table/:typeSn',
-            name: 'table-list',
+            name: 'notice-table',
             component: './News/TableList',
           },
           {
             path: '/news-notice/news-list/:typeSn',
-            name: 'basic-list',
+            name: 'news-list',
             component: './News/BasicList'
           },
           {
-            path: '/news-notice/news-detail/:id',
+            path: '/news-notice/:typeSn/:id/',
             name: 'news-detail',
-            component: './News/NewsDetail',
+            component: './News/Detail',
           },
           {
             path: '/news-notice/notice-detail/:id',
