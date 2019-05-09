@@ -1,6 +1,7 @@
 package com.dragon.portal.rest.controller.news;
 
-import com.dragon.flow.vo.flowable.comment.FlowCommentVo;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dragon.portal.model.news.*;
 import com.dragon.portal.service.news.*;
 import com.dragon.portal.service.redis.RedisService;
@@ -8,11 +9,7 @@ import com.dragon.portal.utils.CommUtil;
 import com.dragon.portal.utils.CommUtils;
 import com.dragon.portal.vo.user.UserSessionInfo;
 import com.dragon.portal.rest.controller.BaseController;
-import com.dragon.tools.common.FileUtils;
 import com.dragon.tools.common.ReturnCode;
-import com.dragon.tools.common.UUIDGenerator;
-import com.dragon.tools.ftp.FtpTools;
-import com.dragon.tools.ftp.UploadUtils;
 import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
@@ -25,7 +22,6 @@ import com.ys.yahu.enm.NewsNoticeEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.LinkedMap;
@@ -33,7 +29,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,8 +68,6 @@ public class NewsIndexController extends BaseController {
 	private INewsSignRecordService newsSignRecordService;
 	@Autowired
     private INewsCommentService newsCommentService;
-    @Autowired
-    private FtpTools ftpTools;
 
 	/**
 	 * 获取新闻资讯列表
@@ -103,16 +96,14 @@ public class NewsIndexController extends BaseController {
                 PagerModel<NewsNoticeVo> pm = new PagerModel<NewsNoticeVo>();
 
                 notice.setUserNo(userSessionInfo.getNo());
-                // FIXME 因为Session获取用户信息暂未开发，为了测试先不进行判断，session开发完了注释部分打开
-                newsNoticePage = newsNoticeService.getPagerModelByQueryOfRangeRedis(notice, query,userSessionInfo.getNo());
-//                if (CollectionUtils.isNotEmpty(notice.getRangeDeftId())){
-//                    newsNoticePage = newsNoticeService.getPagerModelByQueryOfRangeRedis(notice, query,userSessionInfo.getNo());
-//                }
-            } else {  //用户未登录
-                newsNoticePage = newsNoticeService.getPagerModelByQueryOfRange(notice, query,"");
+                if (CollectionUtils.isNotEmpty(notice.getRangeDeftId())){
+                    newsNoticePage = newsNoticeService.getPagerModelByQueryOfRangeRedis(notice, query, userSessionInfo.getNo());
+                    returnVo = new ReturnVo<>( ReturnCode.SUCCESS, "查询成功！" , newsNoticePage);
+                }
+            } else {
+			    //用户未登录
+                returnVo = new ReturnVo<>( ReturnCode.FAIL, "未登录用户！" );
             }
-            returnVo = new ReturnVo<>( ReturnCode.SUCCESS, "查询成功！" , newsNoticePage);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("NewsIndexController-ajaxListVo:" + e);
@@ -265,106 +256,52 @@ public class NewsIndexController extends BaseController {
     /**
      * 新闻资讯-员工风采-我要秀  添加员工风采记录
      */
-    @GetMapping("/addNewsStaffPresence")
+    @PostMapping("/addNewsStaffPresence")
     @ApiOperation("新闻资讯-员工风采-我要秀  添加员工风采记录")
     @ApiImplicitParams({})
-    public ReturnVo addNewsStaffPresence(NewsNotice notice){
+    public ReturnVo addNewsStaffPresence(@RequestBody String paramJson, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response){
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "员工风采保存失败!");
         try {
-            NewsType newsType = newsTypeService.queryNewsTypeBySn("staff_presence");
-            notice.setTypeId(newsType.getId());
-            newsNoticeService.insertNotice(notice);
-            returnVo = new ReturnVo( ReturnCode.SUCCESS, "员工风采保存成功!", notice.getId());
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("NewsIndexController-addNewsStaffPresence:" + e);
-        }
-        return returnVo;
-    }
 
-    /**
-     * 上传图片
-     */
-    @PostMapping("/uploadFile")
-    @ApiOperation("新闻资讯-员工风采-我要秀  上传图片")
-    @ApiImplicitParams({})
-    public ReturnVo uploadFile(@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response,
-                               MultipartFile file, String filePath, Integer canDown, String noticeId, Integer sortNo) {
-        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "上传失败!" );
-        try {
             UserSessionInfo userSessionInfo = getUserSessionInfo( request, response );
             if (userSessionInfo == null) {
                 returnVo.setMsg( "用户未登录" );
                 throw new Exception( "用户未登录" );
             }
 
-            if (file == null) {
-                returnVo.setMsg( "上传文件为空" );
-                throw new Exception( "上传文件为空" );
-            }
+            JSONObject jsonObject = JSON.parseObject(paramJson);
 
-            filePath = StringUtils.isBlank( filePath ) ? "p" : filePath;
+            NewsType newsType = newsTypeService.queryNewsTypeBySn("staff_presence");
+            NewsNotice notice = new NewsNotice();
+            notice.setTitle( jsonObject.getString( "title" ) );
+            notice.setRemark( jsonObject.getString( "remark" ) );
+            notice.setTypeId(newsType.getId());
+            newsNoticeService.insertNotice(notice);
 
-            // FTP上传文件
-            String fileExtension = UploadUtils.getExtension( file.getOriginalFilename() );
-            String fileName = UUIDGenerator.generate() + "." + fileExtension;
-            String path = "/" + filePath + FileUtils.getDateFmtFilePath() + "/";
-            Boolean result = ftpTools.uploadFile( file.getInputStream(), fileName, path );
-            String destFilePath = path + fileName;
-            NewsFile newsFile = new NewsFile();
-            newsFile.setCreator( userSessionInfo.getNo() );
-            newsFile.setFileName( file.getOriginalFilename() );
-            newsFile.setFileType( 5 );
-            newsFile.setRefId( noticeId );
-            newsFile.setCanDown( canDown );
-            newsFile.setFileSize( (int) file.getSize() / 1000 );
-            newsFile.setFilePath( destFilePath );
-            newsFile.setSortNo( sortNo );
-            this.newsFileService.insertNewsFile( newsFile );
-            if (result) {
-                returnVo = new ReturnVo( ReturnCode.SUCCESS, "上传成功!", destFilePath );
-            }
+            // 插入图片
+            String noticeId = notice.getId();
+            String filesJson = jsonObject.getString( "files" );
+            List<NewsFile> newsFileList = JSON.parseArray(filesJson, NewsFile.class);
+
+            newsFileList.forEach( (newsFile)  -> {
+                newsFile.setCreator( userSessionInfo.getNo() );
+                newsFile.setFileType( 5 );
+                newsFile.setRefId( noticeId );
+                try {
+                    this.newsFileService.insertNewsFile( newsFile );
+                } catch (Exception e) {
+                    logger.error("NewsIndexController-addNewsStaffPresence:插入图片失败，" + e);
+                    e.printStackTrace();
+                }
+            });
+            returnVo = new ReturnVo( ReturnCode.SUCCESS, "员工风采保存成功!");
         } catch (Exception e) {
+            logger.error("NewsIndexController-addNewsStaffPresence:" + e);
             e.printStackTrace();
-            logger.error( "NewsIndexController-uploadFile:" + e.getMessage() );
         }
         return returnVo;
     }
 
-
-
-    /**
-	 * 获取详情页面数据
-	 */
-//	@GetMapping("/getNewsNoticePage")
-//	@ApiOperation("通用获取详情页面数据")
-//	@ApiImplicitParams({
-//			@ApiImplicitParam(name="id", value = "id", dataType = "String", paramType = "query"),
-//	})
-//	public ReturnVo getNewsNoticePage(String id, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response){
-//		NewsNotice noticeById;
-//		try {
-//			noticeById = newsNoticeService.getNoticeById(id);
-//			String typeId = StringUtils.isNotBlank(noticeById.getTypeId())?noticeById.getTypeId():noticeById.getTypeIdArray().split(",")[0];
-//			NewsType newsTypeById = newsTypeService.getNewsTypeById(typeId);
-//			String sn = newsTypeById.getSn();
-//			if(sn.indexOf("notice") > 0){
-//				return noticeDetail(id, null, request, response);
-//			}else if(sn.equals("company_news")||sn.equals("itrend_news")
-//					||sn.equals("finance_info")||sn.equals("finance_pro")
-//					||sn.equals("finance_expense")||sn.equals("rszd")){
-//				return newsDetail(id,null, request, response);
-//			}else if(sn.equals("special_events")){
-//				return activityDetail(id, request, response);
-//			}else if(sn.equals("industry_news")){
-//				return industryDetail(id, request, response);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			logger.error( "NewsIndexController-getNewsNoticePage:" + e );
-//		}
-//		return null;
-//	}
 
 	/**
 	 * 专题活动详情
@@ -597,7 +534,7 @@ public class NewsIndexController extends BaseController {
 			com.ys.tools.vo.ReturnVo<Department> Departments = null;
 			try{
 				if(redisService.exists(deptId)){
-					net.sf.json.JSONObject value = JSONObject.fromObject( redisService.get(deptId) );
+					net.sf.json.JSONObject value = net.sf.json.JSONObject.fromObject( redisService.get(deptId) );
 					List<Department> departmentsList = (List<Department>)net.sf.json.JSONArray.toList(value.getJSONArray("datas"), new Department(), new JsonConfig());
 					Departments = new com.ys.tools.vo.ReturnVo<Department>();
 					Departments.setDatas(departmentsList);
