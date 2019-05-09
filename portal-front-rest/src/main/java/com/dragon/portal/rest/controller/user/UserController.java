@@ -41,10 +41,14 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * 用户相关
+ */
 @RestController
 @RequestMapping("/rest/user")
-@Api(value="用户", description = "查询用户信息接口")
+@Api(value="用户信息")
 public class UserController extends BaseController {
+
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -55,10 +59,8 @@ public class UserController extends BaseController {
     IIdmService idmService;
     @Autowired
     IUserLoginService userLoginService;
-
     @Autowired
     Environment environment;
-
     @Autowired
     IUserLoginComponent userLoginComponent;
     @Autowired
@@ -95,27 +97,6 @@ public class UserController extends BaseController {
             e.printStackTrace();
         }
     }
-
-
-//    /**
-//     * @param request
-//     * @param response
-//     * @return
-//     * @Description:获取用户信息
-//     */
-//    @ApiOperation("获取用户信息")
-//    @RequestMapping(value = "/currentUser",method = RequestMethod.GET)
-//    public ReturnVo currentUser(HttpServletRequest request, HttpServletResponse response) {
-//        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "获取当前登录用户失败！");
-//
-//        UserSessionInfo userSessionInfo = this.getLoginUser(request, response);
-//
-//        returnVo.setData(userSessionInfo);
-//        returnVo.setCode(ReturnCode.SUCCESS);
-//        returnVo.setMsg("查询当前登录用户成功！");
-//        return returnVo;
-//    }
-
 
     /**
      * @param request

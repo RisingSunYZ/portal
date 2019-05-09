@@ -1,5 +1,6 @@
 package com.dragon.portal.rest.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.dragon.portal.component.IUserLoginComponent;
 import com.dragon.portal.config.PropertiesConfig;
 import com.dragon.portal.constant.PortalConstant;
@@ -90,8 +91,7 @@ public class BaseController {
                     u = (UserSessionInfo) JsonUtils.jsonToObj(uo, UserSessionInfo.class);
                     try {
                         if (!"null".equals(leaderDeptJson) && StringUtils.isNotEmpty(leaderDeptJson) && !CommUtils.isEmpty(leaderDeptJson) && leaderDeptJson instanceof String) {
-                            net.sf.json.JSONArray jsonArr = net.sf.json.JSONArray.fromObject(leaderDeptJson);
-                            List<LeaderDepartmentVo> leaderDeptList = jsonArr.toList(jsonArr, LeaderDepartmentVo.class);
+                            List<LeaderDepartmentVo> leaderDeptList = JSONArray.parseArray(leaderDeptJson, LeaderDepartmentVo.class);
                             u.setLeaderDeptList(leaderDeptList);
                         }
                     } catch (Exception e) {
