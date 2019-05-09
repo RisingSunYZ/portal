@@ -105,11 +105,10 @@ public class NewsNoticeController extends BaseController {
     /**
      * 查询通知详情信息
      */
-    @GetMapping("/noticeDetail/{id}")
+    @GetMapping("/noticeDetail")
     @ApiOperation("查询通知详情信息(通知公告-》数据详情页面数据)")
     @ApiImplicitParams({})
-    public ReturnVo noticeDetail(@PathVariable(name = "id") String id, String typeSn,
-                                                     @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
+    public ReturnVo noticeDetail( String id, String typeSn,@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询通知详情信息失败!");
         try {
             Map<String, Object> resultMap = new HashMap<>( );

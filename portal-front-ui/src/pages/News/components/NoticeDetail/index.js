@@ -158,7 +158,10 @@ export default class NoticeDetail extends PureComponent {
 
     dispatch({
       type: 'newsNotice/queryNoticeDetail',
-      payload: params.id,
+      payload:{
+        id:params.id,
+        typeSn:params.typeSn
+      },
       callback: (res)=>{
         if(res.code === '100' && res.data){
           this.watermark({
@@ -192,7 +195,7 @@ export default class NoticeDetail extends PureComponent {
   render() {
 
     const {
-      newsNotice:{ noticeDetail: {notice, files, approveRecords} }
+      newsNotice:{ noticeDetail: {notice, files, approveRecords,} }
     } = this.props;
 
     return (

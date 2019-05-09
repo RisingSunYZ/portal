@@ -66,9 +66,8 @@ export async function queryNewsNotice() {
  */
 
 export async function queryNoticeDetail(params) {
-  return request(`/rest/portal/notice/noticeDetail/${params}`);
+  return request(`/rest/portal/notice/noticeDetail/?${stringify(params)}`);
 }
-
 export async function queryNewsDetail(params) {
   return request(`/rest/portal/news/newsDetail?${stringify(params)}`);
 }
