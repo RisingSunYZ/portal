@@ -1,0 +1,74 @@
+@import '~antd/lib/style/themes/default.less';
+:global{
+  .news-detail-container{
+    background-color: #fff;
+    min-height: 600px;
+    .ant-layout{
+      background-color: #fff;
+      .ant-layout-header{
+        background-color: #fff;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 0;
+        height: 80px;
+        line-height: 1.2;
+      }
+      .ant-layout-sider{
+        background-color: #fff;
+        border-left: 1px solid #e5e5e5;
+      }
+    }
+    .content-title {
+      text-align: center;
+      position: relative;
+      padding-right: 240px;
+      p{
+        font-size: 22px;
+        color: #333;
+        font-weight: bold;
+        padding: 15px 0;
+        margin: 0;
+      }
+      ul{
+        display: inline-block;
+        li{
+          float: left;
+          font-size: 12px;
+          color: #8c8c8c;
+          margin: 0 21px;
+          max-width: 200px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+    .article-text {
+      padding: 18px 50px 0;
+      font-size: 16px;
+      color: #333;
+      overflow: hidden;
+    }
+    .hot-articles{
+      p {
+        font-size: 14px;
+        line-height: 50px;
+        color: #333;
+        padding-left: 18px;
+        background: #F8F8F8;
+        margin: 0 0 16px;
+      }
+      ul {
+        padding-left: 36px;
+        li{
+          list-style-type: disc;
+          line-height: 32px;
+          font-size: 14px;
+          margin: 5px 0;
+          a{
+            color: #999;
+          }
+        }
+      }
+    }
+  }
+}

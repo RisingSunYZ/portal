@@ -9,6 +9,7 @@ import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.vo.news.NoticeProVo;
 import com.dragon.tools.common.JsonUtils;
 import com.dragon.tools.common.UUIDGenerator;
+import com.dragon.tools.pager.ORDERBY;
 import com.dragon.tools.pager.PagerModel;
 import com.dragon.tools.pager.Query;
 import com.github.pagehelper.Page;
@@ -117,7 +118,7 @@ public class NewsNoticeServiceImpl implements INewsNoticeService {
     public PagerModel<NewsNotice> getPagerModelByQueryOfRange(NewsNotice notice, Query query,String userNo)
             throws Exception {
         //分页查询
-        PageHelper.startPage(query.getPageIndex(), query.getPageSize());
+        PageHelper.startPage(query.getPageIndex(), query.getPageSize(),query.getSortField()+" "+query.getSortOrder());
         Page<NewsNotice> page = (null != notice && null != query) ? this.noticeDao.getPagerModelByQueryOfRange(notice) : null;
         return new PagerModel<NewsNotice>(page);
     }

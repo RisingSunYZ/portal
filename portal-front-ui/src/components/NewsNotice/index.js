@@ -39,7 +39,7 @@ export default class NewsNotice extends PureComponent {
     const url = type == "notice"?"/news-notice/notice-detail/":"/news-notice/news-detail/";
     return news &&news.length >0 && news.map((item, index) => {
       return (
-        <li key={index}>
+        <li key={index} className={item.alreadyRead === 1 ? styles.alreadyRead : ''}>
           <span className={styles.content}>
             <Link title={item.title} to={url + item.id} target="_blank">
               {item.title}

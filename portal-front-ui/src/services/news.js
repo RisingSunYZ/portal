@@ -58,20 +58,44 @@ export async function queryNewsNotice() {
   return request(`/rest/index/ajaxCompanyNews`);
 }
 
+/**
+ * 获取公告详情
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function queryNoticeDetail(params) {
+  return request(`/rest/portal/notice/noticeDetail/?${stringify(params)}`);
+}
+
+/**
+ * 获取行业资讯详情
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function queryIndustryDetail(params) {
+  return request(`/rest/portal/news/industryDetail?${stringify(params)}`);
+}
+/**
+ * 获取专题活动详情
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function queryActivityDetail(params) {
+  return request(`/rest/portal/news/activityDetail?${stringify(params)}`);
+}
 
 /**
  * 获取新闻详情
  * @param params
  * @returns {Promise<Object>}
  */
-
-export async function queryNoticeDetail(params) {
-  return request(`/rest/portal/notice/noticeDetail/?${stringify(params)}`);
-}
 export async function queryNewsDetail(params) {
   return request(`/rest/portal/news/newsDetail?${stringify(params)}`);
 }
 
+/**
+ * 获取首页通知公告列表
+ */
 export async function queryNoticeList(params) {
   return request(`/rest/portal/notice/ajaxHomeNoticeList?${stringify(params)}`);
 }
@@ -82,7 +106,17 @@ export async function queryCompanyNewsList(params) {
 export async function ajaxSearchNoticeList(params) {
   return request(`/rest/portal/notice/ajaxSearchNoticeList?${stringify(params)}`);
 }
-
+/**
+ * 专题活动报名
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function newsSign(params) {
+  return request(`/rest/portal/news/newsSign?id=${params.id}`, {
+    method : 'POST',
+    body: params.data
+  });
+}
 
 
 

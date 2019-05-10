@@ -4,6 +4,8 @@ import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import NewsDetail from './components/NewsDetail';
 import NoticeDetail from './components/NoticeDetail';
+import IndustryDetail from './components/IndustryDetail';
+import ActivityDetail from './components/ActivityDetail';
 
 import {getConfig} from "@/utils/utils";
 import Link from 'umi/link';
@@ -83,21 +85,32 @@ export default class Detail extends PureComponent {
       }
     ]
     return  BreadCrumbData
-  }
+  };
+
+  getDetailPageBySn = (sn) => {
+    const { match } = this.props;
+    if(sn.indexOf("notice") > 0){
+      return <NoticeDetail match={match} />;
+    }else if(sn === "company_news"||sn === "itrend_news"
+      ||sn === "finance_info"||sn === "finance_pro"
+      ||sn === "finance_expense"|| sn === "rszd"){
+      return <NewsDetail match={match} />;
+    }else if(sn === "special_events"){
+      return <ActivityDetail match={match} />;
+    }else if(sn === "industry_news"){
+      return <IndustryDetail match={match} />;
+    }
+  };
 
   render() {
 
     const {
-      newsNotice:{ newsDetail: { news, files, newsByKeyword } },
       match
     } = this.props;
-    const type = match.params.typeSn.split("_")[1] ? match.params.typeSn.split("_")[1]:"notice"
-
+    const type = match.params.typeSn;
     return (
       <PageHeaderWrapper diyBreadCrumb={this.getDiyBreadCrumb()} >
-        {
-          type=="notice"?( <NoticeDetail match={match}></NoticeDetail>):(<NewsDetail match={match}></NewsDetail>)
-        }
+        {this.getDetailPageBySn(type)}
       </PageHeaderWrapper>
     );
   }

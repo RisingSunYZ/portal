@@ -302,6 +302,45 @@ public class NewsIndexController extends BaseController {
         return returnVo;
     }
 
+    /**
+     * 专题活动报名
+     */
+    @ResponseBody
+    @PostMapping("newsSign")
+    @ApiOperation("专题活动报名")
+    public ReturnVo newsSign(HttpServletRequest request, HttpServletResponse response,String id,@RequestBody NewsSignRecord newsSignRecord){
+        UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
+        ReturnVo returnVo = new ReturnVo(ReturnCode.FAIL, "很遗憾,报名失败!");
+        try {
+            if (userSessionInfo != null) {
+                NewsNotice fullById = newsNoticeService.getFullById(id,userSessionInfo.getNo(),userSessionInfo.getDepId());
+                if (fullById != null) {
+                    if (fullById.getStartTime().getTime() > new Date().getTime()) {
+                        returnVo.setMsg("报名失败,活动尚未开始");
+                    } else if (fullById.getEndTime().getTime() < new Date().getTime()) {
+                        returnVo.setMsg("报名失败,活动已经结束");
+                    }else{
+                        newsSignRecord.setNewsId(id);
+                        newsSignRecord.setUserNo(userSessionInfo.getNo());
+                        newsSignRecord.setUserName(userSessionInfo.getName());
+                        newsSignRecord.setCompanyId(userSessionInfo.getCompanyId());
+                        newsSignRecord.setCompanyName(userSessionInfo.getCompanyName());
+                        newsSignRecord.setDeptId(userSessionInfo.getDepId());
+                        newsSignRecord.setDeptName(userSessionInfo.getDepName());
+                        List<NewsSignRecord> all = newsSignRecordService.getAll(newsSignRecord);
+                        if (CollectionUtils.isEmpty(all)) {
+                            newsSignRecordService.insertNewsSignRecord(newsSignRecord);
+                            returnVo.setCode(ReturnCode.SUCCESS);
+                            returnVo.setMsg("恭喜您，活动报名成功");
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return returnVo;
+    }
 
 	/**
 	 * 专题活动详情
@@ -315,6 +354,7 @@ public class NewsIndexController extends BaseController {
 		UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
 		try {
 		    if (null != userSessionInfo){
+		        resultMap.put("currentUser", userSessionInfo);
                 NewsNotice news = newsNoticeService.getFullById(id,userSessionInfo.getNo(),userSessionInfo.getDepId());
                 newsNoticeVisitLogService.insertNewsNoticeVisitLog(userSessionInfo, CommUtils.getRealRemoteIP(request),id, NewsNoticeEnum.NEWS);
                 NewsSignRecord newsSignRecord = new NewsSignRecord();
@@ -365,16 +405,18 @@ public class NewsIndexController extends BaseController {
                     newsNoticeVisitLogService.insertNewsNoticeVisitLog(userSessionInfo, CommUtils.getRealRemoteIP(request),id, NewsNoticeEnum.NEWS);
                     //热门文章------开始
                     Query query = new Query(5);
-                    Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
-                    sqlOrderBy.put("visit_count", ORDERBY.DESC);
-                    query.setSqlOrderBy(sqlOrderBy);
+//                    Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
+//                    sqlOrderBy.put("visit_count", ORDERBY.DESC);
+//                    query.setSqlOrderBy(sqlOrderBy);
+                    query.setSortField("visit_count");
+                    query.setSortOrder("desc");
                     NewsNotice notice = new NewsNotice();
                     notice.setTypeId(news.getTypeId());
                     notice.setRangeDeftId(rangeDeftId);
                     PagerModel<NewsNotice> pagerModelByQueryOfRange = newsNoticeService.getPagerModelByQueryOfRange(notice, query,no);
                     //------------ 结束 ---------
                     resultMap.put("news", news);
-                    resultMap.put("hotter", pagerModelByQueryOfRange.getRows());
+                    resultMap.put("hotter", pagerModelByQueryOfRange.getData());
                 }
                 returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功！", resultMap );
             }else {

@@ -1,4 +1,13 @@
-import { queryCompanyNewsList,queryNewsList,getStaffList,addNewsStaffs ,queryPhoDetail} from '@/services/news';
+import {
+  queryIndustryDetail,
+  queryActivityDetail,
+  queryCompanyNewsList,
+  queryNewsList,
+  getStaffList,
+  addNewsStaffs ,
+  queryPhoDetail,
+  newsSign
+} from '@/services/news';
 export default {
   namespace: 'newsInfo',
 
@@ -30,7 +39,14 @@ export default {
     },
     staffLists:[], //员工相册 更多
     photoFile:[],
-    picFiles:[]
+    picFiles:[],
+    industryDetail: {
+      news: {},
+      hotter: [],
+    },
+    activityDetail: {
+      news: {}
+    },
   },
 
   effects: {
@@ -106,8 +122,6 @@ export default {
         payload: response.data
       });
     },
-
-
     /**
      * 点击发布增加员工相册
      * @param payload
@@ -119,6 +133,25 @@ export default {
     *addNewsStaffPre({ payload ,callback}, { call, put }) {
       const response = yield call(addNewsStaffs, payload);
       if(callback) callback(response);
+    },
+    *queryIndustryDetail({ payload }, { call, put }) {
+      const response = yield call(queryIndustryDetail, payload);
+      yield put({
+        type: 'saveIndustryDetail',
+        payload: response,
+      });
+    },
+    *queryActivityDetail({ payload, callback }, { call, put }) {
+      const response = yield call(queryActivityDetail, payload);
+      if(callback && typeof callback==='function'){callback(response)}
+      yield put({
+        type: 'saveActivityDetail',
+        payload: response,
+      });
+    },
+    *newsSign({ payload ,callback}, { call, put }) {
+      const response = yield call(newsSign, payload);
+      if(callback && typeof callback === 'function') callback(response);
     },
   },
 
@@ -182,6 +215,18 @@ export default {
       return {
         ...state,
         staffLists: action.payload.data
+      };
+    },
+    saveIndustryDetail(state, action) {
+      return {
+        ...state,
+        industryDetail: action.payload.data,
+      };
+    },
+    saveActivityDetail(state, action) {
+      return {
+        ...state,
+        activityDetail: action.payload.data,
       };
     },
   },
