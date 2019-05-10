@@ -3,7 +3,7 @@ import { List, Card, Row, Col, Input } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Link from 'umi/link';
-import { getConfig } from '@/utils/utils';
+import { getConfig,getNewsBreadCrumb } from '@/utils/utils';
 import styles from './News.less';
 
 @connect(({ newsInfo, loading }) => ({
@@ -65,7 +65,7 @@ export default class BasicList extends PureComponent {
     const {newsInfo:{ NewsDataList }, match: { params }} = this.props;
 
     return (
-      <PageHeaderWrapper>
+      <PageHeaderWrapper diyBreadCrumb={getNewsBreadCrumb(params,false)}>
         <Row style={{marginTop: -60}}>
           <Col offset={19} span={5}>
             <Input.Search placeholder="新闻/公告" onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} />

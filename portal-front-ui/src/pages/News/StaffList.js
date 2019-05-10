@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import {  Card, List, Icon, Form, Input, Modal, Upload ,message} from 'antd';
 import { connect } from 'dva';
-import PageHeaderWrapper from '../../components/PageHeaderWrapper';
-import { getConfig } from '../../utils/utils';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { getConfig } from '@/utils/utils';
 import styles from './News.less';
 
 const FormItem = Form.Item;

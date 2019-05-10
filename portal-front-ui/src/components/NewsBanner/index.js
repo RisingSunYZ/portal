@@ -17,6 +17,7 @@ export default class NewsBanner extends Component {
       right: this.props.newsBannerStyle.iconRightCurrent,
       show: false,
     },
+    bannerData:[]
   };
 
   componentDidMount() {
@@ -28,6 +29,13 @@ export default class NewsBanner extends Component {
         typeSn: typeSn,
         pageNumber: 1,
         pageSize: 3,
+      },
+      callback: (res) => {
+        this.setState({
+          bannerData:res.data,
+          rows:res.rows,
+          total:res.total,
+        });
       },
     });
   }
@@ -132,6 +140,7 @@ export default class NewsBanner extends Component {
       newsNotice: { newsBanners },
       newsBannerStyle,
     } = this.props;
+    const {bannerData} = this.state;
     const { left, right, show } = this.state.icon;
     const ftpHost = getConfig().ftpHost;
     return (
@@ -167,8 +176,8 @@ export default class NewsBanner extends Component {
           className={styles.iconRight}
         />
         <Carousel autoplay ref="img">
-          {newsBanners !== undefined && newsBanners.length > 0 ? (
-            newsBanners.map(item => {
+          {bannerData !== undefined && bannerData.length > 0 ? (
+            bannerData.map(item => {
               // item.sourceUrl ="http://www.baidu.com"
               return (
                 <div key={"homeBanner"+item.id} style={{ height: '100%' }}>

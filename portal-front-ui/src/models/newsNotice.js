@@ -66,6 +66,7 @@ export default {
       approveRecords: [],
       watermarkTxt: '',
     },
+    newsType:{},
     finance_notice: {},
     finance_expense: {},
     finance_pro: {},
@@ -87,8 +88,12 @@ export default {
      * @param put
      * @returns {IterableIterator<*>}
      */
-    *fetchNewsBanner({ payload }, { call, put }) {
+    *fetchNewsBanner({ payload,callback }, { call, put }) {
       const response = yield call(queryNewsBanner, payload);
+      // debugger
+      if(response.code === "100" && callback && typeof callback === 'function'){
+        callback(response.data);
+      }
       yield put({
         type: 'saveNewsBanner',
         payload: response.data,
@@ -189,12 +194,14 @@ export default {
       return {
         ...state,
         noticeDetail: action.payload.data,
+        newsType:action.payload.data.newsType,
       };
     },
     saveNewsDetail(state, action) {
       return {
         ...state,
         newsDetail: action.payload.data,
+        newsType:action.payload.data.newsType,
       };
     },
     saveSearchList(state, action){

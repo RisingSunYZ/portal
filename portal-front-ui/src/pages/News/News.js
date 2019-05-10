@@ -222,7 +222,7 @@ export default class TableList extends PureComponent {
             <Card
               title="专题活动"
               bordered={false}
-              extra={<Link to={ "/news-notice/news-list/special_events"} className={styles.more}> 更多> </Link>}
+              extra={<Link to={ "/news-notice/news-list/special_events"} target="_blank" className={styles.more}> 更多> </Link>}
               bodyStyle={{padding:14}}
             >
               <List
@@ -260,7 +260,7 @@ export default class TableList extends PureComponent {
             <Card
               title="公司动态"
               bordered={false}
-              extra={<Link to={"/news-notice/notice-table/company_news"} className={styles.more}> 更多> </Link>}
+              extra={<Link to={"/news-notice/notice-table/company_news"} target="_blank" className={styles.more}> 更多> </Link>}
               bodyStyle={{padding:'10px 14px'}}>
               <List
                 itemLayout="vertical"
@@ -288,7 +288,7 @@ export default class TableList extends PureComponent {
                              description={
                                <p className={styles.descTitle}>
                                  <span>{item.remark.substr(0, 100) + "..."}</span>
-                                 <Link to={`/news-notice/company_news/${item.id}`}>【详情】</Link>
+                                 <Link to={`/news-notice/company_news/${item.id}`} target="_blank">【详情】</Link>
                                </p>
                              }
                            />)
@@ -300,7 +300,7 @@ export default class TableList extends PureComponent {
             <Card
               title="行业动态"
               bordered={false}
-              extra={<Link to={"/news-notice/news-list/industry_news"} className={styles.more}> 更多> </Link>}
+              extra={<Link to={"/news-notice/news-list/industry_news"} target="_blank" className={styles.more}> 更多> </Link>}
               bodyStyle={{padding:14}}
               style={{marginTop: 18}}
             >
@@ -323,7 +323,7 @@ export default class TableList extends PureComponent {
             <Card
               title="员工风采"
               bordered={false}
-              extra={<Link to={"/news-notice/staff-list"} className={styles.more}> 更多> </Link>}
+              extra={<Link to={"/news-notice/staff-list"} target="_blank"  className={styles.more}> 更多> </Link>}
               bodyStyle={{padding:'8px 16px 0px 16px'}}
             >
               <List

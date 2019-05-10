@@ -116,7 +116,74 @@ export function genProcessApproveUrl(modelKey, proInstId, bizKey, taskId){
 export function genProcessLaunchUrl(modelKey, proInstId, bizKey, taskId, formType){
   return `/process/form/launch/${nullToZero(modelKey)}/${nullToZero(proInstId)}/${nullToZero(bizKey)}/${nullToZero(taskId)}/${formType}`;
 }
+// 新闻公告列表详情页面的面包屑规则
+export function getNewsBreadCrumb(params,isDetail){
 
+  let breadRoot = { url: "/main/workplace", rootName:"工作台",listUrl:"",name:""}
+  if( window.opener && window.opener.location.href.search('main') !== -1 && window.opener.location.href.split("eip")[1]){
+    if( window.opener.location.href.search('main') !== -1 && window.opener.location.href.split("eip")[1] ){
+      switch(window.opener.location.href.split("eip")[1]){
+        case "/main/workplace" : breadRoot.url="/main/workplace"; breadRoot.rootName="工作台";break;
+        case "/main/hr-service" : breadRoot.url="/main/hr-service";breadRoot.rootName="HR服务";break;
+        case "/main/infor-tech" : breadRoot.url="/main/infor-tech";breadRoot.rootName="IT服务";break;
+        case "/main/fnc-service" : breadRoot.url="/main/fnc-service";breadRoot.rootName="财务服务";break;
+        case "/main/news" : breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+      }
+    }
+  }else{
+    switch(params.typeSn){
+      case "home_notice" : breadRoot.url="/main/workplace";breadRoot.rootName="HR服务";break;
+      case "hr_notice" :  breadRoot.url="/main/hr-service";breadRoot.rootName="HR服务";break;
+      case "msg_notice" :  breadRoot.url="/main/infor-tech";breadRoot.rootName="IT服务";break;
+      case "finance_notice" :breadRoot.url="/main/fnc-service";breadRoot.rootName="财务服务";break;
+
+      case "company_news" :breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+      case "itrend_news" : breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+      case "finance_info" : breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+      case "special_events" : breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+      case "industry_news" :breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+      case "finance_pro" :breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+      case "group_video" :breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+      case "ygtd" :breadRoot.url="/main/news";breadRoot.rootName="新闻资讯";break;
+
+    }
+  }
+
+  switch(params.typeSn){
+    case "home_notice" :breadRoot.listUrl=`/news-notice/notice-table/${params.typeSn}`; breadRoot.name="通知公告";break;
+    case "hr_notice" : breadRoot.listUrl=`/news-notice/notice-table/${params.typeSn}`;breadRoot.name="人力公告";break;
+    case "msg_notice" : breadRoot.listUrl=`/news-notice/notice-table/${params.typeSn}`;breadRoot.name="IT公告";break;
+    case "finance_notice" : breadRoot.listUrl=`/news-notice/notice-table/${params.typeSn}`;breadRoot.name="财务公告";break;
+
+    case "company_news":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`;breadRoot.name="公司动态";break;
+    case "itrend_news":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`;breadRoot.name=" IT行业资讯";break;
+    case "finance_info":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`;breadRoot.name=" 财务资讯";break;
+    case "special_events":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`;  breadRoot.name="专题活动";break;
+    case "industry_news":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`; breadRoot.name="行业动态";break;
+    case "finance_pro":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`; breadRoot.name="费用报销专栏";break;
+    case "finance_expense":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`; breadRoot.name="项目核算";break;
+    case "group_video":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`; breadRoot.name="集团视频";break;
+    case "ygtd":breadRoot.listUrl=`/news-notice/news-list/${params.typeSn}`; breadRoot.name="企业文化";break;
+  }
+
+  const BreadCrumbData =[
+    {
+      url: breadRoot.url,
+      name: breadRoot.rootName,
+    },
+    {
+      url: breadRoot.listUrl,
+      name: breadRoot.name,
+    },
+  ]
+  if(isDetail){
+    BreadCrumbData.push({
+      url: "",
+      name: "正文",
+    })
+  }
+  return  BreadCrumbData
+};
 
 export function zeroToNull(param) {
   return (param === '0' || param === 0)?'':param;

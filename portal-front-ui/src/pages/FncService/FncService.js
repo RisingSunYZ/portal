@@ -75,7 +75,7 @@ export default class FncService extends PureComponent {
             </Col>
             <Col span={14}>
               <Card bordered={false} bodyStyle={{padding:0, minHeight: 240}} >
-                <Tabs defaultActiveKey="a" tabBarExtraContent={<Link className={styles.moreList} to={"/news-notice/notice-table/finance_notice"}> 更多&gt; </Link>}>
+                <Tabs defaultActiveKey="a" tabBarExtraContent={<Link className={styles.moreList} to={"/news-notice/notice-table/finance_notice"} target="_blank"> 更多&gt; </Link>}>
                   <Tabs.TabPane tab="财务公告" key="a">
                     <NewsNotice typeSn="finance_notice" type="notice" pageSize={5}/>
                   </Tabs.TabPane>
@@ -86,7 +86,7 @@ export default class FncService extends PureComponent {
           <Row gutter={16} style={{marginTop: 16}}>
             <Col span={10}>
               <Card bordered={false} bodyStyle={{padding:0, minHeight: 312}} >
-                <Tabs defaultActiveKey="b" tabBarExtraContent={<Link className={styles.moreList} to="/news-notice/news-list/finance_info"> 更多&gt; </Link>} >
+                <Tabs defaultActiveKey="b" tabBarExtraContent={<Link className={styles.moreList} to="/news-notice/news-list/finance_info" target="_blank"> 更多&gt; </Link>} >
                   <Tabs.TabPane tab="财经资讯" key="b">
                     <NewsNotice typeSn="finance_info" type="news" pageSize={7}/>
                   </Tabs.TabPane>
@@ -97,7 +97,7 @@ export default class FncService extends PureComponent {
               <Card bordered={false} bodyStyle={{padding:0, minHeight: 312}} >
                 <Tabs
                   onChange={(activeKey)=>this.setState({activeKey})}
-                  tabBarExtraContent={<Link className={styles.moreList} to={"/news-notice/news-list/"+activeKey}> 更多&gt; </Link>}
+                  tabBarExtraContent={<Link className={styles.moreList} to={"/news-notice/news-list/"+activeKey} target="_blank"> 更多&gt; </Link>}
                 >
                   <Tabs.TabPane tab="费用报销专栏" key="finance_expense">
                     <NewsNotice typeSn="finance_expense" type="news" pageSize={7}/>
@@ -114,7 +114,7 @@ export default class FncService extends PureComponent {
               <Tabs>
                 <Tabs.TabPane tab="资料下载" key="download" >
                   <Card bordered={false} bodyStyle={{ padding: "0 24px 16px" }}>
-                    <Tabs onChange={this.tabsChange} tabBarExtraContent={<Link className={styles.moreList} to="/fnc-service/material-filepage"> 更多&gt; </Link>}>
+                    <Tabs onChange={this.tabsChange} tabBarExtraContent={<Link className={styles.moreList} to="/fnc-service/material-filepage" target="_blank"> 更多&gt; </Link>}>
                       {typeList && typeList.length && typeList.map((type)=>(
                         <Tabs.TabPane tab={type.name} key={type.id}>
                           {!downloadKey || downloadKey === type.id ? <FileList files={materialFiles.data||[]} showDel={false}/> : ''}

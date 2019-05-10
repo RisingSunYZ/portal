@@ -24,7 +24,7 @@ export default class TableList extends PureComponent {
   }
 
   render() {
-    const { inforTech: { downloadList } } = this.props;
+    const { inforTech: { downloadList },match } = this.props;
     const newsBannerStyle = {
       imgHeight: 200,
       iconTop: 90,
@@ -48,7 +48,7 @@ export default class TableList extends PureComponent {
           <Col span={19}>
             <Row gutter={16}>
               <Col span={12}>
-                <NewsBanner newsBannerStyle={newsBannerStyle} />
+                <NewsBanner typeSn="msg_banner"  newsBannerStyle={newsBannerStyle} />
               </Col>
               <Col span={12}>
                 <Card bordered={false} bodyStyle={{padding: 0}} title="IT公告" extra={<Link target="_blank" to="/news-notice/notice-table/msg_notice">更多&gt;</Link>}>
@@ -57,7 +57,7 @@ export default class TableList extends PureComponent {
               </Col>
               <Col span={24}>
                 <Card bordered={false} style={{marginTop: 16}} title="IT行业资讯" extra={<Link target="_blank" to="/news-notice/news-list/itrend_news">更多&gt;</Link>}>
-                  <TrendNews />
+                  <TrendNews typeSn='itrend_news'/>
                 </Card>
               </Col>
               <Col span={24}>

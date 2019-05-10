@@ -20,6 +20,8 @@ export default class TrendNews extends PureComponent {
   }
 
   getTrendList = news => {
+    const { typeSn } = this.props;
+
     const list1 = [], list2 = [];
     news && news.map((item, index) => {
       if(index === 0){
@@ -31,7 +33,7 @@ export default class TrendNews extends PureComponent {
             <Col span={12} className={styles.infoBox}>
               <h5>
                 <i />
-                <Link className={item.alreadyRead == 1 ? styles.already : ''} to={`/news-notice/news-detail/${item.id}`}  target="_blank" title={item.title}>{item.title}</Link>
+                <Link className={item.alreadyRead == 1 ? styles.already : ''} to={`/news-notice/${typeSn}/${item.id}`}  target="_blank" title={item.title}>{item.title}</Link>
               </h5>
               <p>{item.remark}</p>
             </Col>
@@ -46,7 +48,7 @@ export default class TrendNews extends PureComponent {
             <Col span={12} className={styles.infoBox}>
               <h5>
                 <i className={styles.new} />
-                <Link className={item.alreadyRead == 1 ? styles.already : ''} to={`/news-notice/news-detail/${item.id}`} target="_blank" title={item.title}>{item.title}</Link>
+                <Link className={item.alreadyRead == 1 ? styles.already : ''} to={`/news-notice/${typeSn}/${item.id}`} target="_blank" title={item.title}>{item.title}</Link>
               </h5>
               <p>{item.remark}</p>
             </Col>
@@ -55,7 +57,7 @@ export default class TrendNews extends PureComponent {
       }else{
         const li = (
           <div className={styles.textNews} key={item.id}>
-            <Link className={item.alreadyRead == 1 ? styles.already : ''} to={`/news-notice/news-detail/${item.id}`} title={item.title} target="_blank"><i />{item.title}</Link>
+            <Link className={item.alreadyRead == 1 ? styles.already : ''} to={`/news-notice/${typeSn}/${item.id}`} title={item.title} target="_blank"><i />{item.title}</Link>
           </div>
         );
         index < 6 ? list1.push(li) : list2.push(li);

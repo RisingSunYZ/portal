@@ -8,7 +8,7 @@ import HrToDoProcess from './components/HrTodoProcess';
 import NewsNotice from '@/components/NewsNotice';
 import SelfService from './components/SelfService/index';
 import HrTrain from './components/HrTrain/index';
-
+import Link from "umi/link";
 import {getConfig} from "@/utils/utils";
 import styles from './HrService.less';
 
@@ -65,13 +65,13 @@ class HrService extends PureComponent {
           <Col span={24}>
             <HrBaseInfo isLeader={hrService.isLeader} />
             <span style={{width:468,display:'inline-block',margin:'0 16px'}}>
-              <NewsBanner newsBannerStyle={newsBannerStyle} />
+              <NewsBanner typeSn="hr_banner" newsBannerStyle={newsBannerStyle}  />
             </span>
             <Card
               className={styles.newsNoticeBox}
               title="人力公告"
               bodyStyle={{ padding: '9px 0 0 ' }}
-              extra={<a className="moreNews" href={getConfig().domain +'/portal/newsNotice/homeNoticeList.jhtml?typeSn=hr_notice'} target="_blank">更多 <Icon type="ellipsis" /></a>}
+              extra={<Link className="moreNews" to={'/news-notice/notice-table/hr_notice'} target="_blank">更多 <Icon type="ellipsis" /></Link>}
               bordered={false}
             >
               <NewsNotice typeSn="hr_notice" pageSize={4} />
@@ -79,7 +79,9 @@ class HrService extends PureComponent {
           </Col>
         </Row>
         <Row>
-          <Col span={24}> <SelfService /> </Col>
+          <Col span={24}>
+            <SelfService />
+          </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>

@@ -195,7 +195,7 @@ export default class NoticeDetail extends PureComponent {
   render() {
 
     const {
-      newsNotice:{ noticeDetail: {notice, files, approveRecords,} }
+      newsNotice:{ noticeDetail: {notice, files, approveRecords,},newsType }
     } = this.props;
 
     return (

@@ -93,6 +93,7 @@ export default class BreadcrumbView extends PureComponent {
         case "infor-tech" :return <Link to={"/main/infor-tech"}>IT服务</Link>;break;
         case "fnc-service" :return <Link to={"/main/fnc-service"}>财务服务</Link>;break;
         case "news" :return <Link to={"/main/news"}>新闻资讯</Link>;break;
+        case "news-notice" :return <Link to={"/main/news"}>新闻资讯</Link>;break;
         default : return <a href={ getConfig().domain+"/main.jhtml"}>工作台</a>;break;
       }
   }
