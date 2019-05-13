@@ -34,18 +34,7 @@ export async function removeRule(params) {
  * @returns {Promise<Object>}
  */
 export async function queryTrain(params) {
-  //FIXME 培训数据对接
-
-  const response = {
-    code:"100",
-    data:{
-      "pagination":{"current":1,"total":0,"pageSize":5},
-      "list":[]
-    },
-    msg:"success"
-  }
-  return response
-  // return request(`/portal/api/train/queryTrain.jhtml?${stringify(params)}`);
+  return request(`/rest/portal/train/queryTrain?${stringify(params)}`);
 }
 
 
@@ -211,26 +200,15 @@ export async function getBusinessTrip(params) {
  * 获取常用流程
  */
 export async function getQuickProcess(params) {
-  const response = {
-      code:"100",
-      data:[{"linkUrl":"/ys/process/form/launch/GFHR0034/0/0/0/0","icon":"askIcon","name":"请假","id":"8a8a8fb667f9c9d90167f9c9d9470000"},{"linkUrl":"/ys/process/form/launch/GFHR0003/0/0/0/0","icon":"overtimeIcon","name":"加班","id":"8a8a8fb667f9c9d90167f9cab6590001"},{"linkUrl":"/portal/hr/favform/salaryCard/applySalaryCard.jhtml","icon":"salaryIcon","name":"薪资卡变更申请","id":"8a8a8fb660301504016057e88d240003"},{"linkUrl":"/portal/hr/favform/personnelCertificate/applyPersonnelCertificate.jhtml","icon":"personalIcon","name":"人事证明申请","id":"8a8a8fb66030150401603016474a0001"},{"linkUrl":"/portal/hr/favform/personnelData/applyPersonnelData.jhtml","icon":"dataApplyIcon","name":"人事资料申请","id":"8a8a8fb65fce3737015fdc665dd900c7"},{"linkUrl":"/portal/hr/favform/subsidyForm/applySubsidy.jhtml","icon":"subsidyIcon","name":"补贴申请","id":"8a8a8fb6603015040160301504ce0000"},{"linkUrl":"/portal/hr/favform/marketCard/applyMarketCard.jhtml","icon":"marketIcon","name":"超市卡变更申请","id":"8a8a8fb660301504016057e8cd620004"},{"linkUrl":"/portal/hr/favform/dimissionForm/applyDimission.jhtml","icon":"leaveIcon","name":"离职证明申请","id":"8a8a8fb65fce3737015fdc66fa2200c8"}],
-      msg:"success"
-  }
-  return response
-
-  // FIXME hr服务接口待对接
-  // return request(`/portal/api/hrService/getQuickProcess?${stringify(params)}`);
-
+  return request(`/rest/portal/hrService/getQuickProcess?${stringify(params)}`);
 }
 
 /**
  *检查个人是否考勤异常
  */
 export async function checkPersonExp(params) {
-  // FIXME 接口对接
-  return {"attendanceData":"0"}
-  // return request(`/portal/api/attendance/checkPersonExp`);
-}
+  return request(`/rest/portal/attendance/checkPersonExp`);
+  }
 /**
  *检查消息通知数量
  */
@@ -251,9 +229,7 @@ export async function getFeedback (params) {
  * 校验是否领导
  */
 export async function checkLeader (params) {
-  // FIXME 接口对接
-  return 0;
-  // return request(`/portal/api/hrService/checkLeader`);
+  return request(`/rest/portal/hrService/checkLeader`);
 }
 /**
  * 联系我们

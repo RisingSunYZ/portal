@@ -49,10 +49,8 @@ export async function queryMsgCount() {
  * 获取日程微标数
  */
 export async function getScheduleCount() {
-  // FIXME 获取日程微标数
-  return request(`/rest/process/list/queryTodoCount`);
+  return request(`/rest/portal/workplat/getNewSchduleCount?t=${Math.random()}`);
 }
-
 
 
 /**

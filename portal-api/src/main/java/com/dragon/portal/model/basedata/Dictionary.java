@@ -16,6 +16,12 @@ public class Dictionary extends BaseModel implements Serializable {
      */
     private String id;
     /**
+     * 备注是否是JSON格式，1 是，0 否
+     */
+
+    private Integer ifJson;
+
+    /**
      * 数据字典id
      */
     private String dicTypeId;
@@ -25,6 +31,12 @@ public class Dictionary extends BaseModel implements Serializable {
      */
     private String typeCode;
 
+
+    /**
+     * 类别名称
+     */
+    private String typeName;
+
     /**
      * 编码
      */
@@ -32,6 +44,7 @@ public class Dictionary extends BaseModel implements Serializable {
 
     /**
      * 名称
+     *
      */
     private String name;
 
@@ -47,6 +60,17 @@ public class Dictionary extends BaseModel implements Serializable {
      * 备注
      */
     private String remark;
+    /**
+     * 用来接收json类型的备注
+     */
+    private String jsonRemark;
+
+
+    /**
+     * 排序序号
+     */
+
+    private Integer sortNo;
 
     // 临时变量 用于查询
     /**
@@ -54,8 +78,18 @@ public class Dictionary extends BaseModel implements Serializable {
      */
     private String keyWord;
 
+
+
     public String getId() {
         return id;
+    }
+
+    public Integer getIfJson() {
+        return ifJson;
+    }
+
+    public void setIfJson(Integer ifJson) {
+        this.ifJson = ifJson;
     }
 
     public void setId(String id) {
@@ -76,6 +110,14 @@ public class Dictionary extends BaseModel implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getName() {
@@ -106,6 +148,15 @@ public class Dictionary extends BaseModel implements Serializable {
         return remark;
     }
 
+    public Integer getSortNo() {
+        return sortNo;
+    }
+
+    public void setSortNo(Integer sortNo) {
+        this.sortNo = sortNo;
+    }
+
+
     public void setRemark(String remark) {
         this.remark = remark;
     }
@@ -124,5 +175,13 @@ public class Dictionary extends BaseModel implements Serializable {
 
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
+    }
+
+    public String getJsonRemark() {
+        return jsonRemark;
+    }
+
+    public void setJsonRemark(String jsonRemark) {
+        this.jsonRemark = jsonRemark;
     }
 }

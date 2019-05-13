@@ -56,10 +56,13 @@ export default {
     //检查个人是否考勤异常
     *checkPersonExp({ payload }, { call, put }) {
       const response = yield call(checkPersonExp, payload);
-      yield put({
-        type: 'callBack',
-        payload: response,
-      });
+      if(response.code == "100"){
+        yield put({
+          type: 'callBack',
+          payload: response.data,
+        });
+      }
+
     },
     *getMsgCount({ payload }, { call, put }) {
       const response = yield call(getMsgCount, payload);
@@ -72,10 +75,12 @@ export default {
     },
     *checkLeader({ payload }, { call, put }) {
       const response = yield call(checkLeader, payload);
-      yield put({
-        type: 'saveIsLeader',
-        payload: response,
-      });
+      if(response.code == "100"){
+        yield put({
+          type: 'saveIsLeader',
+          payload: response.data,
+        });
+      }
     },
     *getDeptList({ payload,callback }, { call, put }) {
       const response = yield call(getDeptList, payload);

@@ -143,28 +143,23 @@ public class HomeController extends BaseController {
 	 **/
 	@GetMapping("/getNewSchduleCount")
 	@ApiOperation("获取日程总数量")
-	public String getNewSchduleCount(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+	public ReturnVo getNewSchduleCount(@ApiIgnore HttpServletRequest request,@ApiIgnore HttpServletResponse response) {
+		ReturnVo vo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
 		UserSessionInfo user = getUserSessionInfo(request,response);
 		ScheduleEvent scheduleEvent = new ScheduleEvent();
 		scheduleEvent.setStartTime(new Date());
 		scheduleEvent.setReceiveNo(user.getNo());
-
-		String jsonp = request.getParameter("jsonpcallback");
-		Integer pendingCount=0;
+		Integer pendingCount = 0;
 		try {
 			List<ScheduleEvent> listScheduleEvent = scheduleEventService.getAll(scheduleEvent);
 			if(null != listScheduleEvent){
 				pendingCount = listScheduleEvent.size();
-				String userJson = jsonp+"("+pendingCount+")";
-				OutputStream out = response.getOutputStream();
-				out.write(userJson.getBytes("UTF-8"));
-				out.flush();
-				out.close();
+				vo=new ReturnVo(ReturnCode.SUCCESS,"查询日程数量成功",pendingCount);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("HomeController-getNewSchduleCount:获取日程总数量失败:"+e);
 		}
-		return "";
+		return vo;
 	}
 }
