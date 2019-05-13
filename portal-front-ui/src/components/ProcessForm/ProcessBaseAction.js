@@ -350,11 +350,11 @@ class ProcessBaseAction extends Component {
       </Popover>):null;
     };
     const FlowChartBtn = () => {
-      return this.props.taskType!='search' ?(
+      return (
         <Popover content="流程图">
           <Button onClick={this.showFlowChartByLayer} icon="cluster" style={{ marginLeft: '8px' }} />
         </Popover>
-      ):null;
+      );
     };
 
     if (this.props.print > 0) {
