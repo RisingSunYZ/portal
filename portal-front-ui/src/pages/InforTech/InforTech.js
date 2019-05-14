@@ -8,6 +8,7 @@ import ContactUs from './ContactUs';
 import Suggestion from './Suggestion';
 import NewsBanner from '@/components/NewsBanner';
 import NewsNotice from '@/components/NewsNotice';
+import {Base64} from "js-base64";
 
 @connect(({ inforTech, loading }) => ({
   inforTech,
@@ -23,6 +24,17 @@ export default class TableList extends PureComponent {
     })
   }
 
+  onSearch=(value)=> {
+    console.log(value)
+    const keyWord = Base64.encode(value);
+    if(keyWord){
+      window.open(`/infor-tech/knowledge/list/${keyWord}`,"_blank")
+    }else{
+      window.open(`/infor-tech/knowledge/list/0`,"_blank")
+    }
+
+  }
+
   render() {
     const { inforTech: { downloadList },match } = this.props;
     const newsBannerStyle = {
@@ -36,8 +48,8 @@ export default class TableList extends PureComponent {
       <Fragment>
         <Row gutter={16}>
           <Col span={5}>
-            <Card bordered={false} style={{minHeight: 250, marginBottom: 16}} bodyStyle={{padding: '8px'}} title="IT知识库" extra={<Link target="_blank" to="/infor-tech/knowledge">更多&gt;</Link>}>
-              <Input.Search placeholder="请输入关键字" onSearch={value => console.log(value)} />
+            <Card bordered={false} style={{minHeight: 250, marginBottom: 16}} bodyStyle={{padding: '8px'}} title="IT知识库" extra={<Link target="_blank" to="/infor-tech/knowledge/list/0">更多&gt;</Link>}>
+              <Input.Search placeholder="请输入关键字" onSearch={this.onSearch} />
               <HotKnowledge />
             </Card>
             <Card bordered={false} title="联系我们">

@@ -51,7 +51,7 @@ class NewsList extends PureComponent {
     const width = this.refs.newsArtList ? this.refs.newsArtList.container.offsetWidth : 430;
 
     const swiperList = [];
-    console.log(list)
+
     if(list && list.length>0){
       let i = 0;
       const temp = [];
@@ -95,7 +95,6 @@ class NewsList extends PureComponent {
       loading,
       typeSn,
     } = this.props;
-    console.log(this.state.dataList)
 
     return (
       <Card
