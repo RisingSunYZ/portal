@@ -549,24 +549,26 @@ public class ItsmController extends BaseController {
 				param  = param + "&linkCode="+linkCode;
 			}
 			String result = this.sendPost(itsmBasePath+"/apiKnowledgeController.do?", param);
-			JSONObject json = JSONObject.fromObject(result);
-			JSONArray rows = json.getJSONArray("rows");
-			long total = Long.parseLong(String.valueOf(json.get("total")));
-			for(int i=0;i<rows.size();i++){
-				QuestionKnowledge knowledge = new QuestionKnowledge();
-				//System.out.println("categoryName="+rows.getJSONObject(i).get("category.name"));
-				knowledge.setId(rows.getJSONObject(i).getString("id"));
-				knowledge.setCreateTime(rows.getJSONObject(i).getString("createTime"));
-				knowledge.setCreateUser(rows.getJSONObject(i).getString("createUser.realName"));
-				knowledge.setTitle(rows.getJSONObject(i).getString("title"));
-				knowledge.setCategoryName(rows.getJSONObject(i).getString("category.name"));
-				knowledge.setKeyword(rows.getJSONObject(i).getString("keyword"));
-				list.add(knowledge);
+			if(StringUtils.isNotBlank(result)){
+				JSONObject json = JSONObject.fromObject(result);
+				JSONArray rows = json.getJSONArray("rows");
+				long total = Long.parseLong(String.valueOf(json.get("total")));
+				for(int i=0;i<rows.size();i++){
+					QuestionKnowledge knowledge = new QuestionKnowledge();
+					//System.out.println("categoryName="+rows.getJSONObject(i).get("category.name"));
+					knowledge.setId(rows.getJSONObject(i).getString("id"));
+					knowledge.setCreateTime(rows.getJSONObject(i).getString("createTime"));
+					knowledge.setCreateUser(rows.getJSONObject(i).getString("createUser.realName"));
+					knowledge.setTitle(rows.getJSONObject(i).getString("title"));
+					knowledge.setCategoryName(rows.getJSONObject(i).getString("category.name"));
+					knowledge.setKeyword(rows.getJSONObject(i).getString("keyword"));
+					list.add(knowledge);
+				}
+				pm.setTotal(total);
+				pm.setRows(list);
+				returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
+				returnVo.setData(pm);
 			}
-			pm.setTotal(total);
-			pm.setRows(list);
-			returnVo = new ReturnVo(ReturnCode.SUCCESS,"查询成功");
-			returnVo.setData(pm);
 			//logger.info("pm="+JsonUtils.toJson(pm));
 		} catch (Exception e) {
 			logger.error("查询知识库出错，错误原因",e);

@@ -15,7 +15,11 @@ export default {
   state: {
     hotKnowledge: [],
     knowledgeCategory: [],
-    knowledgeList: {},
+    knowledgeList: {
+      rows:[],
+      data:[],
+      total:0
+    },
     knowledgeDetail: {},
     trendNews: [],
     contact: [],
@@ -44,10 +48,12 @@ export default {
     },
     *getKnowledgeList({ payload }, { call, put }) {
       const response = yield call(getKnowledgeList, payload);
-      yield put({
-        type: 'saveKnowledgeList',
-        payload: response,
-      });
+      if(response.code =="100"){
+        yield put({
+          type: 'saveKnowledgeList',
+          payload: response,
+        });
+      }
     },
     *getKnowledgeDetail({ payload }, { call, put }) {
       const response = yield call(getKnowledgeDetail, payload);
@@ -119,6 +125,7 @@ export default {
       };
     },
     saveKnowledgeList(state, action) {
+      debugger
       return {
         ...state,
         knowledgeList: action.payload.data,

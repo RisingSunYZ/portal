@@ -3,6 +3,7 @@ import { Card, Row, Col, Tree, Input, Table } from 'antd';
 import Link from 'umi/link';
 import styles from './index.less';
 import { connect } from 'dva';
+import { Base64 } from 'js-base64';
 
 const columns = [{title: '标题', dataIndex: 'title', key: 'title',render: (text, record) => (
     <Link target="_blank" to={`/infor-tech/knowledge/detail/${record.id}`}><a>{text}</a></Link>
@@ -23,15 +24,16 @@ export default class knowledgeList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    const { keyword } = this.state;
+
+    const { dispatch,match:{ params:{keyword} }} = this.props;
+    const realkeyword = (keyword && keyword != "0") ? Base64.decode(keyword):""
     dispatch({
       type: 'inforTech/getKnowledgeCategory',
     });
     dispatch({
       type: 'inforTech/getKnowledgeList',
       payload: {
-        keyword,
+        keyword:realkeyword,
         pageSize: 10,
         pageNum: 1,
       }
@@ -100,13 +102,13 @@ export default class knowledgeList extends PureComponent {
         return <TreeNode key={item.id} linkCode={item.linkCode} title={item.name} />;
       });
     const {
-      inforTech: { knowledgeCategory, knowledgeList},
+      inforTech: { knowledgeCategory, knowledgeList},match:{params:{keyword}}
     } = this.props;
     return (
       <Fragment>
         <Card bordered={false}>
           <div style={{padding: 10, textAlign: 'right'}}>
-            <Input.Search style={{width: 200}} placeholder="请输入关键字" onSearch={this.searchKnowledge} />
+            <Input.Search style={{width: 200}} defaultValue={(keyword && keyword!=="0")?Base64.decode(keyword):""}  placeholder="请输入关键字" onSearch={this.searchKnowledge} />
           </div>
           <Row style={{border: '1px solid #e5e5e5'}}>
             <Col span={5}>
@@ -118,7 +120,7 @@ export default class knowledgeList extends PureComponent {
             <Col style={{borderLeft: '1px solid #e5e5e5'}} span={19}>
               <Table
                 columns={columns}
-                dataSource={knowledgeList.rows || []}
+                dataSource={knowledgeList.data || []}
                 pagination={{
                   pageSize: 10,
                   total: knowledgeList ? knowledgeList.total : 0,

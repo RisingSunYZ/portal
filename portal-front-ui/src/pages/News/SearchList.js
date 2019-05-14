@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import { List, Menu, Card, Row, Col, Input, Layout } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import Link from 'umi/link';
 import { getConfig } from '@/utils/utils';
 import moment from 'moment';
 import styles from './News.less';
+import { Base64 } from 'js-base64';
 
 const { Sider, Content } = Layout;
 
@@ -28,8 +28,8 @@ export default class SearchList extends PureComponent {
   };
 
   componentDidMount () {
-    const { location:{ keyword } } = this.props;
-    keyword ? this.searchHandle(keyword) : this.searchNewsList();
+    const { match:{params:{keyword}} } = this.props;
+    (keyword && keyword != "0") ? this.searchHandle(Base64.decode(keyword)) : this.searchNewsList();
   }
 
   searchHandle = (value) => {
@@ -103,15 +103,16 @@ export default class SearchList extends PureComponent {
 
     const {
       newsNotice:{ searchList },
-      location: { keyword },
+      match:{params:{keyword}},
       loading,
     } = this.props;
+
     const { page } = this.state;
     return (
       <PageHeaderWrapper>
         <Card bordered={false} bodyStyle={{padding: '16px 24px'}}>
           <Row className={styles.searchHeadBox}>
-            <Col span={9}><Input.Search defaultValue={keyword} onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} /></Col>
+            <Col span={9}><Input.Search defaultValue={(keyword && keyword!=="0")?Base64.decode(keyword):""} onSearch={this.searchHandle} onPressEnter={(e)=>this.searchHandle(e.currentTarget.value)} /></Col>
             <Col span={10}><span className={styles.searchResultNum}>为您找到相关结果{searchList.total}个</span></Col>
           </Row>
           <Layout>

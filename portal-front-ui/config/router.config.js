@@ -196,7 +196,12 @@ export default [
             path: '/workplace/meeting-room/:tab/meeting-summary/:id',
             name: 'meeting-summary',
             component: './Workplace/MeetingSummary'
-          }
+          },
+          {
+            path: '/workplace/search-list/:keyword',
+            name: 'search-list',
+            component: './News/SearchList',
+          },
         ]
       },
       {
@@ -206,10 +211,10 @@ export default [
         routes: [
           {
             path: '/infor-tech/knowledge',
-            redirect: '/infor-tech/knowledge/list'
+            redirect: '/infor-tech/knowledge/list/:keyword'
           },
           {
-            path: '/infor-tech/knowledge/list',
+            path: '/infor-tech/knowledge/list/:keyword',
             name: 'knowledge-list',
             component: './InforTech/HotKnowledge/knowledgeList'
           },
@@ -249,11 +254,6 @@ export default [
             path: '/news-notice/staff-list',
             name: 'staff-list',
             component: './News/StaffList',
-          },
-          {
-            path: '/news-notice/search-list',
-            name: 'search-list',
-            component: './News/SearchList',
           },
         ]
       },
