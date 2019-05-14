@@ -4,9 +4,11 @@ import {
   queryCompanyNewsList,
   queryNewsList,
   getStaffList,
-  addNewsStaffs ,
+  addNewsStaffs,
   queryPhoDetail,
-  newsSign
+  newsSign,
+  makeThumbsUp,
+  addNewscomment,
 } from '@/services/news';
 export default {
   namespace: 'newsInfo',
@@ -33,11 +35,13 @@ export default {
       pagination: {},
     },
     // 员工风采
-    staffPresence: {
-      list: [],
-      pagination: {},
+    staffList: {
+      data: [],
+      total: 0,
     },
-    staffLists:[], //员工相册 更多
+    // 所有员工风采集合
+    staffPageIndex: 0,
+    staffAllData: [],
     photoFile:[],
     picFiles:[],
     industryDetail: {
@@ -46,6 +50,11 @@ export default {
     },
     activityDetail: {
       news: {}
+    },
+    staffDetail: {
+      list: [],
+      data: {},
+      comments: []
     },
   },
 
@@ -93,43 +102,28 @@ export default {
       }
     },
 
-    // 获取员工风采图片列表
-    *queryStaffPresenceList({ payload }, { call, put }) {
-      const response = yield call(queryNewsList, payload);
-      yield put({
-        type: 'getStaffPresenceList',
-        payload: response.data,
-        pagination: payload,
-      });
-    },
-
-
-    *queryStaffPhotoDetail({ payload }, { call, put }) {
-
+    *queryStaffPhotoDetail({ payload, callback }, { call, put }) {
       const response = yield call(queryPhoDetail, payload);
+      if(callback && typeof callback==='function'){callback(response)}
       yield put({
-        type: 'getStaffDetail',
+        type: 'saveStaffDetail',
         payload: response.data,
         pagination: payload,
       });
     },
 
-    //获得员工风采的更多页面
+    //获得员工风采列表
     *getListMedia({ payload }, { call, put }) {
       const response = yield call(getStaffList, payload);
-      yield put({
-        type: 'staffData',
-        payload: response.data
-      });
+      const staffPageIndex = payload.pageIndex ? payload.pageIndex : 0;
+      if(response.code === '100'){
+        yield put({
+          type: 'saveStaffList',
+          payload: {list: response.data, staffPageIndex}
+        });
+      }
     },
-    /**
-     * 点击发布增加员工相册
-     * @param payload
-     * @param callback
-     * @param call
-     * @param put
-     * @returns {IterableIterator<*>}
-     */
+    // 点击发布增加员工相册
     *addNewsStaffPre({ payload ,callback}, { call, put }) {
       const response = yield call(addNewsStaffs, payload);
       if(callback) callback(response);
@@ -152,6 +146,24 @@ export default {
     *newsSign({ payload ,callback}, { call, put }) {
       const response = yield call(newsSign, payload);
       if(callback && typeof callback === 'function') callback(response);
+    },
+    *makeThumbsUp({ payload ,callback}, { call, put }) {
+      const response = yield call(makeThumbsUp, payload);
+      if(callback && typeof callback === 'function') callback(response);
+      yield put({
+        type: 'saveThumbsUpState',
+        payload: response,
+      });
+    },
+    *addNewscomment({ payload ,callback}, { call, put }) {
+      const response = yield call(addNewscomment, payload);
+      if(callback && typeof callback === 'function') callback(response);
+      if(response.code === '100'){
+        yield put({
+          type: 'saveComments',
+          payload: response.data,
+        });
+      }
     },
   },
 
@@ -199,22 +211,13 @@ export default {
       };
     },
 
-    // 员工风采
-    getStaffPresenceList(state, action) {
+    saveStaffList(state, action){
+      const { staffPageIndex, list } = action.payload;
       return {
         ...state,
-        staffPresence:{
-          list:action.payload.data,
-          pagination:action.pagination,
-        },
-        disabled: false,
-      };
-    },
-
-    staffData(state, action){
-      return {
-        ...state,
-        staffLists: action.payload.data
+        staffPageIndex: staffPageIndex,
+        staffList: list,
+        staffAllData: staffPageIndex>0 ? state.staffAllData.concat(list.data) : list.data
       };
     },
     saveIndustryDetail(state, action) {
@@ -228,6 +231,30 @@ export default {
         ...state,
         activityDetail: action.payload.data,
       };
+    },
+    saveStaffDetail(state, action){
+      return {
+        ...state,
+        staffDetail: action.payload
+      }
+    },
+    saveThumbsUpState(state, action){
+      return {
+        ...state,
+        staffDetail:{
+          ...state.staffDetail,
+          thumbsUp: action.payload.data==1 ? state.staffDetail.thumbsUp+1 : state.staffDetail.thumbsUp-1
+        }
+      }
+    },
+    saveComments(state, action){
+      return {
+        ...state,
+        staffDetail:{
+          ...state.staffDetail,
+          comments: state.staffDetail.comments.concat([action.payload.data])
+        }
+      }
     },
   },
 };

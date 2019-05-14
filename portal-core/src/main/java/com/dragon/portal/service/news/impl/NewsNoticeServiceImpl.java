@@ -177,7 +177,7 @@ public class NewsNoticeServiceImpl implements INewsNoticeService {
     @Override
     public PagerModel<NewsNotice> getPagerModelByQueryOfImage(NewsNotice notice, Query query)
             throws Exception {
-        PageHelper.startPage(query.getPageIndex(), query.getPageSize());
+        PageHelper.startPage(query.getPageIndex(), query.getPageSize(), query.getSortField()+" "+query.getSortOrder());
         Page<NewsNotice> page = (null != notice && null != query) ? this.noticeDao.getPagerModelByQueryOfImage(notice) : null;
         return new PagerModel<NewsNotice>(page);
     }

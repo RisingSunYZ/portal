@@ -37,7 +37,7 @@ export async function addNewsStaffs(params) {
  * @returns {Promise<Object>}
  */
 export async function queryPhoDetail(params) {
-  return request(`/rest/portal/news/getStaffData?id=${params.id}`);
+  return request(`/rest/portal/news/getStaffData?${stringify(params)}`);
 }
 /**
  * 获取新闻banner数据
@@ -117,6 +117,16 @@ export async function newsSign(params) {
     body: params.data
   });
 }
+/**
+ * 员工风采添加评论
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function addNewscomment(params) {
+  return request(`/rest/portal/news/addNewscomment?${stringify(params)}`);
+}
 
-
+export async function makeThumbsUp(params) {
+  return request(`/rest/portal/news/makeThumbsUp?${stringify(params)}`);
+}
 
