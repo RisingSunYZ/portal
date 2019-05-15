@@ -129,6 +129,15 @@
 .more{
   color:#595959;
 }
+.itemTip{
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: @primary-color;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin: -2px 6px 0;
+}
 
 //公司动态
 :global{
@@ -173,62 +182,30 @@
 
 //员工风采  更多
 .imgCard{
-  :global{
-    .ant-card-body{
-      background: #000;
+  .btn{
+    position: absolute;
+    top: -60px;
+    right: 30px;
+    width:74px;
+    height:30px;
+    line-height:30px;
+    text-align:center;
+    border-radius: 3px;
+    background: #FF3D00;
+    color: #fff;
+    transition: all .3s ease-out;
+    cursor: pointer;
+    &:hover{
+      opacity: .8;
     }
   }
 }
-.btn{
-  position: absolute;
-  top: -60px;
-  right: 30px;
-  width:74px;
-  height:30px;
-  line-height:30px;
-  text-align:center;
-  border-radius: 6px;
-  background: #FF3D00;
-  color: #fff;
-  transition: all .3s ease-out;
-  cursor: pointer;
-}
-.btn:hover{
-  opacity: .8;
-  color: #fff;
-}
-.btnPublic{
-  width:66px;
-  height:30px;
-  line-height:30px;
-  text-align:center;
-  background:#3088F4;
-  border-radius: 4px;
-  display: inline-block;
-  color:#fff;
-  margin-left:30px;
-  cursor:pointer;
-}
-.btnPublic:hover{
-  opacity: .8;
-}
-.textDesc{
-  width:100%;
-  height:100px;
-  border:2px solid #44A4F5;
-}
-.inputSty{
-  width:100%;
-  border: 2px solid #44A4F5;
-  border-radius: 0;
-  height:48px;
-}
+
 .optArea{
   position:relative;
   top:-17px;
   border-bottom:1px solid #ddd;
-  padding-bottom:20px;
-  cursor:pointer;
+  padding-bottom:12px;
   .iconPic{
     color:#88D403;
     font-size:16px;
@@ -251,15 +228,22 @@
     display:inline-block;
     margin-bottom:5px;
   }
+  :global{
+    .anticon-eye-o{
+      display: none;
+    }
+  }
 }
 .picImg{
   width: 305px;
   height: 258px;
   padding: 0;
   margin-bottom: 20px;
+  cursor: pointer;
   .imgContent{
     position: relative;
-    .picItem{
+    height: 100%;
+    img{
       width: 275px;
       height: 258px;
     }
@@ -278,12 +262,23 @@
         margin-left:30px;
       }
     }
+    :global{
+      .img-error{
+        background: url("../../assets/public/img-onerror.png") no-repeat center center;
+      }
+    }
   }
 }
-.imgContent:hover .infoDesc{
-  opacity:1;
+.imgContent:hover{
+  background: rgba(42, 42, 42, .8);
+  .infoDesc{
+    opacity:1;
+  }
 }
-
+.noMore{
+  text-align: center;
+  color: #999;
+}
 
 //员工风采Modal部分
 .modalContent{
@@ -294,12 +289,15 @@
   }
 }
 .topArea{
-  margin:50px 0 10px 24px;
-  padding-right:12px;
+  margin:40px 16px 10px;
   .topTitle{
     font-size:18px;
+    height: 28px;
+    line-height: 28px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color:#333;
-    word-break: break-all;
+    word-break: keep-all;
   }
   .publickPer{
     display:inline-block;
@@ -321,7 +319,7 @@
     font-size:14px;
     color:#333;
     text-indent:1.5rem;
-    margin:20px 0;
+    padding: 14px 0;
   }
 }
 
@@ -337,7 +335,10 @@
   color:#333;
 }
 .commentArea{
-  padding-right:12px;
+  padding: 0 24px;
+}
+.hasThumbsUp{
+  color: #f9191b!important;
 }
 
 
@@ -358,10 +359,16 @@
   #phoBox {
     vertical-align: top;
     position: relative;
-    margin: 50px 35px;
+    margin: 0 0 35px;
+    .photo-times {
+      font-size: 22px;
+      color: #8c8c8c;
+      line-height: 50px;
+      white-space: normal;
+    }
     .anticon {
       position: absolute;
-      top: 27%;
+      top: 50%;
       margin-top: -12px;
       cursor: pointer;
       &:hover {
@@ -376,30 +383,66 @@
       }
     }
     .photo-view {
-      height: 560px;
       overflow: hidden;
       .photo-list {
         text-align:center;
         list-style: none;
         padding: 0;
         margin: 0;
-        li {
-          display: inline-block;
-          width: 105px;
-          vertical-align: top;
-          & > a {
-            display: block;
-            width: 60px;
-            height: 60px;
-            margin: 0 auto;
-            color: #333;
-            text-align: center;
-            border-radius: 3px;
-          }
-          p{
-            text-align: center;
-            margin: 0;
-          }
+        height: 550px;
+        overflow: hidden;
+      }
+    }
+    .img-error{
+      background: url("../../assets/public/img-onerror.png") no-repeat center center;
+    }
+  }
+}
+
+.thumbPics{
+  text-align: center;
+  color: #fff;
+  font-size: 12px;
+  line-height: 26px;
+  cursor: pointer;
+  img{
+    vertical-align: top;
+    width: 100px;
+    height: 100px;
+    border: 2px solid transparent;
+    margin: 2px;
+  }
+  :global{
+    .sm-pics{
+      height: 121px;
+      margin: 0 -4px;
+      text-align: left;
+      overflow-x: auto;
+      .selImg{
+        border: 2px solid #eee;
+      }
+    }
+    .img-error{
+      background: url("../../assets/public/img-onerror.png") no-repeat center center;
+    }
+  }
+}
+.commentsBox{
+  background-color: #f5f5f5;
+  :global{
+    .comment-list{
+      padding: 12px 24px;
+      max-height: 370px;
+      li{
+        border-bottom: 1px solid #e5e5e5;
+        .msg{
+          word-break: break-all;
+        }
+        .person {
+          text-align: right;
+          font-size: 12px;
+          line-height: 24px;
+          color: #8c8c8c;
         }
       }
     }

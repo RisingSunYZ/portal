@@ -3,6 +3,7 @@ package com.dragon.portal.rest.controller.news;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dragon.portal.model.news.*;
+import com.dragon.portal.constant.PortalConstant;
 import com.dragon.portal.service.news.*;
 import com.dragon.portal.service.redis.RedisService;
 import com.dragon.portal.utils.CommUtil;
@@ -30,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -204,8 +204,8 @@ public class NewsIndexController extends BaseController {
         try {
             Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
             PagerModel<NewsNotice> pm = null;
-            sqlOrderBy.put("publish_time", ORDERBY.DESC);
-            query.setSqlOrderBy(sqlOrderBy);
+            query.setSortField("publish_time");
+            query.setSortOrder("desc");
             NewsType newsType = newsTypeService.queryNewsTypeBySn(typeSn);
 
             if (null != newsType){
@@ -443,7 +443,6 @@ public class NewsIndexController extends BaseController {
             returnVo.setMsg( "参数为空！" );
             return returnVo;
         }
-
         try {
             UserSessionInfo userSessionInfo = getUserSessionInfo( request, response );
             if (null == userSessionInfo) {
@@ -452,49 +451,21 @@ public class NewsIndexController extends BaseController {
             }
 
             HashMap map = new HashMap();
-            Query query = new Query( 1000 );
-            Map sqlOrderBy = new LinkedMap();
-            sqlOrderBy.put( "publish_time", ORDERBY.DESC );
-            query.setSqlOrderBy( sqlOrderBy );
-            NewsNotice notice = new NewsNotice();
             NewsType newsType = newsTypeService.queryNewsTypeBySn( "staff_presence" );
-            notice.setTypeId( newsType.getId() );
-            notice.setPublishStatus( 1 );
-            PagerModel<NewsNotice> pagerModelByQueryOfImage = this.newsNoticeService.getPagerModelByQueryOfImage( notice, query );
-            List<NewsNotice> rows = pagerModelByQueryOfImage.getRows();
-
-            String preId = "";
-            String nextId = "";
-            int rowSize = rows.size();
-            if (CollectionUtils.isNotEmpty( rows )) {
-                for (int i = 0; i < rowSize; i++) {
-                    NewsNotice temp = rows.get( i );
-                    if (temp.getId().equals( id )) {
-                        //添加日志
-                        try {
-                            newsNoticeVisitLogService.insertNewsNoticeVisitLog( userSessionInfo, CommUtil.getRealRemoteIP( request ), id, NewsNoticeEnum.NEWS );
-                        } catch (Exception e) {
-                            throw new Exception( "添加日志失败 " );
-                        }
-
-                        if (i > 0) {
-                            preId = rows.get( i - 1 ).getId();
-                        }
-
-                        if (i + 1 < rowSize) {
-                            nextId = rows.get( i + 1 ).getId();
-                        }
-
-                        map.put( "title", temp.getTitle() );
-                        map.put( "publisher", tranRealName( temp.getCreator() ) );
-                        map.put( "publishTime", temp.getPublishTime() );
-                        map.put( "visitCount", temp.getVisitCount() );
-                        map.put( "remark", temp.getRemark() );
-                        map.put( "thumbsUp", temp.getThumbsUp() );
-                        break;
-                    }
+            if(null != newsType){
+                NewsNotice temp = newsNoticeService.getFullById(id);
+                //添加日志
+                try {
+                    newsNoticeVisitLogService.insertNewsNoticeVisitLog( userSessionInfo, CommUtil.getRealRemoteIP( request ), id, NewsNoticeEnum.NEWS );
+                } catch (Exception e) {
+                    throw new Exception( "添加日志失败 " );
                 }
-
+                map.put("title", temp.getTitle());
+                map.put("publisher", tranRealName(temp.getCreator()));
+                map.put("publishTime", temp.getPublishTime());
+                map.put("visitCount",temp.getVisitCount());
+                map.put("remark", temp.getRemark());
+                map.put("thumbsUp", temp.getThumbsUp());
                 NewsFile newsFile = new NewsFile();
                 newsFile.setFileType( 5 );
                 Query queryfile = new Query( 100 );
@@ -505,22 +476,8 @@ public class NewsIndexController extends BaseController {
 
                 newsFile.setRefId( id );
                 PagerModel<NewsFile> pm = newsFileService.getPagerModelByQuery( newsFile, queryfile );
-                map.put( "list", pm.getRows() );
+                map.put( "list", pm.getData() );
 
-                if (StringUtils.isNotBlank( preId )) {
-                    newsFile.setRefId( preId );
-                    pm = newsFileService.getPagerModelByQuery( newsFile, queryfile );
-                    if (pm.getTotal() > 0) {
-                        map.put( "prePath", pm.getRows().get( 0 ).getFilePath() );
-                    }
-                }
-                if (StringUtils.isNotBlank( nextId )) {
-                    newsFile.setRefId( nextId );
-                    pm = newsFileService.getPagerModelByQuery( newsFile, queryfile );
-                    if (pm.getTotal() > 0) {
-                        map.put( "nextPath", pm.getRows().get( 0 ).getFilePath() );
-                    }
-                }
                 //评论
                 NewsComment newsComment = new NewsComment();
                 newsComment.setRefId( id );
@@ -537,15 +494,59 @@ public class NewsIndexController extends BaseController {
                 } else {
                     map.put( "hasThumbsUp", 0 );
                 }
+                returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功！", map );
             }
-            map.put( "preId", preId );
-            map.put( "nextId", nextId );
-            returnVo = new ReturnVo( ReturnCode.SUCCESS, "查询成功！", map );
         } catch (Exception e) {
             logger.error( "NewsIndexController-getStaffData: " + e );
             e.printStackTrace();
         }
 
+        return returnVo;
+    }
+
+    @ResponseBody
+    @RequestMapping("/makeThumbsUp")
+    public ReturnVo makeThumbsUp (HttpServletRequest request, HttpServletResponse response,String id,Integer opt){
+        ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "改变点赞状态失败!" );
+        if(StringUtils.isNotBlank(id)&&opt!=null){
+            UserSessionInfo userSessionInfo = getUserSessionInfo(request,response);
+            NewsComment newsComment = new NewsComment();
+            newsComment.setRefId(id);
+            newsComment.setType(1);
+            newsComment.setUserNo(userSessionInfo.getNo());
+            NewsNotice notice = new NewsNotice();
+            notice.setId(id);
+            try {
+                List<NewsComment> all = newsCommentService.getAll(newsComment);
+                if(opt==1){
+                    //点赞
+                    if(CollectionUtils.isEmpty(all)){
+                        newsComment.setCreator(userSessionInfo.getName());
+                        newsComment.setCreateTime(new Date());
+                        newsComment.setCompanyId(userSessionInfo.getCompanyId());
+                        newsComment.setCompanyName(userSessionInfo.getCompanyName());
+                        newsComment.setDeptId(userSessionInfo.getDepId());
+                        newsComment.setDeptName(userSessionInfo.getDepName());
+                        newsCommentService.insertNewsComment(newsComment);
+                        newsNoticeService.addNoticeTumbsUp(notice);
+                        returnVo = new ReturnVo( ReturnCode.SUCCESS, "点赞成功!", opt );
+                    }
+                }else if(opt==0){
+                    //取消点赞
+                    if(CollectionUtils.isNotEmpty(all)){
+                        for(NewsComment temp :all){
+                            temp.setDelFlag(PortalConstant.DEL_FLAG);
+                            newsCommentService.updateNewsComment(temp);
+                            returnVo = new ReturnVo( ReturnCode.SUCCESS, "取消点赞成功!", opt );
+                        }
+                        newsNoticeService.subNoticeTumbsUp(notice);
+                    }
+                }
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         return returnVo;
     }
 
