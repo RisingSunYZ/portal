@@ -115,7 +115,7 @@ class StaffList extends PureComponent {
     this.setState({
       staffId: id,
       staffIndex: index,
-      visible: true,
+      detailVisible: true,
     });
   };
 
@@ -142,7 +142,7 @@ class StaffList extends PureComponent {
             footer={null}
             width={768}
             visible={visible}
-            onOk={this.handleOk}
+            // onOk={this.handleOk}
             onCancel={()=>this.setState({visible:false})}
           >
             <Form>
