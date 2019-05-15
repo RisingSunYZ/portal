@@ -17,6 +17,7 @@ export default class StaffDetail extends PureComponent {
     staffIndex: 0,
     imgIndex: 1,
     submitLoading: false,
+    comment: '',
   };
   componentDidMount() {
     const { staffId, currentIndex }=this.props;
@@ -30,12 +31,12 @@ export default class StaffDetail extends PureComponent {
     });
     this.refs.imgView && this.refs.imgView.goTo(0);
     const { dispatch, newsInfo: {staffList, staffAllData} }=this.props;
-    if(!staffAllData[index+1] && index<staffList.total){
+    if(!staffAllData[index+1] && index+1<staffList.total){
       dispatch({
         type: 'newsInfo/getListMedia',
         payload:{
           typeSn: 'staff_presence',
-          pageIndex: (index+1)/4,
+          pageIndex: parseInt((index+1)/4),
           pageSize: 4
         }
       })
@@ -127,6 +128,13 @@ export default class StaffDetail extends PureComponent {
         }
       }
     });
+  };
+
+  onCommentChange = (e) => {
+    if(this.state.comment && this.state.comment.length>155) return false;
+    this.setState({
+      comment: e.target.value
+    })
   };
 
   onImgError = (tar) => {
@@ -229,8 +237,8 @@ export default class StaffDetail extends PureComponent {
               )) : ''}
             </ul>
             <div className={styles.commentArea}>
-              <Input.TextArea rows={4} value={comment} onChange={(v)=>this.setState({comment: v.target.value})} placeholder={'请输入最多155字的评论'}/>
-              <p style={{padding: '12px 0', textAlign: 'right'}}>
+              <Input.TextArea rows={4} value={comment} onChange={this.onCommentChange} placeholder={'请输入最多155字的评论'}/>
+              <p style={{padding: '12px 0', margin: 0, textAlign: 'right'}}>
                 <Button type="primary" loading={submitLoading} onClick={this.handleSubmits}>提交</Button>
               </p>
             </div>

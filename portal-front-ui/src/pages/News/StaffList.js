@@ -38,6 +38,9 @@ class StaffList extends PureComponent {
   }
 
   loadStaffMore = () => {
+    this.setState({
+      moreLoading: true,
+    });
     const { dispatch, newsInfo: {staffPageIndex} } = this.props;
     dispatch({
       type: "newsInfo/getListMedia",
@@ -45,6 +48,11 @@ class StaffList extends PureComponent {
         typeSn: 'staff_presence',
         pageIndex: staffPageIndex+1,
         pageSize: 12,
+      },
+      callback: ()=>{
+        this.setState({
+          moreLoading: false,
+        });
       }
     })
   };
@@ -120,7 +128,7 @@ class StaffList extends PureComponent {
   };
 
   render() {
-    const { loading, newsInfo:{ staffList, staffAllData },form }=this.props;
+    const { newsInfo:{ staffList, staffAllData },form }=this.props;
     const { staffId, detailVisible, fileCount, uploadVisible, publishLoading, visible, staffIndex } = this.state;
     const ftpHost = getConfig().ftpHost;
 
@@ -142,7 +150,6 @@ class StaffList extends PureComponent {
             footer={null}
             width={768}
             visible={visible}
-            // onOk={this.handleOk}
             onCancel={()=>this.setState({visible:false})}
           >
             <Form>
@@ -230,7 +237,7 @@ class StaffList extends PureComponent {
           />
           {
             staffAllData.length<staffList.total ?
-              <Button loading={loading} block type="primary" onClick={this.loadStaffMore}>加载更多</Button>
+              <Button loading={this.state.moreLoading} block type="primary" onClick={this.loadStaffMore}>加载更多</Button>
               : <p className={styles.noMore}>没有更多了</p>
           }
         </Card>

@@ -46,6 +46,12 @@
           word-break: keep-all;
           word-wrap: normal;
           text-overflow: ellipsis;
+          &.already{
+            color: #333333;
+            &:hover{
+              color: @primary-color;
+            }
+          }
         }
         i{
           display: inline-block;

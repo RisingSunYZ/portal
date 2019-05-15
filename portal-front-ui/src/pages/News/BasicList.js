@@ -24,7 +24,7 @@ export default class BasicList extends PureComponent {
       payload: {
         typeSn: params.typeSn,
         pageSize: 15,
-        pageNum: 1,
+        pageIndex: 0,
       }
     });
   }
@@ -38,7 +38,7 @@ export default class BasicList extends PureComponent {
       type: 'newsInfo/queryNewsDataList',
       payload: {
         typeSn: params.typeSn,
-        pageNum: 1,
+        pageIndex: 0,
         pageSize: 15,
         title: value,
       },
@@ -53,7 +53,7 @@ export default class BasicList extends PureComponent {
       type: 'newsInfo/queryCompanyNewsList',
       payload: {
         typeSn: params.typeSn,
-        pageNum: pagination.current,
+        pageIndex: pagination.current-1,
         pageSize: pagination.pageSize,
         title: searchText,
       },

@@ -35,7 +35,7 @@ export default class knowledgeList extends PureComponent {
       payload: {
         keyword:realkeyword,
         pageSize: 10,
-        pageNum: 1,
+        pageIndex: 0,
       }
     });
   }
@@ -52,7 +52,7 @@ export default class knowledgeList extends PureComponent {
         keyword: value,
         linkCode,
         pageSize: 10,
-        pageNum: 1,
+        pageIndex: 0,
       }
     });
   };
@@ -69,7 +69,7 @@ export default class knowledgeList extends PureComponent {
         linkCode: e.node.props.linkCode,
         keyword,
         pageSize: 10,
-        pageNum: 1,
+        pageIndex: 0,
       }
     });
   };
@@ -83,7 +83,7 @@ export default class knowledgeList extends PureComponent {
       payload: {
         linkCode,
         keyword,
-        pageNum: pagination.current,
+        pageIndex: pagination.current-1,
         pageSize: pagination.pageSize,
       },
     });

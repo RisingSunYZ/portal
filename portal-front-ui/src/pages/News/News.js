@@ -103,8 +103,8 @@ export default class TableList extends PureComponent {
                   >
                     {
                       index > 1 ?
-                        ( <Link to={`/news-notice/special_events/${item.id}`} target="_blank" className={styles.links}><i className={styles.itemTip} />{item.title}</Link> ) :
-                        (<div className={styles.listTop}>
+                        (<div className={item.alreadyRead === 1 ? 'already' : ''}><Link to={`/news-notice/special_events/${item.id}`} target="_blank" className={styles.links}><i className={styles.itemTip} />{item.title}</Link></div> ) :
+                        (<div className={`${styles.listTop} ${item.alreadyRead === 1 ? 'already' : ''}`}>
                           <Link to={ftpHost + item.thumbImg} target="_blank">
                             <img src={ftpHost + item.thumbImg} className={styles.moveImg}/>
                           </Link>
@@ -126,7 +126,7 @@ export default class TableList extends PureComponent {
             <Card
               title="公司动态"
               bordered={false}
-              extra={<Link to={"/news-notice/notice-table/company_news"} target="_blank" className={styles.more}> 更多&gt; </Link>}
+              extra={<Link to={"/news-notice/news-list/company_news"} target="_blank" className={styles.more}> 更多&gt; </Link>}
               bodyStyle={{padding:'10px 14px'}}>
               <List
                 itemLayout="vertical"
@@ -139,7 +139,7 @@ export default class TableList extends PureComponent {
                   >
                     {
                       index > 1 ?
-                        ( <Link to={`/news-notice/company_news/${item.id}`}  target="_blank" className={styles.links}><i className={styles.itemTip} />{item.title}</Link> ) :
+                        (<div className={item.alreadyRead === 1 ? 'already' : ''}><Link to={`/news-notice/company_news/${item.id}`}  target="_blank" className={styles.links}><i className={styles.itemTip} />{item.title}</Link></div> ) :
                         (<List.Item.Meta
                              avatar={
                                <Link to={ftpHost + item.thumbImg} target="_blank">
@@ -147,12 +147,12 @@ export default class TableList extends PureComponent {
                                </Link>
                              }
                              title={
-                               <span className={styles.linkTitle}>
+                               <span className={`${styles.linkTitle} ${item.alreadyRead === 1 ? 'already' : ''}`}>
                                  <Link to={`/news-notice/company_news/${item.id}`}  target="_blank" >{item.title}</Link>
                                </span>
                              }
                              description={
-                               <p className={styles.descTitle}>
+                               <p className={`${styles.descTitle} ${item.alreadyRead === 1 ? 'already' : ''}`}>
                                  <span>{item.remark.substr(0, 100) + "..."}</span>
                                  <Link to={`/news-notice/company_news/${item.id}`} target="_blank">【详情】</Link>
                                </p>
@@ -179,7 +179,9 @@ export default class TableList extends PureComponent {
                     key={item.id}
                     style={{padding:0}}
                   >
-                    <Link to={`/news-notice/industry_news/${item.id}`} target="_blank" className={styles.links}><i className={styles.itemTip} />{item.title}</Link>
+                    <div className={item.alreadyRead === 1 ? 'already' : ''}>
+                      <Link to={`/news-notice/industry_news/${item.id}`} target="_blank" className={styles.links}><i className={styles.itemTip} />{item.title}</Link>
+                    </div>
                   </List.Item>
                 )}
               />

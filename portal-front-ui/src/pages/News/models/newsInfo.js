@@ -113,8 +113,9 @@ export default {
     },
 
     //获得员工风采列表
-    *getListMedia({ payload }, { call, put }) {
+    *getListMedia({ payload, callback }, { call, put }) {
       const response = yield call(getStaffList, payload);
+      if(callback && typeof callback==='function'){callback(response)}
       const staffPageIndex = payload.pageIndex ? payload.pageIndex : 0;
       if(response.code === '100'){
         yield put({
@@ -252,7 +253,7 @@ export default {
         ...state,
         staffDetail:{
           ...state.staffDetail,
-          comments: state.staffDetail.comments.concat([action.payload.data])
+          comments: state.staffDetail.comments.concat([action.payload])
         }
       }
     },

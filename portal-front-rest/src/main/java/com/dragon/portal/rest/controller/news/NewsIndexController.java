@@ -127,9 +127,8 @@ public class NewsIndexController extends BaseController {
         ReturnVo returnVo = new ReturnVo( ReturnCode.FAIL, "查询失败!");
         try {
             PagerModel<NewsNotice> pm = new PagerModel<NewsNotice>();
-            Map<String, ORDERBY> sqlOrderBy = new LinkedMap();
-            sqlOrderBy.put("publish_time", ORDERBY.DESC);
-            query.setSqlOrderBy(sqlOrderBy);
+            query.setSortField("publish_time");
+            query.setSortOrder("desc");
             if (StringUtils.isBlank(source) || !source.equals("loginPage")) {
                 UserSessionInfo userSessionInfo = getUserSessionInfo(request, response);
                 String no = userSessionInfo.getNo();
@@ -537,9 +536,9 @@ public class NewsIndexController extends BaseController {
                         for(NewsComment temp :all){
                             temp.setDelFlag(PortalConstant.DEL_FLAG);
                             newsCommentService.updateNewsComment(temp);
+                            newsNoticeService.subNoticeTumbsUp(notice);
                             returnVo = new ReturnVo( ReturnCode.SUCCESS, "取消点赞成功!", opt );
                         }
-                        newsNoticeService.subNoticeTumbsUp(notice);
                     }
                 }
             } catch (Exception e) {
