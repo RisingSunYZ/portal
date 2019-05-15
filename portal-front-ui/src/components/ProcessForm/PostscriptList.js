@@ -15,7 +15,7 @@ const PostscriptList = ({postscripts}) => {
         {postscripts&&postscripts.map((post, index) =>
           <Timeline.Item key={index}>
             <div style={{ fontSize:'12px',color:'rgba(0, 0, 0, .45)',lineHeight:'1.5em' }}>{post.createTime}</div>
-            <div style={{ color:'#1818FF',margin:'8px 0' }}>{post.content}</div>
+            <div style={{ color:'#1818FF',margin:'8px 0' }} dangerouslySetInnerHTML={{__html: post.content}}></div>
             <div><PostscriptFileList postscriptsFiles={post.files} delShow={0}/></div>
           </Timeline.Item>
         )}
