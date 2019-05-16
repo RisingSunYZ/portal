@@ -1,10 +1,10 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, List, Modal,Comment,Input, Carousel,Icon,Button, Form } from 'antd';
+import { Row, Col, Card, List, Modal,Comment, message, Input, Carousel,Icon,Button, Form } from 'antd';
 import styles from '../../News.less';
 import { getConfig } from "../../../../utils/utils";
 import imgBlank from '@/assets/public/blank.gif';
-import moment from 'moment';
+
 
 @connect(({ newsInfo, loading }) => ({
   newsInfo,
@@ -61,24 +61,28 @@ export default class StaffDetail extends PureComponent {
   };
 
   phoSwipeToPrev = () =>{
-    if(this.state.imgIndex <= 1) return false;
+    const { imgIndex } = this.state;
+    if(imgIndex <= 1) return false;
     this.refs.imgView.prev();
     this.setState({
-      imgIndex: this.state.imgIndex-1
+      imgIndex: imgIndex-1
     })
   };
 
   phoSwipeToNext = () =>{
-    const { newsInfo: {staffDetail} }=this.props;
-    if(this.state.imgIndex >= staffDetail.list.length) return false;
+    const { newsInfo: {staffDetail} } = this.props;
+    const { imgIndex }= this.state;
+    if(imgIndex >= staffDetail.list.length) return false;
     this.refs.imgView.next();
     this.setState({
-      imgIndex: this.state.imgIndex+1
+      imgIndex: imgIndex+1
     })
   };
 
   goImgByIndex = (index) =>{
-    this.refs.imgView && this.refs.imgView.goTo(index);
+    debugger;
+    const imgView= this.refs.imgView;
+    imgView && imgView.goTo(index);
     this.setState({
       imgIndex: index+1
     })
@@ -87,10 +91,10 @@ export default class StaffDetail extends PureComponent {
   handleSubmits = () => {
     const { dispatch,  newsInfo: { staffAllData } }=this.props;
     const { staffIndex, comment } = this.state;
-    if (!comment) return;
-    this.setState({
-      submitLoading: true,
-    });
+    if (!comment){ message.error('抱歉，不能发表空的评论！');  return;}
+    // this.setState({
+    //   submitLoading: true,
+    // });
     dispatch({
       type: "newsInfo/addNewscomment",
       payload: {
@@ -98,9 +102,9 @@ export default class StaffDetail extends PureComponent {
         content: comment
       },
       callback: (res)=>{
-        this.setState({
-          submitLoading: false,
-        });
+        // this.setState({
+        //   submitLoading: false,
+        // });
         if(res.code === '100'){
           this.setState({
             comment: ''
@@ -131,10 +135,11 @@ export default class StaffDetail extends PureComponent {
   };
 
   onCommentChange = (e) => {
-    if(this.state.comment && this.state.comment.length>155) return false;
+    const { comment }=this.state;
+    if(comment && comment.length>154) return false;
     this.setState({
       comment: e.target.value
-    })
+    });
   };
 
   onImgError = (tar) => {
@@ -157,12 +162,13 @@ export default class StaffDetail extends PureComponent {
       footer={null}
       centered
       onCancel={()=>onCancel && onCancel()}
+      // onCancel={onCancel}
       width={1024}
       className={styles.modalContent}
     >
       <Row>
-        <Col span={17} style={{background:'#000', padding: '0 35px'}}>
-          <div id="phoBox" className="photo-banner">
+        <Col span={17} style={{background:'#000'}}>
+          <div id="phoBox" className="photo-banner" style={{margin: '0 35px'}}>
             <div className="photo-times">{imgIndex}/{staffDetail.list.length}</div>
             <Icon type="left" style={{color: '#CFCFCF', fontSize: 24}} onClick={this.phoSwipeToPrev} />
             <div className="photo-view">
@@ -230,7 +236,7 @@ export default class StaffDetail extends PureComponent {
           <div className={styles.commentsBox}>
             <ul className="comment-list">
               {staffDetail && staffDetail.comments.length ? staffDetail.comments.map((comment)=>(
-                <li key={comment.id}>
+                <li key={comment.id} style={{padding: '8px 0'}}>
                   <div className="msg">{comment.content}</div>
                   <div className="person">{comment.creator}<span style={{paddingLeft: 5}}>{comment.updateTime.split(" ")[0]}</span> </div>
                 </li>
@@ -239,7 +245,7 @@ export default class StaffDetail extends PureComponent {
             <div className={styles.commentArea}>
               <Input.TextArea rows={4} value={comment} onChange={this.onCommentChange} placeholder={'请输入最多155字的评论'}/>
               <p style={{padding: '12px 0', margin: 0, textAlign: 'right'}}>
-                <Button type="primary" loading={submitLoading} onClick={this.handleSubmits}>提交</Button>
+                <Button type="primary" onClick={this.handleSubmits}>提交</Button>
               </p>
             </div>
           </div>

@@ -129,6 +129,7 @@ export default {
       const response = yield call(addNewsStaffs, payload);
       if(callback) callback(response);
     },
+
     *queryIndustryDetail({ payload }, { call, put }) {
       const response = yield call(queryIndustryDetail, payload);
       yield put({
