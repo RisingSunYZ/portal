@@ -385,7 +385,7 @@ export default class AttendanceRecord extends Component {
     return this.state.detailView ? (
       <Table style={{marginTop: 16}} scroll={{x: 1000}} columns={this.getDateColumns()} dataSource={detailData} />
     ) : (
-      <Calendar ref="calendar" dateFullCellRender={this.dateCellRender}/>
+      <Calendar className="atds-calendar" ref="calendar" dateFullCellRender={this.dateCellRender}/>
     )
   };
 

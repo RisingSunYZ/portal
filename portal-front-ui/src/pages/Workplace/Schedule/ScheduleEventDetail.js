@@ -225,7 +225,7 @@ export default class ScheduleEventDetail extends Component {
               {getFieldDecorator('title',{
                 initialValue: event.title,
                 rules: [
-                  {required: true},
+                  {required: true, message: '主题不能为空'},
                 ],
               })(
                 <Input disabled={itemDisabled} placeholder="主题" />
@@ -235,7 +235,7 @@ export default class ScheduleEventDetail extends Component {
               {getFieldDecorator('address',{
                 initialValue: event.address,
                 rules: [
-                  {required: true},
+                  {required: true, message: '地点不能为空'},
                 ],
               })(
                 <Input disabled={itemDisabled} placeholder="地点" />
@@ -245,7 +245,7 @@ export default class ScheduleEventDetail extends Component {
               {getFieldDecorator('content',{
                 initialValue: event.content,
                 rules: [
-                  {required: true},
+                  {required: true, message: '事件详情不能为空'},
                 ],
               })(
                 <Input.TextArea disabled={itemDisabled} rows={4} placeholder="事件详情" />

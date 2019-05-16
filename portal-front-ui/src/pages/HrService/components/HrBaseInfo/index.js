@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Card, Row, Col, Icon, Avatar, Tag, Divider, Spin, Input } from 'antd';
 import Ellipsis from '@/components/Ellipsis';
+import Link from 'umi/link';
 import styles from './index.less';
 import { connect } from 'dva/index';
 
@@ -39,32 +40,32 @@ export default class HrBaseInfo extends PureComponent {
         actions={[
           <div className="actionBtn">
             {attendanceData == '1' ? (
-              <a href="/ys/user-center/attendance/summary" target="_blank">
+              <Link to="/user-center/attendance/summary" target="_blank">
                 考勤情况
                 <Icon
                   type="close-circle"
                   theme="filled"
                   style={{ fontSize: 20, marginLeft: 5, color: 'red' }}
                 />
-              </a>
+              </Link>
             ) : (
-              <a href="/ys/user-center/attendance/summary" target="_blank">
+              <Link to="/user-center/attendance/summary" target="_blank">
                 考勤情况
                 <Icon
                   type="check-circle"
                   theme="filled"
                   style={{ fontSize: 20, marginLeft: 5, color: '#52C41A' }}
                 />
-              </a>
+              </Link>
             )}
           </div>,
           <div className="actionBtn">
-            <a href="/ys/user-center/train" target="_blank">我的学时
+            <Link to="/user-center/train" target="_blank">我的学时
               <span className="learnHours">0</span>
-            </a>
+            </Link>
           </div>,
           <div className="actionBtn">
-            <a href="/ys/user-center" target="_blank">更多</a>
+            <Link to="/user-center" target="_blank">更多</Link>
           </div>,
         ]}
       >
@@ -80,7 +81,7 @@ export default class HrBaseInfo extends PureComponent {
                 <p title={userInfo.postname}><Ellipsis length={12}>{userInfo.postname}</Ellipsis></p>
                 <p>
                   {userInfo.positionLevel}
-                  {isLeader?(<a href="/ys/user-team" target="_blank" className={styles.teamBtn}>我的团队</a>):""}
+                  {isLeader?(<Link to="/user-team" target="_blank" className={styles.teamBtn}>我的团队</Link>):""}
                 </p>
               </div>
             </div>

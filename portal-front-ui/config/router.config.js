@@ -352,20 +352,20 @@ export default [
         name: 'user-center',
         component: '../layouts/BasicLayout',
         routes: [
-          // {
-          //   path: '/user-center',
-          //   redirect: '/user-center/pandect',
-          // },
-          // {
-          //   path: '/user-center/pandect',
-          //   name: 'main-workplace',
-          //   // component: './UserCenter/UserPandect',
-          // },
-          // {
-          //   path: '/user-center/baseinfo',
-          //   name: 'main-workplace',
-            // component: './UserCenter/Baseinfo',
-          // },
+          {
+            path: '/user-center',
+            redirect: '/user-center/pandect',
+          },
+          {
+            path: '/user-center/pandect',
+            name: 'main-workplace',
+            component: './UserCenter/UserPandect',
+          },
+          {
+            path: '/user-center/baseinfo',
+            name: 'main-workplace',
+            component: './UserCenter/Baseinfo',
+          },
           {
             path: '/user-center/attendance',
             name: 'main-workplace',
