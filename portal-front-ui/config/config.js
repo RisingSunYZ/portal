@@ -71,6 +71,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/rest/': '' },
     },
+    '/portal/api/': {
+      target: 'http://homedev.chinayasha.com/portal/api/',
+      changeOrigin: true,
+      pathRewrite: { '^/portal/api/': '' },
+    },
     '/website/tools/': {
       target: 'http://homedev.chinayasha.com/website/tools/',
       changeOrigin: true,

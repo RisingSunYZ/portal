@@ -1,6 +1,5 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
-// import request from '../utils/requestAjax';
 
 /**
  * 获取表单信息

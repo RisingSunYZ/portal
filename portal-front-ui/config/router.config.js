@@ -22,35 +22,35 @@ export default [
         redirect:"/main/workplace",
         // authority: ['admin', 'user']
       },
-      {
-        path: '/form',
-        name: 'custom-form',
-        component: '../layouts/CommonLayout',
-        routes: [
-          {
-            path: '/form/form-design',
-            name: 'design form',
-            component: './FormDesign',
-          },
-        ],
-      },
-      {
-        path: '/drag',
-        icon: 'table',
-        name: 'drag',
-        routes: [
-          {
-            path: '/drag/draggable',
-            name: 'draggable',
-            component: './List/Draggable',
-          },
-          {
-            path: '/drag/draggable-tags',
-            name: 'draggabletags',
-            component: './List/DraggableTags',
-          },
-        ],
-      },
+      // {
+      //   path: '/form',
+      //   name: 'custom-form',
+      //   component: '../layouts/CommonLayout',
+      //   routes: [
+      //     {
+      //       path: '/form/form-design',
+      //       name: 'design form',
+      //       component: './FormDesign',
+      //     },
+      //   ],
+      // },
+      // {
+      //   path: '/drag',
+      //   icon: 'table',
+      //   name: 'drag',
+      //   routes: [
+      //     {
+      //       path: '/drag/draggable',
+      //       name: 'draggable',
+      //       component: './List/Draggable',
+      //     },
+      //     {
+      //       path: '/drag/draggable-tags',
+      //       name: 'draggabletags',
+      //       component: './List/DraggableTags',
+      //     },
+      //   ],
+      // },
       {
         name: 'exception',
         icon: 'warning',
@@ -204,6 +204,7 @@ export default [
           },
         ]
       },
+      // infor-tech
       {
         path: '/infor-tech/knowledge',
         name: 'infor-tech',
@@ -257,6 +258,7 @@ export default [
           },
         ]
       },
+      // process
       {
         path: '/process',
         name: 'process',
@@ -347,6 +349,7 @@ export default [
           },
         ],
       },
+      // user-center
       {
         path: '/user-center',
         name: 'user-center',
@@ -392,16 +395,16 @@ export default [
               },
             ],
           },
-          // {
-          //   path: '/user-center/asset',
-          //   name: 'main-workplace',
-          //   component: './UserCenter/Assets',
-          // },
-          // {
-          //   path: '/user-center/performance',
-          //   name: 'main-workplace',
-          //   component: './UserCenter/Performance',
-          // },
+          {
+            path: '/user-center/asset',
+            name: 'main-workplace',
+            component: './UserCenter/Assets',
+          },
+          {
+            path: '/user-center/performance',
+            name: 'main-workplace',
+            component: './UserCenter/Performance',
+          },
           {
             path: '/user-center/train',
             name: 'main-workplace',
@@ -433,13 +436,124 @@ export default [
               },
             ],
           },
-          // {
-          //   path: '/user-center/salary',
-          //   name: 'main-workplace',
-          //   component: './UserCenter/Salary',
-          // }
+          {
+            path: '/user-center/salary',
+            name: 'main-workplace',
+            component: './UserCenter/Salary',
+          }
         ]
       },
+      // user-team
+      {
+        path: '/user-team',
+        name: 'user-team',
+        component: '../layouts/BasicLayout',
+        routes:[
+          {
+            path: '/user-team',
+            redirect: '/user-team/pandect',
+          },
+          {
+            path: '/user-team/pandect',
+            name: 'user-pandect',
+            component: './UserTeam/TeamPandect',
+          },
+          {
+            path: '/user-team/framework',
+            name: 'team-framework',
+            component: './UserTeam/Framework',
+          },
+          {
+            path: '/user-team/userPandectForTeam/:userNo',
+            name: 'team-framework',
+            component: './UserTeam/UserPandectForTeam',
+          },
+          {
+            path: '/user-team/entry',
+            name: 'annual-entry',
+            component: './UserTeam/AnnualEntry',
+          },
+          {
+            path: '/user-team/leave',
+            name: 'annual-leave',
+            component: './UserTeam/AnnualLeave',
+          },
+          {
+            path: '/user-team/authorized',
+            name: 'authorized-strength',
+            component: './UserTeam/AuthorizedStrength',
+          },
+          {
+            path: '/user-team/authorizedDetails',
+            name: 'authorized-strength-details',
+            component: './UserTeam/AuthorizedStrengthDetails',
+          },
+          {
+            path: '/user-team/baseinfo',
+            name: 'personal-info',
+            component: './UserTeam/BaseInfo',
+          },
+          {
+            path: '/user-team/asset',
+            name: 'main-workplace',
+            component: './UserTeam/Assets',
+          },
+          {
+            path: '/user-team/attendance',
+            name: 'main-workplace',
+            component: './UserTeam/Attendance/TabList',
+            routes: [
+              {
+                path: '/user-team/attendance',
+                redirect: '/user-team/attendance/summary',
+              },
+              {
+                path: '/user-team/attendance/summary',
+                name: 'attendance-summary',
+                component: './UserTeam/Attendance/SummaryAttendance',
+              },
+              {
+                path: '/user-team/attendance/record',
+                name: 'attendance-record',
+                component: './UserTeam/Attendance/AttendanceRecord',
+              },
+            ],
+          },
+          {
+            path: '/user-team/attendanceChart',
+            component: './UserTeam/Attendance/AttendanceChart',
+          },
+          {
+            path: '/user-team/attendanceRateChart',
+            component: './UserTeam/Attendance/AttendanceRateChart',
+          },
+          {
+            path: '/user-team/performance',
+            name: 'main-workplace',
+            component: './UserTeam/Performance',
+            routes: [
+              {
+                path: '/user-team/performance',
+                redirect: '/ys/user-team/performance/information',
+              },
+              {
+                path: '/user-team/performance/information',
+                component: './UserTeam/Performance/Information',
+              },
+              {
+                path: '/user-team/performance/reward',
+                component: './UserTeam/Performance/Reward',
+              },
+            ],
+          },
+          {
+            path: '/user-team/train',
+            name: 'main-workplace',
+            component: './UserTeam/Train',
+          },
+        ],
+      },
+      // hr-selfhelp
       {
         path: '/hr-selfhelp',
         name: 'opinion',
@@ -474,7 +588,6 @@ export default [
           },
         ],
       },
-
       // materialFilePage
       {
         path: '/fnc-service/material-filepage',

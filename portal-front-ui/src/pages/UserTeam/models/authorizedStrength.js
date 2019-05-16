@@ -2,9 +2,7 @@ import {
   getAuthorizedStrengthTotal,
   getAuthorizedStrengthList,
   getAuthorizedStrengthDetails,
-} from '../../../services/hrServiceAjax';
-import config from '../../../../config/config';
-import { getConfig } from '../../../utils/utils';
+} from '@/services/hrServiceAjax';
 
 export default {
   namespace: 'authorizedStrength',

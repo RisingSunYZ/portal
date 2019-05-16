@@ -128,5 +128,7 @@ export async function getTopDept(params) {
  * 获取管理部门id列表
  */
 export async function getDeptIds(params) {
+  //FIXME
+  // return ["1001K31000000002GLCM","1001K31000000002GLCT"]
   return request(`/portal/api/hrService/getAllDeptIds.jhtml?${stringify(params)}`);
 }

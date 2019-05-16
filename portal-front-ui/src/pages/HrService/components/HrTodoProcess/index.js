@@ -2,9 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { Table } from 'antd';
 import { connect } from 'dva';
 import Link from "umi/link";
-import { nullToZero,getFormType } from '@/utils/utils';
 import styles from './index.less';
-import {genProcessApproveUrl, genProcessLaunchUrl, genProcessViewUrl} from "../../../../utils/utils";
+import {getFormType,nullToZero,genProcessApproveUrl, genProcessLaunchUrl, genProcessViewUrl} from "@/utils/utils";
 
 @connect(({ hrService, loading }) => ({
   hrService,

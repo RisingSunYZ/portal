@@ -1,6 +1,5 @@
-import { getAnnualEntryList,getAnnualLeaveList } from '../../../services/hrServiceAjax';
-import config from '../../../../config/config';
-import { getConfig } from '../../../utils/utils';
+import { getAnnualEntryList,getAnnualLeaveList } from '@/services/hrServiceAjax';
+import { getConfig } from '@/utils/utils';
 
 export default {
   namespace: 'annual',

@@ -1,6 +1,4 @@
-import { getDeptAssetsList, getDeptAssets } from '../../../services/hrServiceAjax';
-import config from '../../../../config/config';
-import { getConfig } from '../../../utils/utils';
+import { getDeptAssetsList, getDeptAssets } from '@/services/hrServiceAjax';
 
 export default {
   namespace: 'teamAssets',

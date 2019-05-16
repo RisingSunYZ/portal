@@ -1,7 +1,7 @@
 /**
  *个人资料绩效信息model
  */
-import { getTrainingOverview ,queryTrainList, getTrainingDetails } from '../../../services/hrService';
+import { getTrainingOverview ,queryTrainList, getTrainingDetails } from '@/services/hrService';
 
 export default {
   namespace: 'train',
