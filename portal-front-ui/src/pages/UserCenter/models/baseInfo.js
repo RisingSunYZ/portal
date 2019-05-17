@@ -15,8 +15,6 @@ export default {
       linkmans: [],
       address: [],
     },
-    formInfo: {},
-    code:0,
   },
   // put用于触发action；call用于调用异步逻辑，支持 promise；select用于从 state 里获取数据。
   effects: {

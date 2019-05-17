@@ -114,7 +114,6 @@ export async function getDeptList(params) {
  * 查询管辖部门树
  */
 export async function getDeptTree(params) {
-  debugger
   return request(`/portal/api/hrService/getDeptTree.jhtml?${stringify(params)}`);
 }
 

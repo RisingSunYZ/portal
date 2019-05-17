@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Breadcrumb, Table, Button, Card, Row, Col } from 'antd';
 import styles from './UserPandect.less';
 import { connect } from 'dva/index';
+import Link from "umi/link";
 
 const performanceColumns = [
   {title: '绩效等级', dataIndex: 'level'},
@@ -189,7 +190,7 @@ export default class TeamPandect extends PureComponent {
           <Breadcrumb>
             <Breadcrumb.Item>
               您所在的位置：
-              <a href="/ys/main/hr-service">HR服务</a>
+              <Link to="/main/hr-service">HR服务</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>团队总览</Breadcrumb.Item>
           </Breadcrumb>

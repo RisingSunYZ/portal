@@ -339,9 +339,10 @@ export default class Framework extends PureComponent {
     }
   }
   render() {
-    console.log(this.props)
-    const {hrService:{deptTree,personList}} = this.props;
-    const topOrg={};
+   const {
+     hrService:{deptTree,personList},
+   } = this.props;
+  const topOrg=deptTree[0]||{};
     const members = personList;
     const { openedLevel, openedOrg } = this.state;
 
@@ -350,8 +351,8 @@ export default class Framework extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className="title-box">
             <Breadcrumb>
-              <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
-              <Breadcrumb.Item><Link to="/user-team">团队总览</Link></Breadcrumb.Item>
+              <Breadcrumb.Item>您所在的位置：<Link to={"/main/hr-service"}>HR服务</Link></Breadcrumb.Item>
+              <Breadcrumb.Item><Link to={"/user-team"}>团队总览</Link></Breadcrumb.Item>
               <Breadcrumb.Item>我的团队</Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-title">我的团队</div>
