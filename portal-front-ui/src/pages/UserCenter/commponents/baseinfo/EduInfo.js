@@ -19,7 +19,7 @@ export default class EduInfo extends PureComponent {
   render() {
     const {
       baseInfo: {
-        profile: { edu, langs },
+        baseInfo: { edu, langs },
       },
       loading,
     } = this.props;

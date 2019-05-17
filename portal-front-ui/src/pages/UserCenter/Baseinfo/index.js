@@ -6,6 +6,7 @@ import BasicInfo from '../commponents/baseinfo/BasicInfo';
 import FamilyInfo from '../commponents/baseinfo/FamilyInfo';
 import EduInfo from '../commponents/baseinfo/EduInfo';
 import EntryInfo from '../commponents/baseinfo/EntryInfo';
+import Link from "umi/link";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -22,8 +23,6 @@ export default class Baseinfo extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
 
-
-
     const userNo = this.props.location.query.userNo;
     dispatch({
       type: 'baseInfo/getBaseInfo',
@@ -33,20 +32,20 @@ export default class Baseinfo extends Component {
       type: 'user/getUserByNo',
       payload: userNo
     });
+
   }
 
 
   render() {
 
-    const {user,baseInfo: { profile}} = this.props;
-
+    const {user,baseInfo:{ baseInfo:{ profile }}} = this.props;
     return (
       <div className="ucenter-box">
         <Card bordered={false} bodyStyle={{padding: 0}}>
           <div className="title-box">
             <Breadcrumb>
-              <Breadcrumb.Item>您所在的位置：<a href="/ys/main/hr-service">HR服务</a></Breadcrumb.Item>
-              <Breadcrumb.Item><a href="/ys/user-center">个人总览</a></Breadcrumb.Item>
+              <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
+              <Breadcrumb.Item><Link to="/user-center">个人总览</Link></Breadcrumb.Item>
               <Breadcrumb.Item>{user.currentUser.no == user.userInfo.userNo?'我':'Ta'}的信息</Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-title">{user.currentUser.no == user.userInfo.userNo?'我':'Ta'}的信息</div>

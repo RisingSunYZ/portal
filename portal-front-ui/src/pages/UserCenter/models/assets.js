@@ -59,6 +59,7 @@ export default {
 
   reducers: {
     savePersonalAssetsDetails(state, action) {
+      debugger
       return {
         ...state,
         pData: action.payload,

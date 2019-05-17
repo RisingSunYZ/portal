@@ -47,9 +47,8 @@ export default class PositionInfo extends PureComponent {
 
   render() {
     const {
-      baseInfo: { profile, psnorgs },
-      user: { currentUser },
-      user: { userInfo },
+      baseInfo: { baseInfo, psnorgs },
+      user: { currentUser,userInfo },
       loading,
     } = this.props;
 
@@ -64,7 +63,7 @@ export default class PositionInfo extends PureComponent {
             <Col span={8}>
               <DescriptionList col="1" size="large">
                 <Description term="姓名" termStyle={{minWidth: 'auto'}}>{userInfo.userName}</Description>
-                <Description term="性别" termStyle={{minWidth: 'auto'}}>{profile.profile.sex == 1 ? '男' : '女'}</Description>
+                <Description term="性别" termStyle={{minWidth: 'auto'}}>{baseInfo.profile.gender == 1 ? '男' : '女'}</Description>
                 <Description term="工号" termStyle={{minWidth: 'auto'}}>{userInfo.userNo}</Description>
                 <Description term="职级" termStyle={{minWidth: 'auto'}}>{userInfo.positionLevel}</Description>
               </DescriptionList>
@@ -92,7 +91,7 @@ export default class PositionInfo extends PureComponent {
           <p className="cardTitle" style={{marginBottom: 16}}><i></i>岗位变动</p>
           <div className="postTimeLine">
             <Timeline reverse>
-              {this.getPostionSteps(profile.psnorgs)}
+              {this.getPostionSteps(baseInfo.psnorgs)}
               <Timeline.Item key={0}>
                 <span className="timeLine">至今</span>
                 <span className="textLine">{userInfo.companyName}</span>

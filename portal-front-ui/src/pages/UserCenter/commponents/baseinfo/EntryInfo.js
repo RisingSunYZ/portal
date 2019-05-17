@@ -3,7 +3,7 @@ import { Card, Row, Col, Icon, Table, Timeline,Button } from 'antd';
 import styles from '../../Baseinfo/index.less';
 import { connect } from 'dva/index';
 import DescriptionList from '@/components/DescriptionList';
-import {getConfig} from "../../../../utils/utils";
+import {getConfig} from "@/utils/utils";
 
 const { Description } = DescriptionList;
 const columns = [

@@ -27,8 +27,35 @@ export default {
   'menu.schedule': '日程',
   "menu.news-detail":"正文",
   "menu.notice-detail":"正文",
-
   "menu.material-filepage":"资料下载",
+
+  "menu.user-attendance":"个人考勤",
+  "menu.user-attendance.attendance-summary":"考勤汇总",
+  "menu.user-attendance.attendance-exception":"考勤异常",
+  "menu.user-attendance.attendance-record":"考勤记录",
+  "menu.user-performance":"个人绩效",
+  "menu.user-train":"个人培训",
+  "menu.edit-info":"个人信息",
+  "menu.edit-info.edit-baseinfo":"个人信息",
+  "menu.edit-info.edit-password":"个人信息",
+  "menu.edit-info.edit-mobile":"个人信息",
+
+  "menu.user-asset":"个人资产",
+  "menu.user-pandect":"个人资产",
+  "menu.team-framework":"个人资产",
+  "menu.annual-entry":"个人资产",
+  "menu.user-pandect":"个人资产",
+  "menu.annual-leave":"工资条",
+  "menu.authorized-strength":"工资条",
+  "menu.personal-info":"工资条",
+  "menu.authorized-strength-details":"工资条",
+  "menu.annual-leave":"工资条",
+  "menu.annual-leave":"工资条",
+
+  "menu.main-workplace":"工作台",
+  "menu.main-workplace.attendance-summary":"考勤汇总",
+  "menu.main-workplace.attendance-exception":"考勤异常",
+  "menu.main-workplace.attendance-record":"考勤记录",
 
 
   // 'menu.user':'用户',

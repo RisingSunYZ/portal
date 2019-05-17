@@ -9,7 +9,7 @@ import hrCheckOut from '@/assets/userCenter/hr-check.png';
 import styles from './index.less';
 import moment from 'moment';
 import router from 'umi/router';
-import {getConfig} from "../../../utils/utils";
+import {getConfig} from "@/utils/utils";
 const { MonthPicker } = DatePicker;
 
 const typeMap = {'zc': 10, 'lcsj': 20, 'dkyc': 30, 'xx': 40, 'yc': 50, 'hrclh': 60, 'hrclyc': 70};

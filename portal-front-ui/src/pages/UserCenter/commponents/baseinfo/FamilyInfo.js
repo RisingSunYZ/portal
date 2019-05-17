@@ -69,7 +69,7 @@ export default class FamilyInfo extends PureComponent {
   render() {
     const {
       baseInfo: {
-        profile: { familys, linkmans },
+        baseInfo: { familys, linkmans },
       },
       loading,
     } = this.props;

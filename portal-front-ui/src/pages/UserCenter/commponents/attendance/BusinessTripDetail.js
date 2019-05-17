@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import 'antd/dist/antd.css';
 import { connect } from 'dva/index';
 import { getConfig } from '@/utils/utils';
+import Link from "umi/link";
 
 @connect(({ attendance, loading }) => ({
   attendance,
@@ -108,16 +109,16 @@ export default class BusinessTripDetail extends Component {
         render: (text, record) => {
           let url =
             getConfig().domain +
-            '/ys/process/form/view/ems_business_flow/' +
+            '/process/form/view/ems_business_flow/' +
             record.procInstId +
             '/' +
             record.billCode +
             '/0/0';
           return (
             <span>
-              <a href={url} target="_blank">
+              <Link to={url} target="_blank">
                 查看
-              </a>
+              </Link>
             </span>
           );
         },
@@ -128,6 +129,7 @@ export default class BusinessTripDetail extends Component {
         <Table
           columns={columns}
           dataSource={b.cclist}
+          rowKey={"id"}
           pagination={{
             defaultPageSize: 5,
             pageSizeOptions: ['5', '10', '20'],

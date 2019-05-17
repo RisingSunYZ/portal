@@ -2,11 +2,12 @@ import React, { PureComponent, Fragment } from 'react';
 import router from 'umi/router';
 import { Card, Breadcrumb, Row, Col, Select, Input, Icon, List } from 'antd';
 import OrgSelect from '../commponents/common/OrgSelect';
-import { getConfig } from '../../../utils/utils';
+import { getConfig } from '@/utils/utils';
 import styles from './index.less';
 import { connect } from 'dva';
 import { Base64 } from 'js-base64';
 import head from '../../../assets/public/head.png';
+import Link from "umi/link";
 const Option = Select.Option;
 const Search = Input.Search;
 @connect(({ hrService, loading }) => ({
@@ -338,10 +339,9 @@ export default class Framework extends PureComponent {
     }
   }
   render() {
-   const {
-     hrService:{deptTree,personList},
-   } = this.props;
-  const topOrg=deptTree[0]||{};
+    console.log(this.props)
+    const {hrService:{deptTree,personList}} = this.props;
+    const topOrg={};
     const members = personList;
     const { openedLevel, openedOrg } = this.state;
 
@@ -350,8 +350,8 @@ export default class Framework extends PureComponent {
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className="title-box">
             <Breadcrumb>
-              <Breadcrumb.Item>您所在的位置：<a href="/ys/main/hr-service">HR服务</a></Breadcrumb.Item>
-              <Breadcrumb.Item><a href="/ys/user-team">团队总览</a></Breadcrumb.Item>
+              <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
+              <Breadcrumb.Item><Link to="/user-team">团队总览</Link></Breadcrumb.Item>
               <Breadcrumb.Item>我的团队</Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-title">我的团队</div>

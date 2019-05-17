@@ -44,7 +44,8 @@ export async function queryTrain(params) {
  * @returns {Promise<Object>}
  */
 export async function getHrPerformanceList(params) {
-  return request(`/portal/api/performance/getHrPerformanceList.jhtml${stringify(params)}?`);
+  //FIXME
+  return request(`/portal/api/performance/getHrPerformanceList.jhtml?${stringify(params)}`);
 }
 
 /**
@@ -97,8 +98,6 @@ export async function getAssetsList(params) {
  * @returns {Promise<Object>}
  */
 export async function getLeaveDaysStatistic(params) {
-  // FIXME
-  // return [{"调休":1.0}]
   return request(`/portal/api/attendance/getLeaveDaysStatistic.jhtml?${stringify(params)}`);
 }
 

@@ -240,9 +240,10 @@ public class UserLoginController extends BaseController{
         try {
             UserSessionInfo loginUser = this.getPersonInfo(request, response);
             if(loginUser!=null&&StringUtils.isNotEmpty(loginUser.getNo())) {
-                returnVo = new ReturnVo(ReturnCode.FAIL, "查询成功！");
+                returnVo = new ReturnVo(ReturnCode.SUCCESS, "查询成功！");
                 com.ys.tools.vo.ReturnVo<PersonnelApiVo> personnelApiVoByNo = personnelApi.getPersonnelApiVoByNo(loginUser.getNo());
                 returnVo.setData(personnelApiVoByNo.getData());
+
             }else{
                 returnVo.setMsg("用户已注销，请重新登录");
             }

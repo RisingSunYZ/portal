@@ -3,6 +3,7 @@ import { Breadcrumb, Input, Button, Card, Row, Col } from 'antd';
 import styles from './UserPandect.less';
 import { connect } from 'dva/index';
 import { Base64 } from 'js-base64';
+import Link from "umi/link";
 @connect(({ user, attendance, assets, hrPerformance,train, loading }) => ({
   user,
   attendance,
@@ -58,7 +59,7 @@ export default class UserPandect extends PureComponent {
           <Breadcrumb>
             <Breadcrumb.Item>
               您所在的位置：
-              <a href="/ys/main/hr-service">HR服务</a>
+              <Link to="/main/hr-service">HR服务</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>个人总览</Breadcrumb.Item>
           </Breadcrumb>
@@ -91,9 +92,9 @@ export default class UserPandect extends PureComponent {
                 职务，你的职级为 <span className="strength">{userInfo.positionLevel}</span>。
               </p>
               <Button type="primary">
-                <a href="baseinfo" target="_blank">
+                <Link to="/user-center/baseinfo" target="_blank">
                   详情
-                </a>
+                </Link>
               </Button>
             </Card>
             <Card bordered={false}>

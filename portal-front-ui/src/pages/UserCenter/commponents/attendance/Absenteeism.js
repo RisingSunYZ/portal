@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Table } from 'antd';
 import 'antd/dist/antd.css';
 import { connect } from 'dva/index';
+import Link from "umi/link";
 
 @connect(({ attendance, loading }) => ({
   attendance,
@@ -85,10 +86,9 @@ export default class Absenteeism extends Component {
         title: '详情',
         dataIndex: 'processingState',
         render: (text, record) => {
-          let url = '/ys/user-center/attendance/record';
           return (
             <span>
-              <a href={url}>查看</a>
+              <Link to="'/user-center/attendance/record'">查看</Link>
             </span>
           );
         },

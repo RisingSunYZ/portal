@@ -1,16 +1,12 @@
-/**
- *个人资料绩效信息model
- */
 import router from 'umi/router';
 import { message } from 'antd';
-import {getBaseInfo,saveBaseInfo,saveUserMobile,verificationCode,
-  updatePwdAfterLogin,logOutSyn} from '../../../services/user'
+import {getBaseInfo,saveBaseInfo,saveUserMobile,verificationCode,updatePwdAfterLogin,logOutSyn} from '@/services/user'
 
 export default {
   namespace: 'baseInfo',
 
   state: {
-    profile: {
+    baseInfo: {
       profile: {},
       edus: [],
       familys: [],
@@ -69,11 +65,21 @@ export default {
       }
     },
     *getBaseInfo({ payload }, { call, put }) {
+
       const response = yield call(getBaseInfo, payload);
+      debugger
       yield put({
         type: 'save',
-        payload: response!=undefined&&response.data!=undefined?response.data:{},
+        payload: response!=undefined&&response.code=="1"?response:{},
       });
+      // if(response.code=="100"){
+      //   yield put({
+      //     type: 'save',
+      //     payload: response.data!=undefined?response.data:{},
+      //   });
+      // }else{
+      //   message.error(response.msg);
+      // }
     },
   },
 
@@ -81,7 +87,7 @@ export default {
     save(state, action) {
       return {
         ...state,
-        profile: action.payload,
+        baseInfo: action.payload,
       };
     },
   },

@@ -4,6 +4,7 @@ import 'antd/dist/antd.css';
 import { connect } from 'dva/index';
 import styles from './index.less';
 import { getConfig } from '@/utils/utils';
+import Link from "umi/link";
 
 const { RangePicker } = DatePicker;
 @connect(({ attendance, loading }) => ({
@@ -211,7 +212,7 @@ export default class LeaveDaysStatistics extends PureComponent {
         render: (text, record) => {
           let url =
             getConfig().domain +
-            '/ys/process/form/view/' +
+            '/process/form/view/' +
             record.proDefKey +
             '/' +
             record.procInstId +
@@ -220,9 +221,9 @@ export default class LeaveDaysStatistics extends PureComponent {
             '/0/0';
           return (
             <span>
-              <a href={url} target="_blank">
+              <Link to={url} target="_blank">
                 查看
-              </a>
+              </Link>
             </span>
           );
         },
@@ -250,6 +251,7 @@ export default class LeaveDaysStatistics extends PureComponent {
           <Table
             columns={coulmns2}
             dataSource={a.qxlist}
+            rowKey="id"
             pagination={{
               defaultPageSize: 5,
               pageSizeOptions: ['5', '10', '20'],

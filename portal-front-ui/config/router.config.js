@@ -371,7 +371,7 @@ export default [
           },
           {
             path: '/user-center/attendance',
-            name: 'main-workplace',
+            name: 'user-attendance',
             component: './UserCenter/Attendance/TabList',
             routes: [
               {
@@ -397,17 +397,17 @@ export default [
           },
           {
             path: '/user-center/asset',
-            name: 'main-workplace',
+            name: 'user-asset',
             component: './UserCenter/Assets',
           },
           {
             path: '/user-center/performance',
-            name: 'main-workplace',
+            name: 'user-performance',
             component: './UserCenter/Performance',
           },
           {
             path: '/user-center/train',
-            name: 'main-workplace',
+            name: 'user-train',
             component: './UserCenter/Train',
           },
           {
@@ -438,7 +438,7 @@ export default [
           },
           {
             path: '/user-center/salary',
-            name: 'main-workplace',
+            name: 'user-salary',
             component: './UserCenter/Salary',
           }
         ]

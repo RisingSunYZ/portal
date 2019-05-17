@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import router from 'umi/router';
 import { Card, Tabs,Breadcrumb } from 'antd';
+import Link from "umi/link";
 
 const TabPane = Tabs.TabPane;
 
@@ -79,8 +80,8 @@ export default class TabList extends Component {
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className="title-box">
             <Breadcrumb>
-              <Breadcrumb.Item>您所在的位置：<a href="/portal/main/hr-service">HR服务</a></Breadcrumb.Item>
-              <Breadcrumb.Item><a href="/portal/user-center">个人总览</a></Breadcrumb.Item>
+              <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
+              <Breadcrumb.Item><Link to="/user-center">个人总览</Link></Breadcrumb.Item>
               <Breadcrumb.Item>{this.props.location.query.userNo?'Ta的考勤':'我的考勤'}</Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-title">{this.props.location.query.userNo?'Ta的考勤':'我的考勤'}</div>

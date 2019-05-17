@@ -79,8 +79,11 @@ export async function changePwd(params) {
 /**
  * 获取个人资料
  */
-export async function getBaseInfo() {
-  return request(`/rest/portal/user/userLogin/getEditUserInfo`);
+export async function getBaseInfo(params) {
+  // FIXME
+  request(`/rest/portal/user/userLogin/getEditUserInfo`);
+  return request(`/portal/api/person/getBaseInfo.jhtml`);
+  // return request(`/rest/portal/user/userLogin/getEditUserInfo`);
 }
 
 /**

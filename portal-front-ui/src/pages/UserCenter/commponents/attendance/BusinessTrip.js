@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import 'antd/dist/antd.css';
 import { connect } from 'dva/index';
 import { getConfig } from '@/utils/utils';
+import Link from "umi/link";
 
 @connect(({ attendance, loading }) => ({
   attendance,
@@ -102,7 +103,7 @@ export default class BusinessTrip extends Component {
         render: (text, record) => {
           let url =
             getConfig().domain +
-            '/ys/process/form/view/' +
+            '/process/form/view/' +
             record.proDefKey +
             '/' +
             record.procInstId +
@@ -111,9 +112,9 @@ export default class BusinessTrip extends Component {
             '/0/0';
           return (
             <span>
-              <a href={url} target="_blank">
+              <Link to={url} target="_blank">
                 查看
-              </a>
+              </Link>
             </span>
           );
         },

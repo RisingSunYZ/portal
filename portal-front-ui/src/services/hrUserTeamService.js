@@ -114,6 +114,7 @@ export async function getDeptList(params) {
  * 查询管辖部门树
  */
 export async function getDeptTree(params) {
+  debugger
   return request(`/portal/api/hrService/getDeptTree.jhtml?${stringify(params)}`);
 }
 
@@ -128,7 +129,7 @@ export async function getTopDept(params) {
  * 获取管理部门id列表
  */
 export async function getDeptIds(params) {
-  //FIXME
+  // FIXME
   // return ["1001K31000000002GLCM","1001K31000000002GLCT"]
   return request(`/portal/api/hrService/getAllDeptIds.jhtml?${stringify(params)}`);
 }
