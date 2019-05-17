@@ -475,10 +475,10 @@ export default class SummaryAttendance extends PureComponent {
           <Col span={16}>
             <div className={styles.ptzt}>
               <p>
-                考勤出勤率<span class="number">
+                考勤出勤率<span className={styles.number}>
                 <a href={'/ys/user-team/attendanceRateChart?year='+parameters().year+'&deptId='+parameters().departId} target="_blank">
                 {aNumberData.attendance}</a></span>%、
-                员工平均工作时长<span className="number">
+                员工平均工作时长<span className={styles.number}>
                 <a href={'/ys/user-team/attendanceChart?year='+parameters().year+'&deptId='+parameters().departId} target="_blank">
                 {aNumberData.avgWorkHour}</a>
               </span>小时。

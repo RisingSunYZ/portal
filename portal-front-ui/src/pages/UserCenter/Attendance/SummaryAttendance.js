@@ -246,21 +246,21 @@ export default class SummaryAttendance extends PureComponent {
               </p>
               <p>
                 累计请假&nbsp;&nbsp;
-                <span className="number">{aNumberData.leaveCount}</span>
+                <span className={styles.number}>{aNumberData.leaveCount}</span>
                 &nbsp;次、 共&nbsp;&nbsp;
-                <span className="number">{aNumberData.leaveDay}</span>
+                <span className={styles.number}>{aNumberData.leaveDay}</span>
                 &nbsp;天
               </p>
               <p>
                 累计出差&nbsp;&nbsp;
-                <span className="number">{aNumberData.travelCount}</span>
+                <span className={styles.number}>{aNumberData.travelCount}</span>
                 &nbsp;次、 出差总时长&nbsp;&nbsp;
-                <span className="number">{aNumberData.travelDay}</span>
+                <span className={styles.number}>{aNumberData.travelDay}</span>
                 &nbsp;天
               </p>
               <p>
                 因公外出&nbsp;&nbsp;
-                <span className="number">{aNumberData.goOutCount}</span>
+                <span className={styles.number}>{aNumberData.goOutCount}</span>
                 &nbsp;次、 迟到/早退&nbsp;&nbsp;
                 <span className={styles.warning}>{aNumberData.lateOrEarlyleave}</span>
                 &nbsp;次、 旷工&nbsp;&nbsp;

@@ -127,10 +127,10 @@ export default class AttendanceRecord extends Component {
     const atdsRecordMap = {}, detailData = {};
     datalist.map((data, index)=>{
       const sdatalist = data.staticDayList;
-      const start = sdatalist ? (sdatalist[0].startRwork ? sdatalist[0].startRwork.split(' ')[1].substring(0,5) : '--:--') : null;
+      const start = sdatalist ? (sdatalist[sdatalist.length-1].startRwork ? sdatalist[sdatalist.length-1].startRwork.split(' ')[1].substring(0,5) : '--:--') : null;
       const end = sdatalist ? (sdatalist[sdatalist.length-1].endRwork ? sdatalist[sdatalist.length-1].endRwork.split(' ')[1].substring(0,5) : '--:--') : null;
-      detailData[new Date(data.sdate.replace('-','/')).getDate()] = {start: start,end: end};
-      atdsRecordMap[new Date(data.sdate.replace('-','/')).getDate()] = data;
+      detailData[new Date(data.sdate.replace(/-/g,'/')).getDate()] = {start: start,end: end};
+      atdsRecordMap[new Date(data.sdate.replace(/-/g,'/')).getDate()] = data;
     });
     detailData['name'] = user;
     return {atdsRecordMap: atdsRecordMap, detailData: [detailData]};
@@ -145,7 +145,6 @@ export default class AttendanceRecord extends Component {
     return (type != null && staticDayTypeMap != null) ? staticDayTypeMap[type]: ''
   };
   getAppealOpt = (sdatalist, dateType) => {
-    console.log(sdatalist);
     sdatalist=sdatalist.filter(item=>{
       return item.type==70 || item.type==80 || item.type==90 ;
     })
@@ -161,10 +160,10 @@ export default class AttendanceRecord extends Component {
     }
 
     let appealHtml = '';
-    if(typeof this.props.location.query.userNo == 'undefined' || Base64.encode(this.props.user.currentUser.no) == this.props.location.query.userNo){
+    if(typeof this.props.location.query.userNo === 'undefined' || Base64.encode(this.props.user.currentUser.no) === this.props.location.query.userNo){
       appealHtml = (<a className="appeal-btn jsUnusualDealWith" dataid = {data.id} datatype={data.subType} datasdate={data.sdate} datatypetime={data.typeTime}>我要申诉</a>);
     }
-   // const type = data.type;
+    // const type = data.type;
     // if(type === typeMap.dkyc){
     //   appealHtml = (<span className="appeal-btn" onClick={ ()=>{this.appealForExp(data.staticDayList[dateType])} }>我要申诉</span>);
 
@@ -172,7 +171,6 @@ export default class AttendanceRecord extends Component {
     return appealHtml;
   };
   appealForExp = (data) => {
-    console.log(data);
     const { match } = this.props;
     const userNo = this.props.location.query.userNo;
     let url = match.url+'/exception';
@@ -310,29 +308,29 @@ export default class AttendanceRecord extends Component {
       fixed: true
     });
     for (let i = 0; i < month1.daysInMonth(); i++) {
-        let current = month1.clone();
-        current.add(i, 'days');
-        columns.push({
-          dataIndex: current.date(),
-          title: (
-            <div className={styles.headBox}>
-              <span>{week[current.day()]}</span>
-              <span className={styles.dateHead}>{current.date()}</span>
-            </div>
-          ),render: text => {
-            if(text){
-              return text.start || text.end ? (
-                <div style={{lineHeight: '14px', textAlign: 'center'}}>
-                  {text.start}
-                  <div>—</div>
-                  {text.end}
-                </div>
-              ) : ''
-            }else{
-              return '';
-            }
+      let current = month1.clone();
+      current.add(i, 'days');
+      columns.push({
+        dataIndex: current.date(),
+        title: (
+          <div className={styles.headBox}>
+            <span>{week[current.day()]}</span>
+            <span className={styles.dateHead}>{current.date()}</span>
+          </div>
+        ),render: text => {
+          if(text){
+            return text.start || text.end ? (
+              <div style={{lineHeight: '14px', textAlign: 'center'}}>
+                {text.start}
+                <div>—</div>
+                {text.end}
+              </div>
+            ) : ''
+          }else{
+            return '';
           }
-        });
+        }
+      });
     }
     return columns;
   };
@@ -371,7 +369,7 @@ export default class AttendanceRecord extends Component {
     this.setState({
       switchOpen: bool,
       detailView: bool
-    })
+    });
   };
 
   //对日期选择进行限制，只允许选择本年本月之前
