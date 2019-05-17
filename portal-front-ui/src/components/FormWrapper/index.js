@@ -105,13 +105,16 @@ export default class FormBox extends React.Component {
           iframeWin.YSForm.formTurnRead(approveMsg);
         }
       }else if(fnName==="doReject"){//驳回
+        //如果业务表单有驳回方法 则调用 (签证逻辑 1 可以驳回，0 提醒 请到业务系统驳回)
         if(iframeWin.YSForm && iframeWin.YSForm.formDoReject && $(iframeWin.document).find('#jsIsEditData')[0] && $(iframeWin.document).find('#jsIsEditData').val() == 'true'){
-          iframeWin.YSForm.formDoReject();
+          const res = iframeWin.YSForm.formDoReject(approveMsg);
+          return res;
         }
       }else{
         message.error('表单方法未找到！');
       }
     } catch (e) {
+      console.info(e);
       message.error('表单节点未找到！');
     }
   }

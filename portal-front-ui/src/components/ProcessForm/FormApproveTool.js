@@ -55,11 +55,19 @@ export default class FormApproveTool extends Component {
     this.props.doFormFn('doApproveCooperate', this.state.approveMsg);
   };
 
+  //驳回
   doReject = () => {
-    this.setState({
-      visible: true,
-      value: 'reject',
-    });
+
+    const taskId = this.props.processForm.taskId;
+    const res = this.props.doFormFn('doReject', taskId);
+    if(0 == res){ //签证系统
+      message.info('请到业务系统驳回');
+    }else{
+      this.setState({
+        visible: true,
+        value: 'reject',
+      });
+    }
   };
 
   onChange = e => {
