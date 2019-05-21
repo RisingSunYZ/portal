@@ -534,7 +534,7 @@ export default [
             routes: [
               {
                 path: '/user-team/performance',
-                redirect: '/ys/user-team/performance/information',
+                redirect: '/user-team/performance/information',
               },
               {
                 path: '/user-team/performance/information',

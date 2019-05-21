@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { G2, Chart, Geom, Axis, Tooltip, Coord, Label, Legend, View, Guide, Shape, Facet, Util} from "bizcharts";
 import { Card, Breadcrumb, Row, Col,Select } from 'antd';
 import { connect } from 'dva';
+import Link from "umi/link";
 import YearSelect from '../commponents/common/YearSelect';
 
 
@@ -25,7 +26,7 @@ export default class AttendanceRateChart extends Component {
     if ( ev.data && ev.data.point ) {
       const deptId =  ev.data.point.deptId;
       if (!!deptId ) {
-        window.open("/ys/user-team/attendanceRateChart?deptId="+deptId+"&year="+stateYear);
+        window.open("/user-team/attendanceRateChart?deptId="+deptId+"&year="+stateYear);
       }
     }
   };
@@ -112,9 +113,9 @@ export default class AttendanceRateChart extends Component {
       <div>
         <Card>
           <Breadcrumb>
-            <Breadcrumb.Item>您所在的位置：<a href="/ys/main/hr-service">HR服务</a> </Breadcrumb.Item>
-            <Breadcrumb.Item> <a href="/ys/user-team">团队总览</a> </Breadcrumb.Item>
-            <Breadcrumb.Item> <a href="/ys/user-team/attendance">部门考勤</a> </Breadcrumb.Item>
+            <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link> </Breadcrumb.Item>
+            <Breadcrumb.Item> <Link to="/user-team">团队总览</Link> </Breadcrumb.Item>
+            <Breadcrumb.Item> <Link to="/user-team/attendance">部门考勤</Link> </Breadcrumb.Item>
             <Breadcrumb.Item>出勤率</Breadcrumb.Item>
           </Breadcrumb>
         </Card>

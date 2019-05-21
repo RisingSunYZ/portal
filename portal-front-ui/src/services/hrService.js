@@ -140,7 +140,6 @@ export async function getLateAbsenteeism(params) {
  * @returns {Promise<Object>}
  */
 export async function getAbsenteeism(params) {
-  // FIXME
   // return {"pfNumber":12,"ealist":[{"id":"8a949e5d6a9fcdd0016a9fce1d455349","no":"00004737","name":"刘文军","personId":"8a8a8fb65926f9b901592701aeab2749","companyId":"0001K310000000008TK6","deptId":"1001K31000000002GLCT","absenteeismDay":1.0,"absenteeismTime":"2019-05-01 00:00:00","typeName":"旷工","createTime":"2019-05-10 11:34:06","creator":"sys","updateTime":"2019-05-10 11:34:06","updator":"sys","delFlag":1},{"id":"8a949e5d6a9fcdd0016a9fce1d49534a","no":"00004737","name":"刘文军","personId":"8a8a8fb65926f9b901592701aeab2749","companyId":"0001K310000000008TK6","deptId":"1001K31000000002GLCT","absenteeismDay":1.0,"absenteeismTime":"2019-05-02 00:00:00","typeName":"旷工","createTime":"2019-05-10 11:34:06","creator":"sys","updateTime":"2019-05-10 11:34:06","updator":"sys","delFlag":1},{"id":"8a949e5d6a9fcdd0016a9fce1d51534b","no":"00004737","name":"刘文军","personId":"8a8a8fb65926f9b901592701aeab2749","companyId":"0001K310000000008TK6","deptId":"1001K31000000002GLCT","absenteeismDay":1.0,"absenteeismTime":"2019-05-03 00:00:00","typeName":"旷工","createTime":"2019-05-10 11:34:06","creator":"sys","updateTime":"2019-05-10 11:34:06","updator":"sys","delFlag":1},{"id":"8a949e3869b791db0169b79e30a700f8","no":"00004737","name":"刘文军","personId":"8a8a8fb65926f9b901592701aeab2749","companyId":"0001K310000000008TK6","deptId":"1001K31000000002GLCT","absenteeismDay":1.0,"absenteeismTime":"2019-03-01 00:00:00","typeName":"旷工","createTime":"2019-03-26 09:29:51","creator":"admin","updateTime":"2019-03-26 09:29:51","updator":"admin","delFlag":1},{"id":"8a949e3869b791db0169b79e30ac00f9","no":"00004737","name":"刘文军","personId":"8a8a8fb65926f9b901592701aeab2749","companyId":"0001K310000000008TK6","deptId":"1001K31000000002GLCT","absenteeismDay":1.0,"absenteeismTime":"2019-03-04 00:00:00","typeName":"旷工","createTime":"2019-03-26 09:29:51","creator":"admin","updateTime":"2019-03-26 09:29:51","updator":"admin","delFlag":1}]}
   return request(`/portal/api/attendance/getAbsenteeism.jhtml?${stringify(params)}`);
 }
@@ -150,9 +149,8 @@ export async function getAbsenteeism(params) {
  * @returns {Promise<Object>}
  */
 export async function getSummaryAttendance(params) {
-  // FIXME
-  return {"no":"00004737","year":2019,"shouldWorkday":21.0,"normalWorkday":9.0,"attendance":42.86,"moreAttendanceToOthers":36.36,"avgWorkHour":9.7,"leaveCount":0,"leaveDay":0.0,"travelCount":0,"travelDay":0.0,"goOutCount":0,"lateOrEarlyleave":0,"absenteeism":12.0,"absenteeismCount":12,"delFlag":1}
-  // return request(`/portal/api/attendance/getSummaryAttendance?${stringify(params)}`);
+  // return {"no":"00004737","year":2019,"shouldWorkday":21.0,"normalWorkday":9.0,"attendance":42.86,"moreAttendanceToOthers":36.36,"avgWorkHour":9.7,"leaveCount":0,"leaveDay":0.0,"travelCount":0,"travelDay":0.0,"goOutCount":0,"lateOrEarlyleave":0,"absenteeism":12.0,"absenteeismCount":12,"delFlag":1}
+  return request(`/portal/api/attendance/getSummaryAttendance.jhtml?${stringify(params)}`);
 }
 /**
  * 获取考勤记录数据

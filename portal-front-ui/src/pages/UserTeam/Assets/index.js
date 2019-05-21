@@ -7,6 +7,7 @@ import DeptUseAssetsTotal from '../commponents/assets/DeptUseAssetsTotal';
 import DeptChargeAssetsTotal from '../commponents/assets/DeptChargeAssetsTotal';
 import SearchBar from '../commponents/assets/SearchBar';
 import styles from './index.less';
+import Link from "umi/link";
 import OrgSelect from '../commponents/common/OrgSelect';
 
 const Search = Input.Search;
@@ -126,10 +127,10 @@ export default class AssetsProfile extends Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 您所在的位置：
-                <a href="/ys/main/hr-service">HR服务</a>
+                <Link to="/main/hr-service">HR服务</Link>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <a href="/ys/user-team">团队总览</a>
+                <Link to="/user-team">团队总览</Link>
               </Breadcrumb.Item>
               <Breadcrumb.Item>部门资产</Breadcrumb.Item>
             </Breadcrumb>

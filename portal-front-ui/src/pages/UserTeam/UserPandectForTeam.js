@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Breadcrumb, Input, Button, Card, Row, Col } from 'antd';
 import styles from '../UserCenter/UserPandect.less';
 import { connect } from 'dva/index';
+import Link from "umi/link";
 import { Base64 } from 'js-base64';
 @connect(({ user, attendance, assets, hrPerformance,train, loading }) => ({
   user,
@@ -64,13 +65,13 @@ export default class UserPandect extends PureComponent {
           <Breadcrumb>
             <Breadcrumb.Item>
               您所在的位置：
-              <a href="/portal/main/hr-service">HR服务</a>
+              <Link to="/main/hr-service">HR服务</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <a href="/portal/user-team/pandect">团队总览</a>
+              <Link to="/user-team/pandect">团队总览</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <a href="/portal/user-team/framework">我的团队</a>
+              <Link to="/user-team/framework">我的团队</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>个人总览</Breadcrumb.Item>
           </Breadcrumb>

@@ -3,6 +3,7 @@ import { Table, Card, Input, Breadcrumb, Row, Col } from 'antd';
 import 'antd/dist/antd.css';
 import styles from './UserPandect.less';
 import { connect } from 'dva/index';
+import Link from "umi/link";
 import OrgSelect from '../UserTeam/commponents/common/OrgSelect';
 
 const columns = [
@@ -37,12 +38,12 @@ const columns = [
     dataIndex: 'detail',
     render: (text, record) => {
       let url =
-        '/ys/user-team/authorizedDetails?deptId=' + record.pkDept + '&postName=' + record.postName;
+        '/user-team/authorizedDetails?deptId=' + record.pkDept + '&postName=' + record.postName;
       return (
         <span>
-          <a href={url} target="_blank">
+          <Link to={url} target="_blank">
             详情
-          </a>
+          </Link>
         </span>
       );
     },
@@ -229,10 +230,10 @@ export default class AuthorizedStrength extends PureComponent {
           <Breadcrumb>
             <Breadcrumb.Item>
               您所在的位置：
-              <a href="/ys/main/hr-service">HR服务</a>
+              <Link to="/main/hr-service">HR服务</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <a href="/ys/user-team">团队总览</a>
+              <Link to="/user-team">团队总览</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>团队编制</Breadcrumb.Item>
           </Breadcrumb>

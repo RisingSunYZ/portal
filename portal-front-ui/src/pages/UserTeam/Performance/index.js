@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import router from 'umi/router';
 import { Card, Tabs, Breadcrumb, Row } from 'antd';
 import { connect } from 'dva';
+import Link from "umi/link";
 const TabPane = Tabs.TabPane;
 
 @connect(({ train, loading }) => ({
@@ -41,8 +42,8 @@ export default class Index extends Component {
         <Card bordered={false} bodyStyle={{ padding: 0 }}>
           <div className="title-box">
             <Breadcrumb>
-              <Breadcrumb.Item>您所在的位置：<a href="/ys/main/hr-service">HR服务</a></Breadcrumb.Item>
-              <Breadcrumb.Item><a href="/ys/user-team">团队总览</a></Breadcrumb.Item>
+              <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
+              <Breadcrumb.Item><Link to="/user-team">团队总览</Link></Breadcrumb.Item>
               <Breadcrumb.Item>团队绩效</Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-title">部门绩效</div>

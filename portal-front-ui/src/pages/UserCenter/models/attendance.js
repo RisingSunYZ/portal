@@ -8,7 +8,7 @@ import {
   getException,
   getBusinessTrip,
   getAttendanceRecord,
-} from '../../../services/hrService';
+} from '@/services/hrService';
 
 export default {
   namespace: 'attendance',

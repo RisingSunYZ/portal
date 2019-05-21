@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { Table,Card, Input, Breadcrumb, Row, Col } from 'antd';
 import 'antd/dist/antd.css';
 import { connect } from 'dva/index';
+import Link from "umi/link";
 import YearSelect from './commponents/common/YearSelect';
 import OrgSelect from './commponents/common/OrgSelect';
 
@@ -143,8 +144,8 @@ export default class AnnualLeave extends PureComponent {
       <div className="ucenter-box">
         <Card bordered={false} bodyStyle={{padding: '16px 24px', marginBottom: 16}}>
           <Breadcrumb>
-            <Breadcrumb.Item>您所在的位置：<a href="/ys/main/hr-service">HR服务</a></Breadcrumb.Item>
-            <Breadcrumb.Item><a href="/ys/user-team">团队总览</a></Breadcrumb.Item>
+            <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/user-team">团队总览</Link></Breadcrumb.Item>
             <Breadcrumb.Item>年度离职</Breadcrumb.Item>
           </Breadcrumb>
         </Card>

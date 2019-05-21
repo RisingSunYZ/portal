@@ -6,6 +6,7 @@ import EnterInfo from '../commponents/baseinfo/EnterInfo';
 import BasicInfo from '../commponents/baseinfo/BasicInfo';
 import FamilyInfo from '../commponents/baseinfo/FamilyInfo';
 import EduInfo from '../commponents/baseinfo/EduInfo';
+import Link from "umi/link";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -34,8 +35,8 @@ export default class Baseinfo extends Component {
         <Card bordered={false} bodyStyle={{padding: 0}}>
           <div className="title-box">
             <Breadcrumb>
-              <Breadcrumb.Item>您所在的位置：<a href="/ys/main/hr-service">HR服务</a></Breadcrumb.Item>
-              <Breadcrumb.Item><a href="/ys/user-team">团队总览</a></Breadcrumb.Item>
+              <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
+              <Breadcrumb.Item><Link to="/user-team">团队总览</Link></Breadcrumb.Item>
               <Breadcrumb.Item>Ta的信息</Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-title">Ta的信息</div>
