@@ -1,7 +1,6 @@
-/**
- *个人资料绩效信息model
+/**团队资料绩效信息model
  */
-import { getTrainingCourse, getCourseDevelop, getComplete, getTrainingDetail } from '../../../services/hrServiceAjax';
+import { getTrainingCourse, getCourseDevelop, getComplete, getTrainingDetail } from '@/services/hrServiceAjax';
 
 export default {
 

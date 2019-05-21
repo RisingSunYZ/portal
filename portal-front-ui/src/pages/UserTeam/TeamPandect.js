@@ -10,9 +10,9 @@ const performanceColumns = [
     dataIndex: 'S',
     render: (text, record) => {
       return (
-          <a href={'/ys/user-team/performance/information?level=S'} target="_blank">
+          <Link to={'/user-team/performance/information?level=S'} target="_blank">
             {text}
-          </a>
+          </Link>
       );
     },
   },
@@ -20,9 +20,9 @@ const performanceColumns = [
     dataIndex: 'A',
     render: (text, record) => {
       return (
-        <a href={'/ys/user-team/performance/information?level=A'} target="_blank">
+        <Link to={'/user-team/performance/information?level=A'} target="_blank">
           {text}
-        </a>
+        </Link>
       );
     },
   },
@@ -30,9 +30,9 @@ const performanceColumns = [
     dataIndex: 'B',
     render: (text, record) => {
       return (
-        <a href={'/ys/user-team/performance/information?level=B'} target="_blank">
+        <Link to={'/user-team/performance/information?level=B'} target="_blank">
           {text}
-        </a>
+        </Link>
       );
     },
   },
@@ -40,9 +40,9 @@ const performanceColumns = [
     dataIndex: 'C',
     render: (text, record) => {
       return (
-        <a href={'/ys/user-team/performance/information?level=C'} target="_blank">
+        <Link to={'/user-team/performance/information?level=C'} target="_blank">
           {text}
-        </a>
+        </Link>
       );
     },
   },
@@ -50,18 +50,18 @@ const performanceColumns = [
     dataIndex: 'D',
     render: (text, record) => {
       return (
-        <a href={'/ys/user-team/performance/information?level=D'} target="_blank">
+        <Link to={'/user-team/performance/information?level=D'} target="_blank">
           {text}
-        </a>
+        </Link>
       );
     },},
   {title: 'E',
     dataIndex: 'E',
     render: (text, record) => {
       return (
-        <a href={'/ys/user-team/performance/information?level=E'} target="_blank">
+        <Link to={'/user-team/performance/information?level=E'} target="_blank">
           {text}
-        </a>
+        </Link>
       );
     },},
 ];
@@ -206,15 +206,15 @@ export default class TeamPandect extends PureComponent {
               <p>
                 作为 <span className="strength text">{userInfo.deptName}</span>的<span className="strength text">{userInfo.postname}</span>，
                 您的部门目前编制 <span className="strength">
-                <a href={"/ys/user-team/authorized"} target="_blank">{totals.totalNum}</a></span>人，
+                <Link to={"/user-team/authorized"} target="_blank">{totals.totalNum}</Link></span>人，
                 在岗 <span className="strength">
-                <a href={"/ys/user-team/authorized"} target="_blank">{totals.countPsndoc}</a></span>人。
+                <Link to={"/user-team/authorized"} target="_blank">{totals.countPsndoc}</Link></span>人。
               </p>
               <p>
                 本年度，你所在的部门共有<span className="strength">
-                <a href={"/ys/user-team/entry"} target="_blank">{entry.pagination.total}</a></span>人入职，
+                <Link to={"/user-team/entry"} target="_blank">{entry.pagination.total}</Link></span>人入职，
                 <span className="strength">
-                  <a href={"/ys/user-team/leave"} target="_blank">{leave.pagination.total}</a></span>人离职。
+                  <Link to={"/user-team/leave"} target="_blank">{leave.pagination.total}</Link></span>人离职。
               </p>
               <Button type="primary">
                 <a href="framework" target="_blank">

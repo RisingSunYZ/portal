@@ -1,5 +1,6 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
+import requestAjax from '../utils/requestAjax';
 
 /**
  * 提交反馈表单
@@ -7,7 +8,7 @@ import request from '../utils/request';
  * @returns {Promise<Object>}
  */
 export async function referFeedback(params) {
-  return request('/portal/api/hrService/sendOptionToQiyu.jhtml', {
+  return requestAjax('/portal/api/hrService/sendOptionToQiyu.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -17,7 +18,7 @@ export async function referFeedback(params) {
  * 查询人员
  */
 export async function getAllPerson(params) {
-  return request('/portal/api/hrService/getAllPerson.jhtml', {
+  return requestAjax('/portal/api/hrService/getAllPerson.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -31,7 +32,7 @@ export async function getAllPerson(params) {
 export async function getUserTeamSummaryAttendance(params) {
   //
   // return {"year":2019,"attendance":56.36,"avgWorkHour":8.9,"leaveCount":8,"travelCount":1,"goOutCount":1,"lateOrEarlyleave":8,"absenteeismCount":174,"shiJiaCount":2,"jiaBanCount":3,"tiaoXiuCount":2,"hunJiaCount":0,"chanJiaCount":0,"bingJiaCount":1,"gongShangJiaCount":0,"sangJiaCount":1,"deptIds":["1001K31000000002GLCM","1001K31000000002GLCT"],"delFlag":1}
-  return request('/portal/api/attendance/getUserTeamSummaryAttendance.jhtml', {
+  return requestAjax('/portal/api/attendance/getUserTeamSummaryAttendance.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -43,7 +44,7 @@ export async function getUserTeamSummaryAttendance(params) {
  * @returns {Promise<Object>}
  */
 export async function getUserTeamLeaveDaysStatistic(params) {
-  return request('/portal/api/attendance/getUserTeamLeaveDaysStatistic.jhtml', {
+  return requestAjax('/portal/api/attendance/getUserTeamLeaveDaysStatistic.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -55,7 +56,7 @@ export async function getUserTeamLeaveDaysStatistic(params) {
  * @returns {Promise<Object>}
  */
 export async function getUserTeamLeaveDetails(params) {
-  return request('/portal/api/attendance/getUserTeamLeaveDetails.jhtml', {
+  return requestAjax('/portal/api/attendance/getUserTeamLeaveDetails.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -66,7 +67,7 @@ export async function getUserTeamLeaveDetails(params) {
  * @returns {Promise<Object>}
  */
 export async function getUserTeamWorkOvertimeDetail(params) {
-  return request('/portal/api/attendance/getUserTeamWorkOvertimeDetail.jhtml', {
+  return requestAjax('/portal/api/attendance/getUserTeamWorkOvertimeDetail.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -78,7 +79,7 @@ export async function getUserTeamWorkOvertimeDetail(params) {
  * @returns {Promise<Object>}
  */
 export async function getUserTeamBusinessTripDetail(params) {
-  return request('/portal/api/attendance/getUserTeamBusinessTripDetail.jhtml', {
+  return requestAjax('/portal/api/attendance/getUserTeamBusinessTripDetail.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -88,7 +89,7 @@ export async function getUserTeamBusinessTripDetail(params) {
  * 获取部门因公外出信息
  */
 export async function getUserTeamBusinessTrip(params) {
-  return request('/portal/api/attendance/getUserTeamBusinessTrip.jhtml', {
+  return requestAjax('/portal/api/attendance/getUserTeamBusinessTrip.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -100,7 +101,7 @@ export async function getUserTeamBusinessTrip(params) {
  * @returns {Promise<Object>}
  */
 export async function getUserTeamLateAbsenteeism(params) {
-  return request('/portal/api/attendance/getUserTeamLateAbsenteeism.jhtml', {
+  return requestAjax('/portal/api/attendance/getUserTeamLateAbsenteeism.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -112,7 +113,7 @@ export async function getUserTeamLateAbsenteeism(params) {
  * @returns {Promise<Object>}
  */
 export async function getUserTeamAbsenteeism(params) {
-  return request('/portal/api/attendance/getUserTeamAbsenteeism.jhtml', {
+  return requestAjax('/portal/api/attendance/getUserTeamAbsenteeism.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -124,7 +125,7 @@ export async function getUserTeamAbsenteeism(params) {
  * @returns {Promise<Object>}
  */
 export async function getTeamAttendanceRecord(params) {
-  return request('/portal/api/attendance/getTeamAttendanceRecord.jhtml', {
+  return requestAjax('/portal/api/attendance/getTeamAttendanceRecord.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -138,7 +139,7 @@ export async function getTeamAttendanceRecord(params) {
 export async function getDeptAssets(params) {
   //
   // return {"deptUseAssets":[{"totalNumber":519,"softWareNumber":22,"fixedNumber":497}],"deptChargeAssets":[{"totalNumber":485,"softWareNumber":11,"fixedNumber":474}]}
-  return request('/portal/api/assets/getDeptAssets.jhtml', {
+  return requestAjax('/portal/api/assets/getDeptAssets.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -150,7 +151,7 @@ export async function getDeptAssets(params) {
  * @returns {Promise<Object>}
  */
 export async function getDeptAssetsList(params) {
-  return request('/portal/api/assets/getDeptAssetsList.jhtml', {
+  return requestAjax('/portal/api/assets/getDeptAssetsList.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -164,7 +165,7 @@ export async function getDeptAssetsList(params) {
 export async function getAnnualEntryList(params) {
   //
   // return {"pagination":{"current":0,"total":1,"pageSize":10},"list":[{"id":"000000005b5bc2c0015b61799f450099","companyId":"0001K310000000008TK6","deptId":"1001K31000000002GLCT","position":" ","no":"00006899","name":"赵海","sex":1,"classification":"0101","enterTime":"2017-04-01 00:00:00","leavingTime":"2019-01-10 00:00:00","fromSystem":"1","isIncorporated":0,"status":0,"poststatus":0,"sortNo":1000,"synStatus":2,"synFiedReason":"待同步","idcard":"330681199304064416","alphabetic":"zhaohai","oType":"","positionLevel":0,"positionName":"","privilege":4,"leaveTimeStr":"2019-01-10","enterTimeStr":"2017-04-01","companyEmail":"zhaohai1@chinayasha.net","selfEmail":"","selfMobile":"18268880614","companyMobile":" ","mobilePhone":"18268880614","shortPhone":"660614","phone":"","addbool":0,"dcode":"1703","dname":"技术开发部","operate":2,"ccode":"200001","cname":"亚厦集团","postid":"                    ","postcode":" ","postname":" ","classcode":"0101","classname":"正式员工","job":"                    ","jobcode":" ","jobname":" ","writebackoperate":"0","writebackts":"                   ","ts":"2019-01-10 15:29:32","syncts":"2019-01-10 15:28:42","ehrid":"0001K31000000000CH0H","birthday":"0406","sAMAccountName":"zhaohai1","createTime":"2017-04-12 17:23:32","creator":"00004737","updateTime":"2019-01-10 16:37:07","updator":"00009179","delFlag":1}]}
-  return request('/portal/api/hrService/getAnnualList.jhtml', {
+  return requestAjax('/portal/api/hrService/getAnnualList.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -176,7 +177,7 @@ export async function getAnnualEntryList(params) {
  * @returns {Promise<Object>}
  */
 export async function getAnnualLeaveList(params) {
-  return request('/portal/api/hrService/getAnnualList.jhtml', {
+  return requestAjax('/portal/api/hrService/getAnnualList.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -190,7 +191,7 @@ export async function getAnnualLeaveList(params) {
 export async function getAuthorizedStrengthTotal(params) {
   //
   // return {"aRank":0,"countPsndoc":27,"totalNum":1,"oRank":0,"pRank":0,"others":0,"mRank":1}
-  return request('/portal/api/hrService/getAuthorizedStrengthTotal.jhtml', {
+  return requestAjax('/portal/api/hrService/getAuthorizedStrengthTotal.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -202,7 +203,7 @@ export async function getAuthorizedStrengthTotal(params) {
  * @returns {Promise<Object>}
  */
 export async function getAuthorizedStrengthList(params) {
-  return request('/portal/api/hrService/getAuthorizedStrengthList.jhtml', {
+  return requestAjax('/portal/api/hrService/getAuthorizedStrengthList.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -214,7 +215,7 @@ export async function getAuthorizedStrengthList(params) {
  * @returns {Promise<Object>}
  */
 export async function getAuthorizedStrengthDetails(params) {
-  return request('/portal/api/hrService/getAuthorizedStrengthDetails.jhtml', {
+  return requestAjax('/portal/api/hrService/getAuthorizedStrengthDetails.jhtml', {
     method: 'POST',
     data: stringify(params),
   });
@@ -226,7 +227,8 @@ export async function getAuthorizedStrengthDetails(params) {
  * @returns {Promise<void>}
  */
 export async function getTeamPerfInfo(params) {
-  return request(`/portal/api/performance/getTeamPerfInfo.jhtml`, {
+  // return [{"A":"0","B":"0","S":"0","C":"0","D":"0","level":"人数","E":"0"}]
+  return requestAjax(`/portal/api/performance/getTeamPerfInfo.jhtml`, {
     method: 'POST',
     data: stringify(params),
   });
@@ -238,7 +240,7 @@ export async function getTeamPerfInfo(params) {
  * @returns {Promise<void>}
  */
 export async function getTeamPerfReward(params) {
-  return request(`/portal/api/performance/getTeamPerfReward.jhtml`, {
+  return requestAjax(`/portal/api/performance/getTeamPerfReward.jhtml`, {
     method: 'POST',
     data: stringify(params),
   });
@@ -252,7 +254,7 @@ export async function getTeamPerfReward(params) {
 export async function getTeamPerfTotal(params) {
   //
   // return [{"A":"0","B":"0","S":"0","C":"0","D":"0","level":"人数","E":"0"}]
-  return request(`/portal/api/performance/getTeamPerfTotal.jhtml`, {
+  return requestAjax(`/portal/api/performance/getTeamPerfTotal.jhtml`, {
     method: 'POST',
     data: stringify(params),
   });
@@ -266,7 +268,7 @@ export async function getTeamPerfTotal(params) {
 export async function getTrainingCourse(params) {
   //
   // return {"planTrainCourse":0,"completeTrainCourse":0,"completeTrainOutCourse":0,"delFlag":1}
-  return request(`/portal/api/train/getTrainingCourse.jhtml`, {
+  return requestAjax(`/portal/api/train/getTrainingCourse.jhtml`, {
     method: 'POST',
     data: stringify(params),
   });
@@ -280,7 +282,7 @@ export async function getTrainingCourse(params) {
 export async function getCourseDevelop(params) {
   //
   // return {"quarterPlanNum":0,"actualQuarterNum":0,"delFlag":1}
-  return request(`/portal/api/train/getCourseDevelop.jhtml`, {
+  return requestAjax(`/portal/api/train/getCourseDevelop.jhtml`, {
     method: 'POST',
     data: stringify(params),
   });
@@ -292,10 +294,8 @@ export async function getCourseDevelop(params) {
  * @returns {Promise<void>}
  */
 export async function getComplete(params) {
-  //
   // return   {"averageHours":0.0,"averageFinishClassHours":0.0,"averageFinishElectiveHours":0.0,"averageFinishShareHours":0.0,"averageFinishTotalHours":0.0,"delFlag":1}
-  //
-  return request(`/portal/api/train/getComplete.jhtml`, {
+  return requestAjax(`/portal/api/train/getComplete.jhtml`, {
     method: 'POST',
     data: stringify(params),
   });
@@ -307,7 +307,7 @@ export async function getComplete(params) {
  * @returns {Promise<void>}
  */
 export async function getTrainingDetail(params) {
-  return request(`/portal/api/train/getTrainingDetail.jhtml`, {
+  return requestAjax(`/portal/api/train/getTrainingDetail.jhtml`, {
     method: 'POST',
     data: stringify(params),
   });

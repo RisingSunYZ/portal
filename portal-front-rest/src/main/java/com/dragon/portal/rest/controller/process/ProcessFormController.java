@@ -118,7 +118,7 @@ public class ProcessFormController extends BaseController {
 					formInfo.put("ownDeptName",rVo.getData().getOwnDeptName());
 					formInfo.put("processDockingName",rVo.getData().getProcessDockingName());
 					formInfo.put("processDockingNo",rVo.getData().getProcessDockingNo());
-					formInfo.put("formTitle", StringUtils.isNotBlank(bizId)&&!"0".equals(bizId)?rVo.getData().getName()+"-"+bizId:rVo.getData().getName());
+					formInfo.put("formTitle", StringUtils.isNotBlank(bizId) && !"0".equals(bizId) ? rVo.getData().getName() + "-" + bizId : rVo.getData().getName());
 				}else{
 					formInfo.put("ownDeptName","");
 					formInfo.put("processDockingName","");
