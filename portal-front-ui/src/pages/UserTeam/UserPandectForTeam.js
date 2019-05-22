@@ -19,14 +19,15 @@ export default class UserPandect extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
 
-    let userNo = this.props.match.params && this.props.match.params.userNo;
+    let userNo =this.props.match.params && this.props.match.params.userNo;
+
     dispatch({
       type: 'user/getUserByNo',
-      payload: userNo
+      payload: {userNo}
     });
     dispatch({
       type: 'attendance/getSummaryAttendance',
-      payload: {userNo}
+      payload: { userNo }
     });
     dispatch({
       type: 'assets/getPersonalAssetsDetails',
@@ -101,9 +102,9 @@ export default class UserPandect extends PureComponent {
                 职务，职级为 <span className="strength">{userInfo.positionLevel}</span>。
               </p>
               <Button type="primary">
-                <a href={"/portal/user-center/baseinfo?userNo="+Base64.encode(userInfo.userNo)} target="_blank">
+                <Link to={"/user-center/baseinfo?userNo="+Base64.encode(userInfo.userNo)} target="_blank">
                   详情
-                </a>
+                </Link>
               </Button>
             </Card>
             <Card bordered={false}>
@@ -113,9 +114,9 @@ export default class UserPandect extends PureComponent {
               </p>
               <p>
                 <Button type="primary">
-                  <a href={"/portal/user-center/performance?userNo="+Base64.encode(userInfo.userNo)} target="_blank">
+                  <Link to={"/user-center/performance?userNo="+Base64.encode(userInfo.userNo)} target="_blank">
                     详情
-                  </a>
+                  </Link>
                 </Button>
               </p>
             </Card>
@@ -151,9 +152,9 @@ export default class UserPandect extends PureComponent {
                 次旷工。
               </p>
               <Button type="primary">
-                <a href={"/portal/user-center/attendance?userNo="+Base64.encode(userInfo.userNo)} target="_blank">
+                <Link to={"/user-center/attendance?userNo="+Base64.encode(userInfo.userNo)} target="_blank">
                   详情
-                </a>
+                </Link>
               </Button>
             </Card>
             <Card bordered={false}>
@@ -166,9 +167,9 @@ export default class UserPandect extends PureComponent {
                 <span className="strength">{tNumberData.completionRate}</span>。
               </p>
               <Button type="primary">
-                <a href={"/portal/user-center/train?userNo="+this.props.match.params.userNo} target="_blank">
+                <Link to={"/user-center/train?userNo="+this.props.match.params.userNo} target="_blank">
                   详情
-                </a>
+                </Link>
               </Button>
             </Card>
             <Card bordered={false}>
@@ -191,9 +192,9 @@ export default class UserPandect extends PureComponent {
                 <span className="strength">{cData.cfNumber}</span> 件）；
               </p>
               <Button type="primary">
-                <a href={"/portal/user-center/asset?userNo="+this.props.match.params.userNo} target="_blank">
+                <Link to={"/user-center/asset?userNo="+this.props.match.params.userNo} target="_blank">
                   详情
-                </a>
+                </Link>
               </Button>
             </Card>
           </div>

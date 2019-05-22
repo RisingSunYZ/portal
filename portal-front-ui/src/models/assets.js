@@ -1,4 +1,4 @@
-import { getPersonalAssetsDetails, getChargeAssetsDetails,getAssetsList } from '../../../services/hrService';
+import { getPersonalAssetsDetails, getChargeAssetsDetails,getAssetsList } from '@/services/hrService';
 
 export default {
   namespace: 'assets',
@@ -59,7 +59,6 @@ export default {
 
   reducers: {
     savePersonalAssetsDetails(state, action) {
-      debugger
       return {
         ...state,
         pData: action.payload,

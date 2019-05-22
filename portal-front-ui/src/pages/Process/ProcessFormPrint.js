@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import {Tabs, Button, Icon, Modal, Timeline, Card, Affix, Popover, message, Row, Col, Input, Tag} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import { deepCopy, getRoutes, nullToZero } from '../../utils/utils';
+import { deepCopy, getRoutes, nullToZero } from '@/utils/utils';
 import FormWrapper from '../../components/FormWrapper';
 import styles from '../../components/ProcessForm/index.less';
 
@@ -125,7 +125,8 @@ export default class ProcessFormPrint extends React.Component {
       $("#formDataDiv").append(fMainCttObj);
       window.print();
       window.location.reload(); //重新渲染当前页面html元素
-    }, 1500);
+    }, 2500);
+
   };
 
   closePrint = () => {

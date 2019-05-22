@@ -194,11 +194,11 @@ export default class Framework extends PureComponent {
   };
 
   showDetail =(no) =>{
-    window.open(`/user-team/userPandectForTeam/`+Base64.encode(no));
+    window.open(`/user-team/userPandectForTeam/${Base64.encode(no)}`);
     // router.push(`/ys/user-team/userPandectForTeam/`+Base64.encode(no));
   };
   showPostDetail =(deptId) =>{
-    window.open(`/user-team/authorized?deptId=`+Base64.encode(deptId));
+    window.open(`/user-team/authorized?deptId=${Base64.encode(no)}`);
     // router.push(`/ys/user-team/userPandectForTeam/`+Base64.encode(no));
   };
   onHeadImgError=(tar)=>{

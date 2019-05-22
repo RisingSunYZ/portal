@@ -50,7 +50,7 @@ export default class EditBaseInfo extends Component {
           <div className="title-box">
             <Breadcrumb>
               <Breadcrumb.Item>您所在的位置：<Link to="/main/hr-service">HR服务</Link></Breadcrumb.Item>
-              <Breadcrumb.Item><a href="/ys/user-center">个人总览</a></Breadcrumb.Item>
+              <Breadcrumb.Item><Link to="/user-center">个人总览</Link></Breadcrumb.Item>
               <Breadcrumb.Item>编辑资料</Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-title">编辑资料</div>

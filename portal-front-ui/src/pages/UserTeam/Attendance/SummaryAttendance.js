@@ -10,7 +10,8 @@ import BusinessTripDetail from '../commponents/attendance/BusinessTripDetail';
 import LateAbsenteesim from '../commponents/attendance/LateAbsenteeism';
 import Absenteeism from '../commponents/attendance/Absenteeism';
 import BusinessTrip from '../commponents/attendance/BusinessTrip';
-import {getConfig} from "../../../utils/utils";
+import {getConfig} from "@/utils/utils";
+import Link from "umi/link";
 
 const TabPane = Tabs.TabPane;
 
@@ -476,11 +477,11 @@ export default class SummaryAttendance extends PureComponent {
             <div className={styles.ptzt}>
               <p>
                 考勤出勤率<span className={styles.number}>
-                <a href={'/ys/user-team/attendanceRateChart?year='+parameters().year+'&deptId='+parameters().departId} target="_blank">
-                {aNumberData.attendance}</a></span>%、
+                <Link to={'/user-team/attendanceRateChart?year='+parameters().year+'&deptId='+parameters().departId} target="_blank">
+                {aNumberData.attendance}</Link></span>%、
                 员工平均工作时长<span className={styles.number}>
-                <a href={'/ys/user-team/attendanceChart?year='+parameters().year+'&deptId='+parameters().departId} target="_blank">
-                {aNumberData.avgWorkHour}</a>
+                <Link to={'/user-team/attendanceChart?year='+parameters().year+'&deptId='+parameters().departId} target="_blank">
+                {aNumberData.avgWorkHour}</Link>
               </span>小时。
               </p>
             </div>

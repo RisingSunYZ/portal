@@ -81,7 +81,7 @@ class EditUserMobile extends PureComponent {
     const { count, noticeShow, visible } = this.state;
     const {
       submitting,
-      baseInfo: { profile },
+      baseInfo: { baseInfo:{ profile } },
     } = this.props;
     const {
       form: { getFieldDecorator },

@@ -1,7 +1,7 @@
 /**
  *个人资料绩效信息model
  */
-import { getHrPerformanceList, getYearList, getPerformanceScore } from '../../../services/hrService';
+import { getHrPerformanceList, getYearList, getPerformanceScore } from '@/services/hrService';
 export default {
 
   namespace: 'hrPerformance',

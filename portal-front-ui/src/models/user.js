@@ -1,8 +1,8 @@
-import {query as queryUsers, queryCurrent, queryUserByNo, getAllUser, getAllDept } from '../services/user';
+import {query as queryUsers, queryCurrent, queryUserByNo, getAllUser, getAllDept } from '@/services/user';
 import { message } from 'antd';
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
-import {getConfig} from "../utils/utils";
+import {getConfig} from "@/utils/utils";
 
 
 export default {

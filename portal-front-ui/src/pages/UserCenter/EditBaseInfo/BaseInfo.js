@@ -93,7 +93,7 @@ class EditInfoForm extends PureComponent {
   render() {
     const {
       submitting,
-      baseInfo: { profile },
+      baseInfo: { baseInfo:{profile} },
     } = this.props;
     const {
       form: { getFieldDecorator },
