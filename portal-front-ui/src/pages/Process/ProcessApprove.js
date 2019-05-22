@@ -207,7 +207,7 @@ export default class ProcessApprove extends React.Component {
     });
   }
   doFormFn = (fnName, msg) => {
-    this.refs.formWrapper.doFormFn(fnName, msg);
+    return this.refs.formWrapper.doFormFn(fnName, msg);
   };
 
   /**
@@ -361,14 +361,12 @@ export default class ProcessApprove extends React.Component {
       message.error('请选择转阅人员！');
     }
   };
-
   methods = {
     doApprove: this.doApprove,
     doTurnDo: this.doTurnDo,
     doAddSign: this.doAddSign,
     doApproveReview:this.doApproveReview,
-    doApproveCooperate:this.doApproveCooperate,
-
+    doApproveCooperate:this.doApproveCooperate
   };
 
   render() {
