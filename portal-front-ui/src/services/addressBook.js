@@ -4,8 +4,16 @@ import { stringify } from 'qs';
 /**
  * 获取常用联系人数据
  */
-export async function queryTopConcactData() {
-  return request(`/rest/addrbook/addressBook/getTopContactsData`);
+export async function queryTopConcactData(params) {
+  let data="";
+  for(var key in params){
+    if(params[key] != undefined){
+      data+= key + '='+ params[key]+ '&';
+    }
+  }
+  if(data.length>0) data= data.substr(0,data.length-1);
+  return request(`/rest/addrbook/addressBook/getTopContactsData?`+data);
+
 }
 
 /**
@@ -33,12 +41,9 @@ export async function getTableList(params) {
  * @returns {Promise<Object>}
  */
 export async function addContactPerData(params) {
-  var formdata = new FormData();
-  const val = params.contactNo;
-  formdata.append("nos",val);
   return request('/rest/addrbook/addressBook/addTopContacts', {
     method: 'POST',
-    body: formdata,
+    body: params.nos
   });
 }
 
@@ -48,12 +53,9 @@ export async function addContactPerData(params) {
  * @returns {Promise<Object>}
  */
 export async function delContactPerData(params) {
-  var formdata = new FormData();
-  const val = params.contactNo;
-  formdata.append("nos",val);
   return request('/rest/addrbook/addressBook/delTopContacts', {
     method: 'POST',
-    body: formdata,
+    body: params,
   });
 }
 

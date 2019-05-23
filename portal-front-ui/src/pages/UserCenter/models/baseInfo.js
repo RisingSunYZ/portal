@@ -65,7 +65,6 @@ export default {
     *getBaseInfo({ payload }, { call, put }) {
 
       const response = yield call(getBaseInfo, payload);
-      debugger
       yield put({
         type: 'save',
         payload: response!=undefined&&response.code=="1"?response:{},

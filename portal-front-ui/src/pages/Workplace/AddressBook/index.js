@@ -1,11 +1,11 @@
 import React, { Component, PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Icon, Row, Col, Card, Drawer,Button ,Input,Layout,Table ,message } from 'antd';
-import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './index.less';
 import TreeMenu from '../components/TreeMenu';
 import Link from 'umi/link';
-import {getConfig} from "../../../utils/utils";
+import {getConfig} from "@/utils/utils";
 
 
 const Search = Input.Search;
@@ -173,7 +173,7 @@ class AddressBook extends PureComponent {
     const { personObj  }=this.state;
     dispatch({
       type:'addressBook/addContactPer',
-      payload:{contactNo:personObj.no}
+      payload:{nos:personObj.no}
     })
   };
 
@@ -188,7 +188,7 @@ class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/addContactPer',
-        payload:{ contactNo:nos }
+        payload:{ nos:nos }
       })
     }
   };
@@ -204,7 +204,7 @@ class AddressBook extends PureComponent {
     }else{
       dispatch({
         type:'addressBook/delContactPer',
-        payload: {contactNo:this.state.nos}
+        payload: {nos:this.state.nos}
       })
     }
   };
@@ -328,9 +328,9 @@ class AddressBook extends PureComponent {
                   <p className={styles.perUnit}>{personObj.deptName}</p>
                   <div className={styles.btnGroup}>
                     <Button type="primary" onClick={this.drawerAddContactPer}>添加到常用联系人</Button>
-                    <Link to={'mailto:'+personObj.email}>
+                    <a href={'mailto:'+personObj.email}>
                       <Button className={styles.btnEmail}>发邮件</Button>
-                    </Link>
+                    </a>
                   </div>
                 </div>
               </Col>
@@ -408,6 +408,7 @@ class AddressBook extends PureComponent {
               </Row>
               <Table
                 columns={columns}
+                rowKey={"id"}
                 dataSource={list}
                 pagination={pagination}
                 scroll={{ y: 640 }}

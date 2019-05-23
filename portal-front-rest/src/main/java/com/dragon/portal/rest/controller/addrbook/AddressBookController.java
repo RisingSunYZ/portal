@@ -58,8 +58,7 @@ public class AddressBookController extends BaseController {
 	 **/
 	@PostMapping("/addTopContacts")
 	@ApiOperation("常用联系人添加")
-	@ApiImplicitParam(paramType = "form",name = "nos",value = "人员编号")
-	public ReturnVo<String> addTopContacts(String nos ,@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
+	public ReturnVo<String> addTopContacts(@RequestBody String nos ,@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "添加到常用联系人失败！");
 		// 获取登录用户
 		UserSessionInfo loginUser = getUserSessionInfo(request, response);
@@ -111,8 +110,7 @@ public class AddressBookController extends BaseController {
 	 **/
 	@PostMapping("/delTopContacts")
 	@ApiOperation("常用联系人移除")
-	@ApiImplicitParam(paramType = "form",name = "nos",value = "人员编号")
-	public ReturnVo<String> delTopContacts(String nos ,@ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
+	public ReturnVo<String> delTopContacts(@ApiParam(value = "人员编号")  @RequestBody String nos, @ApiIgnore HttpServletRequest request, @ApiIgnore HttpServletResponse response) {
 		ReturnVo<String> returnVo = new ReturnVo<String>(ReturnCode.FAIL, "添加到常用联系人失败！");
 		// 获取登录用户
 		UserSessionInfo loginUser = getUserSessionInfo(request, response);

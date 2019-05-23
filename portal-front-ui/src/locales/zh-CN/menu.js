@@ -57,6 +57,7 @@ export default {
   "menu.main-workplace.attendance-exception":"考勤异常",
   "menu.main-workplace.attendance-record":"考勤记录",
 
+  "menu.msg-system":"常用系统",
 
   // 'menu.user':'用户',
   // 'menu.user.login':'登录',

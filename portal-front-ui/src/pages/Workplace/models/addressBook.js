@@ -4,7 +4,7 @@ import {
   getTableList,
   addContactPerData,
   delContactPerData
-} from '../../../services/addressBook';
+} from '@/services/addressBook';
 import { message } from 'antd';
 
 export default {
