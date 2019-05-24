@@ -105,9 +105,10 @@ export default class SysList extends PureComponent {
         style={style}
         bordered={false}
         bodyStyle={{padding: 0}}
+        headStyle={{paddingTop:"8px"}}
         title="常用系统"
-        // extra={ <a href={ "/eip/workplace/system-more" } target="_blank" >添加更多 &gt;</a>}
-        extra={ <a href={ getConfig().domain + "/portal/workplat/system/customize.jhtml" } target="_blank" >更多&gt;</a>}
+        extra={ <a href={ "/eip/workplace/system-more" } target="_blank" >添加更多 &gt;</a>}
+        // extra={ <a href={ getConfig().domain + "/portal/workplat/system/customize.jhtml" } target="_blank" >更多&gt;</a>}
       >
         <Row>
           <Col span={24}>

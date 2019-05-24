@@ -1,10 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent,Fragment } from 'react';
 import { Card, Row, Col, Icon, Button, Modal, Tabs, Radio } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import {getConfig} from "@/utils/utils";
 import sysDefault from '@/assets/workplace/sys-default.png';
-import styles  from './index.less'
+import styles  from './index.less';
+import BlankList from '@/components/BlankList';
 
 const TabPane = Tabs.TabPane;
 
@@ -46,18 +47,24 @@ class SystemMore extends PureComponent {
   };
 
   getServicesList = slist => {
-    return slist.map((sys, index)=>{
-      return (
-        <li key={index} className={styles.sysItem}>
-          <Icon type="drag" className={styles.iconDrag}/>
-          <a href={sys.linkUrl} target="_blank" className={styles.imgIcons}>
-            <img width="56" height="56" onError={this.onSysImgError.bind(this)} src={getConfig().ftpHost+sys.sysIcon}/>
-          </a>
-          <p>{sys.sysName}</p>
-          {sys.isIdmSys === 0 ? (<Icon type="minus-circle" className={styles.idmSys} onClick={()=>this.modifyIdmSys(sys)}/>) : ('')}
-        </li>
-      );
-    });
+    if(slist.length>0){
+      return slist.map((sys, index)=>{
+        return (
+          <li key={index} className={styles.sysItem}>
+            <Icon type="drag" className={styles.iconDrag}/>
+            <a href={sys.linkUrl} target="_blank" className={styles.imgIcons}>
+              <img width="56" height="56" onError={this.onSysImgError.bind(this)} src={getConfig().ftpHost+sys.sysIcon}/>
+            </a>
+            <p>{sys.sysName}</p>
+            {sys.isIdmSys === 0 ? (<Icon type="minus-circle" className={styles.idmSys} onClick={()=>this.modifyIdmSys(sys)}/>) : ('')}
+          </li>
+        );
+      });
+
+    }else{
+      return <BlankList emptyText="暂无数据" />
+    }
+
   };
 
   // 删除或添加菜单
@@ -115,6 +122,7 @@ class SystemMore extends PureComponent {
       type:"workplace/getSystemById",
       payload:{id:"8a948c155d16777c015d16792f2e0001"}
     });
+
   };
 
 
@@ -138,62 +146,64 @@ class SystemMore extends PureComponent {
 
     return (
       <PageHeaderWrapper>
-        <div className={styles.btns}>
-          <Button type="primary" onClick={this.handleSave}>保存</Button>
-          <Button className={styles.resetBtn} onClick={this.handleResets}>重置</Button>
-        </div>
-        <Card bordered={false} bodyStyle={{padding: '16px 24px'}}>
-          <Row>
-            <Col span={24}>
-              <div className={styles.sysView}>
-                <ul className={styles.sysList} id="ulContent">
-                  {this.getServicesList(sysData || [])}
-                </ul>
-              </div>
-            </Col>
-          </Row>
-        </Card>
-        <Modal
-          visible={visible}
-          footer={null}
-          closable={false}
-          centered
-          bodyStyle={{backgroundColor:'rgba(0,0,0,0.5)',color:'#fff',textAlign:'center'}}
-          maskStyle={{backgroundColor:'transparent'}}>
-          <p>保存常用系统成功</p>
-        </Modal>
-        <div>
-          <Radio.Group value={value} style={{ margin:'50px 0 30px 380px'}}>
-            {sysTopMenusDate.map((item,index)=>{
-              return <Radio.Button value={index} key={item.id} onClick={()=>this.sysCustom(item.id,index)}>{item.name}</Radio.Button>
-            })}
-          </Radio.Group>
-          <div>
-            {sysMenusDate.length===0 ? (<span>暂无数据！</span>):(
-              <Tabs onChange={callback} type="card">
-                <TabPane tab="ALL" key="1">
-                  {sysMenusDate.map(item =>{
-                    return (
-                      <div>
-                        <Icon type="shopping" style={{ paddingLeft:10, fontSize: 18 }}/>&nbsp;&nbsp;
-                        <span>{item.name}</span>
-                        <div/>
-                        {item.systemMenu.map((itm)=>{
-                          return (
-                            <span>
-                              <Button style={{margin:'40px 20px 0 34px'}} onClick={()=>this.modifyIdmSys(itm)}>{itm.sysName}</Button>
-                            </span>
-                          )
-                        })}
-                      </div>
-                    )
-                  })}
-                </TabPane>
-                <TabPane tab="办公" key="2">办公部分内容</TabPane>
-              </Tabs>
-            )}
+          <div className={styles.btns}>
+            <Button type="primary" onClick={this.handleSave}>保存</Button>
+            <Button className={styles.resetBtn} onClick={this.handleResets}>重置</Button>
           </div>
-        </div>
+          <Card bordered={false} bodyStyle={{padding: '16px 24px'}}>
+            <Row>
+              <Col span={24}>
+                <div className={styles.sysView}>
+                  <ul className={styles.sysList} id="ulContent">
+                    {this.getServicesList(sysData || [])}
+                  </ul>
+                </div>
+              </Col>
+            </Row>
+          </Card>
+          <Card bordered={false} style={{marginTop:"24px"}} bodyStyle={{padding: '16px 24px'}}>
+            <div >
+              <Radio.Group value={value} style={{ margin:'50px 0 30px 380px'}}>
+                {sysTopMenusDate.map((item,index)=>{
+                  return <Radio.Button value={index} key={item.id} onClick={()=>this.sysCustom(item.id,index)}>{item.name}</Radio.Button>
+                })}
+              </Radio.Group>
+              <div>
+                {sysMenusDate.length===0 ? (<span>暂无数据！</span>):(
+                  <Tabs onChange={callback} type="card">
+                    <TabPane tab="ALL" key="1">
+                      {sysMenusDate.map(item =>{
+                        return (
+                          <div>
+                            <Icon type="shopping" style={{ paddingLeft:10, fontSize: 18 }}/>&nbsp;&nbsp;
+                            <span>{item.name}</span>
+                            <div/>
+                            {item.systemMenu.map((itm)=>{
+                              return (
+                                <span>
+                                <Button style={{margin:'40px 20px 0 34px'}} onClick={()=>this.modifyIdmSys(itm)}>{itm.sysName}</Button>
+                              </span>
+                              )
+                            })}
+                          </div>
+                        )
+                      })}
+                    </TabPane>
+                    <TabPane tab="办公" key="2"><BlankList emptyText="暂无数据" /></TabPane>
+                  </Tabs>
+                )}
+              </div>
+            </div>
+          </Card>
+          <Modal
+            visible={visible}
+            footer={null}
+            closable={false}
+            centered
+            bodyStyle={{backgroundColor:'rgba(0,0,0,0.5)',color:'#fff',textAlign:'center'}}
+            maskStyle={{backgroundColor:'transparent'}}>
+            <p>保存常用系统成功</p>
+          </Modal>
       </PageHeaderWrapper>
     );
   }

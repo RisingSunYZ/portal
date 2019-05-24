@@ -10,7 +10,7 @@ import {
   genProcessViewUrl,
   genSearchDateBox,
   getFormType
-} from '../../utils/utils';
+} from '@/utils/utils';
 
 const Search = Input.Search;
 const FormItem = Form.Item;

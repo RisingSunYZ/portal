@@ -103,6 +103,7 @@ class NewsList extends PureComponent {
         title={title}
         style={{ width, height, ...style }}
         bordered={false}
+        headStyle={{paddingTop:"8px"}}
         extra={extra}
         loading={loading}
         bodyStyle={{ padding: 0 }}

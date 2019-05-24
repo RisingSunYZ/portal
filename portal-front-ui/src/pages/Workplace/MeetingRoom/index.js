@@ -3,9 +3,9 @@ import { connect } from 'dva';
 import { Tabs, Icon, Row, Col,Input, Card, Modal,Badge,Pagination  } from 'antd';
 import styles from './index.less';
 import Link from 'umi/link';
-import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
-import { getConfig, simpleFormatDate ,simpleFormatTime} from '../../../utils/utils';
-import { UserSelect } from '../../../components/Selector';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { getConfig, simpleFormatDate ,simpleFormatTime} from '@/utils/utils';
+import { UserSelect } from '@/components/Selector';
 import BlankList from '@/components/BlankList';
 
 const TabPane = Tabs.TabPane;
