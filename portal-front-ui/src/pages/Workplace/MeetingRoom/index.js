@@ -433,51 +433,49 @@ export default class MeetingRoom extends PureComponent {
       )
     };
 
+
     return (
       <PageHeaderWrapper>
-        <Row className={styles.navRight}>
-          <Col span={3} className={styles.rights}>
-            <Link to={"/workplace/meeting-room/:tab/meeting-input/:meetId"}>
+        <Card  bordered={false} bodyStyle={{padding:"16px 24px"}}  >
+          <div className={styles.navRight}>
+            <Link to={"/workplace/meeting-room/:tab/meeting-input/:meetId"} style={{width:"100px",marginRight:"30px",position:"relative",top:"-8px"}}>
               <Icon type="plus" className={styles.icon}/>
               <span className={styles.text}>新建会议</span>
             </Link>
-          </Col>
-          <Col span={5}>
-            <Search placeholder="请搜索" onSearch={this.doSearchMeeting} style={{position:'relative',top: -8}}/>
-          </Col>
-        </Row>
-        <Tabs defaultActiveKey={tab} onChange={this.callback} type="card">
-          <TabPane tab={<span>待开会议<Badge count={listWait.length} style={{ backgroundColor: '#FF3D00', color: '#fff', boxShadow: '0 0 0 1px #d9d9d9 inset',left:4,top:-2 ,fontSize:16}} /></span>} key="1">
-            {
-              listWait !== undefined && listWait.length>0 ?
-              loopCard(listWait,1):
-              (<BlankList emptyText="暂无数据" />)
-            }
-          </TabPane>
-          <TabPane tab="我邀请的" key="2">
-            {
-              listInvita !== undefined && listInvita.length>0 ?
-                loopCard(listInvita,2):
-                (<BlankList emptyText="暂无数据" />)
-            }
-            <Pagination showQuickJumper defaultCurrent={1} total={ paginations } onChange={this.onInviteChange} style={{textAlign:'center'}} />
-          </TabPane>
-          <TabPane tab="历史会议" key="3">
-            {
-              listHistory !== undefined && listHistory.length>0 ?
-                loopCard(listHistory,3):
-                (<BlankList emptyText="暂无数据" />)
-            }
-            <Pagination showQuickJumper defaultCurrent={1} total={ pagination } onChange={this.onHistoryChange} style={{textAlign:'center'}}/>
-          </TabPane>
-          <TabPane tab="我的草稿" key="4">
-            {
-              listDraft !== undefined && listDraft.length>0 ?
-                loopCard(listDraft,4):
-                (<BlankList emptyText="暂无数据" />) }
-          </TabPane>
-        </Tabs>
-
+            <Search placeholder="请搜索" onSearch={this.doSearchMeeting} style={{position:'relative',top: -8,width:"240px"}}/>
+          </div>
+          <Tabs defaultActiveKey={tab} onChange={this.callback} type="card">
+            <TabPane tab={<span>待开会议<Badge count={listWait.length} style={{ backgroundColor: '#FF3D00', color: '#fff', boxShadow: '0 0 0 1px #d9d9d9 inset',left:4,top:-2 ,fontSize:16}} /></span>} key="1">
+              {
+                listWait !== undefined && listWait.length>0 ?
+                  loopCard(listWait,1):
+                  (<BlankList emptyText="暂无数据" />)
+              }
+            </TabPane>
+            <TabPane tab="我邀请的" key="2">
+              {
+                listInvita !== undefined && listInvita.length>0 ?
+                  loopCard(listInvita,2):
+                  (<BlankList emptyText="暂无数据" />)
+              }
+              <Pagination showQuickJumper defaultCurrent={1} total={ paginations } onChange={this.onInviteChange} style={{textAlign:'center'}} />
+            </TabPane>
+            <TabPane tab="历史会议" key="3">
+              {
+                listHistory !== undefined && listHistory.length>0 ?
+                  loopCard(listHistory,3):
+                  (<BlankList emptyText="暂无数据" />)
+              }
+              <Pagination showQuickJumper defaultCurrent={1} total={ pagination } onChange={this.onHistoryChange} style={{textAlign:'center'}}/>
+            </TabPane>
+            <TabPane tab="我的草稿" key="4">
+              {
+                listDraft !== undefined && listDraft.length>0 ?
+                  loopCard(listDraft,4):
+                  (<BlankList emptyText="暂无数据" />) }
+            </TabPane>
+          </Tabs>
+        </Card>
       </PageHeaderWrapper>
     )
   }

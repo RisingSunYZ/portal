@@ -216,6 +216,7 @@ export default class ScheduleEventDetail extends Component {
         <Modal
           bodyStyle={{padding: 18}}
           visible={visible}
+          width={"620px"}
           title={title || '新建事项'}
           footer={<Fragment>{this.getFooter()}</Fragment>}
           onCancel={()=>this.setState({visible: false})}

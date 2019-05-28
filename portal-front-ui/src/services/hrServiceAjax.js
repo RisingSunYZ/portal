@@ -1,6 +1,6 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
-import requestAjax from '../utils/requestAjax';
+import requestAjax from '@/utils/requestAjax';
 
 /**
  * 提交反馈表单
