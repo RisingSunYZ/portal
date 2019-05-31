@@ -38,13 +38,14 @@ export default class WorkMenus extends PureComponent {
         <Row className={styles.menuWraper}>
           <Col span={2} />
           <Col span={4}>
-            <Link to="/workplace/schedule" target={"_blank"}>
+            <a href={ getConfig().domain + "/portal/schedule/list.jhtml"} target={"_blank"}>
               <Badge count={global.scheduleCount}>
                 <Avatar shape="square" size={size} src={schedule} />
               </Badge>
               <br />
               <span className="schedule">日程</span>
-            </Link>
+            </a>
+
           </Col>
           <Col span={4}>
             <Link to="/process/list/todo" target={"_blank"}>
